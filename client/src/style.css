@@ -1,0 +1,39 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  font-family: "LuckiestGuy";
+
+  text-size-adjust: none;
+}
+@font-face {
+  font-family: "LuckiestGuy";
+  src: url("assets/LuckiestGuy.ttf") format("truetype");
+}
+
+*:focus {
+  outline: none;
+}
+
+#nickname-input {
+  width: 250px;
+  height: 60px;
+  text-align: center;
+  border: 3px solid black;
+  font-family: LuckiestGuy;
+  font-size: 25px;
+}
+
+#first-login {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+  text-align: center;
+  display: none;
+}
+
+#accept-nickname{
+    width: 100px;
+    height: 50px;
+    margin-top: 50px;
+}
