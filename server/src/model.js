@@ -1,11 +1,18 @@
 const mongoose = require("mongoose")
 
-//Create schema
-const usersSchema = new mongoose.Schema({
-  nickname: {
-    type: String,
-  },
+const accountSchema = new mongoose.Schema({
+  nickname: String,
+  levels_scores: [Number],
+  money: Number,
 })
 
-//Create model
-module.exports = mongoose.model("Users", usersSchema)
+const levelsSchema = new mongoose.Schema({
+  level: Number,
+  nickname: String,
+  score: Number,
+})
+
+module.exports = {
+  Accounts: mongoose.model("Accounts", accountSchema),
+  Levels: mongoose.model("Levels", levelsSchema),
+}

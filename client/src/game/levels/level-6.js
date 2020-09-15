@@ -13,8 +13,8 @@ export default class level_6 extends Phaser.Scene {
     this.manager = new Manager(this)
     this.manager.init()
 
-    this.rotate_angle = 0
-    this.circle_angle = 0
+    this.targets_rotate_angle = 0
+    this.circle_rotate_angle = 0
     this.center_to_circle_distance = 0
   }
 
@@ -31,7 +31,6 @@ export default class level_6 extends Phaser.Scene {
     this.manager.createStick()
     this.manager.createCircles()
     this.manager.bindInputEvents()
-    this.manager.createScoreText()
 
     helper.sceneIntro(this)
     this.calculateDifferenceDistance()
@@ -47,8 +46,8 @@ export default class level_6 extends Phaser.Scene {
   update() {
     if (!this.manager.game_started) return
 
-    this.rotate_angle += this.manager.config.target_rotate_speed
-    this.circle_angle += this.manager.config.target_rotate_speed
+    this.targets_rotate_angle += this.manager.config.target_rotate_speed
+    this.circle_rotate_angle += this.manager.config.target_rotate_speed
 
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
@@ -73,18 +72,22 @@ export default class level_6 extends Phaser.Scene {
     const x = this.game.GW / 2
     const y =
       this.game.GH / 2 + this.manager.top_bar.displayHeight / 2 + this.distance
+    console.log(this.circle_rotate_angle)
 
-    this.circle_angle =
-      -Phaser.Math.RadToDeg(
-        Phaser.Math.Angle.BetweenPoints(
-          { x: x, y: y },
-          this.manager.circles[this.manager.current_circle]
+    this.circle_rotate_angle =
+      Math.abs(
+        Phaser.Math.RadToDeg(
+          Phaser.Math.Angle.BetweenPoints(
+            { x: x, y: y },
+            this.manager.circles[this.manager.current_circle]
+          )
         )
-      ) * 2
+      ) + 90
+    console.log(this.circle_rotate_angle)
   }
   calculateCircleDistance() {
     this.center_to_circle_distance = Phaser.Math.Distance.BetweenPoints(
-      this.manager.circles[this.manager.current_circle],
+      this.manager.circles[1 - this.manager.current_circle], // remove 1 -
       {
         x: this.game.GW / 2,
         y: this.game.GH / 2 + this.manager.top_bar.displayHeight / 2,
@@ -93,7 +96,7 @@ export default class level_6 extends Phaser.Scene {
   }
 
   rotateCircle() {
-    const radians_angle = Phaser.Math.DegToRad(this.circle_angle)
+    const radians_angle = Phaser.Math.DegToRad(this.circle_rotate_angle)
 
     const targetX =
       this.game.GW / 2 +
@@ -112,7 +115,7 @@ export default class level_6 extends Phaser.Scene {
   rotateTargets() {
     this.manager.target_array.forEach((target, i) => {
       const radians_angle = Phaser.Math.DegToRad(
-        this.manager.angle_between * (i - 1) + this.rotate_angle
+        this.manager.angle_between * (i - 1) + this.targets_rotate_angle
       )
 
       const targetX = this.game.GW / 2 + this.distance * Math.sin(radians_angle)

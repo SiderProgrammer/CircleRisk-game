@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 const srvConfig = require("./config")
-const Users = require("./model")
+const { Accounts, Levels } = require("./model")
 
 class DatabaseManager {
   constructor() {}
@@ -16,29 +16,58 @@ class DatabaseManager {
         // console.log(`Server started on port ${port}`);
         //   moongose.connection.close()
         // mongoose.disconnect();
+        //  mongoose.connection.dropDatabase()
       }
     )
   }
 
   createAccount(req, res) {
-    Users.create(
+    Accounts.create(
       {
         nickname: req.body.nickname,
+        levels_scores: [1, 2, 3],
       },
-      () => {
-        Users.find({}, (error, users) => {
-          res.status(200).send(users);
-        })
-      }
+      () => res.sendStatus(200)
+    )
+    console.log("created account")
+  }
+
+  getLevelScoresAndNicknames(req, res) {
+    Levels.find({ level: req.body.level }).then((levels) => {
+      res.status(200).json(levels)
+    })
+  }
+
+  postLevelScore(req, res) {
+    const { score, nickname, level } = req.body
+
+    const query = { nickname: nickname }
+
+    const update = {
+      score: score,
+      nickname: nickname,
+      level: level,
+    }
+
+    const options = {
+      upsert: true,
+      new: true,
+      setDefaultsOnInsert: true,
+      useFindAndModify: false,
+    }
+
+    Levels.findOneAndUpdate(query, update, options, (err, c) =>
+      res.sendStatus(200)
     )
   }
+
   getUsers(res) {
-    Users.find({}, (error, users) => {
+    Accounts.find({}, (error, users) => {
       res.json(users)
     })
   }
   createTest(req, res) {
-    Users.create(
+    Accounts.create(
       { name: "fetched good", username: "tesname" },
       (error, post) => {
         console.log("fetched !")
