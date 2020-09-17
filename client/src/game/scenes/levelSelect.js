@@ -1,6 +1,6 @@
 import helper from "../helper.js"
 import levelsInfo from "../settings/levelsInfo"
-import progress from "../settings/progress.js"
+import { getProgress } from "../../shortcuts/save"
 import { GET_LEVEL_SCORES_AND_NICKNAMES } from "../../shortcuts/requests"
 
 import LeaderBoardManager from "../main/leaderboard"
@@ -12,6 +12,7 @@ export default class levelSelect extends Phaser.Scene {
 
   init() {
     this.tints = []
+    this.progress = getProgress()
 
     for (const level in levelsInfo) {
       this.tints.push(levelsInfo[level].tint)
@@ -44,19 +45,23 @@ export default class levelSelect extends Phaser.Scene {
   createPageRequirements() {
     const level = "level_" + (this.actualPageNumber + 1)
 
-    if (!progress.levels[level]) {
-      progress.levels[level] = {
+    let score = 0
+    if (this.progress.levels_scores.length >= this.actualPageNumber + 1) {
+      score = this.progress.levels_scores[this.actualPageNumber]
+    }
+    /*
+    if (!this.progress.levels_scores[level]) {
+      this.progress.levels_scores[level] = {
         score: 0,
       }
     }
-
+*/
     const text = this.add
       .text(
         this.actualPage.x,
         this.actualPage.y,
-        progress.levels[level].score +
-          "/" +
-          levelsInfo[level].score_to_next_level,
+        //  this.progress.levels_scores[level].score +
+        score + "/" + levelsInfo[level].score_to_next_level,
         {
           font: "50px LuckiestGuy",
         }
@@ -92,13 +97,15 @@ export default class levelSelect extends Phaser.Scene {
       this.actualPage.y + 100,
       "ranking-icon",
       () => {
-        GET_LEVEL_SCORES_AND_NICKNAMES(this.actualPageNumber + 1).then(
-          (data) => {
-            console.log(data)
+        GET_LEVEL_SCORES_AND_NICKNAMES({
+          level: this.actualPageNumber + 1,
+          start_search_rank: 0,
+          stop_search_rank: 11,
+        }).then((data) => {
+          console.log(data)
 
-            new LeaderBoardManager(this).createLeaderBoard(data)
-          }
-        )
+          new LeaderBoardManager(this).createLeaderBoard(data)
+        })
       }
     )
     return button

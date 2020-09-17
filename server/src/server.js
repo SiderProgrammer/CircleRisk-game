@@ -18,6 +18,10 @@ server.post("/createAccount", (req, res) =>
   databaseManager.createAccount(req, res)
 )
 
+server.post("/getAccountProgress", (req, res) =>
+  databaseManager.getAccountProgress(req, res)
+)
+
 server.post("/getLevelScoresAndNicknames", (req, res) =>
   databaseManager.getLevelScoresAndNicknames(req, res)
 )

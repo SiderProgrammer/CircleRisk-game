@@ -1,4 +1,5 @@
 export default {
+  /// FETCH THIS FILE FROM SERVER
   circles: [
     { skin: "circle_1" },
     { skin: "circle_2" },
@@ -17,4 +18,4 @@ export default {
     { skin: "target_3" },
     { skin: "target_4" },
   ],
-};
+}

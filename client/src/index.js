@@ -4,7 +4,7 @@ import config from "./core/gameConfig"
 import accountCreator from "./accountCreator"
 import { getProgress } from "./shortcuts/save.js"
 
-const startGame = () => {
+export const startGame = () => {
   const game = new Phaser.Game(config)
   game.GW = config.width
   game.GH = config.height

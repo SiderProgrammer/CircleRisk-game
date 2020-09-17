@@ -40,7 +40,12 @@ export default class {
 
   updateTexts(sorted_data) {
     this.texts.forEach((account_text, i) => {
-      if (i > sorted_data.length - 1) return
+      if (!sorted_data[i]) {
+        sorted_data[i] = {}
+        sorted_data[i].rank = ""
+        sorted_data[i].score = "" // write better code
+        sorted_data[i].nickname = ""
+      }
 
       account_text.rank.setText(sorted_data[i].rank)
       account_text.nickname.setText(sorted_data[i].nickname)

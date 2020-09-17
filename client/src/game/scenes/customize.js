@@ -1,6 +1,6 @@
 import helper from "../helper";
 import setup from "../settings/customizeSetup";
-import progress from "../settings/progress";
+import {saveProgress,getProgress} from "../../shortcuts/save"
 
 export default class Customize extends Phaser.Scene {
   constructor() {
@@ -14,6 +14,7 @@ export default class Customize extends Phaser.Scene {
     this.shift_value = 90;
     this.shift_duration = 400;
     this.can_change = true;
+    this.progress = getProgress()
   }
 
   create() {
@@ -26,7 +27,7 @@ export default class Customize extends Phaser.Scene {
 
     this.coin = this.add.image(this.game.GW - 10, 10, "coin").setOrigin(1, 0);
     this.add
-      .text(this.coin.x - this.coin.displayWidth - 20, 10, progress.money, {
+      .text(this.coin.x - this.coin.displayWidth - 20, 10, this.progress.money, {
         font: "40px LuckiestGuy",
       })
       .setOrigin(1, 0);
@@ -192,7 +193,7 @@ export default class Customize extends Phaser.Scene {
     );
     elements.push(close_button);
 
-    if (progress.money >= skin.cost) {
+    if (this.progress.money >= skin.cost) {
       elements.push(
         helper.createButton(
           this,
@@ -211,7 +212,7 @@ export default class Customize extends Phaser.Scene {
   }
   purchaseCallback(skin, part) {
     skin.key.setAlpha(0);
-    progress.skins[part].push(skin.texture.key);
+    this.progress.skins[part].push(skin.texture.key);
   }
   changeSkinButtonClicked(sprite1, sprite2, part, sign, skin_number) {
     this.can_change = false;
@@ -269,14 +270,14 @@ export default class Customize extends Phaser.Scene {
         .setAlpha(0);
     }
 
-    if (!progress.skins[part].includes(first_skin)) {
+    if (!this.progress.skins[part].includes(first_skin)) {
       this.showItem(sprite2.key, sign);
     } else {
       sprite2.key.setAlpha(0);
     }
 
     if (
-      !progress.skins[part].includes(this.setup[part][skin_number + shift].skin)
+      !this.progress.skins[part].includes(this.setup[part][skin_number + shift].skin)
     ) {
       sprite1.key.setAlpha(1);
       this.hideItem(sprite1.key, sign);
