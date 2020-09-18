@@ -2,15 +2,17 @@ const mongoose = require("mongoose")
 const srvConfig = require("./config")
 const { Accounts, Levels } = require("./model")
 
+const DATABASE_URL = `mongodb+srv://${srvConfig.USERNAME}:${srvConfig.PASSWORD}@${srvConfig.HOST}/${srvConfig.DB}?retryWrites=true&w=majority`
+
 class DatabaseManager {
   constructor() {
     this.levels_amount = 4
   }
   connectDatabase() {
     mongoose.connect(
-      `mongodb+srv://${srvConfig.USERNAME}:${srvConfig.PASSWORD}@${srvConfig.HOST}/${srvConfig.DB}?retryWrites=true&w=majority`,
+      DATABASE_URL,
+
       {
-        // <- Deployment server
         useNewUrlParser: true,
         useUnifiedTopology: true,
       },
@@ -38,15 +40,6 @@ class DatabaseManager {
         })
       })
   }
-  /*
-      for (var i = 0; i < docs.length; i++) {
-        Levels.updateOne(
-          { _id: docs[i]._id },
-          { $set: { __v: i + 1 } },
-          { multi: true }
-        ).exec()
-      }
-  */
 
   createAccount(req, res) {
     Accounts.create(
@@ -73,8 +66,8 @@ class DatabaseManager {
 
     Levels.find({ level: level })
       .where("rank")
-      .gt(start_search_rank)
-      .lt(stop_search_rank)
+      .gt(start_search_rank - 1)
+      .lt(stop_search_rank + 1)
 
       .then((levels) => {
         const sorted_levels = levels.sort((a, b) => a.rank - b.rank)
@@ -83,6 +76,7 @@ class DatabaseManager {
   }
 
   postLevelScore(req, res) {
+    // can use nested destructing ~ {body:{score,nickname,level}}
     const { score, nickname, level } = req.body
 
     const query = { nickname: nickname }
@@ -104,19 +98,49 @@ class DatabaseManager {
     Levels.findOneAndUpdate(query, update, options, (err, c) =>
       res.sendStatus(200)
     )
+
+    Accounts.findOne({ nickname: nickname }, (err, account) => {
+      account.levels_scores[level] = score
+      account.markModified("levels_scores")
+      account.save()
+    })
+  }
+
+  saveMoney(req, res) {
+    const options = {
+      upsert: true,
+      new: true, // remove unnecessary options
+      setDefaultsOnInsert: true,
+      useFindAndModify: false,
+    }
+    Accounts.findOneAndUpdate(
+      { nickname: req.body.nickname },
+      { money: req.body.money },
+      options,
+      (err, c) => {
+        res.sendStatus(200)
+      }
+    )
+  }
+
+  saveNewSkin(req, res) {
+    Accounts.findOne({ nickname: req.body.nickname }, (err, account) => {
+      const part = req.body.skin[0]
+      const skin_number = req.body.skin[1]
+      account.skins[part].push(skin_number)
+      account.markModified("skins")
+      account.save()
+    })
   }
 }
 
 mongoose.connection.on("error", (error) => {
-  console.log("ERROR !")
-  console.log(error)
+  console.log("ERROR !", error)
   process.exit(1)
 })
 
 mongoose.connection.on("connected", async function () {
   console.log("connected to mongo")
-  //  await Users.create({ name: "NEWtes!!!!t", username: "tesname" });
-  // await Users.find({}, (err, users) => console.log(users));
 })
 
 module.exports = DatabaseManager

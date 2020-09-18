@@ -99,11 +99,10 @@ export default class levelSelect extends Phaser.Scene {
       () => {
         GET_LEVEL_SCORES_AND_NICKNAMES({
           level: this.actualPageNumber + 1,
-          start_search_rank: 0,
-          stop_search_rank: 11,
+          start_search_rank: 1,
+          stop_search_rank: 8,
         }).then((data) => {
           console.log(data)
-
           new LeaderBoardManager(this).createLeaderBoard(data)
         })
       }

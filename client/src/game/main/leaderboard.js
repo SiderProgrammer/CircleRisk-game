@@ -1,4 +1,5 @@
 import helper from "../helper"
+import { GET_LEVEL_SCORES_AND_NICKNAMES } from "../../shortcuts/requests"
 
 const bar_text_config = {
   font: "30px LuckiestGuy",
@@ -13,16 +14,46 @@ export default class {
     this.scores = []
     this.texts = []
     this.first_bar_y = 100
+    this.last_start_search_rank = 1
+    this.last_stop_search_rank = 8
+    this.leaderboard_shift_value = 8
+  }
+
+  async getUsers(start, stop) {
+    this.last_start_search_rank = start
+    this.last_stop_search_rank = stop
+
+    return await GET_LEVEL_SCORES_AND_NICKNAMES({
+      level: this.scene.actualPageNumber + 1,
+      start_search_rank: start,
+      stop_search_rank: stop,
+    })
+  }
+
+  getUsersAndUpdateTexts(sign) {
+    let shift = this.leaderboard_shift_value
+
+    if (sign === "-") {
+      shift = -shift
+    }
+    this.getUsers(
+      this.last_start_search_rank + shift,
+      this.last_stop_search_rank + shift
+    ).then((data) => this.updateTexts(data))
   }
 
   createLeaderBoard(data) {
     helper.createBackground(this.scene, "black-bg")
-    helper.createButton(this.scene, this.GW - 70, 50, "arrow-button")
+    helper.createButton(this.scene, this.GW - 70, 50, "arrow-button", () =>
+      this.getUsersAndUpdateTexts("-")
+    )
+
     helper.createButton(
       this.scene,
       this.GW - 70,
       this.scene.game.GH - 50,
-      "arrow-button"
+      "arrow-button",
+      () => this.getUsersAndUpdateTexts("+")
     )
 
     for (let i = 0; i < 8; i++) {
@@ -41,10 +72,11 @@ export default class {
   updateTexts(sorted_data) {
     this.texts.forEach((account_text, i) => {
       if (!sorted_data[i]) {
-        sorted_data[i] = {}
-        sorted_data[i].rank = ""
-        sorted_data[i].score = "" // write better code
-        sorted_data[i].nickname = ""
+        sorted_data[i] = {
+          rank: "",
+          score: "",
+          nickname: "",
+        }
       }
 
       account_text.rank.setText(sorted_data[i].rank)

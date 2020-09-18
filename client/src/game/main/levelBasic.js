@@ -1,16 +1,16 @@
 import level_config from "../settings/levelsConfig.js"
 import LevelHelper from "./levelHelper.js"
 import helper from "../helper.js"
-import progress from "../settings/progress"
-import { POST_LEVEL_SCORE } from "../../shortcuts/requests"
-import { getProgress } from "../../shortcuts/save"
+
+import { POST_LEVEL_SCORE, SAVE_MONEY } from "../../shortcuts/requests"
+import { getProgress, saveProgress } from "../../shortcuts/save"
 import PerfectManager from "./perfectManager"
 import LoseMenu from "./loseMenu"
 
 export default class Manager {
   constructor(scene) {
     this.scene = scene
-    this.progress = progress.levels[`level_${scene.level}`]
+    this.progress = getProgress()
     this.config = level_config[`level_${scene.level}`]
   }
 
@@ -247,19 +247,22 @@ export default class Manager {
     this.game_started = false
 
     const earned_money = this.score
-    progress.money += earned_money
+    this.progress.money += earned_money
 
-    if (this.score > this.progress.score) {
-      this.progress.score = this.score
+    if (this.score > this.progress.levels_scores[this.scene.level - 1]) {
+      /// -1, array is counted from 0
+      this.progress.levels_scores[this.scene.level - 1] = this.score /// -1, array is counted from 0
 
       POST_LEVEL_SCORE({
         score: this.score,
-        nickname: getProgress().nickname,
+        nickname: this.progress.nickname,
         level: this.scene.level,
       })
     }
 
-    // SAVE_COINS()
+    saveProgress(this.progress)
+
+    SAVE_MONEY({ money: this.progress.money, nickname: this.progress.nickname })
 
     const bg = helper.createBackground(this.scene, "black-bg").setAlpha(0)
 

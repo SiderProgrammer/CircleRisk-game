@@ -18,6 +18,14 @@ server.post("/createAccount", (req, res) =>
   databaseManager.createAccount(req, res)
 )
 
+server.post("/saveMoney", (req, res) => {
+  databaseManager.saveMoney(req, res)
+})
+
+server.post("/saveNewSkin", (req, res) => {
+  databaseManager.saveNewSkin(req, res)
+})
+
 server.post("/getAccountProgress", (req, res) =>
   databaseManager.getAccountProgress(req, res)
 )
@@ -29,6 +37,5 @@ server.post("/getLevelScoresAndNicknames", (req, res) =>
 server.post("/postLevelScore", (req, res) => {
   databaseManager.postLevelScore(req, res)
 })
-server.post("/create", (req, res) => databaseManager.createTest(req, res))
 
 server.listen(port, () => databaseManager.connectDatabase())

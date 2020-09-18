@@ -1,34 +1,16 @@
-const SERVER_URL = "http://localhost:3001"
-
-const post_headers = {
-  "Content-Type": "application/json",
-  Accept: "application/json",
-}
-
-const postFunction = async (data, url) => {
-  return fetch(`${SERVER_URL}/${url}`, {
-    method: "post",
-    headers: post_headers,
-    body: JSON.stringify(data),
-  })
-}
-
-const isOK = (response) => {
-  if (response.status === 200) return true
-  return false
-}
+import postFunction from "../fetchHelper"
 
 export const GET_LEVEL_SCORES_AND_NICKNAMES = async (data) => {
   return await postFunction(data, "getLevelScoresAndNicknames").then(
     (response) => {
-      if (isOK(response)) {
+      if (response.ok) {
         return response.json()
       }
     }
   )
 }
 
-export const POST_LEVEL_SCORES = async (data) => {
+export const POST_LEVEL_SCORE = async (data) => {
   return await postFunction(data, "postLevelScore").then((response) => {
     console.log(response)
   })
@@ -40,10 +22,18 @@ export const CREATE_ACCOUNT = async (data) => {
 
 export const GET_ACCOUNT_PROGRESS = async (data) => {
   return await postFunction(data, "getAccountProgress").then((response) => {
-    if (isOK(response)) {
+    if (response.ok) {
       return response.json()
     }
   })
+}
+
+export const SAVE_NEW_SKIN = async (data) => {
+  return await postFunction(data, "saveNewSkin")
+}
+
+export const SAVE_MONEY = async (data) => {
+  await postFunction(data, "saveMoney")
 }
 
 /*
