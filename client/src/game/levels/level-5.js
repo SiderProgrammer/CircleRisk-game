@@ -1,4 +1,4 @@
-import Manager from "../main/levelBasic.js"
+import Manager from "../main/level-manager.js"
 import helper from "../helper.js"
 
 export default class level_5 extends Phaser.Scene {

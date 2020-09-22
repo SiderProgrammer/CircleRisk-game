@@ -1,5 +1,5 @@
 import helper from "../helper.js"
-import levelsInfo from "../settings/levelsInfo"
+import levelsInfo from "../settings/levels-info"
 import { getProgress } from "../../shortcuts/save"
 import { GET_LEVEL_SCORES_AND_NICKNAMES } from "../../shortcuts/requests"
 
@@ -25,14 +25,37 @@ export default class levelSelect extends Phaser.Scene {
   create() {
     this.createBackground()
 
-    this.actualPage = this.createPage()
-    this.actualPageText = this.createPageRequirements()
-    this.actualPageInfo = this.createPageInfo()
-    this.actualRankingIcon = this.createPageRanking()
+    this.elements = this.createPageElements()
+
     this.createChangePageButtons()
     this.createHomeButton()
 
     helper.sceneIntro(this)
+  }
+
+  createPageElements() {
+    const elements = []
+
+    elements[0] = this.actualPage = this.createPage()
+
+    const pageInfo = this.createPageInfo()
+
+    elements.push(...pageInfo[0], ...pageInfo[1])
+
+    if (this.progress.levels_scores.length >= this.actualPageNumber + 1) {
+      elements.push(...this.createPageRequirements())
+      elements.push(this.createPageRanking())
+    } else {
+      elements.push(
+        this.add
+          .image(this.actualPage.x, this.actualPage.y, "level-locked")
+          .setOrigin(0.5, 0)
+      )
+    }
+
+    elements.push(this.createPageIcon())
+
+    return elements
   }
 
   createPage() {
@@ -45,49 +68,66 @@ export default class levelSelect extends Phaser.Scene {
   createPageRequirements() {
     const level = "level_" + (this.actualPageNumber + 1)
 
-    let score = 0
-    if (this.progress.levels_scores.length >= this.actualPageNumber + 1) {
-      score = this.progress.levels_scores[this.actualPageNumber]
-    }
-    /*
-    if (!this.progress.levels_scores[level]) {
-      this.progress.levels_scores[level] = {
-        score: 0,
-      }
-    }
-*/
+    const score = this.progress.levels_scores[this.actualPageNumber]
+
     const text = this.add
       .text(
         this.actualPage.x,
         this.actualPage.y,
-        //  this.progress.levels_scores[level].score +
         score + "/" + levelsInfo[level].score_to_next_level,
         {
           font: "50px LuckiestGuy",
         }
       )
       .setOrigin(0.5)
-    return text
+
+    const bar = this.add.image(text.x, text.y, "level-select-score-bar")
+    return [text, bar]
   }
 
+  createPageIcon() {
+    const level = "level_" + (this.actualPageNumber + 1)
+    const icon = levelsInfo[level].name + "_icon"
+
+    return this.add.image(this.actualPage.x, this.actualPage.y - 80, icon)
+  }
   createPageInfo() {
     const level = "level_" + (this.actualPageNumber + 1)
     const texts = []
+    const bars = []
+
     const { difficulty, name } = levelsInfo[level]
 
     texts[0] = this.add
-      .text(this.actualPage.x, this.actualPage.y - 100, difficulty, {
-        font: "50px LuckiestGuy",
-      })
+      .text(
+        this.actualPage.x,
+        this.actualPage.y - this.actualPage.displayHeight / 2 + 50,
+        difficulty,
+        {
+          font: "50px LuckiestGuy",
+        }
+      )
       .setOrigin(0.5)
 
     texts[1] = this.add
-      .text(this.actualPage.x, this.actualPage.y - 180, name, {
-        font: "50px LuckiestGuy",
-      })
+      .text(
+        this.actualPage.x,
+        this.actualPage.y - this.actualPage.displayHeight / 2 + 100,
+        name,
+        {
+          font: "50px LuckiestGuy",
+        }
+      )
       .setOrigin(0.5)
 
-    return texts
+    bars[0] = this.add.image(
+      texts[0].x,
+      texts[0].y,
+      "level-select-difficulty-bar"
+    )
+    bars[1] = this.add.image(texts[1].x, texts[1].y, "level-select-name-bar")
+
+    return [texts, bars]
   }
 
   createPageRanking() {
@@ -122,7 +162,7 @@ export default class levelSelect extends Phaser.Scene {
 
   tweenPage(sign) {
     if (!this.canChangePage) return
-    let newPage, newText, newInfo, newRanking
+
     let pageShift = -this.game.GW
     this.canChangePage = false
 
@@ -136,42 +176,30 @@ export default class levelSelect extends Phaser.Scene {
         this.actualPageNumber = this.tints.length - 1
     }
 
-    const targets = [
-      this.actualPage,
-      this.actualPageText,
-      ...this.actualPageInfo,
-      this.actualRankingIcon,
-    ]
+    const past_page_elements = this.elements
 
     this.tweens.add({
-      targets: targets,
+      targets: past_page_elements,
       x: `${sign}=${this.game.GW}`,
       duration: 500,
       ease: "Bounce.easeOut",
       onStart: () => {
         this.background.setTint(this.tints[this.actualPageNumber])
 
-        newPage = this.createPage()
-        newText = this.createPageRequirements()
-        newInfo = this.createPageInfo()
-        newRanking = this.createPageRanking()
-        const new_targets = [newPage, newText, ...newInfo, newRanking]
+        this.elements = this.createPageElements()
 
-        new_targets.forEach((t) => (t.x -= pageShift))
+        this.elements.forEach((t) => (t.x -= pageShift))
 
         this.tweens.add({
-          targets: new_targets,
+          targets: this.elements,
           x: `${sign}=${this.game.GW}`,
           duration: 500,
           ease: "Bounce.easeOut",
         })
       },
       onComplete: () => {
-        targets.forEach((t) => t.destroy())
-        this.actualPage = newPage
-        this.actualPageText = newText
-        this.actualPageInfo = newInfo
-        this.actualRankingIcon = newRanking
+        past_page_elements.forEach((t) => t.destroy())
+
         this.canChangePage = true
       },
     })

@@ -1,7 +1,7 @@
 import Preloader from "../game/scenes/preloader"
 import Loader from "../game/scenes/loader"
 import Menu from "../game/scenes/menu"
-import LevelSelect from "../game/scenes/levelSelect.js"
+import LevelSelect from "../game/scenes/level-select.js"
 import Customize from "../game/scenes/customize.js"
 
 import Level_1 from "../game/levels/level-1"
@@ -11,6 +11,7 @@ import Level_4 from "../game/levels/level-4"
 import Level_5 from "../game/levels/level-5"
 import Level_6 from "../game/levels/level-6"
 import Level_7 from "../game/levels/level-7"
+import Level_8 from "../game/levels/level-8"
 
 export default [
   Preloader,
@@ -25,4 +26,5 @@ export default [
   Level_5,
   Level_6,
   Level_7,
+  Level_8,
 ]

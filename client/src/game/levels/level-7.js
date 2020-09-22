@@ -1,5 +1,6 @@
-import Manager from "../main/levelBasic.js"
+import Manager from "../main/level-manager.js"
 import helper from "../helper.js"
+import LevelsFunctionsExtender from "../main/level-functions-extender"
 
 export default class level_7 extends Phaser.Scene {
   constructor() {
@@ -10,9 +11,13 @@ export default class level_7 extends Phaser.Scene {
     this.level = config.level
     this.score_to_next_level = config.score_to_next_level
 
+    this.levelsFunctionsExtender = new LevelsFunctionsExtender(this)
     this.manager = new Manager(this)
     this.manager.init()
+
     this.fly_value = 1
+    this.circle_rotate_angle = 0
+    this.center_to_circle_distance = 0
   }
 
   create() {
@@ -30,25 +35,8 @@ export default class level_7 extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     helper.sceneIntro(this)
-    const pos = this.manager.target_array.reduce((acc, tar) => {
-      if (acc.texture) {
-        acc = {
-          x: tar.x,
-          minX: tar.x,
-        }
-      } else {
-        if (acc.x < tar.x) {
-          acc.x = tar.x
-        }
-
-        if (acc.minX > tar.x) {
-          acc.minX = tar.x
-        }
-      }
-      return acc
-    })
-
-    this.distance = (pos.x - pos.minX) / 2
+    this.calculateDifferenceDistance() // calculates this.distance
+    this.center_to_circle_distance = this.distance
 
     this.time.addEvent({
       delay: 1500,
@@ -63,24 +51,16 @@ export default class level_7 extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
 
-    this.flyTargets()
-    // this.setCirclesPosition()
+    this.moveTargets()
+    this.levelsFunctionsExtender.moveCircle()
 
     this.manager.helper.extendStick()
     this.manager.helper.centerStick()
     this.distance += this.fly_value
+    this.center_to_circle_distance += this.fly_value
   }
 
-  setCirclesPosition() {
-    this.manager.circles[
-      1 - this.manager.current_circle
-    ].x = this.manager.target_array[this.manager.current_target].x
-    this.manager.circles[
-      1 - this.manager.current_circle
-    ].y = this.manager.target_array[this.manager.current_target].y
-  }
-
-  flyTargets() {
+  moveTargets() {
     this.manager.target_array.forEach((target, i) => {
       const radians_angle = Phaser.Math.DegToRad(
         this.manager.angle_between * (i - 1)
@@ -95,7 +75,17 @@ export default class level_7 extends Phaser.Scene {
       target.setPosition(targetX, targetY)
     })
   }
+  calculateCirclesPosition() {
+    this.levelsFunctionsExtender.calculateCircleAngle()
+    this.levelsFunctionsExtender.calculateCircleDistance()
+  }
+
   changeFlyDirection() {
     this.fly_value = -this.fly_value
+  }
+
+  calculateDifferenceDistance() {
+    const pos = this.manager.helper.calculateMinMaxTargetsPos()
+    this.distance = (pos.x - pos.minX) / 2
   }
 }

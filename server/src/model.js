@@ -5,6 +5,7 @@ const accountSchema = new mongoose.Schema({
   levels_scores: [Number],
   money: Number,
   skins: { circles: [Number], sticks: [Number], targets: [Number] },
+  current_skins: { circles: Number, sticks: Number, targets: Number },
 })
 
 const levelsSchema = new mongoose.Schema({

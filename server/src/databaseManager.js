@@ -1,6 +1,8 @@
 const mongoose = require("mongoose")
+
 const srvConfig = require("./config")
 const { Accounts, Levels } = require("./model")
+const customizeSkinsSetup = require("./customize-skins-setup")
 
 const DATABASE_URL = `mongodb+srv://${srvConfig.USERNAME}:${srvConfig.PASSWORD}@${srvConfig.HOST}/${srvConfig.DB}?retryWrites=true&w=majority`
 
@@ -26,6 +28,9 @@ class DatabaseManager {
       }
     )
   }
+  getCustomizeSkinsSetup(res) {
+    res.send(customizeSkinsSetup)
+  }
 
   updateRanks(level) {
     Levels.find({ level: level })
@@ -45,9 +50,10 @@ class DatabaseManager {
     Accounts.create(
       {
         nickname: req.body.nickname,
-        levels_scores: [5, 20],
-        money: 30,
-        skins: { circles: [1, 2, 3], sticks: [1, 2], targets: [1] },
+        levels_scores: [0],
+        money: 5550,
+        skins: { circles: [1], sticks: [1], targets: [1] },
+        current_skins: { circles: 1, sticks: 1, targets: 1 },
       },
       () => res.sendStatus(200)
     )
@@ -100,7 +106,7 @@ class DatabaseManager {
     )
 
     Accounts.findOne({ nickname: nickname }, (err, account) => {
-      account.levels_scores[level] = score
+      account.levels_scores[level - 1] = score
       account.markModified("levels_scores")
       account.save()
     })
@@ -131,6 +137,24 @@ class DatabaseManager {
       account.markModified("skins")
       account.save()
     })
+  }
+
+  equipSkin(req, res) {
+    const options = {
+      upsert: true,
+      new: true, // remove unnecessary options
+      setDefaultsOnInsert: true,
+      useFindAndModify: false,
+    }
+
+    Accounts.findOneAndUpdate(
+      { nickname: req.body.nickname },
+      { current_skins: req.body.current_skins },
+      options,
+      (err, callback) => {
+        res.sendStatus(200)
+      }
+    )
   }
 }
 

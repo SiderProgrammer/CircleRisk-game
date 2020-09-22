@@ -1,4 +1,4 @@
-import Manager from "../main/levelBasic.js"
+import Manager from "../main/level-manager.js"
 import helper from "../helper.js"
 
 export default class level_2 extends Phaser.Scene {
@@ -12,6 +12,11 @@ export default class level_2 extends Phaser.Scene {
 
     this.manager = new Manager(this)
     this.manager.init()
+
+    this.targets_speed = {
+      x: this.manager.config.targets_speed,
+      y: this.manager.config.targets_speed,
+    }
   }
 
   create() {
@@ -39,28 +44,22 @@ export default class level_2 extends Phaser.Scene {
   }
 
   moveTargetsAndBounceOffWalls() {
-    const t_speed = this.manager.config.targets_speed
-    const targets_speed = {
-      x: t_speed,
-      y: t_speed,
-    }
-
     this.manager.target_array.forEach((target) => {
-      if (target.x >= this.game.GW - target.displayWidth / 2) {
-        targets_speed.x = -t_speed
-      } else if (target.x <= 0 + target.displayWidth / 2) {
-        targets_speed.x = t_speed
-      }
-      if (target.y >= this.game.GH - target.displayHeight / 2) {
-        targets_speed.y = -t_speed
-      } else if (
-        target.y <=
-        0 + target.displayHeight / 2 + this.manager.top_bar.displayHeight
+      if (
+        target.x >= this.game.GW - target.displayWidth / 2 ||
+        target.x <= 0 + target.displayWidth / 2
       ) {
-        targets_speed.y = t_speed
+        this.targets_speed.x = -this.targets_speed.x
+      }
+      if (
+        target.y >= this.game.GH - target.displayHeight / 2 ||
+        target.y <=
+          0 + target.displayHeight / 2 + this.manager.top_bar.displayHeight
+      ) {
+        this.targets_speed.y = -this.targets_speed.y
       }
 
-      this.moveTargetsAndCircles(targets_speed)
+      this.moveTargetsAndCircles(this.targets_speed)
     })
   }
 

@@ -5,10 +5,16 @@ const post_headers = {
   Accept: "application/json",
 }
 
-export default async (data, url) => {
+export const postFunction = async (data, url) => {
   return fetch(`${SERVER_URL}/${url}`, {
     method: "post",
     headers: post_headers,
     body: JSON.stringify(data),
+  })
+}
+
+export const getFunction = async (url) => {
+  return fetch(`${SERVER_URL}/${url}`, {
+    headers: post_headers,
   })
 }

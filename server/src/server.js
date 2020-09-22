@@ -26,6 +26,10 @@ server.post("/saveNewSkin", (req, res) => {
   databaseManager.saveNewSkin(req, res)
 })
 
+server.post("/equipSkin", (req, res) => {
+  databaseManager.equipSkin(req, res)
+})
+
 server.post("/getAccountProgress", (req, res) =>
   databaseManager.getAccountProgress(req, res)
 )
@@ -37,5 +41,7 @@ server.post("/getLevelScoresAndNicknames", (req, res) =>
 server.post("/postLevelScore", (req, res) => {
   databaseManager.postLevelScore(req, res)
 })
+
+server.get("/getCustomizeSkinsSetup",(req,res)=>databaseManager.getCustomizeSkinsSetup(res));
 
 server.listen(port, () => databaseManager.connectDatabase())

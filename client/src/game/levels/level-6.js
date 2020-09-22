@@ -1,5 +1,6 @@
-import Manager from "../main/levelBasic.js"
+import Manager from "../main/level-manager.js"
 import helper from "../helper.js"
+import LevelsFunctionsExtender from "../main/level-functions-extender"
 
 export default class level_6 extends Phaser.Scene {
   constructor() {
@@ -9,6 +10,8 @@ export default class level_6 extends Phaser.Scene {
   init(config) {
     this.level = config.level
     this.score_to_next_level = config.score_to_next_level
+
+    this.levelsFunctionsExtender = new LevelsFunctionsExtender(this)
 
     this.manager = new Manager(this)
     this.manager.init()
@@ -53,7 +56,7 @@ export default class level_6 extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
     this.rotateTargets()
-    this.rotateCircle()
+    this.levelsFunctionsExtender.moveCircle()
 
     this.manager.helper.extendStick()
     this.manager.helper.centerStick()
@@ -69,25 +72,51 @@ export default class level_6 extends Phaser.Scene {
     this.calculateCircleDistance()
   }
   calculateCircleAngle() {
-    const x = this.game.GW / 2
-    const y =
-      this.game.GH / 2 + this.manager.top_bar.displayHeight / 2 + this.distance
-    console.log(this.circle_rotate_angle)
+    /// TODO  - optimise the function
 
-    this.circle_rotate_angle =
-      Math.abs(
-        Phaser.Math.RadToDeg(
-          Phaser.Math.Angle.BetweenPoints(
-            { x: x, y: y },
-            this.manager.circles[this.manager.current_circle]
-          )
+    const center_points = {
+      x: this.game.GW / 2,
+      y: this.game.GH / 2 + this.manager.top_bar.displayHeight / 2,
+    }
+
+    const angle_to_circle_calculated_from_middle = -Phaser.Math.Angle.BetweenPoints(
+      center_points,
+      this.manager.circles[this.manager.current_circle]
+    )
+
+    const angle_to_circle_calculated_from_middle_in_rad =
+      angle_to_circle_calculated_from_middle + Phaser.Math.DegToRad(90)
+
+    const points_on_targets_circle = {
+      x:
+        this.game.GW / 2 +
+        this.distance * Math.sin(angle_to_circle_calculated_from_middle_in_rad),
+      y:
+        this.game.GH / 2 +
+        this.manager.top_bar.displayHeight / 2 +
+        this.distance * Math.cos(angle_to_circle_calculated_from_middle_in_rad),
+    }
+
+    const bottom_center_points = {
+      x: this.game.GW / 2,
+      y:
+        this.game.GH / 2 +
+        this.manager.top_bar.displayHeight / 2 +
+        this.distance,
+    }
+
+    this.circle_rotate_angle = // angle calculated from bottom center
+      -Phaser.Math.RadToDeg(
+        Phaser.Math.Angle.BetweenPoints(
+          bottom_center_points,
+          points_on_targets_circle
         )
-      ) + 90
-    console.log(this.circle_rotate_angle)
+      ) * 2
   }
+
   calculateCircleDistance() {
     this.center_to_circle_distance = Phaser.Math.Distance.BetweenPoints(
-      this.manager.circles[1 - this.manager.current_circle], // remove 1 -
+      this.manager.circles[this.manager.current_circle], // remove 1 -
       {
         x: this.game.GW / 2,
         y: this.game.GH / 2 + this.manager.top_bar.displayHeight / 2,
@@ -95,7 +124,7 @@ export default class level_6 extends Phaser.Scene {
     )
   }
 
-  rotateCircle() {
+  moveCircle() {
     const radians_angle = Phaser.Math.DegToRad(this.circle_rotate_angle)
 
     const targetX =

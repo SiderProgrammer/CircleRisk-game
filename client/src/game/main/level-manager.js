@@ -1,11 +1,11 @@
-import level_config from "../settings/levelsConfig.js"
-import LevelHelper from "./levelHelper.js"
+import level_config from "../settings/levels-config.js"
+import LevelHelper from "./level-helper.js"
 import helper from "../helper.js"
 
 import { POST_LEVEL_SCORE, SAVE_MONEY } from "../../shortcuts/requests"
 import { getProgress, saveProgress } from "../../shortcuts/save"
-import PerfectManager from "./perfectManager"
-import LoseMenu from "./loseMenu"
+import PerfectManager from "./perfect-manager"
+import LoseMenu from "./lose-menu"
 
 export default class Manager {
   constructor(scene) {
@@ -26,6 +26,7 @@ export default class Manager {
     this.game_started = false
     this.is_possible_miss = false
     this.current_target = this.config.starting_target
+    this.rotation_speed = this.config.rotation_speed
     this.score = 0
     this.perfect = 0
   }
@@ -55,6 +56,11 @@ export default class Manager {
   }
 
   changeBall() {
+    if (typeof this.scene.shake === "function") {
+      this.scene.shake()
+    }
+    this.rotation_speed += this.config.acceleration
+
     const distance_from_target = Phaser.Math.Distance.BetweenPoints(
       this.circles[this.current_circle],
       this.target_array[this.next_target]
@@ -78,7 +84,9 @@ export default class Manager {
       }
 
       this.current_target = this.next_target
-      this.target_array[this.current_target].setTexture("target_1")
+      this.target_array[this.current_target].setTexture(
+        "target_" + this.progress.current_skins["targets"]
+      )
 
       this.helper.randomNextTarget()
       this.helper.checkNewTargetsQueue()
@@ -128,7 +136,13 @@ export default class Manager {
 
   createFirstTarget() {
     this.target_array.push(
-      this.scene.add.image(0, this.GH / 2, "target_1").setAlpha(0)
+      this.scene.add
+        .image(
+          0,
+          this.GH / 2,
+          "target_" + this.progress.current_skins["targets"]
+        )
+        .setAlpha(0)
     )
   }
   createTargets() {
@@ -151,7 +165,7 @@ export default class Manager {
       .sprite(
         this.target_array[this.config.starting_target].x,
         this.target_array[this.config.starting_target].y,
-        "stick_1"
+        "stick_" + this.progress.current_skins["sticks"]
       )
       .setOrigin(0, 0.5)
       .setAngle(this.rotation_angle)
@@ -160,7 +174,7 @@ export default class Manager {
     this.circles[0] = this.scene.add.sprite(
       this.stick.x,
       this.stick.y,
-      "circle_1"
+      "circle_" + this.progress.current_skins["circles"]
     )
 
     this.helper.extendStick()
@@ -168,7 +182,7 @@ export default class Manager {
     this.circles[this.current_circle] = this.scene.add.sprite(
       this.stick.x,
       this.stick.y - this.stick.displayWidth,
-      "circle_1"
+      "circle_" + this.progress.current_skins["circles"]
     )
   }
   bindInputEvents() {
@@ -185,7 +199,7 @@ export default class Manager {
   updateRotationAngle() {
     this.rotation_angle =
       (this.rotation_angle +
-        this.config.rotation_speed * (2 - 1) * this.rotation_direction) %
+        this.rotation_speed * (2 - 1) * this.rotation_direction) %
       360
   }
   updateCircleStickAngle() {
@@ -219,7 +233,11 @@ export default class Manager {
     const targetX = startX + this.config.ball_distance * Math.sin(radians_angle)
     const targetY = startY + this.config.ball_distance * Math.cos(radians_angle)
 
-    const target = this.scene.add.image(targetX, targetY, "target_1")
+    const target = this.scene.add.image(
+      targetX,
+      targetY,
+      "target_" + this.progress.current_skins["targets"]
+    )
 
     this.target_array.push(target)
     return target
@@ -243,13 +261,18 @@ export default class Manager {
   }
 
   gameOver() {
+    new LoseMenu(this).createLoseMenu()
+
     this.scene.input.removeAllListeners()
     this.game_started = false
 
     const earned_money = this.score
     this.progress.money += earned_money
 
-    if (this.score > this.progress.levels_scores[this.scene.level - 1]) {
+    if (
+      this.score > this.progress.levels_scores[this.scene.level - 1] ||
+      !this.progress.levels_scores[this.scene.level - 1]
+    ) {
       /// -1, array is counted from 0
       this.progress.levels_scores[this.scene.level - 1] = this.score /// -1, array is counted from 0
 
@@ -270,7 +293,6 @@ export default class Manager {
       targets: bg,
       duration: 400,
       alpha: 1,
-      onComplete: () => new LoseMenu(this).createLoseMenu(),
     })
   }
 }

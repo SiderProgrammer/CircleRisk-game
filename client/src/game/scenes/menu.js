@@ -1,39 +1,51 @@
-import helper from "../helper";
+import helper from "../helper"
 
 export default class menu extends Phaser.Scene {
   constructor() {
-    super("menu");
+    super("menu")
   }
   init() {
-    this.tween_duration = 300;
+    this.tween_duration = 300
   }
   create() {
-    helper.createBackground(this, "menu-bg");
+    helper.createBackground(this, "menu-bg")
 
-    this.createPlayButtonSet();
-    this.createCustomizeButtonSet();
+    this.createPlayButtonSet()
+    this.createCustomizeButtonSet()
 
-    this.showButtons();
-    this.showLogos();
-    helper.sceneIntro(this);
+    this.showButtons()
+    this.showLogos()
+    helper.sceneIntro(this)
   }
 
   showLogos() {
-    this.add.image(20, 20, "geometrytrinity").setOrigin(0);
-    this.add.image(this.game.GW - 20, 20, "instagram").setOrigin(1, 0);
+    helper
+      .createButton(this, 20, 20, "geometrytrinity", () =>
+        window.open(
+          "https://play.google.com/store/apps/details?id=com.pip.geometrytrinity",
+          "_blank"
+        )
+      )
+      .setOrigin(0)
+
+    helper
+      .createButton(this, this.game.GW - 20, 20, "instagram", () => {
+        window.open("https://www.instagram.com/pip_games/", "_blank")
+      })
+      .setOrigin(1, 0)
   }
   hideButtons() {
     return new Promise((resolve) => {
-      this.customizeButtonTween(20);
+      this.customizeButtonTween(20)
       setTimeout(() => {
-        this.playButtonTween(-20).then(() => resolve());
-      }, this.tween_duration / 2);
-    });
+        this.playButtonTween(-20).then(() => resolve())
+      }, this.tween_duration / 2)
+    })
   }
 
   showButtons() {
-    this.playButtonTween("-=35");
-    setTimeout(() => this.customizeButtonTween(-40), this.tween_duration / 2);
+    this.playButtonTween("-=35")
+    setTimeout(() => this.customizeButtonTween(-40), this.tween_duration / 2)
   }
 
   customizeButtonTween(angle) {
@@ -43,28 +55,28 @@ export default class menu extends Phaser.Scene {
         angle: angle,
         duration: this.tween_duration,
         onUpdate: () => {
-          const angle = Phaser.Math.DegToRad(this.customize_stick.angle);
+          const angle = Phaser.Math.DegToRad(this.customize_stick.angle)
 
           const x =
             this.customize_stick.x +
             (this.customize_stick.displayWidth +
               this.customize_button.displayWidth / 2 -
               10) *
-              Math.cos(angle);
+              Math.cos(angle)
 
           const y =
             this.customize_stick.y -
             (this.customize_button.displayWidth / 2 +
               this.customize_stick.displayWidth -
               10) *
-              -Math.sin(angle);
+              -Math.sin(angle)
 
-          this.customize_button.x = x;
-          this.customize_button.y = y;
+          this.customize_button.x = x
+          this.customize_button.y = y
         },
         onComplete: () => resolve(),
-      });
-    });
+      })
+    })
   }
 
   playButtonTween(angle) {
@@ -74,52 +86,50 @@ export default class menu extends Phaser.Scene {
         angle: angle,
         duration: this.tween_duration,
         onUpdate: () => {
-          const angle = Phaser.Math.DegToRad(this.play_stick.angle);
+          const angle = Phaser.Math.DegToRad(this.play_stick.angle)
 
           const x =
             this.play_stick.x -
             (this.play_stick.displayWidth +
               this.play_button.displayWidth / 2 +
               5) *
-              Math.cos(angle);
+              Math.cos(angle)
 
           const y =
             this.play_stick.y -
             (this.play_button.displayWidth / 2 +
               this.play_stick.displayWidth -
               5) *
-              Math.sin(angle);
+              Math.sin(angle)
 
-          this.play_button.x = x;
-          this.play_button.y = y;
+          this.play_button.x = x
+          this.play_button.y = y
         },
         onComplete: () => resolve(),
-      });
-    });
+      })
+    })
   }
 
   createStick(x, y, origin, target, sprite) {
-    const stick = this.add.image(x, y, sprite);
+    const stick = this.add.image(x, y, sprite)
 
-    stick.setOrigin(origin.x, origin.y);
+    stick.setOrigin(origin.x, origin.y)
 
     stick.displayWidth =
       Phaser.Math.Distance.Between(stick.x, stick.y, target.x, target.y) -
-      target.displayWidth / 2;
+      target.displayWidth / 2
 
-    return stick;
+    return stick
   }
 
   createCustomizeButtonSet() {
     this.customize_button = helper
       .createButton(this, 0, this.game.GH / 2 + 200, "customize-button", () => {
-        this.hideButtons().then(() =>
-          helper.sceneTransition(this, "customize")
-        );
+        this.hideButtons().then(() => helper.sceneTransition(this, "customize"))
       })
-      .setDepth(1);
+      .setDepth(1)
 
-    this.customize_button.x -= this.customize_button.displayWidth / 2;
+    this.customize_button.x -= this.customize_button.displayWidth / 2
 
     this.customize_stick = this.createStick(
       0,
@@ -127,13 +137,13 @@ export default class menu extends Phaser.Scene {
       { x: 0, y: 0.5 },
       this.customize_button,
       "menu-stick-blue"
-    );
-    this.customize_stick.x -= this.customize_stick.displayHeight / 2;
+    )
+    this.customize_stick.x -= this.customize_stick.displayHeight / 2
     const angle_between = Phaser.Math.Angle.BetweenPoints(
       this.customize_button,
       this.customize_stick
-    );
-    this.customize_stick.setAngle(Phaser.Math.RadToDeg(angle_between) + 180);
+    )
+    this.customize_stick.setAngle(Phaser.Math.RadToDeg(angle_between) + 180)
   }
 
   createPlayButtonSet() {
@@ -146,11 +156,11 @@ export default class menu extends Phaser.Scene {
         () => {
           this.hideButtons().then(() =>
             helper.sceneTransition(this, "levelSelect")
-          );
+          )
         }
       )
-      .setDepth(1);
-    this.play_button.x += this.play_button.displayWidth / 2;
+      .setDepth(1)
+    this.play_button.x += this.play_button.displayWidth / 2
 
     this.play_stick = this.createStick(
       this.game.GW,
@@ -158,14 +168,14 @@ export default class menu extends Phaser.Scene {
       { x: 1, y: 0.5 },
       this.play_button,
       "menu-stick-yellow"
-    );
+    )
 
     const angle_between = Phaser.Math.Angle.BetweenPoints(
       this.play_button,
       this.play_stick
-    );
-    this.play_stick.setAngle(Phaser.Math.RadToDeg(angle_between));
-    this.play_button.setAngle(Phaser.Math.RadToDeg(angle_between));
+    )
+    this.play_stick.setAngle(Phaser.Math.RadToDeg(angle_between))
+    this.play_button.setAngle(Phaser.Math.RadToDeg(angle_between))
   }
 }
 

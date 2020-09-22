@@ -1,7 +1,7 @@
 import Phaser from "./lib/phaser-full"
 
-import config from "./core/gameConfig"
-import accountCreator from "./accountCreator"
+import config from "./core/game-config"
+import accountCreator from "./account-creator"
 import { getProgress } from "./shortcuts/save.js"
 
 export const startGame = () => {

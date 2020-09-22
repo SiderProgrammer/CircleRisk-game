@@ -1,7 +1,7 @@
 import helper from "../helper"
 import setup from "../settings/customizeSetup"
 import { saveProgress, getProgress } from "../../shortcuts/save"
-import { SAVE_MONEY, SAVE_NEW_SKIN } from "../../shortcuts/requests"
+import { SAVE_MONEY, SAVE_NEW_SKIN, EQUIP_SKIN } from "../../shortcuts/requests"
 export default class Customize extends Phaser.Scene {
   constructor() {
     super("customize")
@@ -22,7 +22,14 @@ export default class Customize extends Phaser.Scene {
     helper.createTopBar(this, "shop-top-bar")
 
     helper
-      .createButton(this, 10, 10, "home-button", () => this.scene.start("menu"))
+      .createButton(this, 10, 10, "home-button", () => {
+        saveProgress(this.progress)
+        EQUIP_SKIN({
+          current_skins: this.progress.current_skins,
+          nickname: this.progress.nickname,
+        })
+        this.scene.start("menu")
+      })
       .setOrigin(0)
 
     this.coin = this.add.image(this.game.GW - 10, 10, "coin").setOrigin(1, 0)
@@ -37,19 +44,22 @@ export default class Customize extends Phaser.Scene {
       )
       .setOrigin(1, 0)
 
-    this.createCircleSet()
-    this.createStickSet()
-    this.createTargetSet()
+    this.createCircleSet("circle_" + this.progress.current_skins["circles"])
+    this.createStickSet("stick_" + this.progress.current_skins["sticks"])
+    this.createTargetSet("target_" + this.progress.current_skins["targets"])
     helper.sceneIntro(this)
   }
-  createStickSet() {
-    this.stick_skin_number = 0
+  getSkinNumber(sprite) {
+    return Number(sprite.split("_")[1]) - 1
+  }
+  createStickSet(sprite) {
+    this.stick_skin_number = this.getSkinNumber(sprite)
 
     const stick = this.add
       .image(
         this.game.GW / 2,
         this.circle.y + this.circle.displayHeight / 2,
-        "stick_1"
+        sprite
       )
       .setAngle(90)
 
@@ -90,12 +100,13 @@ export default class Customize extends Phaser.Scene {
       .setFlipX(true)
   }
 
-  createTargetSet() {
-    this.target_skin_number = 0
+  createTargetSet(sprite) {
+    this.target_skin_number = this.getSkinNumber(sprite)
+
     const target = this.add.image(
       this.game.GW / 2,
       this.stick.y + this.stick.displayWidth / 2 + 150,
-      "target_1"
+      sprite
     )
 
     const other_target = this.add.image(
@@ -131,9 +142,9 @@ export default class Customize extends Phaser.Scene {
       .setFlipX(true)
   }
 
-  createCircleSet() {
-    this.circle_skin_number = 0
-    const circle = this.add.image(this.game.GW / 2, 200, "circle_1")
+  createCircleSet(sprite) {
+    this.circle_skin_number = this.getSkinNumber(sprite)
+    const circle = this.add.image(this.game.GW / 2, 200, sprite)
     this.circle = circle
 
     const other_circle = this.add
@@ -304,6 +315,8 @@ export default class Customize extends Phaser.Scene {
 
     sprite2.setTexture(first_skin)
     sprite1.setTexture(this.setup[part][skin_number + shift].skin)
+    console.log(skin_number)
+    this.progress.current_skins[part] = skin_number + 1
 
     this.hideItem(sprite1, sign)
     this.showItem(sprite2, sign)

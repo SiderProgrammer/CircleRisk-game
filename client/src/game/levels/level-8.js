@@ -1,4 +1,4 @@
-import Manager from "../levelBasic.js"
+import Manager from "../main/level-manager.js"
 import helper from "../helper.js"
 
 export default class level_8 extends Phaser.Scene {
@@ -35,5 +35,8 @@ export default class level_8 extends Phaser.Scene {
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
+  }
+  shake() {
+    this.cameras.main.shake(500, 0.05)
   }
 }

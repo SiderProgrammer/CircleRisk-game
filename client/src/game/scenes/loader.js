@@ -1,5 +1,8 @@
 import { saveProgress, getProgress } from "../../shortcuts/save"
-import { GET_ACCOUNT_PROGRESS } from "../../shortcuts/requests"
+import {
+  GET_ACCOUNT_PROGRESS,
+  GET_CUSTOMIZE_SKINS_SETUP,
+} from "../../shortcuts/requests"
 
 export default class loader extends Phaser.Scene {
   constructor() {
@@ -8,7 +11,7 @@ export default class loader extends Phaser.Scene {
   }
   restoreProgress() {
     const local_progress = getProgress()
-
+    GET_CUSTOMIZE_SKINS_SETUP()
     GET_ACCOUNT_PROGRESS({ nickname: local_progress.nickname }).then(
       (progress) => {
         // converting skin numbers into full name strings
@@ -43,6 +46,7 @@ export default class loader extends Phaser.Scene {
     this.loadImage("night-bg", "backgrounds")
     this.loadImage("snow-bg", "backgrounds")
     this.loadImage("purple-bg", "backgrounds")
+    this.loadImage("earthquake-bg", "backgrounds")
   }
   buttons() {
     this.loadImage("play-button", "buttons")
@@ -71,6 +75,7 @@ export default class loader extends Phaser.Scene {
     this.loadImage("geometrytrinity", "mix")
     this.loadImage("coin", "mix")
     this.loadImage("lock", "mix")
+    this.loadImage("level-locked", "mix")
     this.loadImage("blue-strap", "mix")
     this.loadImage("red-strap", "mix")
     this.loadImage("purple-strap", "mix")
@@ -78,13 +83,29 @@ export default class loader extends Phaser.Scene {
     this.loadImage("perfect", "mix")
     this.loadImage("star", "mix")
     this.loadImage("ranking-icon", "mix")
+
+    this.loadImage("level-select-difficulty-bar", "mix")
+    this.loadImage("level-select-score-bar", "mix")
+    this.loadImage("level-select-name-bar", "mix")
   }
+  levelsIcons() {
+    this.loadImage("basic_icon", "levelsIcons")
+    this.loadImage("wind_icon", "levelsIcons")
+    this.loadImage("night_icon", "levelsIcons")
+    this.loadImage("snow_icon", "levelsIcons")
+    this.loadImage("reverse_icon", "levelsIcons")
+    this.loadImage("sun_icon", "levelsIcons")
+
+    this.loadImage("earthquake_icon", "levelsIcons")
+  }
+
   preload() {
     this.restoreProgress()
 
     this.backgrounds()
     this.buttons()
     this.mix()
+    this.levelsIcons()
 
     for (let i = 1; i <= this.skins_amount; i++) {
       this.circles(i)

@@ -2,6 +2,7 @@ export default {
   level_1: {
     background: "basic-bg",
     rotation_speed: 1,
+    acceleration: 0.01,
     targets_amount: 8,
     ball_distance: 90,
     additional_angle: 22.5,
@@ -10,6 +11,7 @@ export default {
   level_2: {
     background: "autumn-bg",
     rotation_speed: 1,
+    acceleration: 0.02,
     targets_amount: 8,
     ball_distance: 110,
     additional_angle: 22.5,
@@ -19,6 +21,7 @@ export default {
   level_3: {
     background: "night-bg",
     rotation_speed: 1,
+    acceleration: 0.03,
     targets_amount: 8,
     ball_distance: 130,
     additional_angle: 22.5,
@@ -28,6 +31,7 @@ export default {
   level_4: {
     background: "snow-bg",
     rotation_speed: 1,
+    acceleration: 0.04,
     targets_amount: 8,
     ball_distance: 100,
     additional_angle: 22.5,
@@ -36,6 +40,7 @@ export default {
   level_5: {
     background: "reverse-bg",
     rotation_speed: 1,
+    acceleration: 0.05,
     targets_amount: 8,
     ball_distance: 130,
     additional_angle: 22.5,
@@ -43,7 +48,8 @@ export default {
   },
   level_6: {
     background: "sunny-bg",
-    rotation_speed: 1,
+    rotation_speed: 0.2,
+    acceleration: 0.06,
     targets_amount: 8,
     ball_distance: 130,
     additional_angle: 22.5,
@@ -53,9 +59,20 @@ export default {
   level_7: {
     background: "purple-bg",
     rotation_speed: 1,
+    acceleration: 0.07,
     targets_amount: 8,
-    ball_distance: 130,
+    ball_distance: 90,
     additional_angle: 22.5,
     starting_target: 1,
   },
-};
+
+  level_8: {
+    background: "earthquake-bg",
+    rotation_speed: 1,
+    acceleration: 0.06,
+    targets_amount: 8,
+    ball_distance: 90,
+    additional_angle: 22.5,
+    starting_target: 1,
+  },
+}

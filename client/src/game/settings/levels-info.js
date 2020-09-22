@@ -41,4 +41,11 @@ export default {
     name: "star",
     difficulty: "easy",
   },
-};
+
+  level_8: {
+    score_to_next_level: 80,
+    tint: "0x06E0FF",
+    name: "earthquake",
+    difficulty: "easy",
+  },
+}
