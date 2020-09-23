@@ -43,14 +43,11 @@ export const EQUIP_SKIN = async (data) => {
 }
 
 export const GET_CUSTOMIZE_SKINS_SETUP = async () => {
-  await fetcher
+  return await fetcher
     .getFunction("getCustomizeSkinsSetup")
     .then((response) => {
       if (response.ok) {
         return response.json()
       }
-    })
-    .then((s) => {
-      return s
     })
 }

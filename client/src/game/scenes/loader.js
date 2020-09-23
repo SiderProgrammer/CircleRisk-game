@@ -1,31 +1,9 @@
-import { saveProgress, getProgress } from "../../shortcuts/save"
-import {
-  GET_ACCOUNT_PROGRESS,
-  GET_CUSTOMIZE_SKINS_SETUP,
-} from "../../shortcuts/requests"
+
 
 export default class loader extends Phaser.Scene {
   constructor() {
     super("loader")
     this.skins_amount = 4
-  }
-  restoreProgress() {
-    const local_progress = getProgress()
-    GET_CUSTOMIZE_SKINS_SETUP()
-    GET_ACCOUNT_PROGRESS({ nickname: local_progress.nickname }).then(
-      (progress) => {
-        // converting skin numbers into full name strings
-        Object.keys(progress.skins).forEach((item) => {
-          progress.skins[item].forEach((skin_number, index, array) => {
-            array[index] =
-              item.substring(0, item.length - 1) + "_" + skin_number
-          })
-        })
-
-        console.log(progress)
-        saveProgress(progress)
-      }
-    )
   }
 
   loadImage(name, path) {
@@ -100,8 +78,6 @@ export default class loader extends Phaser.Scene {
   }
 
   preload() {
-    this.restoreProgress()
-
     this.backgrounds()
     this.buttons()
     this.mix()

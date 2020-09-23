@@ -1,12 +1,33 @@
 import helper from "../helper"
+import { saveProgress, getProgress } from "../../shortcuts/save"
+import {
+  GET_ACCOUNT_PROGRESS,
+  GET_CUSTOMIZE_SKINS_SETUP,
+} from "../../shortcuts/requests"
 
 export default class menu extends Phaser.Scene {
   constructor() {
     super("menu")
-  }
-  init() {
+    this.is_everything_fetched = false
+    this.customize_skins_setup = {}
+
     this.tween_duration = 300
   }
+
+  async init() {
+    if (!this.is_everything_fetched) {
+      this.fetching_icon = this.add
+        .image(this.game.GW / 2, this.game.GH / 2, "customize-button")
+        .setDepth(1)
+
+      this.scene.pause()
+
+      await this.getCustomizeSkinsSetup()
+      await this.restoreProgress()
+      await this.finishFetching()
+    }
+  }
+
   create() {
     helper.createBackground(this, "menu-bg")
 
@@ -16,6 +37,37 @@ export default class menu extends Phaser.Scene {
     this.showButtons()
     this.showLogos()
     helper.sceneIntro(this)
+  }
+
+  async finishFetching() {
+    this.is_everything_fetched = true
+    this.fetching_icon.destroy()
+    this.scene.resume()
+  }
+
+  async getCustomizeSkinsSetup() {
+    await GET_CUSTOMIZE_SKINS_SETUP().then(
+      (setup) => (this.customize_skins_setup = setup)
+    )
+  }
+
+  async restoreProgress() {
+    const local_progress = getProgress()
+
+    await GET_ACCOUNT_PROGRESS({ nickname: local_progress.nickname }).then(
+      (progress) => {
+        // converting skin numbers into full name strings
+        Object.keys(progress.skins).forEach((item) => {
+          progress.skins[item].forEach((skin_number, index, array) => {
+            array[index] =
+              item.substring(0, item.length - 1) + "_" + skin_number
+          })
+        })
+
+        console.log(progress)
+        saveProgress(progress)
+      }
+    )
   }
 
   showLogos() {
@@ -125,7 +177,11 @@ export default class menu extends Phaser.Scene {
   createCustomizeButtonSet() {
     this.customize_button = helper
       .createButton(this, 0, this.game.GH / 2 + 200, "customize-button", () => {
-        this.hideButtons().then(() => helper.sceneTransition(this, "customize"))
+        this.hideButtons().then(() =>
+          helper.sceneTransition(this, "customize", {
+            setup: this.customize_skins_setup,
+          })
+        )
       })
       .setDepth(1)
 

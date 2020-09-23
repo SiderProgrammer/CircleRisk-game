@@ -1,5 +1,5 @@
 import helper from "../helper"
-import setup from "../settings/customizeSetup"
+
 import { saveProgress, getProgress } from "../../shortcuts/save"
 import { SAVE_MONEY, SAVE_NEW_SKIN, EQUIP_SKIN } from "../../shortcuts/requests"
 export default class Customize extends Phaser.Scene {
@@ -7,8 +7,8 @@ export default class Customize extends Phaser.Scene {
     super("customize")
   }
 
-  init() {
-    this.setup = setup
+  init(data) {
+    this.setup = data.setup
 
     this.hidden_scale = 0.7
     this.shift_value = 90
@@ -231,6 +231,8 @@ export default class Customize extends Phaser.Scene {
     this.progress.skins[part].push(skin.texture.key)
     this.progress.money -= price
 
+    this.progress.current_skins[part] = this.getSkinNumber(skin.texture.key) + 1 // set new skin
+
     SAVE_MONEY({ money: this.progress.money, nickname: this.progress.nickname })
 
     const GET_NUMBERS_REGEXP = new RegExp(/^\D+/g, "g")
@@ -315,8 +317,14 @@ export default class Customize extends Phaser.Scene {
 
     sprite2.setTexture(first_skin)
     sprite1.setTexture(this.setup[part][skin_number + shift].skin)
-    console.log(skin_number)
-    this.progress.current_skins[part] = skin_number + 1
+
+    const available_part_skins = this.progress.skins[part].map(
+      (skin) => this.getSkinNumber(skin) + 1
+    )
+    console.log(available_part_skins)
+    if (available_part_skins.includes(skin_number + 1)) {
+      this.progress.current_skins[part] = skin_number + 1
+    }
 
     this.hideItem(sprite1, sign)
     this.showItem(sprite2, sign)

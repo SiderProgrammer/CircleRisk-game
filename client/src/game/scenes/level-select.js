@@ -3,14 +3,12 @@ import levelsInfo from "../settings/levels-info"
 import { getProgress } from "../../shortcuts/save"
 import { GET_LEVEL_SCORES_AND_NICKNAMES } from "../../shortcuts/requests"
 
-import LeaderBoardManager from "../main/leaderboard"
-
 export default class levelSelect extends Phaser.Scene {
   constructor() {
     super("levelSelect")
   }
 
-  init() {
+  init(data) {
     this.tints = []
     this.progress = getProgress()
 
@@ -18,7 +16,7 @@ export default class levelSelect extends Phaser.Scene {
       this.tints.push(levelsInfo[level].tint)
     }
 
-    this.actualPageNumber = 0
+    this.actualPageNumber = data.page || 0
     this.canChangePage = true
   }
 
@@ -143,7 +141,11 @@ export default class levelSelect extends Phaser.Scene {
           stop_search_rank: 8,
         }).then((data) => {
           console.log(data)
-          new LeaderBoardManager(this).createLeaderBoard(data)
+
+          this.scene.start("leaderboard", {
+            ranks: data,
+            level: this.actualPageNumber + 1,
+          })
         })
       }
     )

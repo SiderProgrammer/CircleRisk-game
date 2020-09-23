@@ -3,6 +3,7 @@ import Loader from "../game/scenes/loader"
 import Menu from "../game/scenes/menu"
 import LevelSelect from "../game/scenes/level-select.js"
 import Customize from "../game/scenes/customize.js"
+import Leaderboard from "../game/scenes/leaderboard.js"
 
 import Level_1 from "../game/levels/level-1"
 import Level_2 from "../game/levels/level-2"
@@ -19,6 +20,7 @@ export default [
   Menu,
   LevelSelect,
   Customize,
+  Leaderboard,
   Level_1,
   Level_2,
   Level_3,

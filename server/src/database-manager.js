@@ -105,6 +105,7 @@ class DatabaseManager {
       res.sendStatus(200)
     )
 
+    // saving in account progress
     Accounts.findOne({ nickname: nickname }, (err, account) => {
       account.levels_scores[level - 1] = score
       account.markModified("levels_scores")

@@ -3,7 +3,7 @@ const express = require("express")
 const cors = require("cors")
 const bodyParser = require("body-parser")
 
-const DatabaseManager = require("./databaseManager")
+const DatabaseManager = require("./database-manager")
 
 const port = 3001
 const server = express()
@@ -42,6 +42,8 @@ server.post("/postLevelScore", (req, res) => {
   databaseManager.postLevelScore(req, res)
 })
 
-server.get("/getCustomizeSkinsSetup",(req,res)=>databaseManager.getCustomizeSkinsSetup(res));
+server.get("/getCustomizeSkinsSetup", (req, res) =>
+  databaseManager.getCustomizeSkinsSetup(res)
+)
 
 server.listen(port, () => databaseManager.connectDatabase())

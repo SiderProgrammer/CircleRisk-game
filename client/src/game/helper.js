@@ -19,7 +19,7 @@ export default {
     return background;
   },
 
-  sceneTransition: function (scene, new_scene) {
+  sceneTransition: function (scene, new_scene,data = {}) {
     const shadow = scene.add
       .image(scene.game.GW / 2, scene.game.GH / 2, "black-bg")
       .setAlpha(0);
@@ -27,7 +27,7 @@ export default {
       targets: shadow,
       alpha: 1,
       duration: 200,
-      onComplete: () => scene.scene.start(new_scene),
+      onComplete: () => scene.scene.start(new_scene,data),
     });
   },
   sceneIntro: function (scene) {
