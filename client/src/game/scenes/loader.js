@@ -26,6 +26,7 @@ export default class loader extends Phaser.Scene {
     this.loadImage("cosmo-bg", "backgrounds")
     this.loadImage("twins-bg", "backgrounds")
     this.loadImage("speed-bg", "backgrounds")
+    this.loadImage("perfect-bg", "backgrounds")
   }
   buttons() {
     this.loadImage("play-button", "buttons")
@@ -78,6 +79,7 @@ export default class loader extends Phaser.Scene {
     this.loadImage("earthquake_icon", "levelsIcons")
     this.loadImage("twins_icon", "levelsIcons")
     this.loadImage("speed_icon", "levelsIcons")
+    this.loadImage("perfect_icon", "levelsIcons")
   }
 
   preload() {

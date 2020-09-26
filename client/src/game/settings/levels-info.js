@@ -60,4 +60,11 @@ export default {
     name: "speed",
     difficulty: "easy",
   },
+
+  level_11: {
+    score_to_next_level: 100,
+    tint: "0x06E0FF",
+    name: "perfect",
+    difficulty: "easy",
+  },
 }

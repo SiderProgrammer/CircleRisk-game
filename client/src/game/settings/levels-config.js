@@ -94,4 +94,13 @@ export default {
     starting_target: 1,
     time_left: 10, //in seconds
   },
+  level_11: {
+    background: "perfect-bg",
+    rotation_speed: 1,
+    acceleration: 0.06,
+    targets_amount: 8,
+    ball_distance: 90,
+    additional_angle: 22.5,
+    starting_target: 1,
+  },
 }
