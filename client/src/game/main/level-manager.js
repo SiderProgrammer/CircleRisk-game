@@ -29,6 +29,9 @@ export default class Manager {
     this.rotation_speed = this.config.rotation_speed
     this.score = 0
     this.perfect = 0
+
+    this.target_texture = "target_" + this.progress.current_skins["targets"]
+    this.target_to_catch_texture = "targetToCatch_1" // + this.progress.current_skins["targets"]
   }
 
   create() {
@@ -57,6 +60,7 @@ export default class Manager {
 
   changeBall() {
     if (typeof this.scene.shake === "function") {
+      ///
       this.scene.shake()
     }
     this.rotation_speed += this.config.acceleration
@@ -80,16 +84,19 @@ export default class Manager {
       this.is_possible_miss = false
 
       if (typeof this.scene.calculateCirclesPosition === "function") {
+        ////
         this.scene.calculateCirclesPosition()
       }
 
       this.current_target = this.next_target
-      this.target_array[this.current_target].setTexture(
-        "target_" + this.progress.current_skins["targets"]
-      )
+      this.target_array[this.current_target].setTexture(this.target_texture)
 
       this.helper.randomNextTarget()
       this.helper.checkNewTargetsQueue()
+
+      if (typeof this.scene.handleFakeTargetToCatch === "function") {
+        this.scene.handleFakeTargetToCatch()
+      }
 
       this.setNewTarget()
 
@@ -110,12 +117,14 @@ export default class Manager {
       this.stick.setAngle(this.rotation_angle)
 
       if (typeof this.scene.slideCircle === "function") {
+        ////
         this.scene.slideCircle()
       }
 
       this.helper.extendStick()
 
       if (typeof this.scene.darkenTargets === "function") {
+        ////
         this.scene.darkenTargets()
       }
     } else {
@@ -136,13 +145,7 @@ export default class Manager {
 
   createFirstTarget() {
     this.target_array.push(
-      this.scene.add
-        .image(
-          0,
-          this.GH / 2,
-          "target_" + this.progress.current_skins["targets"]
-        )
-        .setAlpha(0)
+      this.scene.add.image(0, this.GH / 2, this.target_texture).setAlpha(0)
     )
   }
   createTargets() {
@@ -151,7 +154,7 @@ export default class Manager {
     }
   }
   setNewTarget() {
-    this.target_array[this.next_target].setTexture("targetToCatch_1")
+    this.target_array[this.next_target].setTexture(this.target_to_catch_texture)
   }
   showTargets() {
     this.scene.tweens.add({

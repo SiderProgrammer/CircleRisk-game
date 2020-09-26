@@ -1,5 +1,3 @@
-
-
 export default class loader extends Phaser.Scene {
   constructor() {
     super("loader")
@@ -25,6 +23,9 @@ export default class loader extends Phaser.Scene {
     this.loadImage("snow-bg", "backgrounds")
     this.loadImage("purple-bg", "backgrounds")
     this.loadImage("earthquake-bg", "backgrounds")
+    this.loadImage("cosmo-bg", "backgrounds")
+    this.loadImage("twins-bg", "backgrounds")
+    this.loadImage("speed-bg", "backgrounds")
   }
   buttons() {
     this.loadImage("play-button", "buttons")
@@ -75,6 +76,8 @@ export default class loader extends Phaser.Scene {
     this.loadImage("sun_icon", "levelsIcons")
 
     this.loadImage("earthquake_icon", "levelsIcons")
+    this.loadImage("twins_icon", "levelsIcons")
+    this.loadImage("speed_icon", "levelsIcons")
   }
 
   preload() {

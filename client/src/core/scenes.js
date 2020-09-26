@@ -13,6 +13,8 @@ import Level_5 from "../game/levels/level-5"
 import Level_6 from "../game/levels/level-6"
 import Level_7 from "../game/levels/level-7"
 import Level_8 from "../game/levels/level-8"
+import Level_9 from "../game/levels/level-9"
+import Level_10 from "../game/levels/level-10"
 
 export default [
   Preloader,
@@ -29,4 +31,6 @@ export default [
   Level_6,
   Level_7,
   Level_8,
+  Level_9,
+  Level_10
 ]

@@ -48,4 +48,16 @@ export default {
     name: "earthquake",
     difficulty: "easy",
   },
+  level_9: {
+    score_to_next_level: 90,
+    tint: "0x06E0FF",
+    name: "twins",
+    difficulty: "easy",
+  },
+  level_10: {
+    score_to_next_level: 10,
+    tint: "0x06E0FF",
+    name: "speed",
+    difficulty: "easy",
+  },
 }

@@ -75,4 +75,23 @@ export default {
     additional_angle: 22.5,
     starting_target: 1,
   },
+  level_9: {
+    background: "twins-bg",
+    rotation_speed: 1,
+    acceleration: 0.06,
+    targets_amount: 8,
+    ball_distance: 90,
+    additional_angle: 22.5,
+    starting_target: 1,
+  },
+  level_10: {
+    background: "speed-bg",
+    rotation_speed: 1,
+    acceleration: 0.06,
+    targets_amount: 8,
+    ball_distance: 90,
+    additional_angle: 22.5,
+    starting_target: 1,
+    time_left: 10, //in seconds
+  },
 }
