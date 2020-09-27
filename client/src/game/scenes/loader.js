@@ -21,12 +21,14 @@ export default class loader extends Phaser.Scene {
     this.loadImage("reverse-bg", "backgrounds")
     this.loadImage("night-bg", "backgrounds")
     this.loadImage("snow-bg", "backgrounds")
-    this.loadImage("purple-bg", "backgrounds")
+    this.loadImage("star-bg", "backgrounds")
     this.loadImage("earthquake-bg", "backgrounds")
     this.loadImage("cosmo-bg", "backgrounds")
     this.loadImage("twins-bg", "backgrounds")
     this.loadImage("speed-bg", "backgrounds")
+    this.loadImage("time-bg", "backgrounds")
     this.loadImage("perfect-bg", "backgrounds")
+    this.loadImage("many-bg", "backgrounds")
   }
   buttons() {
     this.loadImage("play-button", "buttons")
@@ -75,11 +77,14 @@ export default class loader extends Phaser.Scene {
     this.loadImage("snow_icon", "levelsIcons")
     this.loadImage("reverse_icon", "levelsIcons")
     this.loadImage("sun_icon", "levelsIcons")
-
+    this.loadImage("clock_icon", "levelsIcons")
     this.loadImage("earthquake_icon", "levelsIcons")
     this.loadImage("twins_icon", "levelsIcons")
     this.loadImage("speed_icon", "levelsIcons")
     this.loadImage("perfect_icon", "levelsIcons")
+    this.loadImage("invisible_icon", "levelsIcons")
+    this.loadImage("expanding_icon", "levelsIcons")
+    this.loadImage("many_icon", "levelsIcons")
   }
 
   preload() {

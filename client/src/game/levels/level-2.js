@@ -10,7 +10,7 @@ export default class level_2 extends Phaser.Scene {
     this.level = config.level
     this.score_to_next_level = config.score_to_next_level
 
-    this.manager = new Manager(this)
+    this.manager = new Manager(this,config.config)
     this.manager.init()
 
     this.targets_speed = {
@@ -73,7 +73,7 @@ export default class level_2 extends Phaser.Scene {
       1 - this.manager.current_circle
     ]
 
-    this.manager.stick.setPosition(not_rotating_circle.x, not_rotating_circle.y)
+    this.manager.helper.centerStick(this)
 
     not_rotating_circle.x += x
     not_rotating_circle.y += y

@@ -13,7 +13,7 @@ export default class level_6 extends Phaser.Scene {
 
     this.levelsFunctionsExtender = new LevelsFunctionsExtender(this)
 
-    this.manager = new Manager(this)
+    this.manager = new Manager(this, config.config)
     this.manager.init()
 
     this.targets_rotate_angle = 0

@@ -10,7 +10,7 @@ export default class level_9 extends Phaser.Scene {
     this.level = config.level
     this.score_to_next_level = config.score_to_next_level
 
-    this.manager = new Manager(this)
+    this.manager = new Manager(this, config.config)
     this.manager.init()
   }
 
@@ -40,7 +40,7 @@ export default class level_9 extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
 
-  handleFakeTargetToCatch(){
+  handleFakeTargetToCatch() {
     this.removeFakeTarget()
     const fake_target_index = this.calculateFakeTargetIndex()
     this.setFakeTargetToCatch(fake_target_index)
@@ -66,7 +66,7 @@ export default class level_9 extends Phaser.Scene {
     } else if (index < 0) {
       index = this.manager.config.targets_amount + index
     }
-    
+
     return index
   }
 

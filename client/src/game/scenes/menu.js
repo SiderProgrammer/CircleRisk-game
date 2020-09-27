@@ -36,6 +36,7 @@ export default class menu extends Phaser.Scene {
 
     this.showButtons()
     this.showLogos()
+
     helper.sceneIntro(this)
   }
 

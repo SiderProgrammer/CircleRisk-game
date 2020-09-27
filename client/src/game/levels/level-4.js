@@ -10,7 +10,7 @@ export default class level_4 extends Phaser.Scene {
     this.level = config.level
     this.score_to_next_level = config.score_to_next_level
 
-    this.manager = new Manager(this)
+    this.manager = new Manager(this, config.config)
     this.manager.init()
   }
 
@@ -38,17 +38,18 @@ export default class level_4 extends Phaser.Scene {
   }
   slideCircle() {
     const radians_angle = this.manager.rotation_angle - 90
+    const width =
+      this.manager.stick.displayWidth +
+      this.manager.circles[this.manager.current_circle].displayWidth
 
     this.tweens.add({
       targets: this.manager.circles[1 - this.manager.current_circle],
       x:
         this.manager.circles[this.manager.current_circle].x +
-        this.manager.stick.displayWidth *
-          Math.sin(Phaser.Math.DegToRad(radians_angle + 10)),
+        width * Math.sin(Phaser.Math.DegToRad(radians_angle + 10)),
       y:
         this.manager.circles[this.manager.current_circle].y -
-        this.manager.stick.displayWidth *
-          Math.cos(Phaser.Math.DegToRad(radians_angle + 10)),
+        width * Math.cos(Phaser.Math.DegToRad(radians_angle + 10)),
       duration: 500,
       onUpdate: () => {
         this.manager.helper.extendStick()

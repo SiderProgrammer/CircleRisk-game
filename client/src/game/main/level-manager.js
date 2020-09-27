@@ -1,4 +1,3 @@
-import level_config from "../settings/levels-config.js"
 import LevelHelper from "./level-helper.js"
 import helper from "../helper.js"
 
@@ -8,10 +7,10 @@ import PerfectManager from "./perfect-manager"
 import LoseMenu from "./lose-menu"
 
 export default class Manager {
-  constructor(scene) {
+  constructor(scene, config) {
     this.scene = scene
     this.progress = getProgress()
-    this.config = level_config[`level_${scene.level}`]
+    this.config = config
   }
 
   init() {
@@ -95,15 +94,22 @@ export default class Manager {
       this.helper.checkNewTargetsQueue()
 
       if (typeof this.scene.handleFakeTargetToCatch === "function") {
-        this.scene.handleFakeTargetToCatch()
+        this.scene.handleFakeTargetToCatch() // one fake target
+      }
+
+      if (typeof this.scene.handleFakeTargetsToCatch === "function") {
+        this.scene.handleFakeTargetsToCatch() // many fake targets
       }
 
       this.setNewTarget()
 
-      this.stick.setPosition(
-        this.circles[this.current_circle].x,
-        this.circles[this.current_circle].y
-      )
+      if (typeof this.scene.removeCorrectTargetTextureToCatch === "function") {
+        this.scene.removeCorrectTargetTextureToCatch() // many fake targets
+      }
+
+      if (typeof this.scene.removeTargetToCatchSkin === "function") {
+        this.scene.removeTargetToCatchSkin() ///
+      }
 
       this.current_circle = 1 - this.current_circle
 
@@ -113,8 +119,6 @@ export default class Manager {
           this.circles[this.current_circle]
         )
       )
-
-      this.stick.setAngle(this.rotation_angle)
 
       if (typeof this.scene.slideCircle === "function") {
         ////
@@ -187,6 +191,8 @@ export default class Manager {
       this.stick.y - this.stick.displayWidth,
       "circle_" + this.progress.current_skins["circles"]
     )
+
+    this.updateCircleStickAngle() /// move this function to create function in every level
   }
   bindInputEvents() {
     this.scene.input.on("pointerdown", () => {
@@ -206,22 +212,31 @@ export default class Manager {
       360
   }
   updateCircleStickAngle() {
-    this.stick.setAngle(this.rotation_angle)
+    ///circles
+    //console.log(this.stick.displayWidth)
+    const static_distance =
+      this.stick.displayWidth +
+      this.circles[1 - this.current_circle].displayWidth
 
     const radians_angle = Phaser.Math.DegToRad(this.rotation_angle - 90)
+    if (this.stick.displayWidth < 0) this.stick.displayWidth = 0
 
     const current_circle_x =
       this.circles[1 - this.current_circle].x -
-      this.stick.displayWidth * Math.sin(radians_angle)
+      static_distance * Math.sin(radians_angle)
 
     const current_circle_y =
       this.circles[1 - this.current_circle].y +
-      this.stick.displayWidth * Math.cos(radians_angle)
+      static_distance * Math.cos(radians_angle)
 
     this.circles[this.current_circle].setPosition(
       current_circle_x,
       current_circle_y
     )
+
+    /// stick
+    this.stick.setAngle(this.rotation_angle)
+    this.helper.centerStick()
   }
 
   addTarget() {

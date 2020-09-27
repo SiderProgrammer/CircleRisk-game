@@ -1,9 +1,9 @@
 import Manager from "../main/level-manager.js"
 import helper from "../helper.js"
 
-export default class level_10 extends Phaser.Scene {
+export default class level_14 extends Phaser.Scene {
   constructor() {
-    super("level_10")
+    super("level_14")
   }
 
   init(config) {
@@ -12,7 +12,6 @@ export default class level_10 extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.time_left = this.manager.config.time_left
   }
 
   create() {
@@ -29,9 +28,6 @@ export default class level_10 extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
-    this.createTimerText()
-    this.setTimer()
-
     helper.sceneIntro(this)
   }
   update() {
@@ -39,29 +35,5 @@ export default class level_10 extends Phaser.Scene {
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
-  }
-
-  createTimerText() {
-    this.time_left_text = this.add
-      .text(this.game.GW / 2, 170, this.time_left, {
-        font: "100px LuckiestGuy",
-      })
-      .setOrigin(0.5, 0.5)
-  }
-  setTimer() {
-    this.timer = this.time.addEvent({
-      delay: 1000, // ms
-      callback: () => this.timerTick(),
-      repeat: this.time_left,
-    })
-  }
-
-  timerTick() {
-    this.time_left--
-    if (this.time_left === 0) {
-      this.timer.remove()
-      this.manager.gameOver()
-    }
-    this.time_left_text.setText(this.time_left)
   }
 }

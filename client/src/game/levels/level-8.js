@@ -10,7 +10,7 @@ export default class level_8 extends Phaser.Scene {
     this.level = config.level
     this.score_to_next_level = config.score_to_next_level
 
-    this.manager = new Manager(this)
+    this.manager = new Manager(this, config.config)
     this.manager.init()
   }
 

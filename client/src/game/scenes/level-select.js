@@ -1,5 +1,5 @@
 import helper from "../helper.js"
-import levelsInfo from "../settings/levels-info"
+import levelsSettings from "../settings/levels-config"
 import { getProgress } from "../../shortcuts/save"
 import { GET_LEVEL_SCORES_AND_NICKNAMES } from "../../shortcuts/requests"
 
@@ -12,8 +12,8 @@ export default class levelSelect extends Phaser.Scene {
     this.tints = []
     this.progress = getProgress()
 
-    for (const level in levelsInfo) {
-      this.tints.push(levelsInfo[level].tint)
+    for (const level in levelsSettings) {
+      this.tints.push(levelsSettings[level].info.tint)
     }
 
     this.actualPageNumber = data.page || 0
@@ -64,15 +64,16 @@ export default class levelSelect extends Phaser.Scene {
     return page
   }
   createPageRequirements() {
-    const level = "level_" + (this.actualPageNumber + 1)
-
-    const score = this.progress.levels_scores[this.actualPageNumber]
+    let score = this.progress.levels_scores[this.actualPageNumber]
+    if (score == null) score = 0
 
     const text = this.add
       .text(
         this.actualPage.x,
         this.actualPage.y,
-        score + "/" + levelsInfo[level].score_to_next_level,
+        score +
+          "/" +
+          levelsSettings[this.actualPageNumber].info.score_to_next_level,
         {
           font: "50px LuckiestGuy",
         }
@@ -84,17 +85,15 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   createPageIcon() {
-    const level = "level_" + (this.actualPageNumber + 1)
-    const icon = levelsInfo[level].name + "_icon"
+    const icon = levelsSettings[this.actualPageNumber].info.name + "_icon"
 
     return this.add.image(this.actualPage.x, this.actualPage.y - 80, icon)
   }
   createPageInfo() {
-    const level = "level_" + (this.actualPageNumber + 1)
     const texts = []
     const bars = []
 
-    const { difficulty, name } = levelsInfo[level]
+    const { difficulty, name } = levelsSettings[this.actualPageNumber].info
 
     texts[0] = this.add
       .text(
@@ -156,9 +155,10 @@ export default class levelSelect extends Phaser.Scene {
     if (!this.canChangePage) return
     const level = this.actualPageNumber + 1
     this.scene.start(`level_${level}`, {
+      config: levelsSettings[this.actualPageNumber].config,
       level: level,
       score_to_next_level:
-        levelsInfo["level_" + (this.actualPageNumber + 1)].score_to_next_level,
+        levelsSettings[this.actualPageNumber].info.score_to_next_level,
     })
   }
 

@@ -12,7 +12,7 @@ export default class level_7 extends Phaser.Scene {
     this.score_to_next_level = config.score_to_next_level
 
     this.levelsFunctionsExtender = new LevelsFunctionsExtender(this)
-    this.manager = new Manager(this)
+    this.manager = new Manager(this, config.config)
     this.manager.init()
 
     this.fly_value = 1
