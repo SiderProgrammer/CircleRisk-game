@@ -1,7 +1,9 @@
-import helper from "../helper"
-
+import * as helper from "../helper"
+import { CREATE_FETCH_ERROR } from "../../fetch-helper"
 import { saveProgress, getProgress } from "../../shortcuts/save"
 import { SAVE_MONEY, SAVE_NEW_SKIN, EQUIP_SKIN } from "../../shortcuts/requests"
+import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
+
 export default class Customize extends Phaser.Scene {
   constructor() {
     super("customize")
@@ -20,7 +22,17 @@ export default class Customize extends Phaser.Scene {
   create() {
     helper.createBackground(this, "customize-bg")
     helper.createTopBar(this, "shop-top-bar")
+    this.createHomeButton()
+    this.createCoin()
+    this.createMoney()
 
+    this.createCircleSet("circle_" + this.progress.current_skins["circles"]) //number of current skin
+    this.createStickSet("stick_" + this.progress.current_skins["sticks"]) //number of current skin
+    this.createTargetSet("target_" + this.progress.current_skins["targets"]) //number of current skin
+
+    helper.sceneIntro(this)
+  }
+  createHomeButton() {
     helper
       .createButton(this, 10, 10, "home-button", () => {
         saveProgress(this.progress)
@@ -31,9 +43,14 @@ export default class Customize extends Phaser.Scene {
         this.scene.start("menu")
       })
       .setOrigin(0)
+  }
 
+  createCoin() {
     this.coin = this.add.image(this.game.GW - 10, 10, "coin").setOrigin(1, 0)
-    this.add
+  }
+
+  createMoney() {
+    this.money_text = this.add
       .text(
         this.coin.x - this.coin.displayWidth - 20,
         10,
@@ -43,12 +60,8 @@ export default class Customize extends Phaser.Scene {
         }
       )
       .setOrigin(1, 0)
-
-    this.createCircleSet("circle_" + this.progress.current_skins["circles"])
-    this.createStickSet("stick_" + this.progress.current_skins["sticks"])
-    this.createTargetSet("target_" + this.progress.current_skins["targets"])
-    helper.sceneIntro(this)
   }
+
   getSkinNumber(sprite) {
     return Number(sprite.split("_")[1]) - 1
   }
@@ -227,22 +240,35 @@ export default class Customize extends Phaser.Scene {
     }
   }
   purchaseCallback(skin, part, price) {
-    skin.key.setAlpha(0)
-    this.progress.skins[part].push(skin.texture.key)
-    this.progress.money -= price
-
-    this.progress.current_skins[part] = this.getSkinNumber(skin.texture.key) + 1 // set new skin
-
-    SAVE_MONEY({ money: this.progress.money, nickname: this.progress.nickname })
-
     const GET_NUMBERS_REGEXP = new RegExp(/^\D+/g, "g")
+    START_FETCHING_SCENE(this)
 
     SAVE_NEW_SKIN({
       skin: [part, skin.texture.key.replace(GET_NUMBERS_REGEXP, "")],
       nickname: this.progress.nickname,
     })
+      .then((response) => {
+        if (response.ok) {
+          skin.key.setAlpha(0)
+          this.progress.skins[part].push(skin.texture.key)
+          this.progress.money -= price
+          this.money_text.setText(this.progress.money)
+          this.progress.current_skins[part] =
+            this.getSkinNumber(skin.texture.key) + 1 // set new skin
 
-    saveProgress(this.progress)
+          SAVE_MONEY({
+            money: this.progress.money,
+            nickname: this.progress.nickname,
+          })
+
+          saveProgress(this.progress)
+          STOP_FETCHING_SCENE(this)
+        }
+      })
+      .catch(() => {
+        CREATE_FETCH_ERROR(this, this.game.GW / 2, this.game.GH / 2 - 300)
+        STOP_FETCHING_SCENE(this)
+      })
   }
   changeSkinButtonClicked(sprite1, sprite2, part, sign, skin_number) {
     this.can_change = false

@@ -1,5 +1,4 @@
 import Manager from "../main/level-manager.js"
-import helper from "../helper.js"
 
 export default class level_9 extends Phaser.Scene {
   constructor() {
@@ -31,7 +30,7 @@ export default class level_9 extends Phaser.Scene {
     const fake_target_index = this.calculateFakeTargetIndex()
     this.setFakeTargetToCatch(fake_target_index)
 
-    helper.sceneIntro(this)
+    this.manager.GUI_helper.sceneIntro(this)
   }
   update() {
     if (!this.manager.game_started) return

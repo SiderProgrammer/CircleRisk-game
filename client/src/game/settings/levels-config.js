@@ -1,5 +1,6 @@
 export default [
   {
+    /// fetch from server this file
     info: {
       score_to_next_level: 10,
       tint: "0x00FF00",
@@ -14,6 +15,7 @@ export default [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      bar_tint: "0xffffff",
     },
   },
 
@@ -33,6 +35,7 @@ export default [
       additional_angle: 22.5,
       starting_target: 1,
       targets_speed: 0.3,
+      bar_tint: "0xffffff",
     },
   },
   {
@@ -50,6 +53,7 @@ export default [
       ball_distance: 130,
       additional_angle: 22.5,
       starting_target: 1,
+      bar_tint: "0xffffff",
     },
   },
 
@@ -68,6 +72,7 @@ export default [
       ball_distance: 100,
       additional_angle: 22.5,
       starting_target: 1,
+      bar_tint: "0xffffff",
     },
   },
   {
@@ -85,6 +90,7 @@ export default [
       ball_distance: 130,
       additional_angle: 22.5,
       starting_target: 6,
+      bar_tint: "0xffffff",
     },
   },
   {
@@ -103,6 +109,7 @@ export default [
       additional_angle: 22.5,
       starting_target: 1,
       target_rotate_speed: 0.5,
+      bar_tint: "0xffffff",
     },
   },
   {
@@ -120,6 +127,7 @@ export default [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      bar_tint: "0xffffff",
     },
   },
 
@@ -138,6 +146,7 @@ export default [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      bar_tint: "0xffffff",
     },
   },
   {
@@ -155,6 +164,7 @@ export default [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      bar_tint: "0xffffff",
     },
   },
   {
@@ -173,6 +183,7 @@ export default [
       additional_angle: 22.5,
       starting_target: 1,
       time_left: 10, //in seconds
+      bar_tint: "0xffffff",
     },
   },
   {
@@ -190,6 +201,7 @@ export default [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      bar_tint: "0xffffff",
     },
   },
   {
@@ -207,6 +219,7 @@ export default [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      bar_tint: "0xffffff",
     },
   },
 
@@ -225,6 +238,7 @@ export default [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      bar_tint: "0xffffff",
     },
   },
 
@@ -243,6 +257,7 @@ export default [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      bar_tint: "0xffffff",
     },
   },
 ]

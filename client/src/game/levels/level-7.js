@@ -1,5 +1,5 @@
 import Manager from "../main/level-manager.js"
-import helper from "../helper.js"
+
 import LevelsFunctionsExtender from "../main/level-functions-extender"
 
 export default class level_7 extends Phaser.Scene {
@@ -34,7 +34,7 @@ export default class level_7 extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
-    helper.sceneIntro(this)
+    this.manager.GUI_helper.sceneIntro(this)
     this.calculateDifferenceDistance() // calculates this.distance
     this.center_to_circle_distance = this.distance
 

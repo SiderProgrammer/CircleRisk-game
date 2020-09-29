@@ -1,5 +1,5 @@
 import LevelHelper from "./level-helper.js"
-import helper from "../helper.js"
+import * as helper from "../helper.js"
 
 import { POST_LEVEL_SCORE, SAVE_MONEY } from "../../shortcuts/requests"
 import { getProgress, saveProgress } from "../../shortcuts/save"
@@ -14,6 +14,8 @@ export default class Manager {
   }
 
   init() {
+    this.GUI_helper = helper
+
     this.GW = this.scene.game.GW
     this.GH = this.scene.game.GH
     this.target_array = []
@@ -35,10 +37,12 @@ export default class Manager {
 
   create() {
     this.perfectManager = new PerfectManager(this)
-    this.helper = new LevelHelper(this)
-    this.helper.randomNextTarget()
     this.perfectManager.createPerfectText()
     this.perfectManager.createScoreText()
+
+    this.helper = new LevelHelper(this)
+    this.helper.randomNextTarget()
+
     this.stars = this.scene.add.particles("star").setDepth(1)
   }
 
@@ -137,7 +141,9 @@ export default class Manager {
   }
   createGUI() {
     helper.createBackground(this.scene, this.config.background)
-    this.top_bar = helper.createTopBar(this.scene, "top-bar") //.setDepth(1);
+    this.top_bar = helper
+      .createTopBar(this.scene, "top-bar")
+      .setTint(this.config.bar_tint) //.setDepth(1);
 
     helper
       .createButton(this.scene, 10, 10, "home-button", () =>

@@ -9,6 +9,7 @@ const DATABASE_URL = `mongodb+srv://${srvConfig.USERNAME}:${srvConfig.PASSWORD}@
 class DatabaseManager {
   constructor() {
     this.levels_amount = 4
+    this.leaderboards_refresh_time = 1000 * 60 * 1
   }
   connectDatabase() {
     mongoose.connect(
@@ -22,9 +23,11 @@ class DatabaseManager {
         // console.log(`Server started on port ${port}`);
         //   moongose.connection.close()
         // mongoose.disconnect();
-        for (let i = 1; i <= this.levels_amount; i++) {
-          this.updateRanks(i) /// make interval to update ranks from time to time
-        }
+        setInterval(() => {
+          for (let i = 1; i <= this.levels_amount; i++) {
+            this.updateRanks(i) /// make interval to update ranks from time to time
+          }
+        }, this.leaderboards_refresh_time)
       }
     )
   }
@@ -33,7 +36,7 @@ class DatabaseManager {
   }
 
   updateRanks(level) {
-    Levels.find({ level: level })
+    Levels.find({ level: level }) // maybe fetch all levels in one request
       .sort({ score: -1 })
       .exec((err, docs) => {
         docs.forEach((doc, i) => {
@@ -47,17 +50,26 @@ class DatabaseManager {
   }
 
   createAccount(req, res) {
-    Accounts.create(
-      {
-        nickname: req.body.nickname,
-        levels_scores: [0],
-        money: 5550,
-        skins: { circles: [1], sticks: [1], targets: [1] },
-        current_skins: { circles: 1, sticks: 1, targets: 1 },
-      },
-      () => res.sendStatus(200)
-    )
-    console.log("created account")
+    // use double destruction in req
+    const nickname = req.body.nickname
+
+    Accounts.exists({ nickname: nickname }).then((is_exsisting) => {
+      if (is_exsisting) {
+        res.sendStatus(403)
+      } else {
+        Accounts.create(
+          {
+            nickname: nickname,
+            levels_scores: [0],
+            money: 5550,
+            skins: { circles: [1], sticks: [1], targets: [1] },
+            current_skins: { circles: 1, sticks: 1, targets: 1 },
+          },
+          () => res.sendStatus(200)
+        )
+        console.log("account created")
+      }
+    })
   }
 
   getAccountProgress(req, res) {
@@ -137,6 +149,7 @@ class DatabaseManager {
       account.skins[part].push(skin_number)
       account.markModified("skins")
       account.save()
+      res.sendStatus(200)
     })
   }
 

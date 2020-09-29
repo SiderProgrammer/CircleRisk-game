@@ -1,7 +1,8 @@
-import helper from "../helper.js"
+import * as helper from "../helper.js"
 import levelsSettings from "../settings/levels-config"
 import { getProgress } from "../../shortcuts/save"
 import { GET_LEVEL_SCORES_AND_NICKNAMES } from "../../shortcuts/requests"
+import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 
 export default class levelSelect extends Phaser.Scene {
   constructor() {
@@ -134,13 +135,14 @@ export default class levelSelect extends Phaser.Scene {
       this.actualPage.y + 100,
       "ranking-icon",
       () => {
+        START_FETCHING_SCENE(this)
         GET_LEVEL_SCORES_AND_NICKNAMES({
           level: this.actualPageNumber + 1,
           start_search_rank: 1,
           stop_search_rank: 8,
         }).then((data) => {
           console.log(data)
-
+          STOP_FETCHING_SCENE(this)
           this.scene.start("leaderboard", {
             ranks: data,
             level: this.actualPageNumber + 1,

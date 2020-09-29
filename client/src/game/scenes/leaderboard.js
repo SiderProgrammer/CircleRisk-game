@@ -1,5 +1,6 @@
-import helper from "../helper"
+import * as helper from "../helper"
 import { GET_LEVEL_SCORES_AND_NICKNAMES } from "../../shortcuts/requests"
+import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 
 const bar_text_config = {
   font: "30px LuckiestGuy",
@@ -24,22 +25,33 @@ export default class Leaderboard extends Phaser.Scene {
 
   create() {
     helper.createBackground(this, "black-bg")
+    this.createHomeButton()
+    this.createLeaderboardButtons()
+this.createLeaderboard()
+    this.updateTexts(this.data)
+  }
 
+  createHomeButton(){
     helper.createButton(this, 50, 50, "home-button", () => {
       this.scene.start("levelSelect", { page: this.level - 1 })
     })
+  }
+
+  createLeaderboardButtons(){
     helper.createButton(this, this.GW - 70, 50, "arrow-button", () =>
-      this.getUsersAndUpdateTexts("-")
-    )
+    this.getUsersAndUpdateTexts("-")
+  )
 
-    helper.createButton(
-      this,
-      this.GW - 70,
-      this.game.GH - 50,
-      "arrow-button",
-      () => this.getUsersAndUpdateTexts("+")
-    )
+  helper.createButton(
+    this,
+    this.GW - 70,
+    this.game.GH - 50,
+    "arrow-button",
+    () => this.getUsersAndUpdateTexts("+")
+  )
+  }
 
+  createLeaderboard(){
     for (let i = 0; i < 8; i++) {
       const bar = this.addScoreBar(this.first_bar_y)
 
@@ -49,8 +61,6 @@ export default class Leaderboard extends Phaser.Scene {
       this.scores.push(bar)
     }
 
-    const sorted_data = this.data
-    this.updateTexts(sorted_data)
   }
 
   async getUsers(start, stop) {
@@ -65,6 +75,7 @@ export default class Leaderboard extends Phaser.Scene {
   }
 
   getUsersAndUpdateTexts(sign) {
+    START_FETCHING_SCENE(this)
     let shift = this.leaderboard_shift_value
 
     if (sign === "-") {
@@ -75,9 +86,12 @@ export default class Leaderboard extends Phaser.Scene {
       this.last_stop_search_rank + shift
     ).then((data) => {
       if (data.length > 0) {
-        // TODO !
-        this.updateTexts(data)
+        this.updateTexts(data) // TODO !
+      } else {
+        this.last_start_search_rank -= shift
+        this.last_stop_search_rank -= shift
       }
+      STOP_FETCHING_SCENE(this)
     })
   }
 

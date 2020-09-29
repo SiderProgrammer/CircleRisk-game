@@ -1,9 +1,10 @@
-import helper from "../helper"
+import * as helper from "../helper"
 import { saveProgress, getProgress } from "../../shortcuts/save"
 import {
   GET_ACCOUNT_PROGRESS,
   GET_CUSTOMIZE_SKINS_SETUP,
 } from "../../shortcuts/requests"
+import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 
 export default class menu extends Phaser.Scene {
   constructor() {
@@ -16,12 +17,7 @@ export default class menu extends Phaser.Scene {
 
   async init() {
     if (!this.is_everything_fetched) {
-      this.fetching_icon = this.add
-        .image(this.game.GW / 2, this.game.GH / 2, "customize-button")
-        .setDepth(1)
-
-      this.scene.pause()
-
+      START_FETCHING_SCENE(this)
       await this.getCustomizeSkinsSetup()
       await this.restoreProgress()
       await this.finishFetching()
@@ -42,14 +38,13 @@ export default class menu extends Phaser.Scene {
 
   async finishFetching() {
     this.is_everything_fetched = true
-    this.fetching_icon.destroy()
-    this.scene.resume()
+    STOP_FETCHING_SCENE(this)
   }
 
   async getCustomizeSkinsSetup() {
-    await GET_CUSTOMIZE_SKINS_SETUP().then(
-      (setup) => (this.customize_skins_setup = setup)
-    )
+    await GET_CUSTOMIZE_SKINS_SETUP()
+      .then((setup) => (this.customize_skins_setup = setup))
+      .catch((error) => console.log(error))
   }
 
   async restoreProgress() {
@@ -65,7 +60,6 @@ export default class menu extends Phaser.Scene {
           })
         })
 
-        console.log(progress)
         saveProgress(progress)
       }
     )

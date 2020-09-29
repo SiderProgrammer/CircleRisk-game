@@ -1,5 +1,4 @@
 import Manager from "../main/level-manager.js"
-import helper from "../helper.js"
 
 export default class level_10 extends Phaser.Scene {
   constructor() {
@@ -32,7 +31,7 @@ export default class level_10 extends Phaser.Scene {
     this.createTimerText()
     this.setTimer()
 
-    helper.sceneIntro(this)
+    this.manager.GUI_helper.sceneIntro(this)
   }
   update() {
     if (!this.manager.game_started) return

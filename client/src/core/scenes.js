@@ -4,6 +4,8 @@ import Menu from "../game/scenes/menu"
 import LevelSelect from "../game/scenes/level-select.js"
 import Customize from "../game/scenes/customize.js"
 import Leaderboard from "../game/scenes/leaderboard.js"
+import Offline from "../game/scenes/offline.js"
+import Fetching from "../game/scenes/fetching.js"
 
 import Level_1 from "../game/levels/level-1"
 import Level_2 from "../game/levels/level-2"
@@ -27,6 +29,9 @@ export default [
   LevelSelect,
   Customize,
   Leaderboard,
+  Offline,
+  Fetching,
+
   Level_1,
   Level_2,
   Level_3,

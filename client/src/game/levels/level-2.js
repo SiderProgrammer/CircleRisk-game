@@ -1,5 +1,4 @@
 import Manager from "../main/level-manager.js"
-import helper from "../helper.js"
 
 export default class level_2 extends Phaser.Scene {
   constructor() {
@@ -10,7 +9,7 @@ export default class level_2 extends Phaser.Scene {
     this.level = config.level
     this.score_to_next_level = config.score_to_next_level
 
-    this.manager = new Manager(this,config.config)
+    this.manager = new Manager(this, config.config)
     this.manager.init()
 
     this.targets_speed = {
@@ -33,7 +32,7 @@ export default class level_2 extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
-    helper.sceneIntro(this)
+    this.manager.GUI_helper.sceneIntro(this)
   }
   update() {
     if (!this.manager.game_started) return
