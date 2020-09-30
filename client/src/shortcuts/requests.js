@@ -3,7 +3,16 @@ import { getFunction, postFunction } from "../fetch-helper"
 export const GET_LEVEL_SCORES_AND_NICKNAMES = async (data) => {
   return await postFunction(data, "getLevelScoresAndNicknames").then(
     (response) => {
-      console.log(response)
+      if (response.ok) {
+        return response.json()
+      }
+    }
+  )
+}
+
+export const GET_LEVEL_SCORE_BY_NICKNAME = async (data) => {
+  return await postFunction(data, "getLevelScoreByNickname").then(
+    (response) => {
       if (response.ok) {
         return response.json()
       }

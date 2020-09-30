@@ -79,6 +79,13 @@ class DatabaseManager {
     })
   }
 
+  getLevelScoreByNickname(req,res){
+    const {level,nickname} = req.body
+    Levels.findOne({nickname:nickname,level:level}).then(level=>{
+      res.status(200).json(level);
+    })
+  }
+
   getLevelScoresAndNicknames(req, res) {
     const { start_search_rank, stop_search_rank, level } = req.body
 
@@ -102,7 +109,7 @@ class DatabaseManager {
     const update = {
       score: score,
       nickname: nickname,
-      level: level,
+      level: level + 1,
     }
 
     const options = {
@@ -119,7 +126,7 @@ class DatabaseManager {
 
     // saving in account progress
     Accounts.findOne({ nickname: nickname }, (err, account) => {
-      account.levels_scores[level - 1] = score
+      account.levels_scores[level] = score
       account.markModified("levels_scores")
       account.save()
     })

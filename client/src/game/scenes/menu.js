@@ -18,9 +18,7 @@ export default class menu extends Phaser.Scene {
   async init() {
     if (!this.is_everything_fetched) {
       START_FETCHING_SCENE(this)
-      await this.getCustomizeSkinsSetup()
-      await this.restoreProgress()
-      await this.finishFetching()
+      await this.fetchFromServer()
     }
   }
 
@@ -34,35 +32,6 @@ export default class menu extends Phaser.Scene {
     this.showLogos()
 
     helper.sceneIntro(this)
-  }
-
-  async finishFetching() {
-    this.is_everything_fetched = true
-    STOP_FETCHING_SCENE(this)
-  }
-
-  async getCustomizeSkinsSetup() {
-    await GET_CUSTOMIZE_SKINS_SETUP()
-      .then((setup) => (this.customize_skins_setup = setup))
-      .catch((error) => console.log(error))
-  }
-
-  async restoreProgress() {
-    const local_progress = getProgress()
-
-    await GET_ACCOUNT_PROGRESS({ nickname: local_progress.nickname }).then(
-      (progress) => {
-        // converting skin numbers into full name strings
-        Object.keys(progress.skins).forEach((item) => {
-          progress.skins[item].forEach((skin_number, index, array) => {
-            array[index] =
-              item.substring(0, item.length - 1) + "_" + skin_number
-          })
-        })
-
-        saveProgress(progress)
-      }
-    )
   }
 
   showLogos() {
@@ -81,17 +50,18 @@ export default class menu extends Phaser.Scene {
       })
       .setOrigin(1, 0)
   }
+
   hideButtons() {
     return new Promise((resolve) => {
-      this.customizeButtonTween(20)
+      this.customizeButtonTween(85)
       setTimeout(() => {
-        this.playButtonTween(-20).then(() => resolve())
+        this.playButtonTween(-87).then(() => resolve())
       }, this.tween_duration / 2)
     })
   }
 
   showButtons() {
-    this.playButtonTween("-=35")
+    this.playButtonTween("-=55")
     setTimeout(() => this.customizeButtonTween(-40), this.tween_duration / 2)
   }
 
@@ -139,14 +109,14 @@ export default class menu extends Phaser.Scene {
             this.play_stick.x -
             (this.play_stick.displayWidth +
               this.play_button.displayWidth / 2 +
-              5) *
+              0) *
               Math.cos(angle)
 
           const y =
             this.play_stick.y -
             (this.play_button.displayWidth / 2 +
               this.play_stick.displayWidth -
-              5) *
+              0) *
               Math.sin(angle)
 
           this.play_button.x = x
@@ -184,7 +154,7 @@ export default class menu extends Phaser.Scene {
 
     this.customize_stick = this.createStick(
       0,
-      this.game.GH + 10,
+      this.game.GH - 50,
       { x: 0, y: 0.5 },
       this.customize_button,
       "menu-stick-blue"
@@ -202,7 +172,7 @@ export default class menu extends Phaser.Scene {
       .createButton(
         this,
         this.game.GW,
-        this.game.GH / 2 + 80,
+        this.game.GH / 2 - 30,
         "play-button",
         () => {
           this.hideButtons().then(() =>
@@ -214,8 +184,8 @@ export default class menu extends Phaser.Scene {
     this.play_button.x += this.play_button.displayWidth / 2
 
     this.play_stick = this.createStick(
-      this.game.GW,
-      this.game.GH + 10,
+      this.game.GW + 20,
+      this.game.GH - 150,
       { x: 1, y: 0.5 },
       this.play_button,
       "menu-stick-yellow"
@@ -227,6 +197,43 @@ export default class menu extends Phaser.Scene {
     )
     this.play_stick.setAngle(Phaser.Math.RadToDeg(angle_between))
     this.play_button.setAngle(Phaser.Math.RadToDeg(angle_between))
+  }
+
+  async fetchFromServer() {
+    await this.getCustomizeSkinsSetup()
+    await this.restoreProgress()
+    await this.finishFetching()
+  }
+
+  async finishFetching() {
+    this.is_everything_fetched = true
+    STOP_FETCHING_SCENE(this)
+  }
+
+  async getCustomizeSkinsSetup() {
+    await GET_CUSTOMIZE_SKINS_SETUP()
+      .then((setup) => (this.customize_skins_setup = setup))
+      .catch(() => {
+        setTimeout(async () => {
+          await this.fetchFromServer()
+        }, 3000)
+      })
+  }
+
+  async restoreProgress() {
+    const local_progress = getProgress()
+    window.my_nickname = local_progress.nickname
+
+    await GET_ACCOUNT_PROGRESS({ nickname: my_nickname }).then((progress) => {
+      // converting skin numbers into full name strings
+      Object.keys(progress.skins).forEach((item) => {
+        progress.skins[item].forEach((skin_number, index, array) => {
+          array[index] = item.substring(0, item.length - 1) + "_" + skin_number
+        })
+      })
+
+      saveProgress(progress)
+    })
   }
 }
 

@@ -36,6 +36,10 @@ export default class Manager {
   }
 
   create() {
+    this.loseMenuManager = new LoseMenu(this)
+    this.loseMenuManager.createLoseMenu()
+    this.loseMenuManager.hideMenu()
+
     this.perfectManager = new PerfectManager(this)
     this.perfectManager.createPerfectText()
     this.perfectManager.createScoreText()
@@ -285,7 +289,7 @@ export default class Manager {
   }
 
   gameOver() {
-    new LoseMenu(this).createLoseMenu()
+    this.loseMenuManager.showMenu()
 
     this.scene.input.removeAllListeners()
     this.game_started = false
@@ -294,16 +298,22 @@ export default class Manager {
     this.progress.money += earned_money
 
     if (
-      this.score > this.progress.levels_scores[this.scene.level - 1] ||
-      !this.progress.levels_scores[this.scene.level - 1]
+      !this.progress.levels_scores[this.scene.level] &&
+      this.score >= this.scene.score_to_next_level
     ) {
+      this.progress.levels_scores[this.scene.level] = 0
+      console.log("new level unlocked")
+    }
+
+    const this_level_score = this.progress.levels_scores[this.scene.level - 1]
+    if (this.score > this_level_score || !this_level_score) {
       /// -1, array is counted from 0
       this.progress.levels_scores[this.scene.level - 1] = this.score /// -1, array is counted from 0
 
       POST_LEVEL_SCORE({
         score: this.score,
         nickname: this.progress.nickname,
-        level: this.scene.level,
+        level: this.scene.level - 1,
       })
     }
 

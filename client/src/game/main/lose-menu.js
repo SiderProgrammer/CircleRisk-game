@@ -4,6 +4,7 @@ export default class {
   constructor(scene) {
     this.scene = scene
     this.level_scene = scene.scene
+    this.elements = []
   }
 
   createLoseMenu() {
@@ -14,10 +15,21 @@ export default class {
     this.createButtons()
   }
 
+  showMenu() {
+    this.elements.forEach((el) => el.setVisible(true).setActive(true))
+  }
+
+  hideMenu() {
+    this.elements.forEach((el) =>
+      el.setVisible(false).setActive(false).setDepth(1)
+    )
+  }
+
   createWhiteSquare() {
-    this.level_scene.add
+    const blue_strap = this.level_scene.add
       .image(this.scene.GW / 2, 20, "blue-square")
       .setOrigin(0.5, 0)
+    this.elements.push(blue_strap)
   }
 
   createScore() {
@@ -27,7 +39,7 @@ export default class {
 
     this.blue_strap.displayWidth = this.scene.GW
 
-    this.level_scene.add
+    const a = this.level_scene.add
       .text(this.scene.GW / 2, this.blue_strap.y, "SCORE", {
         font: "60px LuckiestGuy", /// SCORE TEXT
       })
@@ -39,7 +51,7 @@ export default class {
       })
       .setOrigin(0.5)
 
-    this.level_scene.add
+    const b = this.level_scene.add
       .text(
         divider.x - divider.displayWidth / 2,
         this.blue_strap.y + 90, /// CURRENT SCORE
@@ -50,7 +62,7 @@ export default class {
       )
       .setOrigin(1, 0.5)
 
-    this.level_scene.add
+    const c = this.level_scene.add
       .text(
         divider.x + divider.displayWidth / 2,
         this.blue_strap.y + 90 + 15,
@@ -60,6 +72,7 @@ export default class {
         }
       )
       .setOrigin(0, 0.5)
+    this.elements.push(this.blue_strap, a, divider, b, c)
   }
 
   createPerfect() {
@@ -73,7 +86,7 @@ export default class {
 
     purple_strap.displayWidth = this.scene.GW / 2
 
-    this.level_scene.add /// PERFECT TEXT
+    const a = this.level_scene.add /// PERFECT TEXT
       .text(
         purple_strap.x - purple_strap.displayWidth / 2,
         purple_strap.y,
@@ -84,7 +97,7 @@ export default class {
       )
       .setOrigin(0.5)
 
-    this.level_scene.add /// CURRENT PERFECT SCORE
+    const b = this.level_scene.add /// CURRENT PERFECT SCORE
       .text(
         purple_strap.x - purple_strap.displayWidth / 2,
         purple_strap.y + purple_strap.displayHeight / 2 + 30,
@@ -94,6 +107,7 @@ export default class {
         }
       )
       .setOrigin(0.5)
+    this.elements.push(purple_strap, a, b)
   }
 
   createBest() {
@@ -107,13 +121,13 @@ export default class {
 
     red_strap.displayWidth = this.scene.GW / 2
 
-    this.level_scene.add
+    const a = this.level_scene.add
       .text(red_strap.x + red_strap.displayWidth / 2, red_strap.y, "BEST", {
         font: "45px LuckiestGuy", /// BEST TEXT
       })
       .setOrigin(0.5)
 
-    this.level_scene.add
+    const b = this.level_scene.add
       .text(
         red_strap.x + red_strap.displayWidth / 2,
         red_strap.y + red_strap.displayHeight / 2 + 30,
@@ -123,29 +137,31 @@ export default class {
         }
       )
       .setOrigin(0.5)
+    this.elements.push(red_strap, a, b)
   }
 
   createButtons() {
-    helper.createButton(
+    const a = helper.createButton(
       this.level_scene,
       this.scene.GW / 2,
       this.scene.GH - 200,
       "replay-button",
       () => this.level_scene.scene.restart()
     )
-    helper.createButton(
+    const b = helper.createButton(
       this.level_scene,
       this.scene.GW / 2 - 120,
       this.scene.GH - 100,
       "customize-button",
       () => helper.sceneTransition(this.level_scene, "customize")
     )
-    helper.createButton(
+    const c = helper.createButton(
       this.level_scene,
       this.scene.GW / 2 + 120,
       this.scene.GH - 100,
       "levelSelect-button",
       () => helper.sceneTransition(this.level_scene, "levelSelect")
     )
+    this.elements.push(a, b, c)
   }
 }

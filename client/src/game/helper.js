@@ -19,9 +19,8 @@ export const createBackground = function (scene, sprite) {
 }
 
 export const sceneTransition = function (scene, new_scene, data = {}) {
-  const shadow = scene.add
-    .image(scene.game.GW / 2, scene.game.GH / 2, "black-bg")
-    .setAlpha(0)
+  const shadow = createBackground(scene, "black-bg").setAlpha(0)
+
   scene.tweens.add({
     targets: shadow,
     alpha: 1,

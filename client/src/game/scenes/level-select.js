@@ -154,7 +154,11 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   pageClickCallback() {
-    if (!this.canChangePage) return
+    if (
+      !this.canChangePage ||
+      this.actualPageNumber > this.progress.levels_scores.length - 1
+    )
+      return
     const level = this.actualPageNumber + 1
     this.scene.start(`level_${level}`, {
       config: levelsSettings[this.actualPageNumber].config,

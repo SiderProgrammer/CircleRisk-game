@@ -37,6 +37,9 @@ server.post("/getAccountProgress", (req, res) =>
 server.post("/getLevelScoresAndNicknames", (req, res) =>
   databaseManager.getLevelScoresAndNicknames(req, res)
 )
+server.post("/getLevelScoreByNickname", (req, res) => {
+  databaseManager.getLevelScoreByNickname(req, res)
+})
 
 server.post("/postLevelScore", (req, res) => {
   databaseManager.postLevelScore(req, res)
