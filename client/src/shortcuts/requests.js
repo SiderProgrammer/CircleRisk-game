@@ -50,8 +50,8 @@ export const EQUIP_SKIN = async (data) => {
   await postFunction(data, "equipSkin")
 }
 
-export const GET_CUSTOMIZE_SKINS_SETUP = async () => {
-  return await getFunction("getCustomizeSkinsSetup").then((response) => {
+export const GET_CONFIGURATIONS = async () => {
+  return await getFunction("getConfigurations").then((response) => {
     if (response.ok) {
       return response.json()
     }

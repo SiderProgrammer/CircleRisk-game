@@ -289,7 +289,9 @@ export default class Manager {
   }
 
   gameOver() {
+    this.loseMenuManager.update()
     this.loseMenuManager.showMenu()
+    
 
     this.scene.input.removeAllListeners()
     this.game_started = false

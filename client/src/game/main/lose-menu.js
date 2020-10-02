@@ -9,8 +9,8 @@ export default class {
 
   createLoseMenu() {
     this.createWhiteSquare()
-    this.createScore()
-    this.createPerfect()
+    this.score = this.createScore()
+    this.perfect_score = this.createPerfect()
     this.createBest()
     this.createButtons()
   }
@@ -23,6 +23,11 @@ export default class {
     this.elements.forEach((el) =>
       el.setVisible(false).setActive(false).setDepth(1)
     )
+  }
+
+  update() {
+    this.score.setText(this.scene.score)
+    this.perfect_score.setText(this.scene.perfect)
   }
 
   createWhiteSquare() {
@@ -73,6 +78,7 @@ export default class {
       )
       .setOrigin(0, 0.5)
     this.elements.push(this.blue_strap, a, divider, b, c)
+    return b
   }
 
   createPerfect() {
@@ -108,6 +114,7 @@ export default class {
       )
       .setOrigin(0.5)
     this.elements.push(purple_strap, a, b)
+    return b
   }
 
   createBest() {

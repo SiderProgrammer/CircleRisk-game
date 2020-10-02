@@ -1,8 +1,10 @@
 const mongoose = require("mongoose")
 
-const srvConfig = require("./config")
-const { Accounts, Levels } = require("./model")
-const customizeSkinsSetup = require("./customize-skins-setup")
+const srvConfig = require("./settings/config")
+const { Accounts, Levels } = require("./settings/model")
+
+const customizeSkinsSetup = require("./settings/customize-skins-setup")
+const levelsConfig = require("./settings/levels-config")
 
 const DATABASE_URL = `mongodb+srv://${srvConfig.USERNAME}:${srvConfig.PASSWORD}@${srvConfig.HOST}/${srvConfig.DB}?retryWrites=true&w=majority`
 
@@ -23,22 +25,53 @@ class DatabaseManager {
         // console.log(`Server started on port ${port}`);
         //   moongose.connection.close()
         // mongoose.disconnect();
+        // mongoose.connection.dropDatabase()
+
         setInterval(() => {
           for (let i = 1; i <= this.levels_amount; i++) {
+            // score is updated 24/7 but ranks only 1 minute interval  ** TODO REPAIR IT
             this.updateRanks(i) /// make interval to update ranks from time to time
           }
         }, this.leaderboards_refresh_time)
       }
     )
   }
-  getCustomizeSkinsSetup(res) {
-    res.send(customizeSkinsSetup)
+  getConfigurations(res) {
+    res.send({skins_setup:customizeSkinsSetup,levels_config:levelsConfig})
   }
 
   updateRanks(level) {
-    Levels.find({ level: level }) // maybe fetch all levels in one request
+    Levels.find({ level: level }).then((docs) => {
+      if (!docs) return
+
+      const sorted_levels = docs
+        .sort((a, b) => a.score_to_update - b.score_to_update)
+        .reverse()
+
+      sorted_levels.forEach((level, i) => {
+        Levels.updateOne(
+          { _id: level._id },
+          { $set: { rank: i + 1, score: level.score_to_update } },
+          { multi: true }
+        ).exec()
+      })
+    })
+    /*
+    // maybe fetch all levels in one request
       .sort({ score: -1 })
-      .exec((err, docs) => {
+      .then((docs) => { // with then 
+        docs.forEach((doc, i) => {
+          Levels.updateOne(
+            { _id: doc._id },
+            { $set: { rank: i + 1} },
+            { multi: true }
+          ).exec()
+        })
+      })
+
+*/
+    /*
+      .exec((err, docs) => { // with exec
         docs.forEach((doc, i) => {
           Levels.updateOne(
             { _id: doc._id },
@@ -47,6 +80,7 @@ class DatabaseManager {
           ).exec()
         })
       })
+      */
   }
 
   createAccount(req, res) {
@@ -55,6 +89,7 @@ class DatabaseManager {
 
     Accounts.exists({ nickname: nickname }).then((is_exsisting) => {
       if (is_exsisting) {
+        // check if nickname already exsists
         res.sendStatus(403)
       } else {
         Accounts.create(
@@ -79,10 +114,10 @@ class DatabaseManager {
     })
   }
 
-  getLevelScoreByNickname(req,res){
-    const {level,nickname} = req.body
-    Levels.findOne({nickname:nickname,level:level}).then(level=>{
-      res.status(200).json(level);
+  getLevelScoreByNickname(req, res) {
+    const { level, nickname } = req.body
+    Levels.findOne({ nickname: nickname, level: level }).then((level) => {
+      res.status(200).json(level)
     })
   }
 
@@ -104,12 +139,10 @@ class DatabaseManager {
     // can use nested destructing ~ {body:{score,nickname,level}}
     const { score, nickname, level } = req.body
 
-    const query = { nickname: nickname }
+    const query = { nickname: nickname, level: level + 1 }
 
     const update = {
-      score: score,
-      nickname: nickname,
-      level: level + 1,
+      score_to_update: score,
     }
 
     const options = {

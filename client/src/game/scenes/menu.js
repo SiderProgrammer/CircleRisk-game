@@ -2,7 +2,7 @@ import * as helper from "../helper"
 import { saveProgress, getProgress } from "../../shortcuts/save"
 import {
   GET_ACCOUNT_PROGRESS,
-  GET_CUSTOMIZE_SKINS_SETUP,
+  GET_CONFIGURATIONS,
 } from "../../shortcuts/requests"
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 
@@ -200,7 +200,13 @@ export default class menu extends Phaser.Scene {
   }
 
   async fetchFromServer() {
-    await this.getCustomizeSkinsSetup()
+    await this.getConfigurations().catch(() => {
+      // if something went wrong, try to fetch again
+      setTimeout(async () => {
+        await this.fetchFromServer()
+      }, 3000)
+    })
+
     await this.restoreProgress()
     await this.finishFetching()
   }
@@ -210,14 +216,15 @@ export default class menu extends Phaser.Scene {
     STOP_FETCHING_SCENE(this)
   }
 
-  async getCustomizeSkinsSetup() {
-    await GET_CUSTOMIZE_SKINS_SETUP()
-      .then((setup) => (this.customize_skins_setup = setup))
-      .catch(() => {
-        setTimeout(async () => {
-          await this.fetchFromServer()
-        }, 3000)
-      })
+  async getConfigurations() {
+    return await GET_CONFIGURATIONS().then((setup) => {
+      this.customize_skins_setup = setup.skins_setup
+
+      // assign to window because the level select scene can be started by many scenes,
+      //not like customize scene which is started only from menu
+      // WINDOW ASSIGNED VARIABLES LIKE NICKNAME CAN BE EASY HACKED  !!!
+      window.levelsConfiguration = setup.levels_config
+    })
   }
 
   async restoreProgress() {

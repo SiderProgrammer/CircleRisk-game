@@ -11,10 +11,8 @@ const accountSchema = new mongoose.Schema({
 const levelsSchema = new mongoose.Schema({
   level: Number,
   nickname: String,
-  rank: {
-    type: Number,
-    default: 0,
-  },
+  rank: Number,
+  score_to_update: Number,
   score: Number,
 })
 

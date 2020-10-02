@@ -49,7 +49,7 @@ export const createButton = function (scene, x, y, sprite, func) {
 export const createTopBar = function (scene, sprite) {
   const bar = scene.add.image(scene.game.GW / 2, 0, sprite)
   bar.setOrigin(0.5, 0)
-  this.setGameSize(bar, true, false)
+  setGameSize(bar, true, false)
   return bar
 }
 

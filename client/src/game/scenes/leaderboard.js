@@ -78,7 +78,10 @@ export default class Leaderboard extends Phaser.Scene {
       nickname: my_nickname,
     })
       .then(async ({ rank }) => {
-        if (!rank) return
+        if (!rank) {
+          STOP_FETCHING_SCENE(this)
+          return
+        }
 
         let position_in_leaderboard = rank % this.leaderboard_shift_value
 

@@ -45,8 +45,8 @@ server.post("/postLevelScore", (req, res) => {
   databaseManager.postLevelScore(req, res)
 })
 
-server.get("/getCustomizeSkinsSetup", (req, res) =>
-  databaseManager.getCustomizeSkinsSetup(res)
+server.get("/getConfigurations", (req, res) =>
+  databaseManager.getConfigurations(res)
 )
 
 server.listen(port, () => databaseManager.connectDatabase())

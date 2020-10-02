@@ -1,4 +1,4 @@
-export default [
+module.exports = [
   {
     /// fetch from server this file
     info: {

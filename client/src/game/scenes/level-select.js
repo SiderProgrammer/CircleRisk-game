@@ -1,5 +1,5 @@
 import * as helper from "../helper.js"
-import levelsSettings from "../settings/levels-config"
+//import levelsConfiguration from "../../../../server/src/settings/levels-config"
 import { getProgress } from "../../shortcuts/save"
 import { GET_LEVEL_SCORES_AND_NICKNAMES } from "../../shortcuts/requests"
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
@@ -13,8 +13,8 @@ export default class levelSelect extends Phaser.Scene {
     this.tints = []
     this.progress = getProgress()
 
-    for (const level in levelsSettings) {
-      this.tints.push(levelsSettings[level].info.tint)
+    for (const level in levelsConfiguration) {
+      this.tints.push(levelsConfiguration[level].info.tint)
     }
 
     this.actualPageNumber = data.page || 0
@@ -45,16 +45,18 @@ export default class levelSelect extends Phaser.Scene {
       elements.push(...this.createPageRequirements())
       elements.push(this.createPageRanking())
     } else {
-      elements.push(
-        this.add
-          .image(this.actualPage.x, this.actualPage.y, "level-locked")
-          .setOrigin(0.5, 0)
-      )
+      elements.push(this.createLevelLock())
     }
 
     elements.push(this.createPageIcon())
 
     return elements
+  }
+
+  createLevelLock() {
+    return this.add
+      .image(this.actualPage.x, this.actualPage.y, "level-locked")
+      .setOrigin(0.5, 0)
   }
 
   createPage() {
@@ -67,26 +69,61 @@ export default class levelSelect extends Phaser.Scene {
   createPageRequirements() {
     let score = this.progress.levels_scores[this.actualPageNumber]
     if (score == null) score = 0
-
+    /*
     const text = this.add
       .text(
         this.actualPage.x,
         this.actualPage.y,
         score +
           "/" +
-          levelsSettings[this.actualPageNumber].info.score_to_next_level,
+          levelsConfiguration[this.actualPageNumber].info.score_to_next_level,
         {
           font: "50px LuckiestGuy",
         }
       )
       .setOrigin(0.5)
+      .setDepth(0.1)
+*/
 
-    const bar = this.add.image(text.x, text.y, "level-select-score-bar")
-    return [text, bar]
+    const bar = this.add.image(
+      this.actualPage.x,
+      this.actualPage.y,
+      "level-select-score-bar"
+    )
+
+    const divider = this.add
+      .text(this.actualPage.x, this.actualPage.y + 15, "/", {
+        font: "50px LuckiestGuy", /// DIVIDER
+      })
+      .setOrigin(0.5)
+
+    const current_score = this.add
+      .text(
+        divider.x - divider.displayWidth / 2,
+        divider.y - 10, /// CURRENT SCORE
+        score,
+        {
+          font: "80px LuckiestGuy",
+        }
+      )
+      .setOrigin(1, 0.5)
+
+    const score_to_reach = this.add
+      .text(
+        divider.x + divider.displayWidth / 2,
+        divider.y,
+        levelsConfiguration[this.actualPageNumber].info.score_to_next_level, /// NEEDED SCORE
+        {
+          font: "50px LuckiestGuy",
+        }
+      )
+      .setOrigin(0, 0.5)
+
+    return [current_score, score_to_reach, divider, bar]
   }
 
   createPageIcon() {
-    const icon = levelsSettings[this.actualPageNumber].info.name + "_icon"
+    const icon = levelsConfiguration[this.actualPageNumber].info.name + "_icon"
 
     return this.add.image(this.actualPage.x, this.actualPage.y - 80, icon)
   }
@@ -94,7 +131,7 @@ export default class levelSelect extends Phaser.Scene {
     const texts = []
     const bars = []
 
-    const { difficulty, name } = levelsSettings[this.actualPageNumber].info
+    const { difficulty, name } = levelsConfiguration[this.actualPageNumber].info
 
     texts[0] = this.add
       .text(
@@ -106,23 +143,26 @@ export default class levelSelect extends Phaser.Scene {
         }
       )
       .setOrigin(0.5)
+      .setDepth(0.1)
 
     texts[1] = this.add
       .text(
         this.actualPage.x,
-        this.actualPage.y - this.actualPage.displayHeight / 2 + 100,
+        this.actualPage.y - this.actualPage.displayHeight / 2 + 150,
         name,
         {
           font: "50px LuckiestGuy",
         }
       )
       .setOrigin(0.5)
+      .setDepth(0.1)
 
     bars[0] = this.add.image(
       texts[0].x,
       texts[0].y,
       "level-select-difficulty-bar"
     )
+
     bars[1] = this.add.image(texts[1].x, texts[1].y, "level-select-name-bar")
 
     return [texts, bars]
@@ -132,7 +172,7 @@ export default class levelSelect extends Phaser.Scene {
     const button = helper.createButton(
       this,
       this.actualPage.x,
-      this.actualPage.y + 100,
+      this.actualPage.y + 180,
       "ranking-icon",
       () => {
         START_FETCHING_SCENE(this)
@@ -141,7 +181,6 @@ export default class levelSelect extends Phaser.Scene {
           start_search_rank: 1,
           stop_search_rank: 8,
         }).then((data) => {
-          console.log(data)
           STOP_FETCHING_SCENE(this)
           this.scene.start("leaderboard", {
             ranks: data,
@@ -161,10 +200,10 @@ export default class levelSelect extends Phaser.Scene {
       return
     const level = this.actualPageNumber + 1
     this.scene.start(`level_${level}`, {
-      config: levelsSettings[this.actualPageNumber].config,
+      config: levelsConfiguration[this.actualPageNumber].config,
       level: level,
       score_to_next_level:
-        levelsSettings[this.actualPageNumber].info.score_to_next_level,
+        levelsConfiguration[this.actualPageNumber].info.score_to_next_level,
     })
   }
 

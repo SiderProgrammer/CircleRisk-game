@@ -1,7 +1,7 @@
 module.exports = {
   circles: [
     { skin: "circle_1" },
-    { skin: "circle_2", cost: 30 },
+    { skin: "circle_2", cost: 40 },
     { skin: "circle_3", cost: 30 },
     { skin: "circle_4", cost: 40 },
   ],
