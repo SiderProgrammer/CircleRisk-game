@@ -1,5 +1,6 @@
 export const setGameSize = function (obj, scaleW = false, scaleH = false) {
   if (scaleW) {
+    // i can also create image.setGameSize() method
     obj.displayWidth = obj.scene.game.GW
   }
   if (scaleH) {
@@ -19,20 +20,16 @@ export const createBackground = function (scene, sprite) {
 }
 
 export const sceneTransition = function (scene, new_scene, data = {}) {
-  const shadow = createBackground(scene, "black-bg").setAlpha(0)
-
   scene.tweens.add({
-    targets: shadow,
+    targets: createBackground(scene, "black-bg").setAlpha(0),
     alpha: 1,
     duration: 200,
     onComplete: () => scene.scene.start(new_scene, data),
   })
 }
 export const sceneIntro = function (scene) {
-  const shadow = createBackground(scene, "black-bg")
-
   scene.tweens.add({
-    targets: shadow,
+    targets: createBackground(scene, "black-bg"),
     alpha: 0,
     duration: 400,
   })
@@ -47,8 +44,8 @@ export const createButton = function (scene, x, y, sprite, func) {
 }
 
 export const createTopBar = function (scene, sprite) {
-  const bar = scene.add.image(scene.game.GW / 2, 0, sprite)
-  bar.setOrigin(0.5, 0)
+  const bar = scene.add.image(scene.game.GW / 2, 0, sprite).setOrigin(0.5, 0)
+
   setGameSize(bar, true, false)
   return bar
 }

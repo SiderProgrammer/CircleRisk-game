@@ -11,6 +11,10 @@ export default class Manager {
     this.scene = scene
     this.progress = getProgress()
     this.config = config
+
+    // this.scene.restart(LoseMenu)
+    // this.loseMenu = config.loseMenu || this.scene.launch("loseMenu",scene);
+    // this.loseMenu.update()...
   }
 
   init() {
@@ -291,13 +295,11 @@ export default class Manager {
   gameOver() {
     this.loseMenuManager.update()
     this.loseMenuManager.showMenu()
-    
 
     this.scene.input.removeAllListeners()
     this.game_started = false
 
-    const earned_money = this.score
-    this.progress.money += earned_money
+    this.progress.money += this.score // earned money
 
     if (
       !this.progress.levels_scores[this.scene.level] &&
@@ -323,10 +325,8 @@ export default class Manager {
 
     SAVE_MONEY({ money: this.progress.money, nickname: this.progress.nickname })
 
-    const bg = helper.createBackground(this.scene, "black-bg").setAlpha(0)
-
     this.scene.tweens.add({
-      targets: bg,
+      targets: helper.createBackground(this.scene, "black-bg").setAlpha(0),
       duration: 400,
       alpha: 1,
     })

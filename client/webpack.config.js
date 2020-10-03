@@ -1,11 +1,11 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-//const CopyPlugin = require("copy-webpack-plugin");
+const path = require("path")
+const HtmlWebpackPlugin = require("html-webpack-plugin")
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
+const CopyPlugin = require("copy-webpack-plugin")
 
-const host = "0.0.0.0";
-const port = 8080;
+const host = "0.0.0.0"
+const port = 8080
 
 module.exports = {
   entry: {
@@ -87,10 +87,15 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/index.html",
     }),
-    // new CopyPlugin([{ from: "src/assets", to: "www" }]),
+    new CopyPlugin({
+      patterns: [
+        { from: "src/assets", to: "assets" },
+        { from: path.resolve(__dirname, "src/style.css") },
+      ],
+    }),
     new MiniCssExtractPlugin({
       filename: "[name].css",
       chunkFilename: "[id].css",
     }),
   ],
-};
+}

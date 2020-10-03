@@ -1,11 +1,11 @@
-const SERVER_URL = "http://localhost:3001"
+const SERVER_URL = "http://192.168.1.12:3001"
 
 const post_headers = {
   "Content-Type": "application/json",
   Accept: "application/json",
 }
 
-export const postFunction = async (data, url) => {
+export const postFunction = (data, url) => {
   return fetch(`${SERVER_URL}/${url}`, {
     method: "post",
     headers: post_headers,
@@ -13,14 +13,13 @@ export const postFunction = async (data, url) => {
   })
 }
 
-export const getFunction = async (url) => {
+export const getFunction = (url) => {
   return fetch(`${SERVER_URL}/${url}`, {
     headers: post_headers,
   })
 }
 
-
-export const START_RECONNECTING_SCENE = function(scene,x,y){
+export const START_RECONNECTING_SCENE = function (scene, x, y) {
   scene.scene.pause()
   scene.scene.launch("offline", {
     x: scene.game.GW / 2,
@@ -29,25 +28,24 @@ export const START_RECONNECTING_SCENE = function(scene,x,y){
   scene.scene.bringToTop("offline")
 }
 
-export const STOP_RECONNECTING_SCENE = function(scene){
+export const STOP_RECONNECTING_SCENE = function (scene) {
   scene.scene.resume()
   scene.scene.stop("offline")
 }
 
-export const START_FETCHING_SCENE = function(scene,x,y){
+export const START_FETCHING_SCENE = function (scene, x, y) {
   scene.scene.pause()
   scene.scene.launch("fetching", {
     x: scene.game.GW / 2,
     y: scene.game.GH / 2,
   })
-  scene.scene.bringToTop("fetching");
+  scene.scene.bringToTop("fetching")
 }
 
-export const STOP_FETCHING_SCENE = function(scene){
- scene.scene.resume()
-scene.scene.stop("fetching")
+export const STOP_FETCHING_SCENE = function (scene) {
+  scene.scene.resume()
+  scene.scene.stop("fetching")
 }
-
 
 export const CREATE_FETCH_ERROR = (scene, x, y) => {
   scene.add

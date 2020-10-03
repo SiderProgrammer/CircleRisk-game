@@ -239,36 +239,36 @@ export default class Customize extends Phaser.Scene {
       close_button.x -= 100
     }
   }
-  purchaseCallback(skin, part, price) {
+  async purchaseCallback(skin, part, price) {
     const GET_NUMBERS_REGEXP = new RegExp(/^\D+/g, "g")
     START_FETCHING_SCENE(this)
 
-    SAVE_NEW_SKIN({
-      skin: [part, skin.texture.key.replace(GET_NUMBERS_REGEXP, "")],
-      nickname: this.progress.nickname,
-    })
-      .then((response) => {
-        if (response.ok) {
-          skin.key.setAlpha(0)
-          this.progress.skins[part].push(skin.texture.key)
-          this.progress.money -= price
-          this.money_text.setText(this.progress.money)
-          this.progress.current_skins[part] =
-            this.getSkinNumber(skin.texture.key) + 1 // set new skin
-
-          SAVE_MONEY({
-            money: this.progress.money,
-            nickname: this.progress.nickname,
-          })
-
-          saveProgress(this.progress)
-          STOP_FETCHING_SCENE(this)
-        }
+    try {
+      const response = await SAVE_NEW_SKIN({
+        skin: [part, skin.texture.key.replace(GET_NUMBERS_REGEXP, "")],
+        nickname: this.progress.nickname,
       })
-      .catch(() => {
-        CREATE_FETCH_ERROR(this, this.game.GW / 2, this.game.GH / 2 - 300)
-        STOP_FETCHING_SCENE(this)
-      })
+
+      if (response.ok) {
+        skin.key.setAlpha(0)
+        this.progress.skins[part].push(skin.texture.key)
+        this.progress.money -= price
+        this.money_text.setText(this.progress.money)
+        this.progress.current_skins[part] =
+          this.getSkinNumber(skin.texture.key) + 1 // set new skin
+
+        SAVE_MONEY({
+          money: this.progress.money,
+          nickname: this.progress.nickname,
+        })
+
+        saveProgress(this.progress)
+      }
+    } catch {
+      CREATE_FETCH_ERROR(this, this.game.GW / 2, this.game.GH / 2 - 300)
+    } finally {
+      STOP_FETCHING_SCENE(this)
+    }
   }
   changeSkinButtonClicked(sprite1, sprite2, part, sign, skin_number) {
     this.can_change = false

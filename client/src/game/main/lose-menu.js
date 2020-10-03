@@ -1,6 +1,6 @@
 import * as helper from "../helper"
 
-export default class {
+export default class LoseMenu {
   constructor(scene) {
     this.scene = scene
     this.level_scene = scene.scene

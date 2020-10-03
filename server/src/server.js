@@ -6,6 +6,8 @@ const bodyParser = require("body-parser")
 const DatabaseManager = require("./database-manager")
 
 const port = 3001
+const host = "0.0.0.0"
+
 const server = express()
 
 server.use(cors())
@@ -49,4 +51,4 @@ server.get("/getConfigurations", (req, res) =>
   databaseManager.getConfigurations(res)
 )
 
-server.listen(port, () => databaseManager.connectDatabase())
+server.listen(port, host, () => databaseManager.connectDatabase())

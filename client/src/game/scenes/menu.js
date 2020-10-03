@@ -15,10 +15,10 @@ export default class menu extends Phaser.Scene {
     this.tween_duration = 300
   }
 
-  async init() {
+  init() {
     if (!this.is_everything_fetched) {
       START_FETCHING_SCENE(this)
-      await this.fetchFromServer()
+      this.fetchFromServer()
     }
   }
 
@@ -66,7 +66,7 @@ export default class menu extends Phaser.Scene {
   }
 
   customizeButtonTween(angle) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.tweens.add({
         targets: this.customize_stick,
         angle: angle,
@@ -141,7 +141,7 @@ export default class menu extends Phaser.Scene {
 
   createCustomizeButtonSet() {
     this.customize_button = helper
-      .createButton(this, 0, this.game.GH / 2 + 200, "customize-button", () => {
+      .createButton(this, 0, this.game.GH - 250, "customize-button", () => {
         this.hideButtons().then(() =>
           helper.sceneTransition(this, "customize", {
             setup: this.customize_skins_setup,
@@ -172,7 +172,7 @@ export default class menu extends Phaser.Scene {
       .createButton(
         this,
         this.game.GW,
-        this.game.GH / 2 - 30,
+        this.game.GH - 430,
         "play-button",
         () => {
           this.hideButtons().then(() =>
@@ -185,7 +185,7 @@ export default class menu extends Phaser.Scene {
 
     this.play_stick = this.createStick(
       this.game.GW + 20,
-      this.game.GH - 150,
+      this.game.GH - 120,
       { x: 1, y: 0.5 },
       this.play_button,
       "menu-stick-yellow"
@@ -200,47 +200,47 @@ export default class menu extends Phaser.Scene {
   }
 
   async fetchFromServer() {
-    await this.getConfigurations().catch(() => {
+    try {
+      await this.getConfigurations()
+      await this.restoreProgress()
+      this.finishFetching()
+    } catch {
       // if something went wrong, try to fetch again
-      setTimeout(async () => {
-        await this.fetchFromServer()
+      setTimeout(() => {
+        this.fetchFromServer()
       }, 3000)
-    })
-
-    await this.restoreProgress()
-    await this.finishFetching()
+    }
   }
 
-  async finishFetching() {
+  finishFetching() {
     this.is_everything_fetched = true
     STOP_FETCHING_SCENE(this)
   }
 
   async getConfigurations() {
-    return await GET_CONFIGURATIONS().then((setup) => {
-      this.customize_skins_setup = setup.skins_setup
+    const response = await GET_CONFIGURATIONS()
+    this.customize_skins_setup = response.skins_setup
 
-      // assign to window because the level select scene can be started by many scenes,
-      //not like customize scene which is started only from menu
-      // WINDOW ASSIGNED VARIABLES LIKE NICKNAME CAN BE EASY HACKED  !!!
-      window.levelsConfiguration = setup.levels_config
-    })
+    // assign to window because the level select scene can be started by many scenes,
+    //not like customize scene which is started only from menu
+    // WINDOW ASSIGNED VARIABLES LIKE NICKNAME CAN BE EASY HACKED  !!!
+    window.levelsConfiguration = response.levels_config
   }
 
   async restoreProgress() {
     const local_progress = getProgress()
     window.my_nickname = local_progress.nickname
 
-    await GET_ACCOUNT_PROGRESS({ nickname: my_nickname }).then((progress) => {
-      // converting skin numbers into full name strings
-      Object.keys(progress.skins).forEach((item) => {
-        progress.skins[item].forEach((skin_number, index, array) => {
-          array[index] = item.substring(0, item.length - 1) + "_" + skin_number
-        })
-      })
+    const progress = await GET_ACCOUNT_PROGRESS({ nickname: my_nickname })
 
-      saveProgress(progress)
+    // converting skin numbers into full name strings
+    Object.keys(progress.skins).forEach((item) => {
+      progress.skins[item].forEach((skin_number, index, array) => {
+        array[index] = item.substring(0, item.length - 1) + "_" + skin_number
+      })
     })
+
+    saveProgress(progress)
   }
 }
 

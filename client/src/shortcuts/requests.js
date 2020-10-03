@@ -1,59 +1,41 @@
 import { getFunction, postFunction } from "../fetch-helper"
 
 export const GET_LEVEL_SCORES_AND_NICKNAMES = async (data) => {
-  return await postFunction(data, "getLevelScoresAndNicknames").then(
-    (response) => {
-      if (response.ok) {
-        return response.json()
-      }
-    }
-  )
+  const response = await postFunction(data, "getLevelScoresAndNicknames")
+  if (response.ok) return response.json()
 }
 
 export const GET_LEVEL_SCORE_BY_NICKNAME = async (data) => {
-  return await postFunction(data, "getLevelScoreByNickname").then(
-    (response) => {
-      if (response.ok) {
-        return response.json()
-      }
-    }
-  )
-}
-
-export const POST_LEVEL_SCORE = async (data) => {
-  return await postFunction(data, "postLevelScore").then((response) => {
-    console.log(response)
-  })
-}
-
-export const CREATE_ACCOUNT = async (data) => {
-  return await postFunction(data, "createAccount")
+  const response = await postFunction(data, "getLevelScoreByNickname")
+  if (response.ok) return response.json()
 }
 
 export const GET_ACCOUNT_PROGRESS = async (data) => {
-  return await postFunction(data, "getAccountProgress").then((response) => {
-    if (response.ok) {
-      return response.json()
-    }
-  })
-}
-
-export const SAVE_NEW_SKIN = async (data) => {
-  return await postFunction(data, "saveNewSkin")
-}
-
-export const SAVE_MONEY = async (data) => {
-  await postFunction(data, "saveMoney")
-}
-
-export const EQUIP_SKIN = async (data) => {
-  await postFunction(data, "equipSkin")
+  const response = await postFunction(data, "getAccountProgress")
+  if (response.ok) return response.json()
 }
 
 export const GET_CONFIGURATIONS = async () => {
-  return await getFunction("getConfigurations").then((response) => {
-    if (response.ok) {
-      return response.json()
-    }
-  })
+  const response = await getFunction("getConfigurations")
+  if (response.ok) return response.json()
+}
+
+export const CREATE_ACCOUNT = (data) => {
+  return postFunction(data, "createAccount")
+}
+
+export const SAVE_NEW_SKIN = (data) => {
+  return postFunction(data, "saveNewSkin")
+}
+
+export const POST_LEVEL_SCORE = (data) => {
+  postFunction(data, "postLevelScore")
+}
+
+export const SAVE_MONEY = (data) => {
+  postFunction(data, "saveMoney")
+}
+
+export const EQUIP_SKIN = (data) => {
+  postFunction(data, "equipSkin")
 }

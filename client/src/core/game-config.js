@@ -3,12 +3,14 @@ import scenes from "./scenes"
 const targetWidth = 480
 const targetHeight = 854
 
-const deviceRatio = window.innerWidth / window.innerHeight
+const deviceRatio = window.innerHeight / window.innerWidth
 
-const newRatio = (targetHeight / targetWidth) * deviceRatio
+const newRatio = (targetWidth / targetHeight) * deviceRatio
 
-const gameWidth = targetWidth * newRatio
-const gameHeight = targetHeight
+const gameWidth = targetWidth
+const gameHeight = targetHeight * newRatio
+
+// game width is static,game height is dynamic
 
 export default {
   type: Phaser.WEBGL,

@@ -175,17 +175,8 @@ export default class levelSelect extends Phaser.Scene {
       this.actualPage.y + 180,
       "ranking-icon",
       () => {
-        START_FETCHING_SCENE(this)
-        GET_LEVEL_SCORES_AND_NICKNAMES({
+        this.scene.start("leaderboard", {
           level: this.actualPageNumber + 1,
-          start_search_rank: 1,
-          stop_search_rank: 8,
-        }).then((data) => {
-          STOP_FETCHING_SCENE(this)
-          this.scene.start("leaderboard", {
-            ranks: data,
-            level: this.actualPageNumber + 1,
-          })
         })
       }
     )

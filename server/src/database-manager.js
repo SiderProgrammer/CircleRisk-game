@@ -30,25 +30,25 @@ class DatabaseManager {
         setInterval(() => {
           for (let i = 1; i <= this.levels_amount; i++) {
             // score is updated 24/7 but ranks only 1 minute interval  ** TODO REPAIR IT
-            this.updateRanks(i) /// make interval to update ranks from time to time
+            this.updateRanksAndScores(i) /// make interval to update ranks from time to time
           }
         }, this.leaderboards_refresh_time)
       }
     )
   }
   getConfigurations(res) {
-    res.send({skins_setup:customizeSkinsSetup,levels_config:levelsConfig})
+    res.send({ skins_setup: customizeSkinsSetup, levels_config: levelsConfig })
   }
 
-  updateRanks(level) {
+  updateRanksAndScores(level) {
     Levels.find({ level: level }).then((docs) => {
       if (!docs) return
 
-      const sorted_levels = docs
+      docs // is it good idea to modify param?
         .sort((a, b) => a.score_to_update - b.score_to_update)
         .reverse()
 
-      sorted_levels.forEach((level, i) => {
+      docs.forEach((level, i) => {
         Levels.updateOne(
           { _id: level._id },
           { $set: { rank: i + 1, score: level.score_to_update } },
