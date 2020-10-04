@@ -52,6 +52,11 @@ export default class Manager {
     this.helper.randomNextTarget()
 
     this.stars = this.scene.add.particles("star").setDepth(1)
+    this.fps_text = this.scene.add
+      .text(150, 150, this.scene.game.loop.actualFps, {
+        font: "70px LuckiestGuy",
+      })
+      .setDepth(100)
   }
 
   checkIfMissedTarget() {
@@ -210,7 +215,7 @@ export default class Manager {
   }
   bindInputEvents() {
     this.scene.input.on("pointerdown", () => {
-      this.scene.add.text(150, 150, this.scene.game.loop.actualFps)
+      this.fps_text.setText(this.scene.game.loop.actualFps)
       if (!this.game_started) {
         this.game_started = true
       } else {

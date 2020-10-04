@@ -12,7 +12,7 @@ module.exports = [
       rotation_speed: 1,
       acceleration: 0.01,
       targets_amount: 8,
-      ball_distance: 90,
+      ball_distance: 135,
       additional_angle: 22.5,
       starting_target: 1,
       bar_tint: "0xffffff",

@@ -1,7 +1,7 @@
 import scenes from "./scenes"
 
-const targetWidth = 480
-const targetHeight = 854
+const targetWidth = 720
+const targetHeight = 1280
 
 const deviceRatio = window.innerHeight / window.innerWidth
 
@@ -13,7 +13,7 @@ const gameHeight = targetHeight * newRatio
 // game width is static,game height is dynamic
 
 export default {
-  type: Phaser.WEBGL,
+  type: Phaser.CANVAS,
   width: gameWidth,
   height: gameHeight,
   enableDebug: false,

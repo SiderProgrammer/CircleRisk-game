@@ -9,13 +9,13 @@ import {
 } from "./fetch-helper"
 
 window.main_font = "luckiestGuy"
-
+localStorage.clear()
 export const startGame = () => {
   const game = new Phaser.Game(config)
   game.GW = config.width
   game.GH = config.height
 
-  if (game.input.touch != null) {
+  if (!game.device.os.desktop) {
     // check if is mobile phone
     game.input.mouse.enabled = false // if mobile, remove double click
   }
