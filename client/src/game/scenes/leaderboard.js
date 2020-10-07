@@ -34,7 +34,7 @@ export default class Leaderboard extends Phaser.Scene {
     const data = await this.getUsers(
       this.last_start_search_rank,
       this.last_stop_search_rank
-    ) // handle errors
+    )
 
     this.createLeaderboardBars()
     this.createLeaderboardTexts()

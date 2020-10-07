@@ -1,5 +1,5 @@
 import * as helper from "../helper.js"
-//import levelsConfiguration from "../../../../server/src/settings/levels-config"
+
 import { getProgress } from "../../shortcuts/save"
 import { GET_LEVEL_SCORES_AND_NICKNAMES } from "../../shortcuts/requests"
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
@@ -10,12 +10,14 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   init(data) {
-    this.tints = []
+   // this.tints = []
     this.progress = getProgress()
-
+/*
     for (const level in levelsConfiguration) {
       this.tints.push(levelsConfiguration[level].info.tint)
     }
+*/
+this.pages_amount = levelsConfiguration.length
 
     this.actualPageNumber = data.page || 0
     this.canChangePage = true
@@ -206,12 +208,14 @@ export default class levelSelect extends Phaser.Scene {
 
     if (sign == "+") {
       pageShift = this.game.GW
-      this.actualPageNumber++
-      if (this.actualPageNumber == this.tints.length) this.actualPageNumber = 0
-    } else {
-      this.actualPageNumber--
+          this.actualPageNumber--
       if (this.actualPageNumber == -1)
-        this.actualPageNumber = this.tints.length - 1
+        this.actualPageNumber = this.pages_amount - 1
+    } else {
+        
+      this.actualPageNumber++
+      if (this.actualPageNumber == this.pages_amount) this.actualPageNumber = 0
+
     }
 
     const past_page_elements = this.elements
@@ -222,7 +226,7 @@ export default class levelSelect extends Phaser.Scene {
       duration: 500,
       ease: "Bounce.easeOut",
       onStart: () => {
-        this.background.setTint(this.tints[this.actualPageNumber])
+       // this.background.setTint(this.tints[this.actualPageNumber])
 
         this.elements = this.createPageElements()
 
@@ -245,7 +249,7 @@ export default class levelSelect extends Phaser.Scene {
   createBackground() {
     this.background = helper
       .createBackground(this, "levelSelect-bg")
-      .setTint(this.tints[this.actualPageNumber])
+     // .setTint(this.tints[this.actualPageNumber])
   }
 
   createChangePageButtons() {
@@ -254,7 +258,7 @@ export default class levelSelect extends Phaser.Scene {
       this.game.GW / 2 - 185,
       this.game.GH / 2,
       "arrow-button",
-      () => this.tweenPage("-")
+      () => this.tweenPage("+")
     )
 
     helper
@@ -264,7 +268,7 @@ export default class levelSelect extends Phaser.Scene {
         this.game.GH / 2,
         "arrow-button",
         () => {
-          this.tweenPage("+")
+          this.tweenPage("-")
         }
       )
       .setFlipX(true)

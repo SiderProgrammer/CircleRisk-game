@@ -297,7 +297,7 @@ export default class Manager {
     })
   }
 
-  gameOver() {
+   gameOver() {
     this.loseMenuManager.update()
     this.loseMenuManager.showMenu()
 
@@ -311,6 +311,11 @@ export default class Manager {
       this.score >= this.scene.score_to_next_level
     ) {
       this.progress.levels_scores[this.scene.level] = 0
+      POST_LEVEL_SCORE({
+        score: 0,
+        nickname: this.progress.nickname,
+        level: this.scene.level,
+      })
       console.log("new level unlocked")
     }
 

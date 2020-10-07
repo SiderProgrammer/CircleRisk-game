@@ -8,8 +8,11 @@ import {
   STOP_RECONNECTING_SCENE,
 } from "./fetch-helper"
 
+import { IS_ONLINE } from "./shortcuts/requests"
+
 window.main_font = "luckiestGuy"
-localStorage.clear()
+
+//localStorage.clear()
 export const startGame = () => {
   const game = new Phaser.Game(config)
   game.GW = config.width
@@ -21,7 +24,7 @@ export const startGame = () => {
   }
 
   let currentScene = {}
-
+  /*
   window.addEventListener("offline", () => {
     currentScene = game.scene.getScenes(true)[0]
     START_RECONNECTING_SCENE(currentScene)
@@ -30,6 +33,23 @@ export const startGame = () => {
   window.addEventListener("online", () => {
     STOP_RECONNECTING_SCENE(currentScene)
   })
+*/
+let is_online = true
+  setInterval(async () => {
+   
+    if (await IS_ONLINE()) {
+      if (!is_online) {
+        STOP_RECONNECTING_SCENE(currentScene)
+        is_online = true
+      }
+    } else {
+      if (!is_online) return
+      currentScene = game.scene.getScenes(true)[0]
+     
+      START_RECONNECTING_SCENE(currentScene)
+      is_online = false
+    }
+  }, 5000)
 }
 
 window.onload = () => {

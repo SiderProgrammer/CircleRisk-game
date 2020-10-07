@@ -39,3 +39,18 @@ export const SAVE_MONEY = (data) => {
 export const EQUIP_SKIN = (data) => {
   postFunction(data, "equipSkin")
 }
+
+export const IS_ONLINE =  () => {
+  return  fetch("http://192.168.1.12:3001", { // change to https://google.com
+    mode: "no-cors",
+  })
+    .then((response) => {
+     
+      if (response.status != 200) {
+        return true
+      }
+    })
+    .catch(() => {
+      return false
+    })
+}

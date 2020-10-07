@@ -159,10 +159,12 @@ class DatabaseManager {
 
     // saving in account progress
     Accounts.findOne({ nickname: nickname }, (err, account) => {
+console.log(account.levels_scores)
       account.levels_scores[level] = score
       account.markModified("levels_scores")
-      account.save()
+      account.save() // update
     })
+
   }
 
   saveMoney(req, res) {

@@ -1,4 +1,4 @@
-import { CREATE_ACCOUNT } from "./shortcuts/requests"
+import { CREATE_ACCOUNT,IS_ONLINE } from "./shortcuts/requests"
 import { saveProgress } from "./shortcuts/save.js"
 import { startGame } from "./index"
 
@@ -22,14 +22,13 @@ const createAccountAndStartGame = () => {
   startGame()
 }
 
-const handleError = () => {
-  {
-    if (!navigator.onLine) {
+const handleError = async () => {
+    if (!await IS_ONLINE()) {
       info.innerHTML = "No internet connection"
     } else {
       info.innerHTML = "Something went wrong, try again later..."
     }
-  }
+  
 }
 
 export default () => {
