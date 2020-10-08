@@ -15,7 +15,6 @@ module.exports = [
       ball_distance: 135,
       additional_angle: 22.5,
       starting_target: 1,
-      bar_tint: "0xffffff",
     },
   },
 
@@ -35,7 +34,6 @@ module.exports = [
       additional_angle: 22.5,
       starting_target: 1,
       targets_speed: 0.3,
-      bar_tint: "0xffffff",
     },
   },
   {
@@ -53,7 +51,6 @@ module.exports = [
       ball_distance: 130,
       additional_angle: 22.5,
       starting_target: 1,
-      bar_tint: "0xffffff",
     },
   },
 
@@ -72,7 +69,6 @@ module.exports = [
       ball_distance: 100,
       additional_angle: 22.5,
       starting_target: 1,
-      bar_tint: "0xffffff",
     },
   },
   {
@@ -90,7 +86,6 @@ module.exports = [
       ball_distance: 130,
       additional_angle: 22.5,
       starting_target: 6,
-      bar_tint: "0xffffff",
     },
   },
   {
@@ -109,7 +104,6 @@ module.exports = [
       additional_angle: 22.5,
       starting_target: 1,
       target_rotate_speed: 0.5,
-      bar_tint: "0xffffff",
     },
   },
   {
@@ -127,7 +121,6 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
-      bar_tint: "0xffffff",
     },
   },
 
@@ -146,7 +139,6 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
-      bar_tint: "0xffffff",
     },
   },
   {
@@ -164,7 +156,6 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
-      bar_tint: "0xffffff",
     },
   },
   {
@@ -183,7 +174,6 @@ module.exports = [
       additional_angle: 22.5,
       starting_target: 1,
       time_left: 10, //in seconds
-      bar_tint: "0xffffff",
     },
   },
   {
@@ -201,7 +191,6 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
-      bar_tint: "0xffffff",
     },
   },
   {
@@ -219,13 +208,12 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
-      bar_tint: "0xffffff",
     },
   },
 
   {
     info: {
-      score_to_next_level: 120,
+      score_to_next_level: 130,
       tint: "0x06E0FF",
       name: "many",
       difficulty: "easy",
@@ -238,13 +226,12 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
-      bar_tint: "0xffffff",
     },
   },
 
   {
     info: {
-      score_to_next_level: 120,
+      score_to_next_level: 140,
       tint: "0x06E0FF",
       name: "speed",
       difficulty: "easy",
@@ -257,7 +244,84 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
-      bar_tint: "0xffffff",
+    },
+  },
+
+  {
+    info: {
+      score_to_next_level: 150,
+      tint: "0x06E0FF",
+      name: "flower",
+      difficulty: "easy",
+    },
+    config: {
+      background: "flower-bg",
+      rotation_speed: 1,
+      acceleration: 0.06,
+      targets_amount: 8,
+      ball_distance: 110,
+      additional_angle: 22.5,
+      starting_target: 1,
+    },
+  },
+  {
+    info: {
+      score_to_next_level: 160,
+      tint: "0x06E0FF",
+      name: "teleport",
+      difficulty: "easy",
+    },
+    config: {
+      background: "teleport-bg",
+      rotation_speed: 1,
+      acceleration: 0.06,
+      targets_amount: 8,
+      ball_distance: 135,
+      additional_angle: 22.5,
+      starting_target: 1,
+      teleport_value: {
+        min: -1,
+        max: -3,
+      },
+    },
+  },
+
+  {
+    info: {
+      score_to_next_level: 170,
+      tint: "0x06E0FF",
+      name: "suprise",
+      difficulty: "easy",
+    },
+    config: {
+      background: "teleport-bg",
+      rotation_speed: 1,
+      rotation_speed_change: {
+        min: 0.5,
+        max: 3.5,
+      },
+      acceleration: 0.06,
+      targets_amount: 8,
+      ball_distance: 135,
+      additional_angle: 22.5,
+      starting_target: 1,
+    },
+  },
+  {
+    info: {
+      score_to_next_level: 180,
+      tint: "0x06E0FF",
+      name: "pulsating",
+      difficulty: "easy",
+    },
+    config: {
+      background: "teleport-bg",
+      rotation_speed: 1,
+      acceleration: 0.06,
+      targets_amount: 8,
+      ball_distance: 135,
+      additional_angle: 22.5,
+      starting_target: 1,
     },
   },
 ]

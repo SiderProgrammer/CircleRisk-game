@@ -95,7 +95,28 @@ class DatabaseManager {
         Accounts.create(
           {
             nickname: nickname,
-            levels_scores: [0],
+            levels_scores: [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+            ],
             money: 5550,
             skins: { circles: [1], sticks: [1], targets: [1] },
             current_skins: { circles: 1, sticks: 1, targets: 1 },
@@ -159,12 +180,11 @@ class DatabaseManager {
 
     // saving in account progress
     Accounts.findOne({ nickname: nickname }, (err, account) => {
-console.log(account.levels_scores)
+      console.log(account.levels_scores)
       account.levels_scores[level] = score
       account.markModified("levels_scores")
       account.save() // update
     })
-
   }
 
   saveMoney(req, res) {
