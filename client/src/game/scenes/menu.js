@@ -10,7 +10,6 @@ export default class menu extends Phaser.Scene {
   constructor() {
     super("menu")
     this.is_everything_fetched = false
-    this.customize_skins_setup = {}
 
     this.tween_duration = 300
   }
@@ -142,11 +141,7 @@ export default class menu extends Phaser.Scene {
   createCustomizeButtonSet() {
     this.customize_button = helper
       .createButton(this, 0, this.game.GH - 250, "customize-button", () => {
-        this.hideButtons().then(() =>
-          helper.sceneTransition(this, "customize", {
-            setup: this.customize_skins_setup,
-          })
-        )
+        this.hideButtons().then(() => helper.sceneTransition(this, "customize"))
       })
       .setDepth(1)
 
@@ -219,7 +214,7 @@ export default class menu extends Phaser.Scene {
 
   async getConfigurations() {
     const response = await GET_CONFIGURATIONS()
-    this.customize_skins_setup = response.skins_setup
+    window.customize_skins_setup = response.skins_setup
 
     // assign to window because the level select scene can be started by many scenes,
     //not like customize scene which is started only from menu

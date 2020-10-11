@@ -12,7 +12,7 @@ module.exports = [
       rotation_speed: 1,
       acceleration: 0.01,
       targets_amount: 8,
-      ball_distance: 135,
+      ball_distance: 175,
       additional_angle: 22.5,
       starting_target: 1,
     },
@@ -316,6 +316,77 @@ module.exports = [
     },
     config: {
       background: "teleport-bg",
+      rotation_speed: 1,
+      acceleration: 0.06,
+      targets_amount: 8,
+      ball_distance: 135,
+      additional_angle: 22.5,
+      starting_target: 1,
+    },
+  },
+  {
+    info: {
+      score_to_next_level: 190,
+      tint: "0x06E0FF",
+      name: "blind",
+      difficulty: "easy",
+    },
+    config: {
+      background: "teleport-bg",
+      rotation_speed: 1,
+      acceleration: 0.06,
+      targets_amount: 8,
+      ball_distance: 135,
+      additional_angle: 22.5,
+      starting_target: 1,
+    },
+  },
+
+  {
+    info: {
+      score_to_next_level: 200,
+      tint: "0x06E0FF",
+      name: "sense",
+      difficulty: "easy",
+    },
+    config: {
+      background: "teleport-bg",
+      rotation_speed: 1,
+      acceleration: 0.06,
+      targets_amount: 8,
+      ball_distance: 135,
+      additional_angle: 22.5,
+      starting_target: 1,
+    },
+  },
+
+  {
+    info: {
+      score_to_next_level: 210,
+      tint: "0x06E0FF",
+      name: "tiny",
+      difficulty: "easy",
+    },
+    config: {
+      background: "teleport-bg",
+      rotation_speed: 1,
+      acceleration: 0.06,
+      targets_amount: 8,
+      ball_distance: 135,
+      additional_angle: 22.5,
+      starting_target: 1,
+    },
+  },
+
+  {
+    info: {
+      score_to_next_level: 220,
+      tint: "0x06E0FF",
+      name: "hell",
+      difficulty: "easy",
+    },
+    config: {
+      background: "hell-bg",
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,

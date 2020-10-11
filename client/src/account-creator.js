@@ -1,4 +1,4 @@
-import { CREATE_ACCOUNT,IS_ONLINE } from "./shortcuts/requests"
+import { CREATE_ACCOUNT, IS_ONLINE } from "./shortcuts/requests"
 import { saveProgress } from "./shortcuts/save.js"
 import { startGame } from "./index"
 
@@ -23,19 +23,39 @@ const createAccountAndStartGame = () => {
 }
 
 const handleError = async () => {
-    if (!await IS_ONLINE()) {
-      info.innerHTML = "No internet connection"
-    } else {
-      info.innerHTML = "Something went wrong, try again later..."
-    }
-  
+  if (!(await IS_ONLINE())) {
+    info.innerHTML = "No internet connection"
+  } else {
+    info.innerHTML = "Something went wrong, try again later..."
+  }
+}
+const VALIDATE_OK = (string) => {
+  const VALIDATE_REGEXP = /^[a-z0-9wа-я]+$/i
+  const MIN_NICKNAME_LENGTH = 5
+
+  let characters_test = VALIDATE_REGEXP.test(string)
+
+  if (!characters_test) {
+    info.innerHTML = "Remove special characters please"
+    return false
+  }
+
+  if (string.length < MIN_NICKNAME_LENGTH) {
+    info.innerHTML = "You need at least 5 characters"
+    return false
+  }
+
+  return true
 }
 
 export default () => {
   creator_div.style.display = "block"
 
   accept_button.onclick = async () => {
+    if (!VALIDATE_OK(nickname_input.value)) return
+
     info.innerHTML = "Creating account ..."
+
     try {
       const response = await CREATE_ACCOUNT({
         nickname: nickname_input.value,

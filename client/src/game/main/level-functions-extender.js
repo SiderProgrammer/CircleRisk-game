@@ -1,4 +1,5 @@
 export default class LevelsFunctionsExtender {
+  // THIS CLASS IS MENTIONED TO HELP LEVELS WHERE TARGETS ARE MOVING
   constructor(scene) {
     this.scene = scene
   }

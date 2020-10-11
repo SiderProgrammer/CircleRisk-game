@@ -28,10 +28,16 @@ export const sceneTransition = function (scene, new_scene, data = {}) {
   })
 }
 export const sceneIntro = function (scene) {
+  let duration = 400
+  if (scene.manager) {
+    duration = scene.manager.intro_duration
+  }
+
   scene.tweens.add({
     targets: createBackground(scene, "black-bg"),
     alpha: 0,
-    duration: 400,
+    duration: duration,
+    // could pass intro duration as param but i did bad and i would had to change it in each leavl
   })
 }
 
@@ -51,7 +57,7 @@ export const createTopBar = function (scene, sprite) {
 }
 
 export const createFetchingAnimation = function (scene, x, y) {
-  const image = scene.add.image(x, y, "play-button").setDepth(1000)
+  const image = scene.add.image(x, y, "loading").setDepth(1000)
 
   const tween = scene.tweens.add({
     targets: image,

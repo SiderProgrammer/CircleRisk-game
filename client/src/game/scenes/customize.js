@@ -9,8 +9,8 @@ export default class Customize extends Phaser.Scene {
     super("customize")
   }
 
-  init(data) {
-    this.setup = data.setup
+  init() {
+    this.setup = customize_skins_setup
 
     this.hidden_scale = 0.7
     this.shift_value = 90
@@ -21,7 +21,7 @@ export default class Customize extends Phaser.Scene {
 
   create() {
     helper.createBackground(this, "customize-bg")
-    helper.createTopBar(this, "shop-top-bar")
+
     this.createHomeButton()
     this.createCoin()
     this.createMoney()
@@ -85,20 +85,26 @@ export default class Customize extends Phaser.Scene {
     stick.y += stick.displayWidth / 2
     other_stick.y += stick.displayWidth / 2
 
-    helper.createButton(this, stick.x - 100, stick.y, "arrow-button", () => {
-      if (!this.can_change) return
-      this.stick_skin_number--
-      this.changeSkinButtonClicked(
-        stick,
-        other_stick,
-        "sticks",
-        "+",
-        this.stick_skin_number
-      )
-    })
+    helper.createButton(
+      this,
+      stick.x - 100,
+      stick.y,
+      "arrow-button-blue",
+      () => {
+        if (!this.can_change) return
+        this.stick_skin_number--
+        this.changeSkinButtonClicked(
+          stick,
+          other_stick,
+          "sticks",
+          "+",
+          this.stick_skin_number
+        )
+      }
+    )
 
     helper
-      .createButton(this, stick.x + 100, stick.y, "arrow-button", () => {
+      .createButton(this, stick.x + 100, stick.y, "arrow-button-blue", () => {
         if (!this.can_change) return
 
         this.stick_skin_number++
@@ -128,20 +134,26 @@ export default class Customize extends Phaser.Scene {
       target.texture.key
     )
 
-    helper.createButton(this, target.x - 100, target.y, "arrow-button", () => {
-      if (!this.can_change) return
-      this.target_skin_number--
-      this.changeSkinButtonClicked(
-        target,
-        other_target,
-        "targets",
-        "+",
-        this.target_skin_number
-      )
-    })
+    helper.createButton(
+      this,
+      target.x - 100,
+      target.y,
+      "arrow-button-blue",
+      () => {
+        if (!this.can_change) return
+        this.target_skin_number--
+        this.changeSkinButtonClicked(
+          target,
+          other_target,
+          "targets",
+          "+",
+          this.target_skin_number
+        )
+      }
+    )
 
     helper
-      .createButton(this, target.x + 100, target.y, "arrow-button", () => {
+      .createButton(this, target.x + 100, target.y, "arrow-button-blue", () => {
         if (!this.can_change) return
         this.target_skin_number++
         this.changeSkinButtonClicked(
@@ -157,28 +169,34 @@ export default class Customize extends Phaser.Scene {
 
   createCircleSet(sprite) {
     this.circle_skin_number = this.getSkinNumber(sprite)
-    const circle = this.add.image(this.game.GW / 2, 200, sprite)
+    const circle = this.add.image(this.game.GW / 2, this.game.GH / 2, sprite)
     this.circle = circle
 
     const other_circle = this.add
       .image(circle.x, circle.y, circle.texture.key)
       .setAlpha(0)
 
-    helper.createButton(this, circle.x - 100, circle.y, "arrow-button", () => {
-      if (!this.can_change) return
+    helper.createButton(
+      this,
+      circle.x - 100,
+      circle.y,
+      "arrow-button-blue",
+      () => {
+        if (!this.can_change) return
 
-      this.circle_skin_number--
-      this.changeSkinButtonClicked(
-        circle,
-        other_circle,
-        "circles",
-        "+",
-        this.circle_skin_number
-      )
-    })
+        this.circle_skin_number--
+        this.changeSkinButtonClicked(
+          circle,
+          other_circle,
+          "circles",
+          "+",
+          this.circle_skin_number
+        )
+      }
+    )
 
     helper
-      .createButton(this, circle.x + 100, circle.y, "arrow-button", () => {
+      .createButton(this, circle.x + 100, circle.y, "arrow-button-blue", () => {
         if (!this.can_change) return
 
         this.circle_skin_number++

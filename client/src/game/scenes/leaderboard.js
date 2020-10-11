@@ -6,7 +6,7 @@ import {
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 
 const bar_text_config = {
-  font: `30px LuckiestGuy`,
+  font: `50px LuckiestGuy`,
   color: "#fff",
   my_nickname_color: "0xff00ff",
 }
@@ -24,7 +24,7 @@ export default class Leaderboard extends Phaser.Scene {
   }
 
   async create() {
-    helper.createBackground(this, "black-bg") // can set it to not visbile and show it later
+    helper.createBackground(this, "leaderboard-bg") // can set it to not visbile and show it later
     this.createHomeButton() // can set it to not visbile and show it later
     this.createLeaderboardButtons() // can set it to not visbile and show it later
     this.calculateVariablesHeightDependend() // too long func name
@@ -39,18 +39,30 @@ export default class Leaderboard extends Phaser.Scene {
     this.createLeaderboardBars()
     this.createLeaderboardTexts()
     this.updateTexts(data)
+    this.createOrnaments()
+    this.createLevelInfo()
 
     STOP_FETCHING_SCENE(this)
   }
-
+  createLevelInfo() {
+    // TODO
+  }
+  createOrnaments() {
+    this.add.image(this.game.GW, this.game.GH, "lb-eyes").setOrigin(1, 1)
+    this.add.image(this.game.GW / 2, this.game.GH / 2, "lb-face")
+    this.add.image(0, 200, "lb-bubbles").setOrigin(0, 0.5)
+  }
   calculateVariablesHeightDependend() {
-    const bar_height = this.game.textures.list["top-bar"].frames.__BASE
+    const bar_height = this.game.textures.list["white-strap"].frames.__BASE
       .cutHeight
+
+    const shift = 160
 
     const empty_space =
       this.game.GH -
       this.previous_page_button.displayHeight -
-      this.next_page_button.displayHeight
+      this.next_page_button.displayHeight -
+      shift
 
     const bars_amount = Math.floor(empty_space / bar_height)
 
@@ -58,7 +70,8 @@ export default class Leaderboard extends Phaser.Scene {
       (this.previous_page_button.displayHeight +
         this.next_page_button.displayHeight) /
         2 +
-      (empty_space - bar_height * bars_amount) / 2
+      (empty_space - bar_height * bars_amount) / 2 +
+      shift
 
     this.last_start_search_rank = 1
     this.last_stop_search_rank = bars_amount
@@ -66,31 +79,56 @@ export default class Leaderboard extends Phaser.Scene {
   }
 
   createHomeButton() {
-    helper.createButton(this, 50, 50, "home-button", () => {
-      this.scene.start("levelSelect", { page: this.level - 1 })
-    })
+    const x = 50
+    const y = 50
+
+    helper
+      .createButton(this, x, y, "arrow-button-brown", () => {
+        this.scene.start("levelSelect", { page: this.level - 1 })
+      })
+      .setAngle(270)
+      .setDepth(1)
+    this.add.image(x + 10, y, "glow")
   }
 
   createLeaderboardButtons() {
-    this.previous_page_button = helper.createButton(
-      this,
-      this.GW - 70,
-      50,
-      "arrow-button",
-      () => this.getUsersAndUpdateTexts("-")
+    this.previous_page_button = helper
+      .createButton(this, this.GW - 70, 50, "arrow-button-brown", () =>
+        this.getUsersAndUpdateTexts("-")
+      )
+      .setDepth(1)
+
+    this.add.image(
+      this.previous_page_button.x,
+      this.previous_page_button.y + 10,
+      "glow"
     )
 
-    this.next_page_button = helper.createButton(
+    this.next_page_button = helper
+      .createButton(
+        this,
+        this.GW - 70,
+        this.game.GH - 50,
+        "arrow-button-brown",
+        () => this.getUsersAndUpdateTexts("+")
+      )
+      .setFlipY(true)
+      .setDepth(1)
+
+    this.add.image(
+      this.next_page_button.x,
+      this.next_page_button.y - 10,
+      "glow"
+    )
+
+    const me = helper.createButton(
       this,
-      this.GW - 70,
+      this.GW / 2,
       this.game.GH - 50,
-      "arrow-button",
-      () => this.getUsersAndUpdateTexts("+")
+      "circle-button-brown",
+      () => this.searchMeAndUpdateTexts()
     )
-
-    helper.createButton(this, this.GW / 2, 50, "play-button", () =>
-      this.searchMeAndUpdateTexts()
-    )
+    this.add.image(me.x, me.y, "glow")
   }
 
   createLeaderboardBars() {
@@ -103,6 +141,9 @@ export default class Leaderboard extends Phaser.Scene {
       this.bars.push(bar)
     }
 
+    for (let i = 1; i <= this.bars.length - 1; i += 2) {
+      this.bars[i].setVisible(false)
+    }
     /*
     const makeScoreBar = () => {
       const bar = this.addScoreBar(this.game.GH / 2)
@@ -241,6 +282,6 @@ export default class Leaderboard extends Phaser.Scene {
   }
 
   addScoreBar(y) {
-    return this.add.image(this.GW / 2, y, "top-bar")
+    return this.add.image(this.GW / 2, y, "white-strap")
   }
 }

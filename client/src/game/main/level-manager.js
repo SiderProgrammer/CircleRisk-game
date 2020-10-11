@@ -24,6 +24,7 @@ export default class Manager {
     this.GH = this.scene.game.GH
     this.target_array = []
     this.circles = []
+    this.circle_distance_to_circle = null
     this.current_circle = 1
     this.rotation_angle = 270
     this.rotation_direction = 1
@@ -32,6 +33,8 @@ export default class Manager {
     this.is_possible_miss = false
     this.current_target = this.config.starting_target
     this.rotation_speed = this.config.rotation_speed
+    this.intro_duration = 1000
+
     this.score = 0
     this.perfect = 0
 
@@ -51,7 +54,6 @@ export default class Manager {
     this.helper = new LevelHelper(this)
     this.helper.randomNextTarget()
 
-    this.stars = this.scene.add.particles("star").setDepth(1)
     this.fps_text = this.scene.add
       .text(150, 150, this.scene.game.loop.actualFps, {
         font: "70px LuckiestGuy",
@@ -60,10 +62,7 @@ export default class Manager {
   }
 
   checkIfMissedTarget() {
-    const distance_from_target = Phaser.Math.Distance.BetweenPoints(
-      this.circles[this.current_circle],
-      this.target_array[this.next_target]
-    )
+    const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
 
     if (distance_from_target > 90 && this.is_possible_miss) {
       // this.gameOver();
@@ -79,14 +78,15 @@ export default class Manager {
       ///
       this.scene.shake()
     }
+
+    if (typeof this.scene.changeRotationSpeed === "function") {
+      this.scene.changeRotationSpeed()
+    }
     this.rotation_speed += this.config.acceleration
 
-    const distance_from_target = Phaser.Math.Distance.BetweenPoints(
-      this.circles[this.current_circle],
-      this.target_array[this.next_target]
-    )
+    const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
 
-    if (distance_from_target < 90) {
+    if (distance_from_target < this.circles[1].displayWidth / 2) {
       if (distance_from_target < 10) {
         this.score += 2
         this.perfect++
@@ -137,6 +137,10 @@ export default class Manager {
         )
       )
 
+      if (typeof this.scene.teleportCircle === "function") {
+        this.scene.teleportCircle()
+      }
+
       if (typeof this.scene.slideCircle === "function") {
         ////
         this.scene.slideCircle()
@@ -148,21 +152,29 @@ export default class Manager {
         ////
         this.scene.darkenTargets()
       }
+
+      if (typeof this.scene.hideSetForAWhile === "function") {
+        ////
+        this.scene.hideSetForAWhile()
+      }
+
+      if (typeof this.scene.hideTargets === "function") {
+        this.scene.hideTargets()
+      }
     } else {
       this.gameOver()
     }
   }
   createGUI() {
     helper.createBackground(this.scene, this.config.background)
-    this.top_bar = helper
-      .createTopBar(this.scene, "top-bar")
-      .setTint(this.config.bar_tint) //.setDepth(1);
 
     helper
-      .createButton(this.scene, 10, 10, "home-button", () =>
-        this.scene.scene.start("menu")
-      )
-      // .setDepth(1)
+      .createButton(this.scene, 10, 10, "pause-button", () => {
+        this.scene.scene.pause()
+
+        this.scene.scene.launch("pause", { scene: this.scene })
+        this.scene.scene.bringToTop("pause")
+      })
       .setOrigin(0)
   }
 
@@ -234,11 +246,10 @@ export default class Manager {
     ///circles
     //console.log(this.stick.displayWidth)
     const static_distance =
-      this.stick.displayWidth +
+      (this.circle_distance_to_circle || this.stick.displayWidth) +
       this.circles[1 - this.current_circle].displayWidth
 
     const radians_angle = Phaser.Math.DegToRad(this.rotation_angle - 90)
-    if (this.stick.displayWidth < 0) this.stick.displayWidth = 0
 
     const current_circle_x =
       this.circles[1 - this.current_circle].x -
@@ -281,15 +292,15 @@ export default class Manager {
   }
 
   centerTargets() {
-    const pos = this.helper.calculateMinMaxTargetsPos()
+    const { x, y, minX, minY } = this.helper.calculateMinMaxTargetsPos()
 
-    const differenceX = pos.x - pos.minX
+    const differenceX = x - minX
     const newX = (this.GW - differenceX) / 2
-    const target_shiftX = newX - pos.minX
+    const target_shiftX = newX - minX
 
-    const differenceY = pos.y - pos.minY
+    const differenceY = y - minY
     const newY = (this.GH - differenceY) / 2
-    const target_shiftY = newY - pos.minY + this.top_bar.displayHeight / 2
+    const target_shiftY = newY - minY // + this.top_bar.displayHeight / 2
 
     this.target_array.forEach((target) => {
       target.x += target_shiftX
@@ -297,9 +308,8 @@ export default class Manager {
     })
   }
 
-   gameOver() {
+  async gameOver() {
     this.loseMenuManager.update()
-    this.loseMenuManager.showMenu()
 
     this.scene.input.removeAllListeners()
     this.game_started = false
@@ -311,13 +321,18 @@ export default class Manager {
       this.score >= this.scene.score_to_next_level
     ) {
       this.progress.levels_scores[this.scene.level] = 0
-      POST_LEVEL_SCORE({
+      await POST_LEVEL_SCORE({
         score: 0,
         nickname: this.progress.nickname,
         level: this.scene.level,
       })
-      console.log("new level unlocked")
+
+      this.loseMenuManager.createNextLevelButton()
+    } else {
+      this.loseMenuManager.createReplayButton()
     }
+
+    this.loseMenuManager.showMenu()
 
     const this_level_score = this.progress.levels_scores[this.scene.level - 1]
     if (this.score > this_level_score || !this_level_score) {

@@ -9,11 +9,18 @@ export default class LevelHelper {
     )
   }
   extendStick() {
-    this.scene.stick.displayWidth =
+    this.scene.circle_distance_to_circle = // it is needed to rotate other circle
       Phaser.Math.Distance.BetweenPoints(
         this.scene.circles[1 - this.scene.current_circle],
         this.scene.target_array[this.scene.next_target]
       ) - this.scene.circles[1 - this.scene.current_circle].displayWidth
+
+    this.scene.stick.displayWidth = this.scene.circle_distance_to_circle
+
+    /* 
+if (this.scene.stick.displayWidth < 0) this.scene.stick.setVisible(false)
+    else this.scene.stick.setVisible(true)
+    */
   }
   centerStick() {
     const radians_angle = Phaser.Math.DegToRad(this.scene.rotation_angle + 90)
@@ -64,5 +71,23 @@ export default class LevelHelper {
     })
 
     return pos
+  }
+
+  normalizeIndexByTargetsAmount(index) {
+    // is mutating arguemnt good idea?
+    const length = this.scene.target_array.length - 1
+    if (index > length) {
+      index -= length - 1
+    } else if (index < 0) {
+      index += length + 1
+    }
+    return index
+  }
+
+  calculateRotatingCircleDistanceToTarget() {
+    return Phaser.Math.Distance.BetweenPoints(
+      this.scene.circles[this.scene.current_circle],
+      this.scene.target_array[this.scene.next_target]
+    )
   }
 }

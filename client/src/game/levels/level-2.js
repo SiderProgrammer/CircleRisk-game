@@ -52,8 +52,7 @@ export default class level_2 extends Phaser.Scene {
       }
       if (
         target.y >= this.game.GH - target.displayHeight / 2 ||
-        target.y <=
-          0 + target.displayHeight / 2 + this.manager.top_bar.displayHeight
+        target.y <= 0 + target.displayHeight / 2 //+ this.manager.top_bar.displayHeight
       ) {
         this.targets_speed.y = -this.targets_speed.y
       }

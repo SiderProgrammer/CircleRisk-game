@@ -1,3 +1,5 @@
+const imgPath = "./assets/img"
+
 export default class loader extends Phaser.Scene {
   constructor() {
     super("loader")
@@ -5,9 +7,9 @@ export default class loader extends Phaser.Scene {
   }
 
   loadImage(name, path) {
-    const imgPath = "./assets/img"
     this.load.image(name, `${imgPath}/${path}/${name}.png`)
   }
+
   backgrounds() {
     this.loadImage("menu-bg", "backgrounds")
     this.loadImage("levelSelect-bg", "backgrounds")
@@ -29,16 +31,24 @@ export default class loader extends Phaser.Scene {
     this.loadImage("time-bg", "backgrounds")
     this.loadImage("perfect-bg", "backgrounds")
     this.loadImage("many-bg", "backgrounds")
+    this.loadImage("flower-bg", "backgrounds")
+    this.loadImage("hell-bg", "backgrounds")
+    this.loadImage("leaderboard-bg", "backgrounds")
   }
   buttons() {
+    this.loadImage("pause-button", "buttons")
     this.loadImage("play-button", "buttons")
+    this.loadImage("arrow-button-blue", "buttons")
     this.loadImage("customize-button", "buttons")
     this.loadImage("home-button", "buttons")
     this.loadImage("arrow-button", "buttons")
     this.loadImage("levelSelect-button", "buttons")
     this.loadImage("replay-button", "buttons")
     this.loadImage("close-button", "buttons")
+    this.loadImage("next-button", "buttons")
     this.loadImage("tick-button", "buttons")
+    this.loadImage("arrow-button-brown", "buttons")
+    this.loadImage("circle-button-brown", "buttons")
   }
   sticks(i) {
     this.loadImage("stick_" + i, "sticks")
@@ -62,13 +72,28 @@ export default class loader extends Phaser.Scene {
     this.loadImage("red-strap", "mix")
     this.loadImage("purple-strap", "mix")
     this.loadImage("blue-square", "mix")
+    this.loadImage("white-strap", "mix")
     this.loadImage("perfect", "mix")
     this.loadImage("star", "mix")
     this.loadImage("ranking-icon", "mix")
+    this.loadImage("loading", "mix")
+    this.loadImage("glow", "mix")
+    this.loadImage("lb-eyes", "mix")
+    this.loadImage("lb-bubbles", "mix")
+    this.loadImage("lb-face", "mix")
 
     this.loadImage("level-select-difficulty-bar", "mix")
     this.loadImage("level-select-score-bar", "mix")
     this.loadImage("level-select-name-bar", "mix")
+
+    this.loadImage("black", "mix")
+    this.loadImage("red", "mix")
+
+    this.load.atlas(
+      "stars",
+      `${imgPath}/mix/stars.png`,
+      `${imgPath}/mix/stars.json`
+    )
   }
   levelsIcons() {
     this.loadImage("basic_icon", "levelsIcons")
@@ -85,6 +110,8 @@ export default class loader extends Phaser.Scene {
     this.loadImage("invisible_icon", "levelsIcons")
     this.loadImage("expanding_icon", "levelsIcons")
     this.loadImage("many_icon", "levelsIcons")
+    this.loadImage("flower_icon", "levelsIcons")
+    this.loadImage("hell_icon", "levelsIcons")
   }
 
   preload() {

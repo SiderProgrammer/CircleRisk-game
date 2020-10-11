@@ -1,6 +1,7 @@
 export default class PerfectManager {
   constructor(scene) {
     this.scene = scene
+    this.stars = scene.scene.add.particles("stars").setDepth(1)
   }
   createPerfectText() {
     this.perfect_text = this.scene.scene.add
@@ -34,7 +35,11 @@ export default class PerfectManager {
   }
   showPerfectEffect() {
     // perfect
-    const stars_emtiter = this.scene.stars.createEmitter({
+    const stars_emtiter = this.stars.createEmitter({
+      frame: {
+        frames: ["star_1", "star_2", "star_3", "star_4", "star_5"],
+        cycle: false,
+      },
       x: this.scene.circles[this.scene.current_circle].x,
       y: {
         min: this.scene.circles[this.scene.current_circle].y - 30,
@@ -46,9 +51,9 @@ export default class PerfectManager {
       speedY: { min: 50, max: -200 },
       gravityY: 150,
       quantity: -1,
-
+      //  angle: { min: 0, max: 360 },
       maxParticles: 8,
-      tint: [0xffff00, 0xff0000, 0x00ff00, 0x0000ff],
+      // tint: [0xffff00, 0xff0000, 0x00ff00, 0x0000ff],
     })
     stars_emtiter.explode(8)
   }

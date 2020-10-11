@@ -95,28 +95,7 @@ class DatabaseManager {
         Accounts.create(
           {
             nickname: nickname,
-            levels_scores: [
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-            ],
+            levels_scores: [0],
             money: 5550,
             skins: { circles: [1], sticks: [1], targets: [1] },
             current_skins: { circles: 1, sticks: 1, targets: 1 },
@@ -174,16 +153,16 @@ class DatabaseManager {
     }
     /// if not found - create
 
-    Levels.findOneAndUpdate(query, update, options, (err, c) =>
-      res.sendStatus(200)
-    )
+    // maybe use await
+    Levels.findOneAndUpdate(query, update, options)
 
     // saving in account progress
     Accounts.findOne({ nickname: nickname }, (err, account) => {
-      console.log(account.levels_scores)
       account.levels_scores[level] = score
       account.markModified("levels_scores")
       account.save() // update
+
+      res.sendStatus(200)
     })
   }
 

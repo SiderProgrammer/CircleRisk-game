@@ -36,9 +36,11 @@ body {
 }
 
 #accept-nickname {
-  width: 100px;
-  height: 50px;
   margin-top: 50px;
+  border: 0;
+  width: 137px;
+  height: 137px;
+  background: url("assets/img/buttons/tick-button.png");
 }
 
 #creating-info {

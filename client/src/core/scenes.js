@@ -6,6 +6,7 @@ import Customize from "../game/scenes/customize.js"
 import Leaderboard from "../game/scenes/leaderboard.js"
 import Offline from "../game/scenes/offline.js"
 import Fetching from "../game/scenes/fetching.js"
+import Pause from "../game/scenes/pause.js"
 
 import Level_1 from "../game/levels/level-1"
 import Level_2 from "../game/levels/level-2"
@@ -21,6 +22,14 @@ import Level_11 from "../game/levels/level-11"
 import Level_12 from "../game/levels/level-12"
 import Level_13 from "../game/levels/level-13"
 import Level_14 from "../game/levels/level-14"
+import Level_15 from "../game/levels/level-15"
+import Level_16 from "../game/levels/level-16"
+import Level_17 from "../game/levels/level-17"
+import Level_18 from "../game/levels/level-18"
+import Level_19 from "../game/levels/level-19"
+import Level_20 from "../game/levels/level-20"
+import Level_21 from "../game/levels/level-21"
+import Level_22 from "../game/levels/level-22"
 
 export default [
   Preloader,
@@ -31,6 +40,7 @@ export default [
   Leaderboard,
   Offline,
   Fetching,
+  Pause,
 
   Level_1,
   Level_2,
@@ -46,4 +56,12 @@ export default [
   Level_12,
   Level_13,
   Level_14,
+  Level_15,
+  Level_16,
+  Level_17,
+  Level_18,
+  Level_19,
+  Level_20,
+  Level_21,
+  Level_22,
 ]

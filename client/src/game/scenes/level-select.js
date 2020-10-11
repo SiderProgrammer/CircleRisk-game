@@ -1,8 +1,6 @@
 import * as helper from "../helper.js"
 
 import { getProgress } from "../../shortcuts/save"
-import { GET_LEVEL_SCORES_AND_NICKNAMES } from "../../shortcuts/requests"
-import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 
 export default class levelSelect extends Phaser.Scene {
   constructor() {
@@ -10,16 +8,16 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   init(data) {
-   // this.tints = []
+    // this.tints = []
     this.progress = getProgress()
-/*
+    /*
     for (const level in levelsConfiguration) {
       this.tints.push(levelsConfiguration[level].info.tint)
     }
 */
-this.pages_amount = levelsConfiguration.length
+    this.pages_amount = levelsConfiguration.length
 
-    this.actualPageNumber = data.page || 0
+    this.actualPageNumber = data.page || this.progress.levels_scores.length - 1
     this.canChangePage = true
   }
 
@@ -208,14 +206,12 @@ this.pages_amount = levelsConfiguration.length
 
     if (sign == "+") {
       pageShift = this.game.GW
-          this.actualPageNumber--
+      this.actualPageNumber--
       if (this.actualPageNumber == -1)
         this.actualPageNumber = this.pages_amount - 1
     } else {
-        
       this.actualPageNumber++
       if (this.actualPageNumber == this.pages_amount) this.actualPageNumber = 0
-
     }
 
     const past_page_elements = this.elements
@@ -226,7 +222,7 @@ this.pages_amount = levelsConfiguration.length
       duration: 500,
       ease: "Bounce.easeOut",
       onStart: () => {
-       // this.background.setTint(this.tints[this.actualPageNumber])
+        // this.background.setTint(this.tints[this.actualPageNumber])
 
         this.elements = this.createPageElements()
 
@@ -247,15 +243,16 @@ this.pages_amount = levelsConfiguration.length
     })
   }
   createBackground() {
-    this.background = helper
-      .createBackground(this, "levelSelect-bg")
-     // .setTint(this.tints[this.actualPageNumber])
+    helper.createBackground(this, "red")
+    this.background = helper.createBackground(this, "levelSelect-bg")
+    // .setTint(this.tints[this.actualPageNumber])
   }
 
   createChangePageButtons() {
+    let shift = 275
     helper.createButton(
       this,
-      this.game.GW / 2 - 185,
+      this.game.GW / 2 - shift,
       this.game.GH / 2,
       "arrow-button",
       () => this.tweenPage("+")
@@ -264,7 +261,7 @@ this.pages_amount = levelsConfiguration.length
     helper
       .createButton(
         this,
-        this.game.GW / 2 + 185,
+        this.game.GW / 2 + shift,
         this.game.GH / 2,
         "arrow-button",
         () => {
