@@ -4,13 +4,14 @@ const srvConfig = require("./settings/config")
 const { Accounts, Levels } = require("./settings/model")
 
 const customizeSkinsSetup = require("./settings/customize-skins-setup")
-const levelsConfig = require("./settings/levels-config")
+const levelsConfig = require("./settings/levels/levels-config")
 
 const DATABASE_URL = `mongodb+srv://${srvConfig.USERNAME}:${srvConfig.PASSWORD}@${srvConfig.HOST}/${srvConfig.DB}?retryWrites=true&w=majority`
 
 class DatabaseManager {
   constructor() {
-    this.levels_amount = 4
+    this.levels_amount = 4 //levelsConfig.length;
+
     this.leaderboards_refresh_time = 1000 * 60 * 1
   }
   connectDatabase() {
@@ -95,7 +96,29 @@ class DatabaseManager {
         Accounts.create(
           {
             nickname: nickname,
-            levels_scores: [0],
+            levels_scores: [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+            ],
             money: 5550,
             skins: { circles: [1], sticks: [1], targets: [1] },
             current_skins: { circles: 1, sticks: 1, targets: 1 },
@@ -151,19 +174,19 @@ class DatabaseManager {
       setDefaultsOnInsert: true,
       useFindAndModify: false,
     }
-    /// if not found - create
 
+    /// if not found - create
     // maybe use await
-    Levels.findOneAndUpdate(query, update, options)
+    Levels.findOneAndUpdate(query, update, options).exec()
 
     // saving in account progress
     Accounts.findOne({ nickname: nickname }, (err, account) => {
       account.levels_scores[level] = score
       account.markModified("levels_scores")
       account.save() // update
-
-      res.sendStatus(200)
     })
+
+    res.sendStatus(200)
   }
 
   saveMoney(req, res) {
@@ -177,7 +200,7 @@ class DatabaseManager {
       { nickname: req.body.nickname },
       { money: req.body.money },
       options,
-      (err, c) => {
+      () => {
         res.sendStatus(200)
       }
     )

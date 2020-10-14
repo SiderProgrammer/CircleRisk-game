@@ -73,6 +73,17 @@ if (this.scene.stick.displayWidth < 0) this.scene.stick.setVisible(false)
     return pos
   }
 
+  findTargetIndexByPosition({ x, y }) {
+    return this.scene.target_array[
+      this.scene.target_array.findIndex((target) => {
+        if (x && y) {
+          return target.x === x && target.y === y
+        } else if (x) return target.x === x
+        else return target.y === y
+      })
+    ]
+  }
+
   normalizeIndexByTargetsAmount(index) {
     // is mutating arguemnt good idea?
     const length = this.scene.target_array.length - 1

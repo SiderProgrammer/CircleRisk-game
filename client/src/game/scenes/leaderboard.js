@@ -25,6 +25,9 @@ export default class Leaderboard extends Phaser.Scene {
 
   async create() {
     helper.createBackground(this, "leaderboard-bg") // can set it to not visbile and show it later
+    this.createMyScoretHighLight()
+    this.createUpperStrip()
+
     this.createHomeButton() // can set it to not visbile and show it later
     this.createLeaderboardButtons() // can set it to not visbile and show it later
     this.calculateVariablesHeightDependend() // too long func name
@@ -44,12 +47,28 @@ export default class Leaderboard extends Phaser.Scene {
 
     STOP_FETCHING_SCENE(this)
   }
+  createMyScoretHighLight() {
+    this.aura = this.add.image(0, 0, "lb-aura").setVisible(false)
+    helper.setGameSize(this.aura, true)
+  }
+
+  createUpperStrip() {
+    const strip = this.add
+      .image(this.game.GW / 2, 0, "lb-strip")
+      .setOrigin(0.5, 0)
+    helper.setGameSize(strip, true)
+  }
   createLevelInfo() {
-    // TODO
+    const { difficulty, name } = levelsConfiguration[this.level - 1].info
+
+    this.add
+      .text(this.game.GW / 2, 80, difficulty, { font: `50px ${main_font}` })
+      .setOrigin(0.5)
+    this.add.image(this.game.GW / 2, 200, name + "_icon")
   }
   createOrnaments() {
     this.add.image(this.game.GW, this.game.GH, "lb-eyes").setOrigin(1, 1)
-    this.add.image(this.game.GW / 2, this.game.GH / 2, "lb-face")
+    this.add.image(this.game.GW / 2 - 20, this.game.GH / 2, "lb-face")
     this.add.image(0, 200, "lb-bubbles").setOrigin(0, 0.5)
   }
   calculateVariablesHeightDependend() {
@@ -236,6 +255,8 @@ export default class Leaderboard extends Phaser.Scene {
   }
 
   updateTexts(sorted_data) {
+    this.aura.setVisible(false)
+
     this.texts.forEach((account_text, i) => {
       if (!sorted_data[i]) {
         sorted_data[i] = {
@@ -247,6 +268,9 @@ export default class Leaderboard extends Phaser.Scene {
 
       if (sorted_data[i].nickname === my_nickname) {
         account_text.nickname.setColor(bar_text_config.my_nickname_color)
+        this.aura
+          .setPosition(account_text.nickname.x, account_text.nickname.y)
+          .setVisible(true)
       } else {
         account_text.nickname.setColor(bar_text_config.color)
       }

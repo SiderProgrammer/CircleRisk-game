@@ -33,7 +33,7 @@ export default class Customize extends Phaser.Scene {
     helper.sceneIntro(this)
   }
   createHomeButton() {
-    helper
+    this.home_button = helper
       .createButton(this, 10, 10, "home-button", () => {
         saveProgress(this.progress)
         EQUIP_SKIN({
@@ -46,17 +46,19 @@ export default class Customize extends Phaser.Scene {
   }
 
   createCoin() {
-    this.coin = this.add.image(this.game.GW - 10, 10, "coin").setOrigin(1, 0)
+    this.coin = this.add
+      .image(this.game.GW - 10, this.home_button.y, "coin")
+      .setOrigin(1, 0)
   }
 
   createMoney() {
     this.money_text = this.add
       .text(
         this.coin.x - this.coin.displayWidth - 20,
-        10,
+        this.coin.y,
         this.progress.money,
         {
-          font: "40px LuckiestGuy",
+          font: `70px ${main_font}`,
         }
       )
       .setOrigin(1, 0)
@@ -212,6 +214,7 @@ export default class Customize extends Phaser.Scene {
   }
 
   createPurchaseOffer(skin, callback) {
+    this.can_change = false
     const texture = skin.texture.key
 
     const elements = []
@@ -219,14 +222,16 @@ export default class Customize extends Phaser.Scene {
 
     const text = this.add
       .text(this.game.GW / 2, this.game.GH / 2 - 100, skin.cost, {
-        font: "40px LuckiestGuy",
+        font: `70px ${main_font}`,
       })
       .setOrigin(0.5)
 
-    elements.push(text)
-    elements.push(
-      this.add.image(text.x + text.displayWidth + 10, text.y, "coin")
-    )
+    text.x -= text.displayWidth / 2
+    const coin = this.add
+      .image(text.x + text.displayWidth / 2 + 20, text.y, "coin")
+      .setOrigin(0, 0.5)
+
+    elements.push(text, coin)
     elements.push(this.add.image(this.game.GW / 2, this.game.GH / 2, texture))
 
     const close_button = helper.createButton(
@@ -236,6 +241,7 @@ export default class Customize extends Phaser.Scene {
       "close-button",
       () => {
         elements.forEach((e) => e.destroy())
+        this.can_change = true
       }
     )
     elements.push(close_button)
@@ -250,6 +256,7 @@ export default class Customize extends Phaser.Scene {
           () => {
             callback(skin.cost)
             elements.forEach((e) => e.destroy())
+            this.can_change = true
           }
         )
       )
@@ -365,7 +372,7 @@ export default class Customize extends Phaser.Scene {
     const available_part_skins = this.progress.skins[part].map(
       (skin) => this.getSkinNumber(skin) + 1
     )
-    console.log(available_part_skins)
+
     if (available_part_skins.includes(skin_number + 1)) {
       this.progress.current_skins[part] = skin_number + 1
     }

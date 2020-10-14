@@ -26,7 +26,7 @@ export default class level_1 extends Phaser.Scene {
     this.manager.createStick()
     this.manager.createCircles()
     this.manager.bindInputEvents()
-
+   
     this.manager.GUI_helper.sceneIntro(this)
   }
   update() {

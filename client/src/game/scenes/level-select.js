@@ -7,7 +7,7 @@ export default class levelSelect extends Phaser.Scene {
     super("levelSelect")
   }
 
-  init(data) {
+  init({ page }) {
     // this.tints = []
     this.progress = getProgress()
     /*
@@ -17,19 +17,55 @@ export default class levelSelect extends Phaser.Scene {
 */
     this.pages_amount = levelsConfiguration.length
 
-    this.actualPageNumber = data.page || this.progress.levels_scores.length - 1
+    this.current_page_number = page || this.progress.levels_scores.length - 1
+    if (page === 0) this.current_page_number = 0 // 0 is false
     this.canChangePage = true
   }
 
   create() {
     this.createBackground()
-
+    this.thorns = this.createThorns()
+    this.hideThorns()
     this.elements = this.createPageElements()
 
     this.createChangePageButtons()
     this.createHomeButton()
 
     helper.sceneIntro(this)
+  }
+
+  createThorns() {
+    const thorns_up = this.add
+      .image(0, 0, "thorns_up")
+      .setOrigin(0, 0)
+      .setFlipY(true)
+    helper.setGameSize(thorns_up, true)
+
+    const thorns_down = this.add
+      .image(0, this.game.GH, "thorns_up")
+      .setOrigin(0, 1)
+
+    helper.setGameSize(thorns_down, true)
+
+    const thorns_left = this.add.image(0, 0, "thorns_sides").setOrigin(0, 0)
+
+    helper.setGameSize(thorns_left, false, true)
+
+    const thorns_right = this.add
+      .image(this.game.GW, 0, "thorns_sides")
+      .setOrigin(1, 0)
+      .setFlipX(true)
+    helper.setGameSize(thorns_right, false, true)
+
+    return [thorns_up, thorns_left, thorns_right, thorns_down]
+  }
+
+  hideThorns() {
+    this.thorns.forEach((thorn) => thorn.setVisible(false))
+  }
+
+  showThorns() {
+    this.thorns.forEach((thorn) => thorn.setVisible(true))
   }
 
   createPageElements() {
@@ -41,7 +77,7 @@ export default class levelSelect extends Phaser.Scene {
 
     elements.push(...pageInfo[0], ...pageInfo[1])
 
-    if (this.progress.levels_scores.length >= this.actualPageNumber + 1) {
+    if (this.progress.levels_scores.length >= this.current_page_number + 1) {
       elements.push(...this.createPageRequirements())
       elements.push(this.createPageRanking())
     } else {
@@ -49,6 +85,15 @@ export default class levelSelect extends Phaser.Scene {
     }
 
     elements.push(this.createPageIcon())
+
+    const difficulty =
+      levelsConfiguration[this.current_page_number].info.difficulty
+
+    if (difficulty === "hard" || difficulty === "medium") {
+      this.showThorns()
+    } else {
+      this.hideThorns()
+    }
 
     return elements
   }
@@ -67,7 +112,7 @@ export default class levelSelect extends Phaser.Scene {
     return page
   }
   createPageRequirements() {
-    let score = this.progress.levels_scores[this.actualPageNumber]
+    let score = this.progress.levels_scores[this.current_page_number]
     if (score == null) score = 0
     /*
     const text = this.add
@@ -76,7 +121,7 @@ export default class levelSelect extends Phaser.Scene {
         this.actualPage.y,
         score +
           "/" +
-          levelsConfiguration[this.actualPageNumber].info.score_to_next_level,
+          levelsConfiguration[this.current_page_number].info.score_to_next_level,
         {
           font: "50px LuckiestGuy",
         }
@@ -112,7 +157,7 @@ export default class levelSelect extends Phaser.Scene {
       .text(
         divider.x + divider.displayWidth / 2,
         divider.y,
-        levelsConfiguration[this.actualPageNumber].info.score_to_next_level, /// NEEDED SCORE
+        levelsConfiguration[this.current_page_number].info.score_to_next_level, /// NEEDED SCORE
         {
           font: "50px LuckiestGuy",
         }
@@ -123,7 +168,8 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   createPageIcon() {
-    const icon = levelsConfiguration[this.actualPageNumber].info.name + "_icon"
+    const icon =
+      levelsConfiguration[this.current_page_number].info.name + "_icon"
 
     return this.add.image(this.actualPage.x, this.actualPage.y - 80, icon)
   }
@@ -131,12 +177,14 @@ export default class levelSelect extends Phaser.Scene {
     const texts = []
     const bars = []
 
-    const { difficulty, name } = levelsConfiguration[this.actualPageNumber].info
+    const { difficulty, name } = levelsConfiguration[
+      this.current_page_number
+    ].info
 
     texts[0] = this.add
       .text(
         this.actualPage.x,
-        this.actualPage.y - this.actualPage.displayHeight / 2 + 50,
+        this.actualPage.y - this.actualPage.displayHeight / 2 + 70,
         difficulty,
         {
           font: "50px LuckiestGuy",
@@ -148,7 +196,7 @@ export default class levelSelect extends Phaser.Scene {
     texts[1] = this.add
       .text(
         this.actualPage.x,
-        this.actualPage.y - this.actualPage.displayHeight / 2 + 150,
+        this.actualPage.y - this.actualPage.displayHeight / 2 + 220,
         name,
         {
           font: "50px LuckiestGuy",
@@ -172,11 +220,11 @@ export default class levelSelect extends Phaser.Scene {
     const button = helper.createButton(
       this,
       this.actualPage.x,
-      this.actualPage.y + 180,
+      this.actualPage.y + 250,
       "ranking-icon",
       () => {
         this.scene.start("leaderboard", {
-          level: this.actualPageNumber + 1,
+          level: this.current_page_number + 1,
         })
       }
     )
@@ -186,15 +234,15 @@ export default class levelSelect extends Phaser.Scene {
   pageClickCallback() {
     if (
       !this.canChangePage ||
-      this.actualPageNumber > this.progress.levels_scores.length - 1
+      this.current_page_number > this.progress.levels_scores.length - 1
     )
       return
-    const level = this.actualPageNumber + 1
+    const level = this.current_page_number + 1
     this.scene.start(`level_${level}`, {
-      config: levelsConfiguration[this.actualPageNumber].config,
+      config: levelsConfiguration[this.current_page_number].config,
       level: level,
       score_to_next_level:
-        levelsConfiguration[this.actualPageNumber].info.score_to_next_level,
+        levelsConfiguration[this.current_page_number].info.score_to_next_level,
     })
   }
 
@@ -206,12 +254,13 @@ export default class levelSelect extends Phaser.Scene {
 
     if (sign == "+") {
       pageShift = this.game.GW
-      this.actualPageNumber--
-      if (this.actualPageNumber == -1)
-        this.actualPageNumber = this.pages_amount - 1
+      this.current_page_number--
+      if (this.current_page_number == -1)
+        this.current_page_number = this.pages_amount - 1
     } else {
-      this.actualPageNumber++
-      if (this.actualPageNumber == this.pages_amount) this.actualPageNumber = 0
+      this.current_page_number++
+      if (this.current_page_number == this.pages_amount)
+        this.current_page_number = 0
     }
 
     const past_page_elements = this.elements
@@ -222,7 +271,7 @@ export default class levelSelect extends Phaser.Scene {
       duration: 500,
       ease: "Bounce.easeOut",
       onStart: () => {
-        // this.background.setTint(this.tints[this.actualPageNumber])
+        // this.background.setTint(this.tints[this.current_page_number])
 
         this.elements = this.createPageElements()
 
@@ -243,9 +292,9 @@ export default class levelSelect extends Phaser.Scene {
     })
   }
   createBackground() {
-    helper.createBackground(this, "red")
+    helper.createBackground(this, "red") // levelsConfiguration[this.current_page_number].page_color AND ATLAS AFTER COMMA ,
     this.background = helper.createBackground(this, "levelSelect-bg")
-    // .setTint(this.tints[this.actualPageNumber])
+    // .setTint(this.tints[this.current_page_number])
   }
 
   createChangePageButtons() {

@@ -3,7 +3,7 @@ const imgPath = "./assets/img"
 export default class loader extends Phaser.Scene {
   constructor() {
     super("loader")
-    this.skins_amount = 4
+    this.skins_amount = 3
   }
 
   loadImage(name, path) {
@@ -38,6 +38,10 @@ export default class loader extends Phaser.Scene {
   buttons() {
     this.loadImage("pause-button", "buttons")
     this.loadImage("play-button", "buttons")
+
+    this.loadImage("customize-button-big", "buttons")
+    this.loadImage("play-button-big", "buttons")
+
     this.loadImage("arrow-button-blue", "buttons")
     this.loadImage("customize-button", "buttons")
     this.loadImage("home-button", "buttons")
@@ -78,9 +82,12 @@ export default class loader extends Phaser.Scene {
     this.loadImage("ranking-icon", "mix")
     this.loadImage("loading", "mix")
     this.loadImage("glow", "mix")
+
     this.loadImage("lb-eyes", "mix")
     this.loadImage("lb-bubbles", "mix")
     this.loadImage("lb-face", "mix")
+    this.loadImage("lb-aura", "mix")
+    this.loadImage("lb-strip", "mix")
 
     this.loadImage("level-select-difficulty-bar", "mix")
     this.loadImage("level-select-score-bar", "mix")
@@ -88,6 +95,11 @@ export default class loader extends Phaser.Scene {
 
     this.loadImage("black", "mix")
     this.loadImage("red", "mix")
+
+    this.loadImage("thorns_up", "mix")
+    this.loadImage("thorns_sides", "mix")
+
+    this.loadImage("no_internet", "mix")
 
     this.load.atlas(
       "stars",
@@ -115,6 +127,13 @@ export default class loader extends Phaser.Scene {
   }
 
   preload() {
+    this.load.spritesheet("fingers", `${imgPath}/mix/fingers.png`, {
+      frameWidth: 239,
+      frameHeight: 354,
+    })
+
+    this.load.atlas("colors", `${imgPath}/colors.png`, `${imgPath}/colors.json`)
+
     this.backgrounds()
     this.buttons()
     this.mix()

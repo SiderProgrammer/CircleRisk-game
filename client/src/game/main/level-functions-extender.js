@@ -9,7 +9,7 @@ export default class LevelsFunctionsExtender {
 
     const center_points = {
       x: this.scene.game.GW / 2,
-      y: this.scene.game.GH / 2 + this.scene.manager.top_bar.displayHeight / 2,
+      y: this.scene.game.GH / 2,
     }
 
     const angle_to_circle_calculated_from_middle = -Phaser.Math.Angle.BetweenPoints(
@@ -27,17 +27,13 @@ export default class LevelsFunctionsExtender {
           Math.sin(angle_to_circle_calculated_from_middle_in_rad),
       y:
         this.scene.game.GH / 2 +
-        this.scene.manager.top_bar.displayHeight / 2 +
         this.scene.distance *
           Math.cos(angle_to_circle_calculated_from_middle_in_rad),
     }
 
     const bottom_center_points = {
       x: this.scene.game.GW / 2,
-      y:
-        this.scene.game.GH / 2 +
-        this.scene.manager.top_bar.displayHeight / 2 +
-        this.scene.distance,
+      y: this.scene.game.GH / 2 + this.scene.distance,
     }
 
     this.scene.circle_rotate_angle = // angle calculated from bottom center
@@ -54,8 +50,7 @@ export default class LevelsFunctionsExtender {
       this.scene.manager.circles[this.scene.manager.current_circle], // remove 1 -
       {
         x: this.scene.game.GW / 2,
-        y:
-          this.scene.game.GH / 2 + this.scene.manager.top_bar.displayHeight / 2,
+        y: this.scene.game.GH / 2,
       }
     )
   }
@@ -68,7 +63,6 @@ export default class LevelsFunctionsExtender {
       this.scene.center_to_circle_distance * Math.sin(radians_angle)
     const targetY =
       this.scene.game.GH / 2 +
-      this.scene.manager.top_bar.displayHeight / 2 +
       this.scene.center_to_circle_distance * Math.cos(radians_angle)
 
     this.scene.manager.circles[

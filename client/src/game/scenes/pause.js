@@ -19,12 +19,24 @@ export default class Pause extends Phaser.Scene {
 
     createButton(
       this,
-      this.game.GW / 2,
+      this.game.GW / 2 - 150,
       this.game.GH / 2 + 150,
       "home-button",
       () => {
         scene.scene.stop("pause")
         scene.scene.start("menu")
+      }
+    )
+
+    createButton(
+      this,
+      this.game.GW / 2 + 150,
+      this.game.GH / 2 + 150,
+      "levelSelect-button",
+      () => {
+        scene.scene.stop("pause")
+
+        scene.scene.start("levelSelect", { page: scene.scene.scene.level - 1 })
       }
     )
   }

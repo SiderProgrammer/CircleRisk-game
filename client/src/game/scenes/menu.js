@@ -140,7 +140,7 @@ export default class menu extends Phaser.Scene {
 
   createCustomizeButtonSet() {
     this.customize_button = helper
-      .createButton(this, 0, this.game.GH - 250, "customize-button", () => {
+      .createButton(this, 0, this.game.GH - 250, "customize-button-big", () => {
         this.hideButtons().then(() => helper.sceneTransition(this, "customize"))
       })
       .setDepth(1)
@@ -168,7 +168,7 @@ export default class menu extends Phaser.Scene {
         this,
         this.game.GW,
         this.game.GH - 430,
-        "play-button",
+        "play-button-big",
         () => {
           this.hideButtons().then(() =>
             helper.sceneTransition(this, "levelSelect")

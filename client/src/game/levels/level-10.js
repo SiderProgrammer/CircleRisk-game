@@ -12,6 +12,7 @@ export default class level_10 extends Phaser.Scene {
     this.manager = new Manager(this, config.config)
     this.manager.init()
     this.time_left = this.manager.config.time_left
+    
   }
 
   create() {
@@ -29,7 +30,6 @@ export default class level_10 extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.createTimerText()
-    this.setTimer()
 
     this.manager.GUI_helper.sceneIntro(this)
   }
@@ -48,11 +48,15 @@ export default class level_10 extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
   }
   setTimer() {
+    
+
     this.timer = this.time.addEvent({
       delay: 1000, // ms
       callback: () => this.timerTick(),
       repeat: this.time_left,
     })
+
+   
   }
 
   timerTick() {

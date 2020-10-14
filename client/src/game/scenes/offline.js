@@ -11,6 +11,7 @@ export default class Offline extends Phaser.Scene {
   }
   create() {
     helper.createBackground(this, "black-bg")
+    this.add.image(this.game.GW / 2, this.game.GH / 2 - 80, "no_internet")
     helper.createFetchingAnimation(this, this.x, this.y)
     CREATE_RECONNECTING_TEXT(this, this.x, this.y - 150)
   }

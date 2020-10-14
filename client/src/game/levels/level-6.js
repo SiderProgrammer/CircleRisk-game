@@ -42,7 +42,7 @@ export default class level_6 extends Phaser.Scene {
       this.manager.circles[1 - this.manager.current_circle],
       {
         x: this.game.GW / 2,
-        y: this.game.GH / 2 + this.manager.top_bar.displayHeight / 2,
+        y: this.game.GH / 2,
       }
     )
   }
@@ -76,7 +76,7 @@ export default class level_6 extends Phaser.Scene {
 
     const center_points = {
       x: this.game.GW / 2,
-      y: this.game.GH / 2 + this.manager.top_bar.displayHeight / 2,
+      y: this.game.GH / 2,
     }
 
     const angle_to_circle_calculated_from_middle = -Phaser.Math.Angle.BetweenPoints(
@@ -93,16 +93,12 @@ export default class level_6 extends Phaser.Scene {
         this.distance * Math.sin(angle_to_circle_calculated_from_middle_in_rad),
       y:
         this.game.GH / 2 +
-        this.manager.top_bar.displayHeight / 2 +
         this.distance * Math.cos(angle_to_circle_calculated_from_middle_in_rad),
     }
 
     const bottom_center_points = {
       x: this.game.GW / 2,
-      y:
-        this.game.GH / 2 +
-        this.manager.top_bar.displayHeight / 2 +
-        this.distance,
+      y: this.game.GH / 2 + this.distance,
     }
 
     this.circle_rotate_angle = // angle calculated from bottom center
@@ -119,7 +115,7 @@ export default class level_6 extends Phaser.Scene {
       this.manager.circles[this.manager.current_circle], // remove 1 -
       {
         x: this.game.GW / 2,
-        y: this.game.GH / 2 + this.manager.top_bar.displayHeight / 2,
+        y: this.game.GH / 2,
       }
     )
   }
@@ -132,7 +128,6 @@ export default class level_6 extends Phaser.Scene {
       this.center_to_circle_distance * Math.sin(radians_angle)
     const targetY =
       this.game.GH / 2 +
-      this.manager.top_bar.displayHeight / 2 +
       this.center_to_circle_distance * Math.cos(radians_angle)
 
     this.manager.circles[1 - this.manager.current_circle].setPosition(
@@ -148,10 +143,7 @@ export default class level_6 extends Phaser.Scene {
       )
 
       const targetX = this.game.GW / 2 + this.distance * Math.sin(radians_angle)
-      const targetY =
-        this.game.GH / 2 +
-        this.manager.top_bar.displayHeight / 2 +
-        this.distance * Math.cos(radians_angle)
+      const targetY = this.game.GH / 2 + this.distance * Math.cos(radians_angle)
 
       target.setPosition(targetX, targetY)
     })

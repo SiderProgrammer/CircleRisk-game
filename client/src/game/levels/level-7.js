@@ -17,7 +17,7 @@ export default class level_7 extends Phaser.Scene {
 
     this.fly_value = 1
     this.circle_rotate_angle = 0
-    this.center_to_circle_distance = 0
+    this.center_to_circle_distance = 0 // needed to circle set
   }
 
   create() {
@@ -35,15 +35,18 @@ export default class level_7 extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-    this.calculateDifferenceDistance() // calculates this.distance
-    this.center_to_circle_distance = this.distance
 
-    this.time.addEvent({
-      delay: 1500,
-      callback: this.changeFlyDirection,
-      callbackScope: this,
-      loop: true,
+    const pos = this.manager.helper.calculateMinMaxTargetsPos()
+    this.distance = (pos.x - pos.minX) / 2
+    this.max_left_target = this.manager.helper.findTargetIndexByPosition({
+      x: pos.minX,
     })
+
+    //  this.calculateDifferenceDistance() // calculates this.distance
+
+    this.stop_point = this.game.GW / 2 - this.distance
+
+    this.center_to_circle_distance = this.distance
   }
   update() {
     if (!this.manager.game_started) return
@@ -56,8 +59,18 @@ export default class level_7 extends Phaser.Scene {
 
     this.manager.helper.extendStick()
     this.manager.helper.centerStick()
+    this.calculateTargetsFlyDirection()
     this.distance += this.fly_value
     this.center_to_circle_distance += this.fly_value
+  }
+  calculateTargetsFlyDirection() {
+    if (
+      this.max_left_target.x - this.max_left_target.displayWidth * 0.5 < 0 ||
+      this.max_left_target.x > this.stop_point
+    ) {
+      // OPTIMISE ( CHECK ONLY TARGET FROM LEFT)
+      this.changeFlyDirection()
+    }
   }
 
   moveTargets() {
@@ -67,10 +80,7 @@ export default class level_7 extends Phaser.Scene {
       )
 
       const targetX = this.game.GW / 2 + this.distance * Math.sin(radians_angle)
-      const targetY =
-        this.game.GH / 2 +
-        this.manager.top_bar.displayHeight / 2 +
-        this.distance * Math.cos(radians_angle)
+      const targetY = this.game.GH / 2 + this.distance * Math.cos(radians_angle)
 
       target.setPosition(targetX, targetY)
     })
@@ -82,10 +92,5 @@ export default class level_7 extends Phaser.Scene {
 
   changeFlyDirection() {
     this.fly_value = -this.fly_value
-  }
-
-  calculateDifferenceDistance() {
-    const pos = this.manager.helper.calculateMinMaxTargetsPos()
-    this.distance = (pos.x - pos.minX) / 2
   }
 }

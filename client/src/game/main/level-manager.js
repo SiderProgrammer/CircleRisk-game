@@ -54,11 +54,30 @@ export default class Manager {
     this.helper = new LevelHelper(this)
     this.helper.randomNextTarget()
 
+    this.createTappingAnimation()
+
     this.fps_text = this.scene.add
       .text(150, 150, this.scene.game.loop.actualFps, {
         font: "70px LuckiestGuy",
       })
       .setDepth(100)
+  }
+  createTappingAnimation() {
+    this.scene.anims.create({
+      key: "tap",
+      frames: this.scene.anims.generateFrameNumbers("fingers", {
+        start: 0,
+        end: 1,
+      }),
+      repeat: -1,
+      frameRate: 2,
+      yoyo: true,
+    })
+
+    this.finger = this.scene.add
+      .sprite(this.GW / 2, this.GH - 200, "fingers", 0)
+      .setDepth(1)
+      .play("tap")
   }
 
   checkIfMissedTarget() {
@@ -73,6 +92,9 @@ export default class Manager {
     }
   }
 
+  hasHitTarget(distanceToTarget) {
+    return distanceToTarget < this.circles[1].displayWidth / 2
+  }
   changeBall() {
     if (typeof this.scene.shake === "function") {
       ///
@@ -86,7 +108,7 @@ export default class Manager {
 
     const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
 
-    if (distance_from_target < this.circles[1].displayWidth / 2) {
+    if (this.hasHitTarget(distance_from_target)) {
       if (distance_from_target < 10) {
         this.score += 2
         this.perfect++
@@ -168,14 +190,15 @@ export default class Manager {
   createGUI() {
     helper.createBackground(this.scene, this.config.background)
 
-    helper
+    this.pause_button = helper
       .createButton(this.scene, 10, 10, "pause-button", () => {
         this.scene.scene.pause()
-
         this.scene.scene.launch("pause", { scene: this.scene })
         this.scene.scene.bringToTop("pause")
       })
       .setOrigin(0)
+
+    this.pause_button.bounds = this.pause_button.getBounds()
   }
 
   createFirstTarget() {
@@ -226,13 +249,15 @@ export default class Manager {
     this.updateCircleStickAngle() /// move this function to create function in every level
   }
   bindInputEvents() {
-    this.scene.input.on("pointerdown", () => {
+    this.scene.input.on("pointerdown", ({ x, y }) => {
       this.fps_text.setText(this.scene.game.loop.actualFps)
+
+      if (Phaser.Geom.Rectangle.Contains(this.pause_button.bounds, x, y)) return
       if (!this.game_started) {
+        this.finger.destroy()
         this.game_started = true
-      } else {
-        this.changeBall()
-      }
+        if(typeof this.scene.setTimer === "function") this.scene.setTimer(); ///
+      } else this.changeBall()
     })
   }
 
@@ -323,7 +348,7 @@ export default class Manager {
       this.progress.levels_scores[this.scene.level] = 0
       await POST_LEVEL_SCORE({
         score: 0,
-        nickname: this.progress.nickname,
+        nickname: my_nickname,
         level: this.scene.level,
       })
 
@@ -341,14 +366,14 @@ export default class Manager {
 
       POST_LEVEL_SCORE({
         score: this.score,
-        nickname: this.progress.nickname,
+        nickname: my_nickname,
         level: this.scene.level - 1,
       })
     }
 
     saveProgress(this.progress)
 
-    SAVE_MONEY({ money: this.progress.money, nickname: this.progress.nickname })
+    SAVE_MONEY({ money: this.progress.money, nickname: my_nickname })
 
     this.scene.tweens.add({
       targets: helper.createBackground(this.scene, "black-bg").setAlpha(0),

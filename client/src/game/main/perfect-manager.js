@@ -1,4 +1,5 @@
 export default class PerfectManager {
+  // also score manager
   constructor(scene) {
     this.scene = scene
     this.stars = scene.scene.add.particles("stars").setDepth(1)
@@ -12,10 +13,11 @@ export default class PerfectManager {
   }
   createScoreText() {
     this.score_text = this.scene.scene.add
-      .text(this.scene.GW - 100, 20, this.getScoreText(), {
-        font: "30px LuckiestGuy",
+      .text(this.scene.GW - 10, 20, this.getScoreText(), {
+        font: `60px ${main_font}`,
       })
       .setDepth(1)
+      .setOrigin(1, 0)
   }
   updateScoreText() {
     this.score_text.setText(this.getScoreText())

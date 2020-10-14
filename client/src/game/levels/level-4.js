@@ -56,8 +56,15 @@ export default class level_4 extends Phaser.Scene {
         this.manager.helper.centerStick()
       },
       onComplete: () => {
-        return
-      }, //check if missed target
+        //check if missed target
+        const distance_from_target = Phaser.Math.Distance.BetweenPoints(
+          this.manager.circles[1 - this.manager.current_circle],
+          this.manager.target_array[this.manager.current_target]
+        )
+
+        if (!this.manager.hasHitTarget(distance_from_target))
+          this.manager.gameOver()
+      },
     })
   }
 }

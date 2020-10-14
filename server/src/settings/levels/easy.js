@@ -1,11 +1,10 @@
 module.exports = [
   {
-    /// fetch from server this file
+    page_color: "red",
     info: {
       score_to_next_level: 10,
       tint: "0x00FF00",
       name: "basic",
-      difficulty: "easy",
     },
     config: {
       background: "basic-bg",
@@ -23,7 +22,6 @@ module.exports = [
       score_to_next_level: 20,
       tint: "0xFF6E00",
       name: "wind",
-      difficulty: "easy",
     },
     config: {
       background: "autumn-bg",
@@ -41,7 +39,6 @@ module.exports = [
       score_to_next_level: 30,
       tint: "0xFF00FF",
       name: "night",
-      difficulty: "easy",
     },
     config: {
       background: "night-bg",
@@ -59,7 +56,6 @@ module.exports = [
       score_to_next_level: 40,
       tint: "0xF0F0F0",
       name: "snow",
-      difficulty: "easy",
     },
     config: {
       background: "snow-bg",
@@ -76,7 +72,6 @@ module.exports = [
       score_to_next_level: 50,
       tint: "0xFFF000",
       name: "reverse",
-      difficulty: "easy",
     },
     config: {
       background: "reverse-bg",
@@ -93,7 +88,6 @@ module.exports = [
       score_to_next_level: 60,
       tint: "0x0000FF",
       name: "sun",
-      difficulty: "easy",
     },
     config: {
       background: "sunny-bg",
@@ -111,7 +105,6 @@ module.exports = [
       score_to_next_level: 70,
       tint: "0x06E0FF",
       name: "expanding",
-      difficulty: "easy",
     },
     config: {
       background: "star-bg",
@@ -129,7 +122,6 @@ module.exports = [
       score_to_next_level: 80,
       tint: "0x06E0FF",
       name: "earthquake",
-      difficulty: "easy",
     },
     config: {
       background: "earthquake-bg",
@@ -146,7 +138,6 @@ module.exports = [
       score_to_next_level: 90,
       tint: "0x06E0FF",
       name: "twins",
-      difficulty: "easy",
     },
     config: {
       background: "twins-bg",
@@ -163,7 +154,6 @@ module.exports = [
       score_to_next_level: 10,
       tint: "0x06E0FF",
       name: "clock",
-      difficulty: "easy",
     },
     config: {
       background: "time-bg",
@@ -181,7 +171,6 @@ module.exports = [
       score_to_next_level: 100,
       tint: "0x06E0FF",
       name: "perfect",
-      difficulty: "easy",
     },
     config: {
       background: "perfect-bg",
@@ -198,7 +187,6 @@ module.exports = [
       score_to_next_level: 110,
       tint: "0x06E0FF",
       name: "invisible",
-      difficulty: "easy",
     },
     config: {
       background: "cosmo-bg",
@@ -216,7 +204,6 @@ module.exports = [
       score_to_next_level: 130,
       tint: "0x06E0FF",
       name: "many",
-      difficulty: "easy",
     },
     config: {
       background: "many-bg",
@@ -234,7 +221,6 @@ module.exports = [
       score_to_next_level: 140,
       tint: "0x06E0FF",
       name: "speed",
-      difficulty: "easy",
     },
     config: {
       background: "speed-bg",
@@ -252,7 +238,6 @@ module.exports = [
       score_to_next_level: 150,
       tint: "0x06E0FF",
       name: "flower",
-      difficulty: "easy",
     },
     config: {
       background: "flower-bg",
@@ -269,7 +254,6 @@ module.exports = [
       score_to_next_level: 160,
       tint: "0x06E0FF",
       name: "teleport",
-      difficulty: "easy",
     },
     config: {
       background: "teleport-bg",
@@ -291,7 +275,6 @@ module.exports = [
       score_to_next_level: 170,
       tint: "0x06E0FF",
       name: "suprise",
-      difficulty: "easy",
     },
     config: {
       background: "teleport-bg",
@@ -312,7 +295,6 @@ module.exports = [
       score_to_next_level: 180,
       tint: "0x06E0FF",
       name: "pulsating",
-      difficulty: "easy",
     },
     config: {
       background: "teleport-bg",
@@ -329,7 +311,6 @@ module.exports = [
       score_to_next_level: 190,
       tint: "0x06E0FF",
       name: "blind",
-      difficulty: "easy",
     },
     config: {
       background: "teleport-bg",
@@ -347,7 +328,6 @@ module.exports = [
       score_to_next_level: 200,
       tint: "0x06E0FF",
       name: "sense",
-      difficulty: "easy",
     },
     config: {
       background: "teleport-bg",
@@ -365,7 +345,6 @@ module.exports = [
       score_to_next_level: 210,
       tint: "0x06E0FF",
       name: "tiny",
-      difficulty: "easy",
     },
     config: {
       background: "teleport-bg",
@@ -383,7 +362,6 @@ module.exports = [
       score_to_next_level: 220,
       tint: "0x06E0FF",
       name: "hell",
-      difficulty: "easy",
     },
     config: {
       background: "hell-bg",

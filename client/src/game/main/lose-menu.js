@@ -7,7 +7,7 @@ export default class LoseMenu {
   }
 
   createLoseMenu() {
-    this.createWhiteSquare()
+    // this.createWhiteSquare()
     this.score = this.createScore()
     this.perfect_score = this.createPerfect()
     this.createBest()
@@ -158,17 +158,17 @@ export default class LoseMenu {
         })
       }
     )
-
+    const shift = 170
     const b = helper.createButton(
       this.scene.scene,
-      this.scene.GW / 2 - 120,
+      this.scene.GW / 2 - shift,
       this.scene.GH - 100,
       "customize-button",
       () => helper.sceneTransition(this.scene.scene, "customize")
     )
     const c = helper.createButton(
       this.scene.scene,
-      this.scene.GW / 2 + 120,
+      this.scene.GW / 2 + shift,
       this.scene.GH - 100,
       "levelSelect-button",
       () => helper.sceneTransition(this.scene.scene, "levelSelect")
@@ -180,7 +180,7 @@ export default class LoseMenu {
       .createButton(
         this.scene.scene,
         this.scene.GW / 2,
-        this.scene.GH - 230,
+        this.scene.GH - 240,
         "next-button",
         () => {
           this.scene.scene.scene.start(`level_${this.scene.scene.level + 1}`, {
@@ -202,7 +202,7 @@ export default class LoseMenu {
       .createButton(
         this.scene.scene,
         this.scene.GW / 2,
-        this.scene.GH - 230,
+        this.scene.GH - 280,
         "replay-button",
         () => this.scene.scene.scene.restart()
       )
