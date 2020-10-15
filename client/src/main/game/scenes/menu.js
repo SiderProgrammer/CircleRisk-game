@@ -1,4 +1,4 @@
-import * as helper from "../helper"
+import * as helper from "../GUI-helper"
 import { saveProgress, getProgress } from "../../shortcuts/save"
 import {
   GET_ACCOUNT_PROGRESS,

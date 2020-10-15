@@ -1,4 +1,4 @@
-import * as helper from "../helper"
+import { createBackground, createFetchingAnimation } from "../GUI-helper"
 
 export default class Fetching extends Phaser.Scene {
   constructor() {
@@ -11,9 +11,9 @@ export default class Fetching extends Phaser.Scene {
   }
   create() {
     if (this.shadow) {
-      helper.createBackground(this, "black-bg")
+      createBackground(this, "black-bg")
     }
 
-    helper.createFetchingAnimation(this, this.x, this.y)
+    createFetchingAnimation(this, this.x, this.y)
   }
 }

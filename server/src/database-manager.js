@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
-const srvConfig = require("./settings/config")
-const { Accounts, Levels } = require("./settings/model")
+const srvConfig = require("./settings/db-config")
+const { Accounts, Levels } = require("./settings/db-models")
 
 const customizeSkinsSetup = require("./settings/customize-skins-setup")
 const levelsConfig = require("./settings/levels/levels-config")

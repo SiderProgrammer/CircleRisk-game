@@ -1,6 +1,6 @@
 import { CREATE_ACCOUNT, IS_ONLINE } from "./shortcuts/requests"
 import { saveProgress } from "./shortcuts/save.js"
-import { startGame } from "./index"
+import { startGame } from "../index"
 
 const $ = (element) => {
   return document.querySelector(element)

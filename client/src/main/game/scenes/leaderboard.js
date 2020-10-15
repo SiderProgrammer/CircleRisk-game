@@ -1,4 +1,4 @@
-import * as helper from "../helper"
+import * as helper from "../GUI-helper"
 import {
   GET_LEVEL_SCORES_AND_NICKNAMES,
   GET_LEVEL_SCORE_BY_NICKNAME,

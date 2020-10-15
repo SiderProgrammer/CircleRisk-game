@@ -1,4 +1,4 @@
-import * as helper from "../helper"
+import { createButton, sceneTransition } from "../GUI-helper"
 
 export default class LoseMenu {
   constructor(scene) {

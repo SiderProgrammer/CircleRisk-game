@@ -1,4 +1,4 @@
-import * as helper from "../helper"
+import * as helper from "../GUI-helper"
 import { CREATE_FETCH_ERROR } from "../../fetch-helper"
 import { saveProgress, getProgress } from "../../shortcuts/save"
 import { SAVE_MONEY, SAVE_NEW_SKIN, EQUIP_SKIN } from "../../shortcuts/requests"

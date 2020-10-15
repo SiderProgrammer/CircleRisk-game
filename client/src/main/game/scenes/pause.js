@@ -1,4 +1,4 @@
-import { createBackground, createButton } from "../helper"
+import { createBackground, createButton } from "../GUI-helper"
 
 export default class Pause extends Phaser.Scene {
   constructor() {

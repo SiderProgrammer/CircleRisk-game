@@ -85,12 +85,12 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
+      template: "./src/main/page_structure/index.html",
     }),
     new CopyPlugin({
       patterns: [
-        { from: "src/assets", to: "assets" },
-        { from: path.resolve(__dirname, "src/style.css") },
+        { from: "src/main/assets", to: "assets" },
+        { from: path.resolve(__dirname, "src/main/page_structure/style.css") },
       ],
     }),
     new MiniCssExtractPlugin({

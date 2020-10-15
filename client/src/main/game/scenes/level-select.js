@@ -1,4 +1,4 @@
-import * as helper from "../helper.js"
+import * as helper from "../GUI-helper.js"
 
 import { getProgress } from "../../shortcuts/save"
 

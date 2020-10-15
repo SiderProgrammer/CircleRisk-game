@@ -1,5 +1,5 @@
 import LevelHelper from "./level-helper.js"
-import * as helper from "../helper.js"
+import * as helper from "../GUI-helper.js"
 
 import { POST_LEVEL_SCORE, SAVE_MONEY } from "../../shortcuts/requests"
 import { getProgress, saveProgress } from "../../shortcuts/save"

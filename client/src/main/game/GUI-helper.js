@@ -49,13 +49,6 @@ export const createButton = function (scene, x, y, sprite, func) {
   return button
 }
 
-export const createTopBar = function (scene, sprite) {
-  const bar = scene.add.image(scene.game.GW / 2, 0, sprite).setOrigin(0.5, 0)
-
-  setGameSize(bar, true, false)
-  return bar
-}
-
 export const createFetchingAnimation = function (scene, x, y) {
   const image = scene.add.image(x, y, "loading").setDepth(1000)
 
