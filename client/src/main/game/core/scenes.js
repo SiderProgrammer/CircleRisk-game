@@ -8,28 +8,30 @@ import Offline from "../scenes/offline.js"
 import Fetching from "../scenes/fetching.js"
 import Pause from "../scenes/pause.js"
 
-import Level_1 from "../levels/level-1"
-import Level_2 from "../levels/level-2"
-import Level_3 from "../levels/level-3"
-import Level_4 from "../levels/level-4"
-import Level_5 from "../levels/level-5"
-import Level_6 from "../levels/level-6"
-import Level_7 from "../levels/level-7"
-import Level_8 from "../levels/level-8"
-import Level_9 from "../levels/level-9"
-import Level_10 from "../levels/level-10"
-import Level_11 from "../levels/level-11"
-import Level_12 from "../levels/level-12"
-import Level_13 from "../levels/level-13"
-import Level_14 from "../levels/level-14"
-import Level_15 from "../levels/level-15"
-import Level_16 from "../levels/level-16"
-import Level_17 from "../levels/level-17"
-import Level_18 from "../levels/level-18"
-import Level_19 from "../levels/level-19"
-import Level_20 from "../levels/level-20"
-import Level_21 from "../levels/level-21"
-import Level_22 from "../levels/level-22"
+import Basic_Easy from "../levels/basic/basic-easy"
+import Wind_Easy from "../levels/wind/wind-easy"
+import Night_Easy from "../levels/night/night-easy"
+import Snow_Easy from "../levels/snow/snow-easy"
+import Reverse_Easy from "../levels/reverse/reverse-easy"
+import Sun_Easy from "../levels/sun/sun-easy"
+import Expand_Easy from "../levels/expand/expand-easy"
+import Earthquake_Easy from "../levels/earthquake/earthquake-easy"
+import Twins_Easy from "../levels/twins/twins-easy"
+import Clock_Easy from "../levels/clock/clock-easy"
+import Perfect_Easy from "../levels/perfect/perfect-easy"
+import Chameleon_Easy from "../levels/chameleon/chameleon-easy"
+import Confusion_Easy from "../levels/confusion/confusion-easy"
+import Speed_Easy from "../levels/speed/speed-easy"
+import Flower_Easy from "../levels/flower/flower-easy"
+import Teleport_Easy from "../levels/teleport/teleport-easy"
+import Unstable_Easy from "../levels/unstable/unstable-easy"
+import Pulsate_Easy from "../levels/pulsate/pulsate-easy"
+import Blind_Easy from "../levels/blind/blind-easy"
+import Sense_Easy from "../levels/sense/sense-easy"
+import Tiny_Easy from "../levels/tiny/tiny-easy"
+import Hell_Easy from "../levels/hell/hell-easy"
+
+import Wind_Medium from "../levels/wind/wind-medium"
 
 export default [
   Preloader,
@@ -42,26 +44,28 @@ export default [
   Fetching,
   Pause,
 
-  Level_1,
-  Level_2,
-  Level_3,
-  Level_4,
-  Level_5,
-  Level_6,
-  Level_7,
-  Level_8,
-  Level_9,
-  Level_10,
-  Level_11,
-  Level_12,
-  Level_13,
-  Level_14,
-  Level_15,
-  Level_16,
-  Level_17,
-  Level_18,
-  Level_19,
-  Level_20,
-  Level_21,
-  Level_22,
+  Basic_Easy,
+  Wind_Easy,
+  Night_Easy,
+  Snow_Easy,
+  Reverse_Easy,
+  Sun_Easy,
+  Expand_Easy,
+  Earthquake_Easy,
+  Twins_Easy,
+  Clock_Easy,
+  Perfect_Easy,
+  Chameleon_Easy,
+  Confusion_Easy,
+  Speed_Easy,
+  Flower_Easy,
+  Teleport_Easy,
+  Unstable_Easy,
+  Pulsate_Easy,
+  Blind_Easy,
+  Sense_Easy,
+  Tiny_Easy,
+  Hell_Easy,
+
+  Wind_Medium
 ]

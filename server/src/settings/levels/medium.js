@@ -5,7 +5,6 @@ module.exports = [
       score_to_next_level: 10,
       tint: "0x00FF00",
       name: "basic",
-      
     },
     config: {
       background: "basic-bg",
@@ -18,13 +17,28 @@ module.exports = [
     },
   },
 
-  
+  {
+    info: {
+      score_to_next_level: 20,
+      tint: "0xFF6E00",
+      name: "wind",
+    },
+    config: {
+      background: "autumn-bg",
+      rotation_speed: 1,
+      acceleration: 0.02,
+      targets_amount: 8,
+      ball_distance: 110,
+      additional_angle: 22.5,
+      starting_target: 1,
+      targets_speed: 0.3,
+    },
+  },
   {
     info: {
       score_to_next_level: 30,
       tint: "0xFF00FF",
       name: "night",
-      
     },
     config: {
       background: "night-bg",
@@ -42,7 +56,6 @@ module.exports = [
       score_to_next_level: 40,
       tint: "0xF0F0F0",
       name: "snow",
-      
     },
     config: {
       background: "snow-bg",
@@ -59,7 +72,6 @@ module.exports = [
       score_to_next_level: 50,
       tint: "0xFFF000",
       name: "reverse",
-      
     },
     config: {
       background: "reverse-bg",
@@ -73,29 +85,9 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 20,
-      tint: "0xFF6E00",
-      name: "wind",
-      
-    },
-    config: {
-      background: "autumn-bg",
-      rotation_speed: 1,
-      acceleration: 0.02,
-      targets_amount: 8,
-      ball_distance: 110,
-      additional_angle: 22.5,
-      starting_target: 1,
-      targets_speed: 0.3,
-    },
-  },
-
-  {
-    info: {
       score_to_next_level: 60,
       tint: "0x0000FF",
       name: "sun",
-      
     },
     config: {
       background: "sunny-bg",
@@ -112,8 +104,7 @@ module.exports = [
     info: {
       score_to_next_level: 70,
       tint: "0x06E0FF",
-      name: "expanding",
-      
+      name: "expand",
     },
     config: {
       background: "star-bg",
@@ -131,7 +122,6 @@ module.exports = [
       score_to_next_level: 80,
       tint: "0x06E0FF",
       name: "earthquake",
-      
     },
     config: {
       background: "earthquake-bg",
@@ -148,7 +138,6 @@ module.exports = [
       score_to_next_level: 90,
       tint: "0x06E0FF",
       name: "twins",
-      
     },
     config: {
       background: "twins-bg",
@@ -165,7 +154,6 @@ module.exports = [
       score_to_next_level: 10,
       tint: "0x06E0FF",
       name: "clock",
-      
     },
     config: {
       background: "time-bg",
@@ -183,7 +171,6 @@ module.exports = [
       score_to_next_level: 100,
       tint: "0x06E0FF",
       name: "perfect",
-      
     },
     config: {
       background: "perfect-bg",
@@ -199,8 +186,7 @@ module.exports = [
     info: {
       score_to_next_level: 110,
       tint: "0x06E0FF",
-      name: "invisible",
-      
+      name: "chameleon",
     },
     config: {
       background: "cosmo-bg",
@@ -217,8 +203,7 @@ module.exports = [
     info: {
       score_to_next_level: 130,
       tint: "0x06E0FF",
-      name: "many",
-      
+      name: "confusion",
     },
     config: {
       background: "many-bg",
@@ -236,7 +221,6 @@ module.exports = [
       score_to_next_level: 140,
       tint: "0x06E0FF",
       name: "speed",
-      
     },
     config: {
       background: "speed-bg",
@@ -254,7 +238,6 @@ module.exports = [
       score_to_next_level: 150,
       tint: "0x06E0FF",
       name: "flower",
-      
     },
     config: {
       background: "flower-bg",
@@ -271,7 +254,6 @@ module.exports = [
       score_to_next_level: 160,
       tint: "0x06E0FF",
       name: "teleport",
-      
     },
     config: {
       background: "teleport-bg",
@@ -292,11 +274,10 @@ module.exports = [
     info: {
       score_to_next_level: 170,
       tint: "0x06E0FF",
-      name: "suprise",
-      
+      name: "unstable",
     },
     config: {
-      background: "teleport-bg",
+      background: "unstable-bg",
       rotation_speed: 1,
       rotation_speed_change: {
         min: 0.5,
@@ -313,11 +294,10 @@ module.exports = [
     info: {
       score_to_next_level: 180,
       tint: "0x06E0FF",
-      name: "pulsating",
-      
+      name: "pulsate",
     },
     config: {
-      background: "teleport-bg",
+      background: "pulsate-bg",
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,
@@ -331,10 +311,9 @@ module.exports = [
       score_to_next_level: 190,
       tint: "0x06E0FF",
       name: "blind",
-      
     },
     config: {
-      background: "teleport-bg",
+      background: "blind-bg",
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,
@@ -349,10 +328,9 @@ module.exports = [
       score_to_next_level: 200,
       tint: "0x06E0FF",
       name: "sense",
-      
     },
     config: {
-      background: "teleport-bg",
+      background: "sense-bg",
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,
@@ -367,10 +345,9 @@ module.exports = [
       score_to_next_level: 210,
       tint: "0x06E0FF",
       name: "tiny",
-      
     },
     config: {
-      background: "teleport-bg",
+      background: "tiny-bg",
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,
@@ -385,7 +362,6 @@ module.exports = [
       score_to_next_level: 220,
       tint: "0x06E0FF",
       name: "hell",
-      
     },
     config: {
       background: "hell-bg",

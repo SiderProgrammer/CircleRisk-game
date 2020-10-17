@@ -17,15 +17,24 @@ export default class levelSelect extends Phaser.Scene {
 */
     this.pages_amount = levelsConfiguration.length
 
-    this.current_page_number = page || this.progress.levels_scores.length - 1
+    this.current_page_number = 1 //page || this.progress.levels_scores.length - 1
     if (page === 0) this.current_page_number = 0 // 0 is false
     this.canChangePage = true
   }
 
   create() {
     this.createBackground()
+
+    this.createBlackBorder() // hidden
+
+    this.createHardLevelGlow() // hidden
+
+    this.page_thorns = this.createPageThorns()
+    this.hidePageThorns()
+
     this.thorns = this.createThorns()
     this.hideThorns()
+
     this.elements = this.createPageElements()
 
     this.createChangePageButtons()
@@ -33,7 +42,71 @@ export default class levelSelect extends Phaser.Scene {
 
     helper.sceneIntro(this)
   }
+  createHardLevelGlow() {
+    this.hard_level_glow = this.add
+      .image(
+        this.game.GW / 2,
+        this.game.GH / 2 + 200,
+        "level-select-decoration-hard"
+      )
+      .setVisible(false)
+  }
+  createPageElements() {
+    const elements = []
 
+    elements[0] = this.actualPage = this.createPage()
+
+    const pageInfo = this.createPageInfo()
+
+    elements.push(...pageInfo[0], ...pageInfo[1])
+
+    const is_level_unlocked =
+      this.progress.levels_scores.length >= this.current_page_number + 1
+
+    if (is_level_unlocked) {
+      elements.push(...this.createPageRequirements())
+      elements.push(this.createPageRanking())
+    } else {
+      elements.push(this.createLevelLock())
+    }
+
+    elements.push(this.createPageIcon())
+
+    const difficulty =
+      levelsConfiguration[this.current_page_number].info.difficulty
+
+    if (difficulty === "hard" || difficulty === "medium") {
+      this.showThorns()
+
+      if (difficulty === "hard") {
+        if (is_level_unlocked) {
+          this.score_bar.setTexture("level-select-score-bar-hard")
+          this.hard_level_glow.setVisible(true)
+        }
+
+        this.showPageThorns()
+        this.name_bar.setTexture("level-select-name-bar-hard")
+        this.black_border.setVisible(true)
+      } else {
+        this.hard_level_glow.setVisible(false)
+        this.hidePageThorns()
+        this.black_border.setVisible(false)
+      }
+    } else {
+      this.hard_level_glow.setVisible(false)
+      this.hideThorns()
+      this.hidePageThorns()
+      this.black_border.setVisible(false)
+    }
+
+    return elements
+  }
+
+  createBlackBorder() {
+    this.black_border = helper
+      .createBackground(this, "black-border")
+      .setVisible(false)
+  }
   createThorns() {
     const thorns_up = this.add
       .image(0, 0, "thorns_up")
@@ -68,34 +141,26 @@ export default class levelSelect extends Phaser.Scene {
     this.thorns.forEach((thorn) => thorn.setVisible(true))
   }
 
-  createPageElements() {
-    const elements = []
+  createPageThorns() {
+    const thorns_up = this.add
+      .image(this.game.GW, 150, "thorns_1")
+      .setOrigin(1, 0.5)
 
-    elements[0] = this.actualPage = this.createPage()
+    const thorns_mid = this.add.image(0, 450, "thorns_2").setOrigin(0, 0.5)
 
-    const pageInfo = this.createPageInfo()
+    const thorns_down = this.add
+      .image(this.game.GW, this.game.GH - 200, "thorns_3")
+      .setOrigin(1, 0.5)
 
-    elements.push(...pageInfo[0], ...pageInfo[1])
+    return [thorns_up, thorns_mid, thorns_down]
+  }
 
-    if (this.progress.levels_scores.length >= this.current_page_number + 1) {
-      elements.push(...this.createPageRequirements())
-      elements.push(this.createPageRanking())
-    } else {
-      elements.push(this.createLevelLock())
-    }
+  hidePageThorns() {
+    this.page_thorns.forEach((thorn) => thorn.setVisible(false))
+  }
 
-    elements.push(this.createPageIcon())
-
-    const difficulty =
-      levelsConfiguration[this.current_page_number].info.difficulty
-
-    if (difficulty === "hard" || difficulty === "medium") {
-      this.showThorns()
-    } else {
-      this.hideThorns()
-    }
-
-    return elements
+  showPageThorns() {
+    this.page_thorns.forEach((thorn) => thorn.setVisible(true))
   }
 
   createLevelLock() {
@@ -114,23 +179,8 @@ export default class levelSelect extends Phaser.Scene {
   createPageRequirements() {
     let score = this.progress.levels_scores[this.current_page_number]
     if (score == null) score = 0
-    /*
-    const text = this.add
-      .text(
-        this.actualPage.x,
-        this.actualPage.y,
-        score +
-          "/" +
-          levelsConfiguration[this.current_page_number].info.score_to_next_level,
-        {
-          font: "50px LuckiestGuy",
-        }
-      )
-      .setOrigin(0.5)
-      .setDepth(0.1)
-*/
 
-    const bar = this.add.image(
+    this.score_bar = this.add.image(
       this.actualPage.x,
       this.actualPage.y,
       "level-select-score-bar"
@@ -164,7 +214,7 @@ export default class levelSelect extends Phaser.Scene {
       )
       .setOrigin(0, 0.5)
 
-    return [current_score, score_to_reach, divider, bar]
+    return [current_score, score_to_reach, divider, this.score_bar]
   }
 
   createPageIcon() {
@@ -211,7 +261,11 @@ export default class levelSelect extends Phaser.Scene {
       "level-select-difficulty-bar"
     )
 
-    bars[1] = this.add.image(texts[1].x, texts[1].y, "level-select-name-bar")
+    bars[1] = this.name_bar = this.add.image(
+      texts[1].x,
+      texts[1].y,
+      "level-select-name-bar"
+    )
 
     return [texts, bars]
   }
@@ -237,13 +291,18 @@ export default class levelSelect extends Phaser.Scene {
       this.current_page_number > this.progress.levels_scores.length - 1
     )
       return
-    const level = this.current_page_number + 1
-    this.scene.start(`level_${level}`, {
-      config: levelsConfiguration[this.current_page_number].config,
-      level: level,
-      score_to_next_level:
-        levelsConfiguration[this.current_page_number].info.score_to_next_level,
-    })
+
+    const this_level_configuration =
+      levelsConfiguration[this.current_page_number]
+
+    this.scene.start(
+      `${this_level_configuration.info.name.capitalize()}_${this_level_configuration.info.difficulty.capitalize()}`,
+      {
+        config: this_level_configuration.config,
+        level: this.current_page_number + 1,
+        score_to_next_level: this_level_configuration.info.score_to_next_level,
+      }
+    )
   }
 
   tweenPage(sign) {

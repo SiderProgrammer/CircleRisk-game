@@ -147,7 +147,7 @@ export default class LoseMenu {
   }
 
   createButtons() {
-    const a = helper.createButton(
+    const a = createButton(
       this.scene.scene,
       this.scene.GW / 2,
       this.scene.GH - 100,
@@ -159,54 +159,54 @@ export default class LoseMenu {
       }
     )
     const shift = 170
-    const b = helper.createButton(
+    const b = createButton(
       this.scene.scene,
       this.scene.GW / 2 - shift,
       this.scene.GH - 100,
       "customize-button",
-      () => helper.sceneTransition(this.scene.scene, "customize")
+      () => sceneTransition(this.scene.scene, "customize")
     )
-    const c = helper.createButton(
+    const c = createButton(
       this.scene.scene,
       this.scene.GW / 2 + shift,
       this.scene.GH - 100,
       "levelSelect-button",
-      () => helper.sceneTransition(this.scene.scene, "levelSelect")
+      () => sceneTransition(this.scene.scene, "levelSelect")
     )
     this.elements.push(a, b, c)
   }
   createNextLevelButton() {
-    const a = helper
-      .createButton(
-        this.scene.scene,
-        this.scene.GW / 2,
-        this.scene.GH - 240,
-        "next-button",
-        () => {
-          this.scene.scene.scene.start(`level_${this.scene.scene.level + 1}`, {
-            config: levelsConfiguration[this.scene.scene.level].config,
+    const a = createButton(
+      this.scene.scene,
+      this.scene.GW / 2,
+      this.scene.GH - 240,
+      "next-button",
+      () => {
+        const this_level_configuration =
+          levelsConfiguration[this.scene.scene.level]
+        this.scene.scene.scene.start(
+          `${this_level_configuration.info.name.capitalize()}_${this_level_configuration.info.difficulty.capitalize()}`,
+          {
+            config: this_level_configuration.config,
             level: this.scene.scene.level + 1,
             score_to_next_level:
-              levelsConfiguration[this.scene.scene.level].info
-                .score_to_next_level,
-          })
-        }
-      )
-      .setDepth(11)
+              this_level_configuration.info.score_to_next_level,
+          }
+        )
+      }
+    ).setDepth(11)
 
     this.elements.push(a)
   }
 
   createReplayButton() {
-    const a = helper
-      .createButton(
-        this.scene.scene,
-        this.scene.GW / 2,
-        this.scene.GH - 280,
-        "replay-button",
-        () => this.scene.scene.scene.restart()
-      )
-      .setDepth(11)
+    const a = createButton(
+      this.scene.scene,
+      this.scene.GW / 2,
+      this.scene.GH - 280,
+      "replay-button",
+      () => this.scene.scene.scene.restart()
+    ).setDepth(11)
 
     this.elements.push(a)
   }

@@ -5,6 +5,10 @@ import config from "./main/game/core/game-config"
 import accountCreator from "./main/account-creator"
 import { getProgress } from "./main/shortcuts/save.js"
 
+String.prototype.capitalize = function () {
+  return this.charAt(0).toUpperCase() + this.slice(1)
+}
+
 window.main_font = "luckiestGuy"
 //localStorage.clear()
 export const startGame = () => {
@@ -13,7 +17,7 @@ export const startGame = () => {
   game.GH = config.height
 
   if (!game.device.os.desktop) game.input.mouse.enabled = false
-  manageOnlineStatus()
+  manageOnlineStatus(game)
 }
 
 window.onload = () => {

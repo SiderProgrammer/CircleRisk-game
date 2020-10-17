@@ -104,7 +104,7 @@ module.exports = [
     info: {
       score_to_next_level: 70,
       tint: "0x06E0FF",
-      name: "expanding",
+      name: "expand",
     },
     config: {
       background: "star-bg",
@@ -186,7 +186,7 @@ module.exports = [
     info: {
       score_to_next_level: 110,
       tint: "0x06E0FF",
-      name: "invisible",
+      name: "chameleon",
     },
     config: {
       background: "cosmo-bg",
@@ -203,7 +203,7 @@ module.exports = [
     info: {
       score_to_next_level: 130,
       tint: "0x06E0FF",
-      name: "many",
+      name: "confusion",
     },
     config: {
       background: "many-bg",
@@ -274,10 +274,10 @@ module.exports = [
     info: {
       score_to_next_level: 170,
       tint: "0x06E0FF",
-      name: "suprise",
+      name: "unstable",
     },
     config: {
-      background: "teleport-bg",
+      background: "unstable-bg",
       rotation_speed: 1,
       rotation_speed_change: {
         min: 0.5,
@@ -294,10 +294,10 @@ module.exports = [
     info: {
       score_to_next_level: 180,
       tint: "0x06E0FF",
-      name: "pulsating",
+      name: "pulsate",
     },
     config: {
-      background: "teleport-bg",
+      background: "pulsate-bg",
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,
@@ -313,7 +313,7 @@ module.exports = [
       name: "blind",
     },
     config: {
-      background: "teleport-bg",
+      background: "blind-bg",
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,
@@ -330,7 +330,7 @@ module.exports = [
       name: "sense",
     },
     config: {
-      background: "teleport-bg",
+      background: "sense-bg",
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,
@@ -347,7 +347,7 @@ module.exports = [
       name: "tiny",
     },
     config: {
-      background: "teleport-bg",
+      background: "tiny-bg",
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,

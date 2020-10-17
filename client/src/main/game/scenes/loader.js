@@ -34,6 +34,14 @@ export default class loader extends Phaser.Scene {
     this.loadImage("flower-bg", "backgrounds")
     this.loadImage("hell-bg", "backgrounds")
     this.loadImage("leaderboard-bg", "backgrounds")
+    this.loadImage("unstable-bg", "backgrounds")
+    this.loadImage("pulsate-bg", "backgrounds")
+    this.loadImage("blind-bg", "backgrounds")
+    this.loadImage("sense-bg", "backgrounds")
+    this.loadImage("tiny-bg", "backgrounds")
+    this.loadImage("teleport-bg", "backgrounds")
+
+    this.loadImage("black-border", "backgrounds")
   }
   buttons() {
     this.loadImage("pause-button", "buttons")
@@ -89,15 +97,22 @@ export default class loader extends Phaser.Scene {
     this.loadImage("lb-aura", "mix")
     this.loadImage("lb-strip", "mix")
 
+    this.loadImage("level-select-decoration-hard", "mix")
     this.loadImage("level-select-difficulty-bar", "mix")
     this.loadImage("level-select-score-bar", "mix")
     this.loadImage("level-select-name-bar", "mix")
+    this.loadImage("level-select-score-bar-hard", "mix")
+    this.loadImage("level-select-name-bar-hard", "mix")
 
     this.loadImage("black", "mix")
     this.loadImage("red", "mix")
 
     this.loadImage("thorns_up", "mix")
     this.loadImage("thorns_sides", "mix")
+
+    this.loadImage("thorns_1", "mix")
+    this.loadImage("thorns_2", "mix")
+    this.loadImage("thorns_3", "mix")
 
     this.loadImage("no_internet", "mix")
 
@@ -119,11 +134,17 @@ export default class loader extends Phaser.Scene {
     this.loadImage("twins_icon", "levelsIcons")
     this.loadImage("speed_icon", "levelsIcons")
     this.loadImage("perfect_icon", "levelsIcons")
-    this.loadImage("invisible_icon", "levelsIcons")
-    this.loadImage("expanding_icon", "levelsIcons")
-    this.loadImage("many_icon", "levelsIcons")
+    this.loadImage("chameleon_icon", "levelsIcons")
+    this.loadImage("expand_icon", "levelsIcons")
+    this.loadImage("confusion_icon", "levelsIcons")
     this.loadImage("flower_icon", "levelsIcons")
     this.loadImage("hell_icon", "levelsIcons")
+    this.loadImage("teleport_icon", "levelsIcons")
+    this.loadImage("unstable_icon", "levelsIcons")
+    this.loadImage("pulsate_icon", "levelsIcons")
+    this.loadImage("blind_icon", "levelsIcons")
+    this.loadImage("sense_icon", "levelsIcons")
+    this.loadImage("tiny_icon", "levelsIcons")
   }
 
   preload() {

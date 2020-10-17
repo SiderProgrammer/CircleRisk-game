@@ -24,10 +24,10 @@ export default class menu extends Phaser.Scene {
   create() {
     helper.createBackground(this, "menu-bg")
 
-    this.createPlayButtonSet()
-    this.createCustomizeButtonSet()
+    this.createPlayButton()
+    // this.createCustomizeButtonSet()
 
-    this.showButtons()
+    // this.showButtons()
     this.showLogos()
 
     helper.sceneIntro(this)
@@ -50,6 +50,18 @@ export default class menu extends Phaser.Scene {
       .setOrigin(1, 0)
   }
 
+  createPlayButton() {
+    this.play_button = helper.createButton(
+      this,
+      this.game.GW / 2,
+      this.game.GH - 300,
+      "play-button-big",
+      () => {
+        helper.sceneTransition(this, "levelSelect")
+      }
+    )
+  }
+  /*
   hideButtons() {
     return new Promise((resolve) => {
       this.customizeButtonTween(85)
@@ -193,6 +205,7 @@ export default class menu extends Phaser.Scene {
     this.play_stick.setAngle(Phaser.Math.RadToDeg(angle_between))
     this.play_button.setAngle(Phaser.Math.RadToDeg(angle_between))
   }
+*/
 
   async fetchFromServer() {
     try {
