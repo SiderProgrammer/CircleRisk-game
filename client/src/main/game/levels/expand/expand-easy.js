@@ -1,6 +1,7 @@
 import Manager from "../../main/level-manager.js"
 
 import LevelsFunctionsExtender from "../../main/level-functions-extender"
+import ExpandFunctionsManager from "./functions"
 
 export default class Expand_Easy extends Phaser.Scene {
   constructor() {
@@ -38,15 +39,10 @@ export default class Expand_Easy extends Phaser.Scene {
 
     const pos = this.manager.helper.calculateMinMaxTargetsPos()
     this.distance = (pos.x - pos.minX) / 2
-    this.max_left_target = this.manager.helper.findTargetIndexByPosition({
-      x: pos.minX,
-    })
-
-    //  this.calculateDifferenceDistance() // calculates this.distance
-
-    this.stop_point = this.game.GW / 2 - this.distance
 
     this.center_to_circle_distance = this.distance
+
+    this.expandFunctionsManager = new ExpandFunctionsManager(this)
   }
   update() {
     if (!this.manager.game_started) return
@@ -54,43 +50,18 @@ export default class Expand_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
 
-    this.moveTargets()
+    this.expandFunctionsManager.moveTargets()
     this.levelsFunctionsExtender.moveCircle()
 
     this.manager.helper.extendStick()
     this.manager.helper.centerStick()
-    this.calculateTargetsFlyDirection()
+
+    this.expandFunctionsManager.calculateTargetsFlyDirection()
+
     this.distance += this.fly_value
     this.center_to_circle_distance += this.fly_value
   }
-  calculateTargetsFlyDirection() {
-    if (
-      this.max_left_target.x - this.max_left_target.displayWidth * 0.5 < 0 ||
-      this.max_left_target.x > this.stop_point
-    ) {
-      // OPTIMISE ( CHECK ONLY TARGET FROM LEFT)
-      this.changeFlyDirection()
-    }
-  }
-
-  moveTargets() {
-    this.manager.target_array.forEach((target, i) => {
-      const radians_angle = Phaser.Math.DegToRad(
-        this.manager.angle_between * (i - 1)
-      )
-
-      const targetX = this.game.GW / 2 + this.distance * Math.sin(radians_angle)
-      const targetY = this.game.GH / 2 + this.distance * Math.cos(radians_angle)
-
-      target.setPosition(targetX, targetY)
-    })
-  }
   calculateCirclesPosition() {
-    this.levelsFunctionsExtender.calculateCircleAngle()
-    this.levelsFunctionsExtender.calculateCircleDistance()
-  }
-
-  changeFlyDirection() {
-    this.fly_value = -this.fly_value
+    this.expandFunctionsManager.calculateCirclesPosition()
   }
 }

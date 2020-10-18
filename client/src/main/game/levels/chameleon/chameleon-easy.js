@@ -1,4 +1,5 @@
 import Manager from "../../main/level-manager.js"
+import ChameleonFunctionsManager from "./functions"
 
 export default class Chameleon_Easy extends Phaser.Scene {
   constructor() {
@@ -28,6 +29,8 @@ export default class Chameleon_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+
+    this.chameleonFunctionsManager = new ChameleonFunctionsManager(this)
   }
   update() {
     if (!this.manager.game_started) return
@@ -36,8 +39,6 @@ export default class Chameleon_Easy extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
   removeTargetToCatchSkin() {
-    this.manager.target_array[this.manager.next_target].setTexture(
-      this.manager.target_texture
-    )
+   this.chameleonFunctionsManager.removeTargetToCatchSkin()
   }
 }

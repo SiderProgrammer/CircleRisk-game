@@ -32,6 +32,11 @@ import Tiny_Easy from "../levels/tiny/tiny-easy"
 import Hell_Easy from "../levels/hell/hell-easy"
 
 import Wind_Medium from "../levels/wind/wind-medium"
+import Sun_Medium from "../levels/sun/sun-medium"
+import Snow_Medium from "../levels/snow/snow-medium"
+import Twins_Medium from "../levels/twins/twins-medium"
+import Tiny_Medium from "../levels/tiny/tiny-medium"
+import Clock_Medium from "../levels/clock/clock-medium"
 
 export default [
   Preloader,
@@ -67,5 +72,10 @@ export default [
   Tiny_Easy,
   Hell_Easy,
 
-  Wind_Medium
+  Wind_Medium,
+  Sun_Medium,
+  Snow_Medium,
+  Twins_Medium,
+  Tiny_Medium,
+  Clock_Medium,
 ]

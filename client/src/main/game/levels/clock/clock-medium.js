@@ -1,9 +1,10 @@
 import Manager from "../../main/level-manager.js"
-import TinyFunctionsManager from "./functions"
+import ClockFunctionsManager from "./functions"
+import ChameleonFunctionsManager from "../chameleon/functions"
 
-export default class Tiny_Easy extends Phaser.Scene {
+export default class Clock_Medium extends Phaser.Scene {
   constructor() {
-    super("Tiny_Easy")
+    super("Clock_Medium")
   }
 
   init(config) {
@@ -12,6 +13,8 @@ export default class Tiny_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+
+    this.time_left = this.manager.config.time_left
   }
 
   create() {
@@ -28,10 +31,11 @@ export default class Tiny_Easy extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
+    this.chameleonFunctionsManager = new ChameleonFunctionsManager(this)
+    this.clockFunctionsManager = new ClockFunctionsManager(this)
+    this.clockFunctionsManager.createTimerText()
+
     this.manager.GUI_helper.sceneIntro(this)
-    
-    this.tinyFunctionsManager = new TinyFunctionsManager(this)
-    this.tinyFunctionsManager.resizeTargets()
   }
   update() {
     if (!this.manager.game_started) return
@@ -40,5 +44,10 @@ export default class Tiny_Easy extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
 
-
+  setTimer() {
+    this.clockFunctionsManager.setTimer()
+  }
+  removeTargetToCatchSkin() {
+    this.chameleonFunctionsManager.removeTargetToCatchSkin()
+  }
 }

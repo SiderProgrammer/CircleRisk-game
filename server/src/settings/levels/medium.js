@@ -58,6 +58,10 @@ module.exports = [
       name: "snow",
     },
     config: {
+      rotation_speed_change: {
+        min: 0.5,
+        max: 3.5,
+      },
       background: "snow-bg",
       rotation_speed: 1,
       acceleration: 0.04,
@@ -348,7 +352,7 @@ module.exports = [
     },
     config: {
       background: "tiny-bg",
-      rotation_speed: 1,
+      rotation_speed: 3,
       acceleration: 0.06,
       targets_amount: 8,
       ball_distance: 135,

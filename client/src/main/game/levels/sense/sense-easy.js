@@ -1,4 +1,5 @@
 import Manager from "../../main/level-manager.js"
+import SenseFunctionsManager from "./functions"
 
 export default class Sense_Easy extends Phaser.Scene {
   constructor() {
@@ -28,6 +29,8 @@ export default class Sense_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+
+    this.senseFunctionsManager = new SenseFunctionsManager(this);
   }
   update() {
     if (!this.manager.game_started) return
@@ -35,15 +38,8 @@ export default class Sense_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
+hideSetForAWhile() {
+  this.senseFunctionsManager.hideSetForAWhile()
+}
 
-  hideSetForAWhile() {
-    this.manager.circles.forEach((circle) => circle.setAlpha(0))
-    this.manager.stick.setAlpha(0)
-    setTimeout(() => this.showSet(), 500)
-  }
-
-  showSet() {
-    this.manager.circles.forEach((circle) => circle.setAlpha(1))
-    this.manager.stick.setAlpha(1)
-  }
 }

@@ -1,9 +1,9 @@
 import Manager from "../../main/level-manager.js"
 import TinyFunctionsManager from "./functions"
 
-export default class Tiny_Easy extends Phaser.Scene {
+export default class Tiny_Medium extends Phaser.Scene {
   constructor() {
-    super("Tiny_Easy")
+    super("Tiny_Medium")
   }
 
   init(config) {
@@ -29,7 +29,7 @@ export default class Tiny_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-    
+
     this.tinyFunctionsManager = new TinyFunctionsManager(this)
     this.tinyFunctionsManager.resizeTargets()
   }
@@ -39,6 +39,4 @@ export default class Tiny_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-
-
 }

@@ -1,4 +1,5 @@
 import Manager from "../../main/level-manager.js"
+import UnstableFunctionsManager from "./functions"
 
 export default class Unstable_Easy extends Phaser.Scene {
   constructor() {
@@ -28,6 +29,8 @@ export default class Unstable_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+
+    this.unstableFunctionsManager = new UnstableFunctionsManager(this)
   }
   update() {
     if (!this.manager.game_started) return
@@ -36,7 +39,6 @@ export default class Unstable_Easy extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
   changeRotationSpeed() {
-    const { max, min } = this.manager.config.rotation_speed_change
-    this.manager.rotation_speed = Phaser.Math.FloatBetween(min, max)
+    this.unstableFunctionsManager.changeRotationSpeed()
   }
 }

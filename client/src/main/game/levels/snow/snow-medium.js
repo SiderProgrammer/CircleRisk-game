@@ -1,9 +1,10 @@
 import Manager from "../../main/level-manager.js"
-import TinyFunctionsManager from "./functions"
+import SnowFunctionsManager from "./functions"
+import UnstableFunctionsManager from "../unstable/functions"
 
-export default class Tiny_Easy extends Phaser.Scene {
+export default class Snow_Medium extends Phaser.Scene {
   constructor() {
-    super("Tiny_Easy")
+    super("Snow_Medium")
   }
 
   init(config) {
@@ -12,6 +13,8 @@ export default class Tiny_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+    this.snowFunctionsManager = new SnowFunctionsManager(this)
+    this.unstableFunctionsManager = new UnstableFunctionsManager(this)
   }
 
   create() {
@@ -29,9 +32,6 @@ export default class Tiny_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-    
-    this.tinyFunctionsManager = new TinyFunctionsManager(this)
-    this.tinyFunctionsManager.resizeTargets()
   }
   update() {
     if (!this.manager.game_started) return
@@ -39,6 +39,10 @@ export default class Tiny_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-
-
+  slideCircle() {
+    this.snowFunctionsManager.slideCircle()
+  }
+  changeRotationSpeed() {
+    this.unstableFunctionsManager.changeRotationSpeed()
+  }
 }

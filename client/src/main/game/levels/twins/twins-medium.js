@@ -1,9 +1,10 @@
 import Manager from "../../main/level-manager.js"
-import TinyFunctionsManager from "./functions"
+import TwinsFunctionsManager from "./functions"
+import SenseFunctionsManager from "../sense/functions"
 
-export default class Tiny_Easy extends Phaser.Scene {
+export default class Twins_Medium extends Phaser.Scene {
   constructor() {
-    super("Tiny_Easy")
+    super("Twins_Medium")
   }
 
   init(config) {
@@ -28,10 +29,13 @@ export default class Tiny_Easy extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
+    this.twinsFunctionsManager = new TwinsFunctionsManager(this)
+    this.senseFunctionsManager = new SenseFunctionsManager(this)
+
+    const fake_target_index = this.twinsFunctionsManager.calculateFakeTargetIndex()
+    this.twinsFunctionsManager.setFakeTargetToCatch(fake_target_index)
+
     this.manager.GUI_helper.sceneIntro(this)
-    
-    this.tinyFunctionsManager = new TinyFunctionsManager(this)
-    this.tinyFunctionsManager.resizeTargets()
   }
   update() {
     if (!this.manager.game_started) return
@@ -39,6 +43,10 @@ export default class Tiny_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-
-
+  handleFakeTargetToCatch() {
+    this.twinsFunctionsManager.handleFakeTargetToCatch()
+  }
+  hideSetForAWhile() {
+    this.senseFunctionsManager.hideSetForAWhile()
+  }
 }

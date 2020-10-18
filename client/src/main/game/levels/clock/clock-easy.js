@@ -1,4 +1,5 @@
 import Manager from "../../main/level-manager.js"
+import ClockFunctionsManager from "./functions"
 
 export default class Clock_Easy extends Phaser.Scene {
   constructor() {
@@ -11,6 +12,7 @@ export default class Clock_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+
     this.time_left = this.manager.config.time_left
   }
 
@@ -28,7 +30,8 @@ export default class Clock_Easy extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
-    this.createTimerText()
+    this.clockFunctionsManager = new ClockFunctionsManager(this)
+    this.clockFunctionsManager.createTimerText()
 
     this.manager.GUI_helper.sceneIntro(this)
   }
@@ -39,27 +42,9 @@ export default class Clock_Easy extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
 
-  createTimerText() {
-    this.time_left_text = this.add
-      .text(this.game.GW / 2, 170, this.time_left, {
-        font: "100px LuckiestGuy",
-      })
-      .setOrigin(0.5, 0.5)
-  }
   setTimer() {
-    this.timer = this.time.addEvent({
-      delay: 1000, // ms
-      callback: () => this.timerTick(),
-      repeat: this.time_left,
-    })
+ this.clockFunctionsManager.setTimer()
   }
 
-  timerTick() {
-    this.time_left--
-    if (this.time_left === 0) {
-      this.timer.remove()
-      this.manager.gameOver()
-    }
-    this.time_left_text.setText(this.time_left)
-  }
+
 }

@@ -12,11 +12,6 @@ export default class {
     )
   }
 
-  calculateDifferenceDistance() {
-    const pos = this.scene.manager.helper.calculateMinMaxTargetsPos()
-    this.scene.distance = (pos.x - pos.minX) / 2
-  }
-
   calculateCirclesPosition() {
     this.calculateCircleAngle()
     this.calculateCircleDistance()
