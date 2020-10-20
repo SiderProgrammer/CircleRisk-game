@@ -48,6 +48,7 @@ module.exports = [
       ball_distance: 130,
       additional_angle: 22.5,
       starting_target: 1,
+      target_rotate_speed: 0.5,
     },
   },
 
@@ -115,7 +116,7 @@ module.exports = [
       rotation_speed: 1,
       acceleration: 0.07,
       targets_amount: 8,
-      ball_distance: 90,
+      ball_distance: 140,
       additional_angle: 22.5,
       starting_target: 1,
     },
@@ -135,6 +136,7 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      time_left: 10, //in seconds
     },
   },
   {
@@ -200,6 +202,10 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      teleport_value: {
+        min: -1,
+        max: -3,
+      },
     },
   },
 
@@ -234,6 +240,10 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      teleport_value: {
+        min: -1,
+        max: -3,
+      },
     },
   },
 
@@ -287,9 +297,10 @@ module.exports = [
         min: 0.5,
         max: 3.5,
       },
+
       acceleration: 0.06,
       targets_amount: 8,
-      ball_distance: 135,
+      ball_distance: 110,
       additional_angle: 22.5,
       starting_target: 1,
     },

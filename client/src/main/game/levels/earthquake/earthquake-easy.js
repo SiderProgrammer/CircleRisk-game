@@ -1,4 +1,5 @@
 import Manager from "../../main/level-manager.js"
+import EarthquakeFunctionsManager from "./functions"
 
 export default class Earthquake_Easy extends Phaser.Scene {
   constructor() {
@@ -11,6 +12,7 @@ export default class Earthquake_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+    this.earthquakeFunctionsManager = new EarthquakeFunctionsManager(this)
   }
 
   create() {
@@ -36,6 +38,6 @@ export default class Earthquake_Easy extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
   shake() {
-    this.cameras.main.shake(500, 0.05)
+    this.earthquakeFunctionsManager.shake()
   }
 }

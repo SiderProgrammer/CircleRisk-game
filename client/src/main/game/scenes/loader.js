@@ -154,6 +154,7 @@ export default class loader extends Phaser.Scene {
     })
 
     this.load.atlas("colors", `${imgPath}/colors.png`, `${imgPath}/colors.json`)
+    this.load.atlas("particles", `${imgPath}/particles.png`, `${imgPath}/particles.json`)
 
     this.backgrounds()
     this.buttons()

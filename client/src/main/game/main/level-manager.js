@@ -82,8 +82,8 @@ export default class Manager {
 
   checkIfMissedTarget() {
     const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
-
-    if (distance_from_target > 90 && this.is_possible_miss) {
+    //distance_from_target > 90
+    if (!this.hasHitTarget() && this.is_possible_miss) {
       // this.gameOver();
     }
 
@@ -256,7 +256,7 @@ export default class Manager {
       if (!this.game_started) {
         this.finger.destroy()
         this.game_started = true
-        if(typeof this.scene.setTimer === "function") this.scene.setTimer(); ///
+        if (typeof this.scene.setTimer === "function") this.scene.setTimer() ///
       } else this.changeBall()
     })
   }

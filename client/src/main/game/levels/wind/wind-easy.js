@@ -25,6 +25,8 @@ export default class Wind_Easy extends Phaser.Scene {
     this.manager.create()
 
     this.manager.createGUI()
+    this.windFunctionsManager.createFlyingleafs()
+
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()

@@ -1,12 +1,12 @@
 import Manager from "../../main/level-manager.js"
 
 import LevelsFunctionsExtender from "../../main/level-functions-extender"
-import SunFunctionsManager from "./functions"
+import ExpandFunctionsManager from "./functions"
 import TinyFunctionsManager from "../tiny/functions"
 
-export default class Sun_Medium extends Phaser.Scene {
+export default class Expand_Medium extends Phaser.Scene {
   constructor() {
-    super("Sun_Medium")
+    super("Expand_Medium")
   }
 
   init(config) {
@@ -14,15 +14,12 @@ export default class Sun_Medium extends Phaser.Scene {
     this.score_to_next_level = config.score_to_next_level
 
     this.levelsFunctionsExtender = new LevelsFunctionsExtender(this)
-
     this.manager = new Manager(this, config.config)
     this.manager.init()
 
-    this.targets_rotate_angle = 0
+    this.fly_value = 1
     this.circle_rotate_angle = 0
-    this.center_to_circle_distance = 0
-
-    this.sunFunctionsManager = new SunFunctionsManager(this)
+    this.center_to_circle_distance = 0 // needed to circle set
   }
 
   create() {
@@ -47,24 +44,28 @@ export default class Sun_Medium extends Phaser.Scene {
     const pos = this.manager.helper.calculateMinMaxTargetsPos()
     this.distance = (pos.x - pos.minX) / 2
 
-    this.sunFunctionsManager.calculateSpawnDistance()
+    this.center_to_circle_distance = this.distance
+
+    this.expandFunctionsManager = new ExpandFunctionsManager(this)
   }
   update() {
     if (!this.manager.game_started) return
-    this.targets_rotate_angle += this.manager.config.target_rotate_speed
-    this.circle_rotate_angle += this.manager.config.target_rotate_speed
-
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
 
-    this.sunFunctionsManager.rotateTargets()
+    this.expandFunctionsManager.moveTargets()
     this.levelsFunctionsExtender.moveCircle()
 
     this.manager.helper.extendStick()
     this.manager.helper.centerStick()
+
+    this.expandFunctionsManager.calculateTargetsFlyDirection()
+
+    this.distance += this.fly_value
+    this.center_to_circle_distance += this.fly_value
   }
   calculateCirclesPosition() {
-    this.sunFunctionsManager.calculateCirclesPosition()
+    this.expandFunctionsManager.calculateCirclesPosition()
   }
 }

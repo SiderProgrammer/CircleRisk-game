@@ -1,4 +1,5 @@
 import Manager from "../../main/level-manager.js"
+import BlindFunctionsManager from "./functions"
 
 export default class Blind_Easy extends Phaser.Scene {
   constructor() {
@@ -29,8 +30,9 @@ export default class Blind_Easy extends Phaser.Scene {
 
     this.manager.GUI_helper.sceneIntro(this)
 
+    this.blindFunctionsManager = new BlindFunctionsManager(this)
     this.blind = this.manager.GUI_helper.createBackground(this, "black")
-    this.blindTheScreen()
+    this.blindFunctionsManager.blindTheScreen()
   }
   update() {
     if (!this.manager.game_started) return
@@ -40,11 +42,6 @@ export default class Blind_Easy extends Phaser.Scene {
   }
 
   blindTheScreen() {
-    this.blind.setVisible(true)
-    setTimeout(() => {
-      this.blind.setVisible(false)
-      // change set timeouts to phaser timer function (setimeout will execute even if level is done)
-      setTimeout(() => this.blindTheScreen(), Phaser.Math.Between(4000, 7000))
-    }, 1000)
+    this.blindFunctionsManager.blindTheScreen()
   }
 }

@@ -1,9 +1,9 @@
 import Manager from "../../main/level-manager.js"
-import ConfusionFunctionsManager from "./functions"
+import BasicFunctionsManager from "./functions"
 
-export default class Confusion_Easy extends Phaser.Scene {
+export default class Basic_Medium extends Phaser.Scene {
   constructor() {
-    super("Confusion_Easy")
+    super("Basic_Medium")
   }
 
   init(config) {
@@ -12,16 +12,14 @@ export default class Confusion_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-
-    this.confusionFunctionsManager = new ConfusionFunctionsManager(this)
-
-    this.fake_targets = []
+    this.basicFunctionsManager = new BasicFunctionsManager(this)
   }
 
   create() {
     this.manager.create()
 
     this.manager.createGUI()
+    this.basicFunctionsManager.createFlyingCubes()
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()
@@ -39,13 +37,5 @@ export default class Confusion_Easy extends Phaser.Scene {
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
-  }
-
-  handleFakeTargetsToCatch() {
-    this.confusionFunctionsManager.handleFakeTargetsToCatch()
-  }
-
-  removeCorrectTargetTextureToCatch() {
-    this.confusionFunctionsManager.removeCorrectTargetTextureToCatch()
   }
 }

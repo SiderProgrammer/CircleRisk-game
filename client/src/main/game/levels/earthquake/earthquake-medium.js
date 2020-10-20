@@ -1,9 +1,10 @@
 import Manager from "../../main/level-manager.js"
-import ConfusionFunctionsManager from "./functions"
+import EarthquakeFunctionsManager from "./functions"
+import ClockFunctionsManager from "../clock/functions"
 
-export default class Confusion_Easy extends Phaser.Scene {
+export default class Earthquake_Medium extends Phaser.Scene {
   constructor() {
-    super("Confusion_Easy")
+    super("Earthquake_Medium")
   }
 
   init(config) {
@@ -12,10 +13,8 @@ export default class Confusion_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-
-    this.confusionFunctionsManager = new ConfusionFunctionsManager(this)
-
-    this.fake_targets = []
+    this.earthquakeFunctionsManager = new EarthquakeFunctionsManager(this)
+    this.time_left = this.manager.config.time_left
   }
 
   create() {
@@ -32,6 +31,9 @@ export default class Confusion_Easy extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
+    this.clockFunctionsManager = new ClockFunctionsManager(this)
+    this.clockFunctionsManager.createTimerText()
+
     this.manager.GUI_helper.sceneIntro(this)
   }
   update() {
@@ -40,12 +42,11 @@ export default class Confusion_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-
-  handleFakeTargetsToCatch() {
-    this.confusionFunctionsManager.handleFakeTargetsToCatch()
+  shake() {
+    this.earthquakeFunctionsManager.shake()
   }
 
-  removeCorrectTargetTextureToCatch() {
-    this.confusionFunctionsManager.removeCorrectTargetTextureToCatch()
+  setTimer() {
+    this.clockFunctionsManager.setTimer()
   }
 }

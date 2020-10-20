@@ -1,9 +1,10 @@
 import Manager from "../../main/level-manager.js"
-import ConfusionFunctionsManager from "./functions"
+import SenseFunctionsManager from "./functions"
+import HellFunctionsManager from "../hell/functions"
 
-export default class Confusion_Easy extends Phaser.Scene {
+export default class Sense_Medium extends Phaser.Scene {
   constructor() {
-    super("Confusion_Easy")
+    super("Sense_Medium")
   }
 
   init(config) {
@@ -12,10 +13,6 @@ export default class Confusion_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-
-    this.confusionFunctionsManager = new ConfusionFunctionsManager(this)
-
-    this.fake_targets = []
   }
 
   create() {
@@ -33,6 +30,10 @@ export default class Confusion_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+
+    this.senseFunctionsManager = new SenseFunctionsManager(this);
+    this.hellFunctionsManager = new HellFunctionsManager(this)
+   
   }
   update() {
     if (!this.manager.game_started) return
@@ -40,12 +41,10 @@ export default class Confusion_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-
-  handleFakeTargetsToCatch() {
-    this.confusionFunctionsManager.handleFakeTargetsToCatch()
-  }
-
-  removeCorrectTargetTextureToCatch() {
-    this.confusionFunctionsManager.removeCorrectTargetTextureToCatch()
-  }
+hideSetForAWhile() {
+  this.senseFunctionsManager.hideSetForAWhile()
+}
+hideTargets() {
+    this.hellFunctionsManager.hideTargets()
+   }
 }

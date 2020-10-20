@@ -1,9 +1,9 @@
 import Manager from "../../main/level-manager.js"
-import ConfusionFunctionsManager from "./functions"
+import EarthquakeFunctionsManager from "../earthquake/functions"
 
-export default class Confusion_Easy extends Phaser.Scene {
+export default class Reverse_Medium extends Phaser.Scene {
   constructor() {
-    super("Confusion_Easy")
+    super("Reverse_Medium")
   }
 
   init(config) {
@@ -12,10 +12,8 @@ export default class Confusion_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-
-    this.confusionFunctionsManager = new ConfusionFunctionsManager(this)
-
-    this.fake_targets = []
+    this.manager.rotation_direction = -1
+    this.earthquakeFunctionsManager = new EarthquakeFunctionsManager(this)
   }
 
   create() {
@@ -24,9 +22,13 @@ export default class Confusion_Easy extends Phaser.Scene {
     this.manager.createGUI()
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    this.manager.centerTargets()
+
+    this.manager.target_array.reverse()
+    this.manager.helper.checkNewTargetsQueue()
+
     this.manager.setNewTarget()
 
-    this.manager.centerTargets()
     this.manager.showTargets()
     this.manager.createStick()
     this.manager.createCircles()
@@ -40,12 +42,7 @@ export default class Confusion_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-
-  handleFakeTargetsToCatch() {
-    this.confusionFunctionsManager.handleFakeTargetsToCatch()
-  }
-
-  removeCorrectTargetTextureToCatch() {
-    this.confusionFunctionsManager.removeCorrectTargetTextureToCatch()
+  shake() {
+    this.earthquakeFunctionsManager.shake()
   }
 }

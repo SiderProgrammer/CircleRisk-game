@@ -1,4 +1,5 @@
 import Manager from "../../main/level-manager.js"
+import HellFunctionsManager from "./functions"
 
 export default class Hell_Easy extends Phaser.Scene {
   constructor() {
@@ -11,7 +12,7 @@ export default class Hell_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.are_targets_hidden = false
+    
   }
 
   create() {
@@ -29,6 +30,8 @@ export default class Hell_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+
+    this.hellFunctionsManager = new HellFunctionsManager(this)
   }
   update() {
     if (!this.manager.game_started) return
@@ -38,8 +41,6 @@ export default class Hell_Easy extends Phaser.Scene {
   }
 
   hideTargets() {
-    if (this.are_targets_hidden) return
-    this.manager.target_array.forEach((t) => t.setVisible(false))
-    this.are_targets_hidden = true
+   this.hellFunctionsManager.hideTargets()
   }
 }

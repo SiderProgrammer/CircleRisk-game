@@ -1,9 +1,9 @@
 import Manager from "../../main/level-manager.js"
-import ConfusionFunctionsManager from "./functions"
+import SnowFunctionsManager from "../snow/functions"
 
-export default class Confusion_Easy extends Phaser.Scene {
+export default class Flower_Medium extends Phaser.Scene {
   constructor() {
-    super("Confusion_Easy")
+    super("Flower_Medium")
   }
 
   init(config) {
@@ -12,10 +12,7 @@ export default class Confusion_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-
-    this.confusionFunctionsManager = new ConfusionFunctionsManager(this)
-
-    this.fake_targets = []
+    this.snowFunctionsManager = new SnowFunctionsManager(this)
   }
 
   create() {
@@ -40,12 +37,7 @@ export default class Confusion_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-
-  handleFakeTargetsToCatch() {
-    this.confusionFunctionsManager.handleFakeTargetsToCatch()
-  }
-
-  removeCorrectTargetTextureToCatch() {
-    this.confusionFunctionsManager.removeCorrectTargetTextureToCatch()
+  slideCircle() {
+    this.snowFunctionsManager.slideCircle()
   }
 }

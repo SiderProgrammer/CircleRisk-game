@@ -1,4 +1,5 @@
 import Manager from "../../main/level-manager.js"
+import TeleportFunctionsManager from "./functions"
 
 export default class Teleport_Easy extends Phaser.Scene {
   constructor() {
@@ -28,6 +29,8 @@ export default class Teleport_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+    this.teleportFunctionsManager = new TeleportFunctionsManager(this);
+
   }
   update() {
     if (!this.manager.game_started) return
@@ -37,26 +40,6 @@ export default class Teleport_Easy extends Phaser.Scene {
   }
 
   teleportCircle() {
-    const { max, min } = this.manager.config.teleport_value
-
-    let new_circle_index =
-      this.manager.next_target + Phaser.Math.Between(max, min)
-
-    new_circle_index = this.manager.helper.normalizeIndexByTargetsAmount(
-      new_circle_index
-    )
-
-    const target_to_be_teleported_to = this.manager.target_array[
-      new_circle_index
-    ]
-
-    // if(new_circle_index === 0) not teleport circle to the center ?
-
-    this.manager.circles[1 - this.manager.current_circle].setPosition(
-      target_to_be_teleported_to.x,
-      target_to_be_teleported_to.y
-    )
-
-    this.manager.helper.extendStick()
+   this.teleportFunctionsManager.teleportCircle()
   }
 }

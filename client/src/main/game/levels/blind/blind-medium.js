@@ -1,9 +1,10 @@
 import Manager from "../../main/level-manager.js"
-import ConfusionFunctionsManager from "./functions"
+import BlindFunctionsManager from "./functions"
+import ChameleonFunctionsManager from "../chameleon/functions"
 
-export default class Confusion_Easy extends Phaser.Scene {
+export default class Blind_Medium extends Phaser.Scene {
   constructor() {
-    super("Confusion_Easy")
+    super("Blind_Medium")
   }
 
   init(config) {
@@ -12,10 +13,6 @@ export default class Confusion_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-
-    this.confusionFunctionsManager = new ConfusionFunctionsManager(this)
-
-    this.fake_targets = []
   }
 
   create() {
@@ -33,6 +30,11 @@ export default class Confusion_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+
+    this.chameleonFunctionsManager = new ChameleonFunctionsManager(this)
+    this.blindFunctionsManager = new BlindFunctionsManager(this)
+    this.blind = this.manager.GUI_helper.createBackground(this, "black")
+    this.blindFunctionsManager.blindTheScreen()
   }
   update() {
     if (!this.manager.game_started) return
@@ -41,11 +43,14 @@ export default class Confusion_Easy extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
 
-  handleFakeTargetsToCatch() {
-    this.confusionFunctionsManager.handleFakeTargetsToCatch()
+  blindTheScreen() {
+    this.blindFunctionsManager.blindTheScreen()
+  }
+  removeTargetToCatchSkin() {
+    this.chameleonFunctionsManager.removeTargetToCatchSkin()
   }
 
-  removeCorrectTargetTextureToCatch() {
-    this.confusionFunctionsManager.removeCorrectTargetTextureToCatch()
+  removeTargetToCatchSkin() {
+    this.chameleonFunctionsManager.removeTargetToCatchSkin()
   }
 }

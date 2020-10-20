@@ -2,7 +2,7 @@ import Manager from "../../main/level-manager.js"
 
 import LevelsFunctionsExtender from "../../main/level-functions-extender"
 import SunFunctionsManager from "./functions"
-import TinyFunctionsManager from "../tiny/functions"
+import ExpandFunctionsManager from "../expand/functions"
 
 export default class Sun_Medium extends Phaser.Scene {
   constructor() {
@@ -22,7 +22,7 @@ export default class Sun_Medium extends Phaser.Scene {
     this.circle_rotate_angle = 0
     this.center_to_circle_distance = 0
 
-    this.sunFunctionsManager = new SunFunctionsManager(this)
+    this.fly_value = 1
   }
 
   create() {
@@ -41,11 +41,13 @@ export default class Sun_Medium extends Phaser.Scene {
 
     this.manager.GUI_helper.sceneIntro(this)
 
-    this.tinyFunctionsManager = new TinyFunctionsManager(this)
-    this.tinyFunctionsManager.resizeTargets()
-
     const pos = this.manager.helper.calculateMinMaxTargetsPos()
     this.distance = (pos.x - pos.minX) / 2
+
+    this.center_to_circle_distance = this.distance
+
+    this.sunFunctionsManager = new SunFunctionsManager(this)
+    this.expandFunctionsManager = new ExpandFunctionsManager(this)
 
     this.sunFunctionsManager.calculateSpawnDistance()
   }
@@ -58,11 +60,19 @@ export default class Sun_Medium extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
 
+    //  this.expandFunctionsManager.moveTargets()
+
     this.sunFunctionsManager.rotateTargets()
+
     this.levelsFunctionsExtender.moveCircle()
 
     this.manager.helper.extendStick()
     this.manager.helper.centerStick()
+
+    this.expandFunctionsManager.calculateTargetsFlyDirection()
+    //this.calculateTargetsFlyDirection()
+    this.distance += this.fly_value
+    this.center_to_circle_distance += this.fly_value
   }
   calculateCirclesPosition() {
     this.sunFunctionsManager.calculateCirclesPosition()
