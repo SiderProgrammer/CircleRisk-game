@@ -35,4 +35,33 @@ export default class {
       },
     })
   }
+
+  createFallingSnow() {
+    this.scene.add.particles("particles").createEmitter({
+      x: { min: 0, max: this.scene.game.GW },
+      y: -50,
+
+      angle: { min: 0, max: 360 },
+      scale: { min: 0.5, max: 1 },
+
+      frame: { frames: ["snow"] },
+      alpha: 0.5,
+      deathZone: {
+        type: "onEnter", //-50
+        source: new Phaser.Geom.Rectangle(
+          0,
+          this.scene.game.GH + 50,
+          this.scene.game.GW,
+          50
+        ),
+      },
+      lifespan: 20000,
+
+      speedY: { min: 100, max: 200 },
+      speedX: { min: -10, max: 10 },
+
+      frequency: 500,
+      reserve: 20,
+    })
+  }
 }

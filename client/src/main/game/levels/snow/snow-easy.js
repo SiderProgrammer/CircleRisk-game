@@ -12,13 +12,14 @@ export default class Snow_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.snowFunctionsManager = new SnowFunctionsManager(this);
+    this.snowFunctionsManager = new SnowFunctionsManager(this)
   }
 
   create() {
     this.manager.create()
 
     this.manager.createGUI()
+    this.snowFunctionsManager.createFallingSnow()
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()

@@ -83,7 +83,7 @@ export default class Manager {
   checkIfMissedTarget() {
     const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
     //distance_from_target > 90
-    if (!this.hasHitTarget() && this.is_possible_miss) {
+    if (!this.hasHitTarget(distance_from_target) && this.is_possible_miss) {
       // this.gameOver();
     }
 
@@ -93,13 +93,10 @@ export default class Manager {
   }
 
   hasHitTarget(distanceToTarget) {
-    return distanceToTarget < this.circles[1].displayWidth / 2
+    return distanceToTarget < 85 * this.target_array[0].scale
   }
   changeBall() {
-    if (typeof this.scene.shake === "function") {
-      ///
-      this.scene.shake()
-    }
+
 
     if (typeof this.scene.changeRotationSpeed === "function") {
       this.scene.changeRotationSpeed()
@@ -109,6 +106,10 @@ export default class Manager {
     const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
 
     if (this.hasHitTarget(distance_from_target)) {
+      if (typeof this.scene.shake === "function") {
+        ///
+        this.scene.shake()
+      }
       if (distance_from_target < 10) {
         this.score += 2
         this.perfect++

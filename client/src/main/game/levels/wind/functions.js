@@ -1,24 +1,45 @@
 export default class {
   constructor(scene) {
     this.scene = scene
+    this.targets_speed = scene.targets_speed
+    this.speed_up_value = 0.1
   }
-  moveTargetsAndBounceOffWalls() {
-    this.scene.manager.target_array.forEach((target) => {
-      if (
-        target.x >= this.scene.game.GW - target.displayWidth / 2 ||
-        target.x <= 0 + target.displayWidth / 2
-      ) {
-        this.scene.targets_speed.x = -this.scene.targets_speed.x
-      }
-      if (
-        target.y >= this.scene.game.GH - target.displayHeight / 2 ||
-        target.y <= 0 + target.displayHeight / 2 //+ this.scene.manager.top_bar.displayHeight
-      ) {
-        this.scene.targets_speed.y = -this.scene.targets_speed.y
-      }
+  isBouncingWallX(target) {
+    return (
+      target.x >= this.scene.game.GW - target.displayWidth / 2 ||
+      target.x <= 0 + target.displayWidth / 2
+    )
+  }
+  isBouncingWallY(target) {
+    return (
+      target.y >= this.scene.game.GH - target.displayHeight / 2 ||
+      target.y <= 0 + target.displayHeight / 2
+    )
+  }
 
-      this.moveTargetsAndCircles(this.scene.targets_speed)
-    })
+  moveTargetsAndBounceOffWalls() {
+    if (
+      this.scene.manager.target_array.some((target) =>
+        this.isBouncingWallX(target)
+      )
+    ) {
+      this.targets_speed.x = -this.targets_speed.x
+      this.targets_speed.x > 0
+        ? (this.targets_speed.x += this.speed_up_value)
+        : (this.targets_speed.x -= this.speed_up_value)
+    }
+
+    if (
+      this.scene.manager.target_array.some((target) =>
+        this.isBouncingWallY(target)
+      )
+    ) {
+      this.targets_speed.y = -this.targets_speed.y
+      this.targets_speed.y > 0
+        ? (this.targets_speed.y += this.speed_up_value)
+        : (this.targets_speed.y -= this.speed_up_value)
+    }
+    this.moveTargetsAndCircles(this.targets_speed)
   }
 
   moveTargetsAndCircles({ x, y }) {
@@ -42,15 +63,15 @@ export default class {
       y: { min: 0, max: 100 },
 
       angle: { min: 0, max: 360 },
-      scale: Math.round(Phaser.Math.FloatBetween(0.6, 0.8) * 10) / 10,
+      scale: { min: 0.6, max: 0.8 },
 
       frame: { frames: ["leaf_1", "leaf_2", "leaf_3", "leaf_4"] },
       alpha: 0.5,
       deathZone: {
-        type: "onEnter", //-50
+        type: "onEnter",
         source: new Phaser.Geom.Rectangle(-50, 0, 50, this.scene.game.GH),
       },
-      lifespan: 20000, // { min, max }, or { min, max, steps }
+      lifespan: 20000,
 
       speedY: { min: 200, max: 350 },
       speedX: { min: -50, max: -300 },

@@ -9,7 +9,7 @@ export default class {
       y: this.scene.game.GH + 100,
 
       angle: { min: 0, max: 360 },
-      scale: Math.round(Phaser.Math.FloatBetween(0.5, 0.6) * 10) / 10,
+      scale: { min: 0.2, max: 0.4 },
 
       frame: { frames: ["cube_1", "cube_2", "cube_3", "cube_4"] },
       alpha: 0.3,

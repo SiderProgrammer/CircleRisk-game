@@ -5,7 +5,11 @@ export default class {
   hideSetForAWhile() {
     this.scene.manager.circles.forEach((circle) => circle.setAlpha(0))
     this.scene.manager.stick.setAlpha(0)
-    setTimeout(() => this.showSet(), 500) // change to Phaser timeout
+    this.scene.time.addEvent({
+      delay: 500,
+      callback: this.showSet,
+      callbackScope: this,
+    })
   }
 
   showSet() {

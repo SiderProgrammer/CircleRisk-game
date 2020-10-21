@@ -21,6 +21,7 @@ export default class Snow_Medium extends Phaser.Scene {
     this.manager.create()
 
     this.manager.createGUI()
+    this.snowFunctionsManager.createFallingSnow()
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()
