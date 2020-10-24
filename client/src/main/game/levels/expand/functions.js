@@ -2,6 +2,7 @@ export default class {
   constructor(scene) {
     this.scene = scene
     this.stop_distance = this.calculateDistanceBetweenTargets()
+    this.changeFlyDirection()
   }
 
   calculateDistanceBetweenTargets() {
@@ -50,5 +51,27 @@ export default class {
 
   changeFlyDirection() {
     this.scene.fly_value = -this.scene.fly_value
+  }
+
+  createFlyingPentagons() {
+    this.scene.add.particles("pentagon").createEmitter({
+      x: this.scene.game.GW,
+      y: { min: 0, max: this.scene.game.GH },
+
+      angle: { min: 0, max: 360 },
+      scale: { min: 0.7, max: 1 },
+
+      alpha: 0.5,
+      deathZone: {
+        type: "onEnter",
+        source: new Phaser.Geom.Rectangle(-50, 0, 50, this.scene.game.GH),
+      },
+      lifespan: 10000, // { min, max }, or { min, max, steps }
+
+      speedX: { min: -200, max: -300 },
+
+      frequency: 900,
+      reserve: 10,
+    })
   }
 }

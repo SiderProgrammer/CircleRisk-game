@@ -28,6 +28,7 @@ export default class Sun_Easy extends Phaser.Scene {
     this.manager.create()
 
     this.manager.createGUI()
+    this.sunFunctionsManager.createFlyingBirds()
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()

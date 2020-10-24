@@ -175,7 +175,7 @@ class DatabaseManager {
               0,
             ],
             money: 5550,
-            skins: { circles: [1], sticks: [1], targets: [1] },
+            skins: { circles: [1, 2, 3], sticks: [1], targets: [1] },
             current_skins: { circles: 1, sticks: 1, targets: 1 },
           },
           () => res.sendStatus(200)

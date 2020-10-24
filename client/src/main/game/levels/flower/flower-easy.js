@@ -17,6 +17,7 @@ export default class Flower_Easy extends Phaser.Scene {
     this.manager.create()
 
     this.manager.createGUI()
+
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()

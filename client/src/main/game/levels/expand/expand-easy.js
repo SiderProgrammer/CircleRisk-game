@@ -25,6 +25,7 @@ export default class Expand_Easy extends Phaser.Scene {
     this.manager.create()
 
     this.manager.createGUI()
+
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()
@@ -43,6 +44,7 @@ export default class Expand_Easy extends Phaser.Scene {
     this.center_to_circle_distance = this.distance
 
     this.expandFunctionsManager = new ExpandFunctionsManager(this)
+    this.expandFunctionsManager.createFlyingPentagons()
   }
   update() {
     if (!this.manager.game_started) return

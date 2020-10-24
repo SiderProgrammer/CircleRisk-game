@@ -97,4 +97,90 @@ export default class {
       target.setPosition(targetX, targetY)
     })
   }
+
+  createFlyingBirds() {
+    const birds = []
+
+    const duration = 10000
+
+    this.scene.anims.create({
+      key: "fly",
+      frames: this.scene.anims.generateFrameNumbers("bird", {
+        start: 0,
+        end: 5,
+      }),
+      repeat: -1,
+      frameRate: 8,
+    })
+
+    const createBirds = () => {
+      birds.forEach((bird) => bird.destroy())
+      birds.length = 0
+
+      const option = Phaser.Math.Between(0, 1)
+
+      let y = 0
+      option ? (y = this.scene.game.GH - 250) : (y = 250)
+
+      const tween_y_value =
+        this.scene.game.GH / 2 -
+        Phaser.Math.Between(0, this.scene.game.GH * 0.4)
+
+      let tween_string = ""
+      option
+        ? (tween_string = `-=${tween_y_value}`)
+        : (tween_string = `+=${tween_y_value}`)
+
+      if (Phaser.Math.Between(0, 1)) {
+        for (let i = 0; i < Phaser.Math.Between(1, 6); i++) {
+          birds.push(
+            this.scene.add
+              .sprite(
+                this.scene.game.GW + Phaser.Math.Between(0, 250),
+                y + Phaser.Math.Between(0, 180),
+                "bird"
+              )
+              .setAlpha(0.5)
+              .play("fly")
+          )
+        }
+
+        this.scene.tweens.add({
+          targets: birds,
+          duration: duration,
+          x: `-=${this.scene.game.GW * 1.5}`,
+          y: tween_string,
+          onComplete: () => {
+            createBirds()
+          },
+        })
+      } else {
+        for (let i = 0; i < Phaser.Math.Between(1, 6); i++) {
+          birds.push(
+            this.scene.add
+              .sprite(
+                0 - Phaser.Math.Between(0, 250),
+                y + Phaser.Math.Between(0, 180),
+                "bird"
+              )
+              .setAlpha(0.5)
+              .setFlipX(true)
+              .play("fly")
+          )
+        }
+
+        this.scene.tweens.add({
+          targets: birds,
+          duration: duration,
+          x: `+=${this.scene.game.GW * 1.5}`,
+          y: tween_string,
+          onComplete: () => {
+            createBirds()
+          },
+        })
+      }
+    }
+
+    createBirds()
+  }
 }

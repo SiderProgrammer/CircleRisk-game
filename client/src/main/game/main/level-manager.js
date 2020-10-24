@@ -96,8 +96,6 @@ export default class Manager {
     return distanceToTarget < 85 * this.target_array[0].scale
   }
   changeBall() {
-
-
     if (typeof this.scene.changeRotationSpeed === "function") {
       this.scene.changeRotationSpeed()
     }
@@ -204,12 +202,15 @@ export default class Manager {
 
   createFirstTarget() {
     this.target_array.push(
-      this.scene.add.image(0, this.GH / 2, this.target_texture).setAlpha(0)
+      this.scene.add
+        .image(0, this.GH / 2, this.target_texture)
+        .setAlpha(0)
+        .setDepth(0.1)
     )
   }
   createTargets() {
     for (let i = 0; i < this.config.targets_amount - 1; i++) {
-      this.addTarget().setAlpha(0)
+      this.addTarget().setAlpha(0).setDepth(0.1)
     }
   }
   setNewTarget() {
@@ -231,21 +232,26 @@ export default class Manager {
       )
       .setOrigin(0, 0.5)
       .setAngle(this.rotation_angle)
+      .setDepth(0.1)
   }
   createCircles() {
-    this.circles[0] = this.scene.add.sprite(
-      this.stick.x,
-      this.stick.y,
-      "circle_" + this.progress.current_skins["circles"]
-    )
+    this.circles[0] = this.scene.add
+      .sprite(
+        this.stick.x,
+        this.stick.y,
+        "circle_" + this.progress.current_skins["circles"]
+      )
+      .setDepth(0.1)
 
     this.helper.extendStick()
 
-    this.circles[this.current_circle] = this.scene.add.sprite(
-      this.stick.x,
-      this.stick.y - this.stick.displayWidth,
-      "circle_" + this.progress.current_skins["circles"]
-    )
+    this.circles[this.current_circle] = this.scene.add
+      .sprite(
+        this.stick.x,
+        this.stick.y - this.stick.displayWidth,
+        "circle_" + this.progress.current_skins["circles"]
+      )
+      .setDepth(0.1)
 
     this.updateCircleStickAngle() /// move this function to create function in every level
   }
@@ -335,6 +341,10 @@ export default class Manager {
   }
 
   async gameOver() {
+    this.circles.forEach((c) => c.setDepth(0))
+    this.stick.setDepth(0)
+    this.target_array.forEach((t) => t.setDepth(0))
+
     this.loseMenuManager.update()
 
     this.scene.input.removeAllListeners()

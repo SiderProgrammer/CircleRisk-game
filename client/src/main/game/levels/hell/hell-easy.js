@@ -32,6 +32,7 @@ export default class Hell_Easy extends Phaser.Scene {
     this.manager.GUI_helper.sceneIntro(this)
 
     this.hellFunctionsManager = new HellFunctionsManager(this)
+    this.hellFunctionsManager.createBlame()
   }
   update() {
     if (!this.manager.game_started) return

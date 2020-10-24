@@ -47,6 +47,7 @@ export default class Expand_Medium extends Phaser.Scene {
     this.center_to_circle_distance = this.distance
 
     this.expandFunctionsManager = new ExpandFunctionsManager(this)
+    this.expandFunctionsManager.createFlyingPentagons()
   }
   update() {
     if (!this.manager.game_started) return

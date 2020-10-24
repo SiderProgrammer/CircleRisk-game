@@ -15,6 +15,8 @@ export default class menu extends Phaser.Scene {
   }
 
   init() {
+    this.bubbles = []
+
     if (!this.is_everything_fetched) {
       START_FETCHING_SCENE(this)
       this.fetchFromServer()
@@ -24,26 +26,121 @@ export default class menu extends Phaser.Scene {
   create() {
     helper.createBackground(this, "menu-bg")
 
-    this.createPlayButton()
-    // this.createCustomizeButtonSet()
-
-    // this.showButtons()
+    this.createDecorations()
     this.showLogos()
 
+    this.createPlayButton()
+    this.createCustomizeButton()
+    this.createMuteButton()
+
+    this.createFlyingBubbles()
     helper.sceneIntro(this)
+    this.showMenu()
+  }
+
+  createDecorations() {
+    this.add.image(this.game.GW / 2, this.game.GH / 2, "bubbles-menu")
+
+    helper.setGameSize(
+      this.add
+        .image(this.game.GW / 2, this.game.GH, "menu-2")
+        .setOrigin(0.5, 1),
+      true
+    )
+    helper.setGameSize(
+      this.add
+        .image(this.game.GW / 2, this.game.GH, "menu-1")
+        .setOrigin(0.5, 1),
+      true
+    )
+
+    this.logo = this.add
+      .image(this.game.GW / 2, this.game.GH, "circlerisk")
+      .setOrigin(0.5, 0)
+  }
+
+  update() {
+    this.bubbles.forEach((bubble) => {
+      bubble.y -= bubble.speedY
+      bubble.x += bubble.speedX
+    })
+  }
+  createMuteButton() {
+    this.sound_button = helper
+      .createButton(
+        this,
+        this.game.GW - 25,
+        this.game.GH,
+        "mute-button",
+        () => {}
+      )
+
+      .setOrigin(1, 1)
+
+    this.sound_button.y += this.sound_button.displayHeight
+  }
+
+  createBubble(x, y) {
+    const bubble = this.add.image(x, y, "bubble")
+    this.bubbles.push(bubble)
+    bubble.fly_direction = 1
+
+    bubble.speedY = Phaser.Math.FloatBetween(0.3, 0.8)
+    bubble.speedX = Phaser.Math.FloatBetween(0.1, 0.3)
+
+    if (Phaser.Math.Between(0, 1)) bubble.fly_direction = -1
+
+    this.time.addEvent({
+      delay: Phaser.Math.Between(1500, 3000),
+      loop: true,
+
+      callback: () => {
+        bubble.speedX *= -1
+      },
+    })
+
+    this.time.addEvent({
+      delay: Phaser.Math.Between(5000, 30000),
+      callback: () => {
+        this.tweens.add({
+          targets: bubble,
+          alpha: 0,
+          duration: 1500,
+          onComplete: () => bubble.destroy(),
+        })
+      },
+    })
+    bubble.setAlpha(0).setScale(Phaser.Math.Between(3, 10) / 10)
+
+    this.tweens.add({ targets: bubble, alpha: 0.6, duration: 300 })
+
+    return bubble
+  }
+
+  createFlyingBubbles() {
+    for (let i = 0; i < 15; i++) {
+      this.createBubble(
+        Phaser.Math.Between(0, this.game.GW),
+        Phaser.Math.Between(this.game.GH / 2 - 200, this.game.GH - 100)
+      )
+    }
+
+    this.time.addEvent({
+      delay: 1000,
+      loop: true,
+      callbackScope: this,
+
+      callback: () => {
+        this.createBubble(
+          Phaser.Math.Between(0, this.game.GW),
+          Phaser.Math.Between(this.game.GH - 50, this.game.GH - 150)
+        )
+      },
+    })
   }
 
   showLogos() {
-    helper
-      .createButton(this, 20, 20, "geometrytrinity", () =>
-        window.open(
-          "https://play.google.com/store/apps/details?id=com.pip.geometrytrinity",
-          "_blank"
-        )
-      )
-      .setOrigin(0)
-
-    helper
+    this.instagram_button = helper
       .createButton(this, this.game.GW - 20, 20, "instagram", () => {
         window.open("https://www.instagram.com/pip_games/", "_blank")
       })
@@ -54,158 +151,72 @@ export default class menu extends Phaser.Scene {
     this.play_button = helper.createButton(
       this,
       this.game.GW / 2,
-      this.game.GH - 300,
+      this.game.GH,
       "play-button-big",
       () => {
         helper.sceneTransition(this, "levelSelect")
       }
     )
+
+    this.play_button.y += this.play_button.displayHeight
   }
-  /*
-  hideButtons() {
-    return new Promise((resolve) => {
-      this.customizeButtonTween(85)
-      setTimeout(() => {
-        this.playButtonTween(-87).then(() => resolve())
-      }, this.tween_duration / 2)
+
+  showMenu() {
+    const ease = "Sine"
+
+    this.tweens.add({
+      targets: this.logo,
+
+      y: 70,
+      duration: 400,
+      ease,
+    })
+
+    this.tweens.add({
+      targets: this.play_button,
+      y: this.game.GH / 2 + 35,
+
+      duration: 400,
+      ease,
+      onComplete: () => {
+        this.tweens.add({
+          targets: [this.customize_button, this.sound_button],
+          ease,
+          duration: 200,
+          y: this.game.GH - 25,
+        })
+      },
     })
   }
 
-  showButtons() {
-    this.playButtonTween("-=55")
-    setTimeout(() => this.customizeButtonTween(-40), this.tween_duration / 2)
-  }
-
-  customizeButtonTween(angle) {
-    return new Promise((resolve) => {
-      this.tweens.add({
-        targets: this.customize_stick,
-        angle: angle,
-        duration: this.tween_duration,
-        onUpdate: () => {
-          const angle = Phaser.Math.DegToRad(this.customize_stick.angle)
-
-          const x =
-            this.customize_stick.x +
-            (this.customize_stick.displayWidth +
-              this.customize_button.displayWidth / 2 -
-              10) *
-              Math.cos(angle)
-
-          const y =
-            this.customize_stick.y -
-            (this.customize_button.displayWidth / 2 +
-              this.customize_stick.displayWidth -
-              10) *
-              -Math.sin(angle)
-
-          this.customize_button.x = x
-          this.customize_button.y = y
-        },
-        onComplete: () => resolve(),
-      })
+  hideMenu() {
+    this.tweens.add({
+      targets: [
+        this.customize_button,
+        this.sound_button,
+        this.play_button,
+        this.logo,
+      ],
+      ease: "Sine.easeIn",
+      y: `+=${this.game.GH + this.logo.displayHeight / 2}`,
+      duration: 200,
+      onComplete: () => {
+        this.scene.launch("customize")
+      },
     })
   }
-
-  playButtonTween(angle) {
-    return new Promise((resolve) => {
-      this.tweens.add({
-        targets: this.play_stick,
-        angle: angle,
-        duration: this.tween_duration,
-        onUpdate: () => {
-          const angle = Phaser.Math.DegToRad(this.play_stick.angle)
-
-          const x =
-            this.play_stick.x -
-            (this.play_stick.displayWidth +
-              this.play_button.displayWidth / 2 +
-              0) *
-              Math.cos(angle)
-
-          const y =
-            this.play_stick.y -
-            (this.play_button.displayWidth / 2 +
-              this.play_stick.displayWidth -
-              0) *
-              Math.sin(angle)
-
-          this.play_button.x = x
-          this.play_button.y = y
-        },
-        onComplete: () => resolve(),
-      })
-    })
-  }
-
-  createStick(x, y, origin, target, sprite) {
-    const stick = this.add.image(x, y, sprite)
-
-    stick.setOrigin(origin.x, origin.y)
-
-    stick.displayWidth =
-      Phaser.Math.Distance.Between(stick.x, stick.y, target.x, target.y) -
-      target.displayWidth / 2
-
-    return stick
-  }
-
-  createCustomizeButtonSet() {
+  createCustomizeButton() {
     this.customize_button = helper
-      .createButton(this, 0, this.game.GH - 250, "customize-button-big", () => {
-        this.hideButtons().then(() => helper.sceneTransition(this, "customize"))
+      .createButton(this, 25, this.game.GH, "customize-button", () => {
+        //  helper.sceneTransition(this, "customize")
+        this.hideMenu()
+        this.scene.launch("customize")
       })
-      .setDepth(1)
 
-    this.customize_button.x -= this.customize_button.displayWidth / 2
+      .setOrigin(0, 1)
 
-    this.customize_stick = this.createStick(
-      0,
-      this.game.GH - 50,
-      { x: 0, y: 0.5 },
-      this.customize_button,
-      "menu-stick-blue"
-    )
-    this.customize_stick.x -= this.customize_stick.displayHeight / 2
-    const angle_between = Phaser.Math.Angle.BetweenPoints(
-      this.customize_button,
-      this.customize_stick
-    )
-    this.customize_stick.setAngle(Phaser.Math.RadToDeg(angle_between) + 180)
+    this.customize_button.y += this.customize_button.displayHeight
   }
-
-  createPlayButtonSet() {
-    this.play_button = helper
-      .createButton(
-        this,
-        this.game.GW,
-        this.game.GH - 430,
-        "play-button-big",
-        () => {
-          this.hideButtons().then(() =>
-            helper.sceneTransition(this, "levelSelect")
-          )
-        }
-      )
-      .setDepth(1)
-    this.play_button.x += this.play_button.displayWidth / 2
-
-    this.play_stick = this.createStick(
-      this.game.GW + 20,
-      this.game.GH - 120,
-      { x: 1, y: 0.5 },
-      this.play_button,
-      "menu-stick-yellow"
-    )
-
-    const angle_between = Phaser.Math.Angle.BetweenPoints(
-      this.play_button,
-      this.play_stick
-    )
-    this.play_stick.setAngle(Phaser.Math.RadToDeg(angle_between))
-    this.play_button.setAngle(Phaser.Math.RadToDeg(angle_between))
-  }
-*/
 
   async fetchFromServer() {
     try {
@@ -236,8 +247,7 @@ export default class menu extends Phaser.Scene {
   }
 
   async restoreProgress() {
-    const local_progress = getProgress()
-    window.my_nickname = local_progress.nickname
+    window.my_nickname = getProgress().nickname
 
     const progress = await GET_ACCOUNT_PROGRESS({ nickname: my_nickname })
 
@@ -251,133 +261,3 @@ export default class menu extends Phaser.Scene {
     saveProgress(progress)
   }
 }
-
-/*
-import helper from "../helper";
-
-export default class menu extends Phaser.Scene {
-  constructor() {
-    super("menu");
-  }
-  init() {
-    this.tween_duration = 800;
-  }
-  create() {
-    helper.createBackground(this, "menu-bg");
-
-    this.createPlayButtonSet();
-    this.createCustomizeButtonSet();
-
-    this.showButtons();
-  }
-
-  showButtons() {
-    this.showPlayButton().then(() => this.showCustomizeButton());
-  }
-
-  showPlayButton() {
-    return new Promise((resolve, reject) => {
-      this.tweens.add({
-        targets: this.play_stick,
-        angle: +75,
-        duration: this.tween_duration,
-        ease: "Bounce.easeOut",
-        onUpdate: () => {
-          const angle = Phaser.Math.DegToRad(this.play_stick.angle);
-
-          const x =
-            this.play_stick.x -
-            (this.play_button.displayWidth / 2 - this.play_stick.displayWidth) *
-              -Math.cos(angle);
-
-          const y =
-            this.play_stick.y +
-            (this.play_button.displayWidth / 2 + this.play_stick.displayWidth) *
-              -Math.sin(angle);
-
-          this.play_button.x = x;
-          this.play_button.y = y;
-          // this.play_button.setPosition(x, y);
-        },
-        onComplete: () => resolve(),
-      });
-    });
-  }
-
-  showCustomizeButton() {
-    return new Promise((resolve, reject) => {
-      this.tweens.add({
-        targets: this.customize_stick,
-        angle: -50,
-        duration: this.tween_duration,
-        ease: "Bounce.easeOut",
-        onUpdate: () => {
-          const angle = Phaser.Math.DegToRad(this.customize_stick.angle);
-
-          const x =
-            this.customize_stick.x +
-            (this.customize_button.displayWidth / 2 +
-              this.customize_stick.displayWidth) *
-              Math.cos(angle);
-
-          const y =
-            this.customize_stick.y +
-            (this.customize_button.displayWidth / 2 +
-              this.customize_stick.displayWidth) *
-              Math.sin(angle);
-
-          this.customize_button.setPosition(x, y);
-        },
-        onComplete: () => resolve(),
-      });
-    });
-  }
-
-  createStick(x, y, origin, target) {
-    const stick = this.add.image(x, y, "stick_1");
-
-    stick.setOrigin(origin.x, origin.y);
-
-    stick.displayWidth =
-      Phaser.Math.Distance.Between(stick.x, stick.y, target.x, target.y) -
-      target.displayWidth / 2;
-
-    return stick;
-  }
-
-  createCustomizeButtonSet() {
-    this.customize_button = helper.createButton(
-      this,
-      this.game.GW / 2 + 100,
-      this.game.GH,
-      "customize-button",
-      () => this.scene.start("customize")
-    );
-
-    this.customize_stick = this.createStick(
-      0,
-      this.game.GH,
-      { x: 0, y: 0.5 },
-      this.customize_button
-    );
-  }
-
-  createPlayButtonSet() {
-    this.play_button = helper.createButton(
-      this,
-      this.game.GW / 2 - 200,
-      this.game.GH,
-      "play-button",
-      () => this.scene.start("levelSelect")
-    );
-
-    this.play_stick = this.createStick(
-      this.game.GW,
-      this.game.GH,
-      { x: 1, y: 0.5 },
-      this.play_button
-    );
-  }
-}
-
-*/

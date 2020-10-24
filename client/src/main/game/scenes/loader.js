@@ -47,6 +47,9 @@ export default class loader extends Phaser.Scene {
     this.loadImage("pause-button", "buttons")
     this.loadImage("play-button", "buttons")
 
+    this.loadImage("unmute-button", "buttons")
+    this.loadImage("mute-button", "buttons")
+
     this.loadImage("customize-button-big", "buttons")
     this.loadImage("play-button-big", "buttons")
 
@@ -152,10 +155,27 @@ export default class loader extends Phaser.Scene {
       frameWidth: 239,
       frameHeight: 354,
     })
+    this.load.spritesheet("bird", `${imgPath}/bird.png`, {
+      frameWidth: 70,
+      frameHeight: 39,
+    })
+    this.load.image("pentagon", `${imgPath}/pentagon.png`)
+    this.load.image("flame", `${imgPath}/flame.png`)
+    this.load.image("lightning", `${imgPath}/lightning.png`)
+
+    this.load.image("bubble", `${imgPath}/bubble.png`)
 
     this.load.atlas("colors", `${imgPath}/colors.png`, `${imgPath}/colors.json`)
-    this.load.atlas("particles", `${imgPath}/particles.png`, `${imgPath}/particles.json`)
+    this.load.atlas(
+      "particles",
+      `${imgPath}/particles.png`,
+      `${imgPath}/particles.json`
+    )
+    this.load.image("menu-1", `${imgPath}/menu-1.png`)
+    this.load.image("menu-2", `${imgPath}/menu-2.png`)
+    this.load.image("bubbles-menu", `${imgPath}/bubbles-menu.png`)
 
+    this.load.image("circlerisk", `${imgPath}/circlerisk.png`)
     this.backgrounds()
     this.buttons()
     this.mix()

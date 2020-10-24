@@ -32,6 +32,7 @@ export default class Blind_Easy extends Phaser.Scene {
 
     this.blindFunctionsManager = new BlindFunctionsManager(this)
     this.blind = this.manager.GUI_helper.createBackground(this, "black")
+    this.blind.setDepth(1)
     this.blindFunctionsManager.blindTheScreen()
   }
   update() {

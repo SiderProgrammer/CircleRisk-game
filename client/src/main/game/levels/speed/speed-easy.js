@@ -28,6 +28,19 @@ export default class Speed_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+    /*
+    const lightning = this.add.image(this.game.GW/2,this.game.GH/2,"lightning").setAlpha(0)
+
+    this.tweens.add({
+      targets:lightning,
+      alpha:1,
+      duration:6000,
+      yoyo:true,
+      hold:2000,
+      repeat:-1
+    })
+
+    */
   }
   update() {
     if (!this.manager.game_started) return
