@@ -41,35 +41,61 @@ export default class {
       nickname: this.progress.nickname,
     })
   }
-  show() {
-    const ease = "Sine"
 
-    this.scene.tweens.add({
-      targets: this.sets.circle,
-      y: this.positions.circle,
-      duration: 450,
-      ease: ease,
-
-      onComplete: () => {
-        this.scene.tweens.add({
-          targets: this.sets.stick,
-          y: this.positions.stick,
-          duration: 450,
-          ease: ease,
-          onComplete: () => {
-            this.scene.tweens.add({
-              targets: this.sets.target,
-              y: this.positions.target,
-              duration: 450,
-              ease: ease,
-            })
-          },
-        })
-      },
+  animateSetShow(set, ease) {
+    return new Promise((resolve) => {
+      this.scene.tweens.add({
+        targets: this.sets[set],
+        y: this.positions[set],
+        duration: 250,
+        ease: ease,
+        onComplete: () => resolve(),
+      })
     })
   }
 
-  hide() {}
+  show() {
+    for (const set in this.sets) {
+      this.sets[set].forEach((e) => (e.y += this.scene.game.GH))
+    }
+
+    const ease = "Sine"
+
+    this.animateSetShow("circle", ease)
+
+    this.scene.time.addEvent({
+      delay: 125,
+      callback: () => {
+        this.animateSetShow("stick", ease)
+      },
+    })
+
+    return new Promise((resolve) => {
+      this.scene.time.addEvent({
+        delay: 250,
+        callback: async () => {
+          await this.animateSetShow("target", ease)
+          resolve()
+        },
+      })
+    })
+  }
+
+  hide() {
+    const ease = "Sine.easeIn"
+
+    return new Promise((resolve) => {
+      this.scene.tweens.add({
+        targets: [...this.sets.circle, ...this.sets.stick, ...this.sets.target],
+        ease: ease,
+        y: `+=${this.scene.game.GH}`,
+        duration: 200,
+
+        onComplete: () => resolve(),
+      })
+    })
+  }
+
   createStickSet(sprite) {
     this.stick_skin_number = this.getSkinNumber(sprite)
 
@@ -134,7 +160,6 @@ export default class {
     )
 
     this.positions.stick = this.stick.y
-    this.sets.stick.forEach((e) => (e.y += this.scene.game.GH))
   }
 
   createTargetSet(sprite) {
@@ -195,7 +220,6 @@ export default class {
     )
 
     this.positions.target = target.y
-    this.sets.target.forEach((e) => (e.y += this.scene.game.GH))
   }
 
   createCircleSet(sprite) {
@@ -252,8 +276,6 @@ export default class {
         }
       ).setFlipX(true)
     )
-
-    this.sets.circle.forEach((e) => (e.y += this.scene.game.GH))
   }
 
   changeSkinButtonClicked(sprite1, sprite2, part, sign, skin_number) {

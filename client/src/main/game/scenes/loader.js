@@ -50,6 +50,9 @@ export default class loader extends Phaser.Scene {
     this.loadImage("unmute-button", "buttons")
     this.loadImage("mute-button", "buttons")
 
+    this.loadImage("music-unmute-button", "buttons")
+    this.loadImage("music-mute-button", "buttons")
+
     this.loadImage("customize-button-big", "buttons")
     this.loadImage("play-button-big", "buttons")
 

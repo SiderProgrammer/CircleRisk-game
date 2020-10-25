@@ -10,6 +10,7 @@ export default (game) => {
   let is_online = true
 
   setInterval(async () => {
+   // console.log(game.scene.getScenes(true))
     if (await IS_ONLINE()) {
       if (!is_online) {
         STOP_RECONNECTING_SCENE(currentScene)

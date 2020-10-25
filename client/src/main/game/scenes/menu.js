@@ -17,6 +17,14 @@ export default class menu extends Phaser.Scene {
   init() {
     this.bubbles = []
 
+    this.hidden_positions_y = {
+      logo: 0,
+      play_button: 0,
+      customize_button: 0,
+      music_button: 0,
+      sound_button: 0,
+    }
+
     if (!this.is_everything_fetched) {
       START_FETCHING_SCENE(this)
       this.fetchFromServer()
@@ -24,30 +32,68 @@ export default class menu extends Phaser.Scene {
   }
 
   create() {
-    helper.createBackground(this, "menu-bg")
+    this.createBackground()
 
     this.createDecorations()
-    this.showLogos()
 
+    this.createInstagram()
     this.createPlayButton()
     this.createCustomizeButton()
     this.createMuteButton()
+    this.createMusicButton()
 
     this.createFlyingBubbles()
-    helper.sceneIntro(this)
-    this.showMenu()
+
+    this.animateShowMenu()
+  }
+
+  update() {
+    this.bubbles.forEach((bubble) => {
+      bubble.y -= bubble.speedY
+      bubble.x += bubble.speedX
+    })
+  }
+
+  async animateShowMenu() {
+    const ease = "Sine"
+
+    this.showInstagram()
+    this.showLogo(ease)
+
+    await this.showPlayButton(ease)
+    this.showBottomButtons(ease)
+  }
+
+  async animateHideMenu() {
+    const ease = "Sine.easeIn"
+
+    this.hideInstagram()
+    await this.hideButtonsAndLogo(ease)
+
+    return new Promise((resolve) => resolve())
+  }
+
+  resetPositionsToHidden() {
+    for (const element in this.hidden_positions_y) {
+      eval(`this.${[element]}.y = ${this.hidden_positions_y[element]}`)
+    }
+    return this
+  }
+
+  createBackground() {
+    this.background = helper.createBackground(this, "menu-bg")
   }
 
   createDecorations() {
     this.add.image(this.game.GW / 2, this.game.GH / 2, "bubbles-menu")
 
-    helper.setGameSize(
+    this.mountains_big = helper.setGameSize(
       this.add
         .image(this.game.GW / 2, this.game.GH, "menu-2")
         .setOrigin(0.5, 1),
       true
     )
-    helper.setGameSize(
+    this.mountains_small = helper.setGameSize(
       this.add
         .image(this.game.GW / 2, this.game.GH, "menu-1")
         .setOrigin(0.5, 1),
@@ -57,14 +103,9 @@ export default class menu extends Phaser.Scene {
     this.logo = this.add
       .image(this.game.GW / 2, this.game.GH, "circlerisk")
       .setOrigin(0.5, 0)
+    this.hidden_positions_y.logo = this.logo.y
   }
 
-  update() {
-    this.bubbles.forEach((bubble) => {
-      bubble.y -= bubble.speedY
-      bubble.x += bubble.speedX
-    })
-  }
   createMuteButton() {
     this.sound_button = helper
       .createButton(
@@ -72,12 +113,37 @@ export default class menu extends Phaser.Scene {
         this.game.GW - 25,
         this.game.GH,
         "mute-button",
-        () => {}
+        () => {
+          this.sound_button.texture.key === "mute-button"
+            ? this.sound_button.setTexture("unmute-button")
+            : this.sound_button.setTexture("mute-button")
+        }
       )
 
       .setOrigin(1, 1)
 
     this.sound_button.y += this.sound_button.displayHeight
+    this.hidden_positions_y.sound_button = this.sound_button.y
+  }
+
+  createMusicButton() {
+    this.music_button = helper
+      .createButton(
+        this,
+        this.game.GW / 2,
+        this.game.GH,
+        "music-mute-button",
+        () => {
+          this.music_button.texture.key === "music-mute-button"
+            ? this.music_button.setTexture("music-unmute-button")
+            : this.music_button.setTexture("music-mute-button")
+        }
+      )
+
+      .setOrigin(0.5, 1)
+
+    this.music_button.y += this.music_button.displayHeight
+    this.hidden_positions_y.music_button = this.music_button.y
   }
 
   createBubble(x, y) {
@@ -93,7 +159,6 @@ export default class menu extends Phaser.Scene {
     this.time.addEvent({
       delay: Phaser.Math.Between(1500, 3000),
       loop: true,
-
       callback: () => {
         bubble.speedX *= -1
       },
@@ -110,6 +175,7 @@ export default class menu extends Phaser.Scene {
         })
       },
     })
+
     bubble.setAlpha(0).setScale(Phaser.Math.Between(3, 10) / 10)
 
     this.tweens.add({ targets: bubble, alpha: 0.6, duration: 300 })
@@ -139,12 +205,26 @@ export default class menu extends Phaser.Scene {
     })
   }
 
-  showLogos() {
+  createInstagram() {
     this.instagram_button = helper
       .createButton(this, this.game.GW - 20, 20, "instagram", () => {
         window.open("https://www.instagram.com/pip_games/", "_blank")
       })
       .setOrigin(1, 0)
+  }
+
+  createCustomizeButton() {
+    this.customize_button = helper
+      .createButton(this, 25, this.game.GH, "customize-button", async () => {
+        //  helper.sceneTransition(this, "customize")
+        await this.animateHideMenu()
+        this.scene.launch("customize")
+      })
+
+      .setOrigin(0, 1)
+
+    this.customize_button.y += this.customize_button.displayHeight
+    this.hidden_positions_y.customize_button = this.customize_button.y
   }
 
   createPlayButton() {
@@ -153,69 +233,112 @@ export default class menu extends Phaser.Scene {
       this.game.GW / 2,
       this.game.GH,
       "play-button-big",
-      () => {
-        helper.sceneTransition(this, "levelSelect")
+      async () => {
+        const test = helper
+          .createBackground(this, "colors", "blue_1")
+          .setAlpha(0)
+        this.background.setDepth(0.1)
+        helper.createBackground(this, "levelSelect-bg").setDepth(0.15)
+        this.mountains_small.setDepth(0.2)
+        this.mountains_big.setDepth(0.2)
+
+        this.bubbles.forEach((b) => b.setDepth(0.3))
+        await this.animateHideMenu()
+
+        this.scene.launch("levelSelect", {
+          mountains: [this.mountains_small, this.mountains_big],
+          background: this.background,
+          test: test,
+        })
       }
     )
 
     this.play_button.y += this.play_button.displayHeight
+    this.hidden_positions_y.play_button = this.play_button.y
   }
 
-  showMenu() {
-    const ease = "Sine"
+  showInstagram() {
+    this.instagram_button.setAlpha(0)
+    this.tweens.add({
+      targets: this.instagram_button,
+      alpha: 1,
+      duration: 250,
+    })
+  }
 
+  showLogo(ease) {
     this.tweens.add({
       targets: this.logo,
-
       y: 70,
       duration: 400,
       ease,
     })
-
-    this.tweens.add({
-      targets: this.play_button,
-      y: this.game.GH / 2 + 35,
-
-      duration: 400,
-      ease,
-      onComplete: () => {
-        this.tweens.add({
-          targets: [this.customize_button, this.sound_button],
-          ease,
-          duration: 200,
-          y: this.game.GH - 25,
-        })
-      },
-    })
   }
 
-  hideMenu() {
-    this.tweens.add({
-      targets: [
-        this.customize_button,
-        this.sound_button,
-        this.play_button,
-        this.logo,
-      ],
-      ease: "Sine.easeIn",
-      y: `+=${this.game.GH + this.logo.displayHeight / 2}`,
-      duration: 200,
-      onComplete: () => {
-        this.scene.launch("customize")
-      },
-    })
-  }
-  createCustomizeButton() {
-    this.customize_button = helper
-      .createButton(this, 25, this.game.GH, "customize-button", () => {
-        //  helper.sceneTransition(this, "customize")
-        this.hideMenu()
-        this.scene.launch("customize")
+  showPlayButton(ease) {
+    return new Promise((resolve) => {
+      this.tweens.add({
+        targets: this.play_button,
+        y: this.game.GH / 2 + 35,
+        duration: 400,
+        ease,
+        onComplete: () => resolve(),
       })
+    })
+  }
 
-      .setOrigin(0, 1)
+  animateBottomButton(button, ease) {
+    this.tweens.add({
+      targets: button,
+      ease,
+      duration: 200,
+      y: this.game.GH - 25,
+    })
+  }
 
-    this.customize_button.y += this.customize_button.displayHeight
+  showBottomButtons(ease) {
+    this.animateBottomButton(this.customize_button, ease)
+
+    this.time.addEvent({
+      delay: 100,
+      callback: () => {
+        this.animateBottomButton(this.music_button, ease)
+      },
+    })
+
+    this.time.addEvent({
+      delay: 200,
+      callback: () => {
+        this.animateBottomButton(this.sound_button, ease)
+      },
+    })
+  }
+
+  hideInstagram() {
+    this.tweens.add({
+      targets: this.instagram_button,
+      alpha: 0,
+      duration: 200,
+    })
+  }
+
+  hideButtonsAndLogo(ease) {
+    return new Promise((resolve) => {
+      this.tweens.add({
+        targets: [
+          this.customize_button,
+          this.sound_button,
+          this.play_button,
+          this.music_button,
+          this.logo,
+        ],
+        ease: ease,
+        y: `+=${this.game.GH + this.logo.displayHeight / 2}`,
+        duration: 200,
+
+        onComplete: () => resolve(),
+      })
+    })
   }
 
   async fetchFromServer() {
@@ -229,11 +352,6 @@ export default class menu extends Phaser.Scene {
         this.fetchFromServer()
       }, 3000)
     }
-  }
-
-  finishFetching() {
-    this.is_everything_fetched = true
-    STOP_FETCHING_SCENE(this)
   }
 
   async getConfigurations() {
@@ -259,5 +377,10 @@ export default class menu extends Phaser.Scene {
     })
 
     saveProgress(progress)
+  }
+
+  finishFetching() {
+    this.is_everything_fetched = true
+    STOP_FETCHING_SCENE(this)
   }
 }

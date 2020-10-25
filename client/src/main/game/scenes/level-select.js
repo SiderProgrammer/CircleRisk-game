@@ -7,7 +7,7 @@ export default class levelSelect extends Phaser.Scene {
     super("levelSelect")
   }
 
-  init({ page }) {
+  init(data) {
     // this.tints = []
     this.progress = getProgress()
     /*
@@ -17,14 +17,36 @@ export default class levelSelect extends Phaser.Scene {
 */
     this.pages_amount = levelsConfiguration.length
 
-    this.current_page_number = 10
-    //  page || this.progress.levels_scores.length - 1
-    if (page === 0) this.current_page_number = 0 // 0 is false
+    this.current_page_number = 10 //  page || this.progress.levels_scores.length - 1
+
+    if (data.page === 0) this.current_page_number = 0 // 0 is false
     this.canChangePage = true
+   
+    this.tweens.add({
+      targets: data.mountains,
+      alpha: 0.3,
+      duration: 400,
+    })
+    //helper.createBackground(this, "levelSelect-bg")
+    //const b = helper.createBackground(this, "red").setAlpha(0)
+    this.tweens.add({
+      targets: data.background,
+      alpha: 0,
+      duration: 400,
+    })
+    this.tweens.add({
+      targets: data.test,
+      alpha: 1,
+      duration: 400,
+    })
+    //helper.setGameSize(data.background.setTexture("red"), true, true)
+
+    // helper.createBackground(this, "red").setAlpha(0)
+    // data.mountains.forEach((mountain) => mountain.setAlpha(0.3))
   }
 
   create() {
-    this.createBackground()
+    //this.createBackground()
 
     this.createBlackBorder() // hidden
 
@@ -38,11 +60,39 @@ export default class levelSelect extends Phaser.Scene {
 
     this.elements = this.createPageElements()
 
+    this.elements.forEach((element) => {
+      element.y += this.game.GH
+    })
+
     this.createChangePageButtons()
     this.createHomeButton()
-
-    helper.sceneIntro(this)
+    this.animateLevelSelectShow()
+    // helper.sceneIntro(this)
   }
+
+  animateLevelSelectHide() {
+    const ease = "Sine.easeIn"
+
+    this.tweens.add({
+      targets: this.elements,
+      y: `+=${this.game.GH}`,
+      duration: 500,
+      ease: ease,
+    })
+
+    return new Promise((resolve) => resolve())
+  }
+
+  animateLevelSelectShow() {
+    const ease = "Sine"
+    this.tweens.add({
+      targets: this.elements,
+      y: `-=${this.game.GH}`,
+      duration: 500,
+      ease: ease,
+    })
+  }
+
   createHardLevelGlow() {
     this.hard_level_glow = this.add
       .image(
@@ -382,7 +432,10 @@ export default class levelSelect extends Phaser.Scene {
 
   createHomeButton() {
     helper
-      .createButton(this, 10, 10, "home-button", () => this.scene.start("menu"))
+      .createButton(this, 10, 10, "home-button", async () => {
+        await this.animateLevelSelectHide()
+        this.scene.start("menu")
+      })
       .setOrigin(0)
   }
 }

@@ -6,13 +6,15 @@ export const setGameSize = function (obj, scaleW = false, scaleH = false) {
   if (scaleH) {
     obj.displayHeight = obj.scene.game.GH
   }
+  return obj
 }
 
-export const createBackground = function (scene, sprite) {
+export const createBackground = function (scene, sprite,frame) {
   const background = scene.add.image(
     scene.game.GW / 2,
     scene.game.GH / 2,
-    sprite
+    sprite,
+    frame
   )
 
   setGameSize(background, true, true)
