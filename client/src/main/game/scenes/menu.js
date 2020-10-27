@@ -27,11 +27,21 @@ export default class menu extends Phaser.Scene {
 
     if (!this.is_everything_fetched) {
       START_FETCHING_SCENE(this)
-      this.fetchFromServer()
+      this.fetchFromServer().then(() => {
+        this.scene.launch("levelSelect")
+        this.scene.launch("customize")
+        this.scene.sleep("customize")
+        this.scene.sleep("levelSelect")
+      })
     }
   }
 
   create() {
+    if (this.is_everything_fetched) {
+      this.scene.launch("customize")
+      this.scene.launch("levelSelect")
+    }
+
     this.createBackground()
 
     this.createDecorations()
@@ -149,6 +159,7 @@ export default class menu extends Phaser.Scene {
   createBubble(x, y) {
     const bubble = this.add.image(x, y, "bubble")
     this.bubbles.push(bubble)
+
     bubble.fly_direction = 1
 
     bubble.speedY = Phaser.Math.FloatBetween(0.3, 0.8)
@@ -171,7 +182,13 @@ export default class menu extends Phaser.Scene {
           targets: bubble,
           alpha: 0,
           duration: 1500,
-          onComplete: () => bubble.destroy(),
+          onComplete: () => {
+            this.bubbles.splice(
+              this.bubbles.findIndex((bubble) => !bubble.active),
+              1
+            )
+            bubble.destroy()
+          },
         })
       },
     })
@@ -216,9 +233,10 @@ export default class menu extends Phaser.Scene {
   createCustomizeButton() {
     this.customize_button = helper
       .createButton(this, 25, this.game.GH, "customize-button", async () => {
-        //  helper.sceneTransition(this, "customize")
         await this.animateHideMenu()
-        this.scene.launch("customize")
+        this.scene.wake("customize")
+        this.scene.get("customize").animateCustomizeShow()
+        //this.scene.launch("customize")
       })
 
       .setOrigin(0, 1)
@@ -234,6 +252,7 @@ export default class menu extends Phaser.Scene {
       this.game.GH,
       "play-button-big",
       async () => {
+        /*
         const test = helper
           .createBackground(this, "colors", "blue_1")
           .setAlpha(0)
@@ -243,13 +262,19 @@ export default class menu extends Phaser.Scene {
         this.mountains_big.setDepth(0.2)
 
         this.bubbles.forEach((b) => b.setDepth(0.3))
-        await this.animateHideMenu()
 
+        */
+
+        await this.animateHideMenu()
+        this.scene.wake("levelSelect")
+        this.scene.get("levelSelect").animateLevelSelectShow()
+        /*  
         this.scene.launch("levelSelect", {
           mountains: [this.mountains_small, this.mountains_big],
           background: this.background,
-          test: test,
+          //   test: test,
         })
+        */
       }
     )
 
@@ -346,6 +371,7 @@ export default class menu extends Phaser.Scene {
       await this.getConfigurations()
       await this.restoreProgress()
       this.finishFetching()
+      return new Promise((resolve) => resolve())
     } catch {
       // if something went wrong, try to fetch again
       setTimeout(() => {

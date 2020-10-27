@@ -23,8 +23,11 @@ export default class Pause extends Phaser.Scene {
       this.game.GH / 2 + 150,
       "home-button",
       () => {
-        scene.scene.stop("pause")
-        scene.scene.start("menu")
+        scene.scene.stop()
+        this.scene.stop()
+
+        scene.scene.wake("menu")
+        scene.scene.get("menu").resetPositionsToHidden().animateShowMenu()
       }
     )
 

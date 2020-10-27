@@ -17,13 +17,15 @@ export default class Customize extends Phaser.Scene {
   create() {
     this.skinChangerManager = new SkinChangerManager(
       this,
+      this.game.GW / 2 - 150,
       this.game.GH / 2 - 150
     )
     this.createMoney()
     this.createHomeButton()
     this.createSkinChanger()
+    this.createSkinsPrice()
 
-    this.animateCustomizeShow()
+    this.skinChangerManager.hideSetsWithoutAnimation()
   }
 
   async animateCustomizeShow() {
@@ -35,9 +37,42 @@ export default class Customize extends Phaser.Scene {
   async animateCustomizeHide() {
     this.hideMoney()
     await this.hideHomeButton()
+
     await this.skinChangerManager.hide()
 
     return new Promise((resolve) => resolve())
+  }
+
+  createSkinChanger() {
+    this.skinChangerManager.createCircleSet(
+      "circle_" + this.progress.current_skins["circles"]
+    )
+    this.skinChangerManager.createStickSet(
+      "stick_" + this.progress.current_skins["sticks"]
+    )
+    this.skinChangerManager.createTargetSet(
+      "target_" + this.progress.current_skins["targets"]
+    )
+  }
+
+  createSkinsPrice() {
+    this.target_price = this.skinChangerManager.createSkinPrice(
+      this.skinChangerManager.sets.target[0].x,
+      this.skinChangerManager.sets.target[0].y,
+      this.skinChangerManager.sets.target[0].cost
+    )
+
+    this.circle_price = this.skinChangerManager.createSkinPrice(
+      this.skinChangerManager.sets.circle[0].x,
+      this.skinChangerManager.sets.circle[0].y,
+      this.skinChangerManager.sets.circle[0].cost
+    )
+
+    this.stick_price = this.skinChangerManager.createSkinPrice(
+      this.skinChangerManager.sets.stick[0].x,
+      this.skinChangerManager.sets.stick[0].y,
+      this.skinChangerManager.sets.stick[0].cost
+    )
   }
 
   hideHomeButton() {
@@ -59,22 +94,10 @@ export default class Customize extends Phaser.Scene {
       duration: 250,
     })
   }
-  createSkinChanger() {
-    this.skinChangerManager.createCircleSet(
-      "circle_" + this.progress.current_skins["circles"]
-    )
-    this.skinChangerManager.createStickSet(
-      "stick_" + this.progress.current_skins["sticks"]
-    )
-    this.skinChangerManager.createTargetSet(
-      "target_" + this.progress.current_skins["targets"]
-    )
-  }
-
   showHomeButton() {
     this.tweens.add({
       targets: this.home_button,
-      duration: 200,
+      duration: 250,
       ease: "Sine",
       y: this.game.GH - 20,
     })
@@ -92,6 +115,7 @@ export default class Customize extends Phaser.Scene {
           await this.animateCustomizeHide()
 
           this.scene.get("menu").resetPositionsToHidden().animateShowMenu()
+          this.scene.sleep()
           // maybe stop customize scene
         }
       )
@@ -101,7 +125,10 @@ export default class Customize extends Phaser.Scene {
   }
 
   createMoney() {
-    this.coin = this.add.image(this.game.GW - 10, 10, "coin").setOrigin(1, 0)
+    this.coin = this.add
+      .image(this.game.GW - 10, 10, "coin")
+      .setOrigin(1, 0)
+      .setAlpha(0)
 
     this.money_text = this.add
       .text(
@@ -113,6 +140,7 @@ export default class Customize extends Phaser.Scene {
         }
       )
       .setOrigin(1, 0)
+      .setAlpha(0)
   }
 
   showMoney() {

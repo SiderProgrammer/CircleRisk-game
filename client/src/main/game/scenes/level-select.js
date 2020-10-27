@@ -21,7 +21,8 @@ export default class levelSelect extends Phaser.Scene {
 
     if (data.page === 0) this.current_page_number = 0 // 0 is false
     this.canChangePage = true
-   
+
+    /*
     this.tweens.add({
       targets: data.mountains,
       alpha: 0.3,
@@ -34,11 +35,17 @@ export default class levelSelect extends Phaser.Scene {
       alpha: 0,
       duration: 400,
     })
+
+    helper.createBackground(this, "red")
+    */
+
+    /*
     this.tweens.add({
       targets: data.test,
       alpha: 1,
       duration: 400,
     })
+    */
     //helper.setGameSize(data.background.setTexture("red"), true, true)
 
     // helper.createBackground(this, "red").setAlpha(0)
@@ -66,30 +73,54 @@ export default class levelSelect extends Phaser.Scene {
 
     this.createChangePageButtons()
     this.createHomeButton()
-    this.animateLevelSelectShow()
+
     // helper.sceneIntro(this)
   }
 
   animateLevelSelectHide() {
     const ease = "Sine.easeIn"
 
-    this.tweens.add({
-      targets: this.elements,
-      y: `+=${this.game.GH}`,
-      duration: 500,
-      ease: ease,
-    })
+    this.animateHideChangePageButtons()
 
-    return new Promise((resolve) => resolve())
+    return new Promise((resolve) => {
+      this.tweens.add({
+        targets: [...this.elements, this.home_button],
+        y: `+=${this.game.GH}`,
+        duration: 250,
+        ease: ease,
+        onComplete: () => resolve(),
+      })
+    })
   }
 
   animateLevelSelectShow() {
-    const ease = "Sine"
+    const ease = "Sine.easeOut"
+
     this.tweens.add({
       targets: this.elements,
       y: `-=${this.game.GH}`,
       duration: 500,
       ease: ease,
+      onComplete: () => this.animateHomeButtonShow(ease),
+    })
+
+    this.animateShowChangePageButtons()
+  }
+
+  animateHideChangePageButtons() {
+    this.tweens.add({
+      targets: this.arrows,
+      alpha: 0,
+      duration: 200,
+    })
+  }
+  animateShowChangePageButtons() {
+    this.arrows.forEach((a) => a.setAlpha(0))
+
+    this.tweens.add({
+      targets: this.arrows,
+      alpha: 1,
+      duration: 500,
     })
   }
 
@@ -346,6 +377,9 @@ export default class levelSelect extends Phaser.Scene {
     const this_level_configuration =
       levelsConfiguration[this.current_page_number]
 
+    this.scene.sleep()
+    this.scene.sleep("menu")
+    
     this.scene.start(
       `${this_level_configuration.info.name.capitalize()}_${this_level_configuration.info.difficulty.capitalize()}`,
       {
@@ -409,15 +443,19 @@ export default class levelSelect extends Phaser.Scene {
 
   createChangePageButtons() {
     let shift = 275
-    helper.createButton(
-      this,
-      this.game.GW / 2 - shift,
-      this.game.GH / 2,
-      "arrow-button",
-      () => this.tweenPage("+")
-    )
+    this.arrows = []
 
-    helper
+    this.arrows[0] = helper
+      .createButton(
+        this,
+        this.game.GW / 2 - shift,
+        this.game.GH / 2,
+        "arrow-button",
+        () => this.tweenPage("+")
+      )
+      .setAlpha(0)
+
+    this.arrows[1] = helper
       .createButton(
         this,
         this.game.GW / 2 + shift,
@@ -428,14 +466,42 @@ export default class levelSelect extends Phaser.Scene {
         }
       )
       .setFlipX(true)
+      .setAlpha(0)
   }
 
   createHomeButton() {
-    helper
-      .createButton(this, 10, 10, "home-button", async () => {
-        await this.animateLevelSelectHide()
-        this.scene.start("menu")
-      })
-      .setOrigin(0)
+    this.home_button = helper
+      .createButton(
+        this,
+        this.game.GW / 2,
+        this.game.GH,
+        "home-button",
+        async () => {
+          await this.animateLevelSelectHide()
+          this.scene.get("menu").animateShowMenu()
+          this.scene.sleep("levelSelect")
+          //this.scene.start("menu")
+        }
+      )
+      .setOrigin(0.5, 1)
+
+    this.home_button.y += this.home_button.displayHeight
+  }
+
+  animateHomeButtonShow(ease) {
+    this.tweens.add({
+      targets: this.home_button,
+      y: this.game.GH - 15,
+      duration: 200,
+      ease: ease,
+    })
+  }
+  animateHomeButtonHide(ease) {
+    this.tweens.add({
+      targets: this.home_button,
+      y: this.game.GH - 15,
+      duration: 200,
+      ease: ease,
+    })
   }
 }

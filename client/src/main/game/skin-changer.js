@@ -3,16 +3,17 @@ import { EQUIP_SKIN } from "../shortcuts/requests"
 import { saveProgress, getProgress } from "../shortcuts/save"
 
 export default class {
-  constructor(scene, y) {
+  constructor(scene, x, y) {
     this.progress = scene.progress || getProgress()
 
     this.scene = scene
     this.setup = customize_skins_setup
     this.y = y
+    this.x = x
 
     this.hidden_scale = 0.7
     this.shift_value = 90
-    this.shift_duration = 400
+    this.shift_duration = 200
     this.can_change = true
 
     this.positions = {
@@ -42,31 +43,22 @@ export default class {
     })
   }
 
-  animateSetShow(set, ease) {
-    return new Promise((resolve) => {
-      this.scene.tweens.add({
-        targets: this.sets[set],
-        y: this.positions[set],
-        duration: 250,
-        ease: ease,
-        onComplete: () => resolve(),
-      })
-    })
-  }
+ 
 
   show() {
-    for (const set in this.sets) {
-      this.sets[set].forEach((e) => (e.y += this.scene.game.GH))
-    }
-
+  
     const ease = "Sine"
 
-    this.animateSetShow("circle", ease)
+    this.animateSetShow("circle", ease).then(() =>
+      this.showSkinPrice(this.scene.circle_price)
+    )
 
     this.scene.time.addEvent({
       delay: 125,
       callback: () => {
-        this.animateSetShow("stick", ease)
+        this.animateSetShow("stick", ease).then(() =>
+          this.showSkinPrice(this.scene.stick_price)
+        )
       },
     })
 
@@ -74,7 +66,9 @@ export default class {
       this.scene.time.addEvent({
         delay: 250,
         callback: async () => {
-          await this.animateSetShow("target", ease)
+          await this.animateSetShow("target", ease).then(() =>
+            this.showSkinPrice(this.scene.target_price)
+          )
           resolve()
         },
       })
@@ -83,6 +77,7 @@ export default class {
 
   hide() {
     const ease = "Sine.easeIn"
+    this.hideSkinsPrices()
 
     return new Promise((resolve) => {
       this.scene.tweens.add({
@@ -96,18 +91,133 @@ export default class {
     })
   }
 
+  animateSetShow(set, ease) {
+    return new Promise((resolve) => {
+      this.scene.tweens.add({
+        targets: this.sets[set],
+        y: this.positions[set],
+        duration: 250,
+        ease: ease,
+        onComplete: () => resolve(),
+      })
+    })
+  }
+
+hideSetsWithoutAnimation(){
+  for (const set in this.sets) {
+    this.sets[set].forEach((e) => (e.y += this.scene.game.GH))
+  }
+}
+
+  createSkinPrice(x, y, price) {
+    const text = this.scene.add
+      .text(x + 160, y, price, {
+        font: `70px ${main_font}`,
+      })
+      .setOrigin(0, 0.5)
+      .setAlpha(0)
+
+    text.coin = this.scene.add
+      .image(text.x + text.displayWidth + 20, text.y, "coin")
+      .setOrigin(0, 0.5)
+      .setAlpha(0)
+
+    return text
+  }
+
+  showSkinPrice(price) {
+    this.scene.tweens.add({
+      targets: [price, price.coin],
+      alpha: 1,
+      duration: 200,
+    })
+  }
+
+  hideSkinsPrices() {
+    this.scene.tweens.add({
+      targets: [
+        this.scene.target_price,
+        this.scene.target_price.coin,
+        this.scene.stick_price,
+        this.scene.stick_price.coin,
+        this.scene.circle_price,
+        this.scene.circle_price.coin,
+      ],
+      alpha: 0,
+      duration: 150,
+    })
+  }
+
+  createCircleSet(sprite) {
+    this.circle_skin_number = this.getSkinNumber(sprite)
+    const circle = this.scene.add.image(this.x, this.y, sprite)
+    this.circle = circle
+
+    circle.cost = this.getSpriteFromSetup(
+      "circles",
+      this.circle_skin_number
+    ).cost
+
+    this.positions.circle = circle.y
+
+    const other_circle = this.scene.add
+      .image(circle.x, circle.y, circle.texture.key)
+      .setAlpha(0)
+
+    this.sets.circle.push(circle, other_circle)
+
+    this.sets.circle.push(
+      createButton(
+        this.scene,
+        circle.x - 100,
+        circle.y,
+        "arrow-button-blue",
+        () => {
+          if (!this.can_change) return
+
+          this.circle_skin_number--
+          this.changeSkinButtonClicked(
+            circle,
+            other_circle,
+            "circles",
+            "+",
+            this.circle_skin_number
+          )
+        }
+      )
+    )
+
+    this.sets.circle.push(
+      createButton(
+        this.scene,
+        circle.x + 100,
+        circle.y,
+        "arrow-button-blue",
+        () => {
+          if (!this.can_change) return
+
+          this.circle_skin_number++
+          this.changeSkinButtonClicked(
+            circle,
+            other_circle,
+            "circles",
+            "-",
+            this.circle_skin_number
+          )
+        }
+      ).setFlipX(true)
+    )
+  }
   createStickSet(sprite) {
     this.stick_skin_number = this.getSkinNumber(sprite)
 
     const stick = this.scene.add
-      .image(
-        this.scene.game.GW / 2,
-        this.circle.y + this.circle.displayHeight / 2,
-        sprite
-      )
+      .image(this.x, this.circle.y + this.circle.displayHeight / 2, sprite)
       .setAngle(90)
 
     this.stick = stick
+
+    stick.cost = this.getSpriteFromSetup("sticks", this.stick_skin_number).cost
 
     const other_stick = this.scene.add
       .image(stick.x, stick.y, stick.texture.key)
@@ -166,13 +276,18 @@ export default class {
     this.target_skin_number = this.getSkinNumber(sprite)
 
     const target = this.scene.add.image(
-      this.scene.game.GW / 2,
+      this.x,
       this.stick.y + this.stick.displayWidth / 2 + 150,
       sprite
     )
 
+    target.cost = this.getSpriteFromSetup(
+      "targets",
+      this.target_skin_number
+    ).cost
+
     const other_target = this.scene.add.image(
-      this.scene.game.GW / 2,
+      target.x,
       target.y,
       target.texture.key
     )
@@ -222,62 +337,9 @@ export default class {
     this.positions.target = target.y
   }
 
-  createCircleSet(sprite) {
-    this.circle_skin_number = this.getSkinNumber(sprite)
-    const circle = this.scene.add.image(this.scene.game.GW / 2, this.y, sprite)
-    this.circle = circle
-
-    this.positions.circle = circle.y
-
-    const other_circle = this.scene.add
-      .image(circle.x, circle.y, circle.texture.key)
-      .setAlpha(0)
-
-    this.sets.circle.push(circle, other_circle)
-
-    this.sets.circle.push(
-      createButton(
-        this.scene,
-        circle.x - 100,
-        circle.y,
-        "arrow-button-blue",
-        () => {
-          if (!this.can_change) return
-
-          this.circle_skin_number--
-          this.changeSkinButtonClicked(
-            circle,
-            other_circle,
-            "circles",
-            "+",
-            this.circle_skin_number
-          )
-        }
-      )
-    )
-
-    this.sets.circle.push(
-      createButton(
-        this.scene,
-        circle.x + 100,
-        circle.y,
-        "arrow-button-blue",
-        () => {
-          if (!this.can_change) return
-
-          this.circle_skin_number++
-          this.changeSkinButtonClicked(
-            circle,
-            other_circle,
-            "circles",
-            "-",
-            this.circle_skin_number
-          )
-        }
-      ).setFlipX(true)
-    )
+  getSpriteFromSetup(part, skin_number) {
+    return this.setup[part][skin_number]
   }
-
   changeSkinButtonClicked(sprite1, sprite2, part, sign, skin_number) {
     this.can_change = false
 
@@ -314,9 +376,9 @@ export default class {
       shift = -(this.setup[part].length - 1)
     }
 
-    const first_skin = this.setup[part][skin_number].skin
+    const first_skin = this.getSpriteFromSetup(part, skin_number).skin
 
-    const second_skin = this.setup[part][skin_number + shift].skin
+    const second_skin = this.getSpriteFromSetup(part, skin_number + shift).skin
 
     if (!sprite1.key) {
       sprite1.key = this.scene.add
@@ -324,7 +386,7 @@ export default class {
         .setAlpha(0)
     }
 
-    sprite2.cost = this.setup[part][skin_number].cost
+    sprite2.cost = this.getSpriteFromSetup(part, skin_number).cost
 
     if (!sprite2.key) {
       sprite2.key = createButton(
@@ -364,6 +426,8 @@ export default class {
     if (available_part_skins.includes(skin_number + 1)) {
       this.progress.current_skins[part] = skin_number + 1
     }
+
+    this.scene.circle_price.setText(sprite2.cost)
 
     this.hideItem(sprite1, sign)
     this.showItem(sprite2, sign)
