@@ -12,7 +12,7 @@ export default class Pause extends Phaser.Scene {
       this.game.GH / 2,
       "play-button",
       () => {
-        scene.scene.stop("pause")
+        this.scene.stop()
         scene.scene.resume()
       }
     )
@@ -27,7 +27,7 @@ export default class Pause extends Phaser.Scene {
         this.scene.stop()
 
         scene.scene.wake("menu")
-        scene.scene.get("menu").resetPositionsToHidden().animateShowMenu()
+        this.scene.get("menu").animateShowMenu()
       }
     )
 
@@ -37,9 +37,16 @@ export default class Pause extends Phaser.Scene {
       this.game.GH / 2 + 150,
       "levelSelect-button",
       () => {
-        scene.scene.stop("pause")
+        scene.scene.stop()
+        this.scene.stop()
+        scene.scene.wake("menu")
 
-        scene.scene.start("levelSelect", { page: scene.scene.scene.level - 1 })
+        scene.scene.wake("levelSelect")
+
+        this.scene
+          .get("levelSelect")
+
+          .animateLevelSelectShow()
       }
     )
   }

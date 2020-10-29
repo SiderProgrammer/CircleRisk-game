@@ -43,10 +43,7 @@ export default class {
     })
   }
 
- 
-
   show() {
-  
     const ease = "Sine"
 
     this.animateSetShow("circle", ease).then(() =>
@@ -103,11 +100,11 @@ export default class {
     })
   }
 
-hideSetsWithoutAnimation(){
-  for (const set in this.sets) {
-    this.sets[set].forEach((e) => (e.y += this.scene.game.GH))
+  hideSetsWithoutAnimation() {
+    for (const set in this.sets) {
+      this.sets[set].forEach((e) => (e.y += this.scene.game.GH))
+    }
   }
-}
 
   createSkinPrice(x, y, price) {
     const text = this.scene.add
@@ -117,14 +114,22 @@ hideSetsWithoutAnimation(){
       .setOrigin(0, 0.5)
       .setAlpha(0)
 
+    text.getCoinX = function () {
+      return this.x + this.displayWidth + 20
+    }
+
     text.coin = this.scene.add
-      .image(text.x + text.displayWidth + 20, text.y, "coin")
+      .image(text.getCoinX(), text.y, "coin")
       .setOrigin(0, 0.5)
       .setAlpha(0)
 
     return text
   }
 
+  updateSkinPrice(price_text, price) {
+    price_text.setText(price)
+    price_text.coin.x = price_text.getCoinX()
+  }
   showSkinPrice(price) {
     this.scene.tweens.add({
       targets: [price, price.coin],
@@ -340,8 +345,10 @@ hideSetsWithoutAnimation(){
   getSpriteFromSetup(part, skin_number) {
     return this.setup[part][skin_number]
   }
+
   changeSkinButtonClicked(sprite1, sprite2, part, sign, skin_number) {
     this.can_change = false
+    let price_to_update = {}
 
     let shift = sign === "+" ? (shift = 1) : (shift = -1)
 
@@ -427,7 +434,10 @@ hideSetsWithoutAnimation(){
       this.progress.current_skins[part] = skin_number + 1
     }
 
-    this.scene.circle_price.setText(sprite2.cost)
+    this.updateSkinPrice(
+      eval(`this.scene.${part.slice(0, -1)}_price`), // get part price context
+      sprite2.cost
+    )
 
     this.hideItem(sprite1, sign)
     this.showItem(sprite2, sign)

@@ -20,9 +20,9 @@ import Blind_Easy from "../../levels/blind/blind-easy"
 import Sense_Easy from "../../levels/sense/sense-easy"
 import Tiny_Easy from "../../levels/tiny/tiny-easy"
 import Hell_Easy from "../../levels/hell/hell-easy"
+import Carousel_Easy from "../../levels/carousel/carousel-easy"
 
 export default [
-    
   Basic_Easy,
   Wind_Easy,
   Night_Easy,
@@ -45,4 +45,5 @@ export default [
   Sense_Easy,
   Tiny_Easy,
   Hell_Easy,
+  Carousel_Easy,
 ]

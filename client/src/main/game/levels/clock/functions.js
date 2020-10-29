@@ -16,7 +16,9 @@ export default class {
       repeat: this.scene.time_left,
     })
   }
-
+  stopTimer() {
+    this.scene.timer.remove()
+  }
   timerTick() {
     this.scene.time_left--
     if (this.scene.time_left === 0) {

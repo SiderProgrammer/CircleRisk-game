@@ -1,9 +1,9 @@
 import Manager from "../../main/level-manager.js"
-import ClockFunctionsManager from "./functions"
+import CarouselFunctionsManager from "./functions"
 
-export default class Clock_Easy extends Phaser.Scene {
+export default class Carousel_Easy extends Phaser.Scene {
   constructor() {
-    super("Clock_Easy")
+    super("Carousel_Easy")
   }
 
   init(config) {
@@ -13,13 +13,15 @@ export default class Clock_Easy extends Phaser.Scene {
     this.manager = new Manager(this, config.config)
     this.manager.init()
 
-    this.time_left = this.manager.config.time_left
+    this.targets_speed = this.manager.config.targets_speed
+    this.carouselFunctionsManager = new CarouselFunctionsManager(this)
   }
 
   create() {
     this.manager.create()
 
     this.manager.createGUI()
+
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()
@@ -30,9 +32,6 @@ export default class Clock_Easy extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
-    this.clockFunctionsManager = new ClockFunctionsManager(this)
-    this.clockFunctionsManager.createTimerText()
-
     this.manager.GUI_helper.sceneIntro(this)
   }
   update() {
@@ -40,13 +39,7 @@ export default class Clock_Easy extends Phaser.Scene {
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
-  }
 
-  setTimer() {
-    this.clockFunctionsManager.setTimer()
-  }
-
-  stopTimer() {
-    this.clockFunctionsManager.stopTimer()
+    this.carouselFunctionsManager.moveTargetsAndBounceOffWalls()
   }
 }

@@ -4,17 +4,12 @@ import * as helper from "../GUI-helper.js"
 import { POST_LEVEL_SCORE, SAVE_MONEY } from "../../shortcuts/requests"
 import { getProgress, saveProgress } from "../../shortcuts/save"
 import PerfectManager from "./perfect-manager"
-import LoseMenu from "./lose-menu"
 
 export default class Manager {
   constructor(scene, config) {
     this.scene = scene
     this.progress = getProgress()
     this.config = config
-
-    // this.scene.restart(LoseMenu)
-    // this.loseMenu = config.loseMenu || this.scene.launch("loseMenu",scene);
-    // this.loseMenu.update()...
   }
 
   init() {
@@ -43,10 +38,6 @@ export default class Manager {
   }
 
   create() {
-    this.loseMenuManager = new LoseMenu(this)
-    this.loseMenuManager.createLoseMenu()
-    this.loseMenuManager.hideMenu()
-
     this.perfectManager = new PerfectManager(this)
     this.perfectManager.createPerfectText()
     this.perfectManager.createScoreText()
@@ -341,11 +332,19 @@ export default class Manager {
   }
 
   async gameOver() {
+    if (typeof this.scene.stopTimer === "function") {
+      this.scene.stopTimer()
+      
+    }
     this.circles.forEach((c) => c.setDepth(0))
     this.stick.setDepth(0)
     this.target_array.forEach((t) => t.setDepth(0))
 
-    this.loseMenuManager.update()
+    // this.loseMenuManager.update()
+    const lose_scene = this.scene.scene.get("lose")
+    lose_scene.updatePoints(this.score, this.perfect)
+
+    this.scene.scene.wake("lose")
 
     this.scene.input.removeAllListeners()
     this.game_started = false
@@ -363,12 +362,12 @@ export default class Manager {
         level: this.scene.level,
       })
 
-      this.loseMenuManager.createNextLevelButton()
+      lose_scene.createNextLevelButton()
     } else {
-      this.loseMenuManager.createReplayButton()
+      lose_scene.createReplayButton()
     }
 
-    this.loseMenuManager.showMenu()
+    lose_scene.showMenu()
 
     const this_level_score = this.progress.levels_scores[this.scene.level - 1]
     if (this.score > this_level_score || !this_level_score) {

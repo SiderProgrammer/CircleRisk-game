@@ -113,8 +113,9 @@ export default class Customize extends Phaser.Scene {
           this.skinChangerManager.save()
 
           await this.animateCustomizeHide()
+          this.home_button.resetPosition()
 
-          this.scene.get("menu").resetPositionsToHidden().animateShowMenu()
+          this.scene.get("menu").animateShowMenu()
           this.scene.sleep()
           // maybe stop customize scene
         }
@@ -122,6 +123,12 @@ export default class Customize extends Phaser.Scene {
       .setOrigin(0.5, 1)
 
     this.home_button.y += this.home_button.displayHeight
+
+    const hidden_y = this.home_button.y
+
+    this.home_button.resetPosition = function () {
+      this.y = hidden_y
+    }
   }
 
   createMoney() {

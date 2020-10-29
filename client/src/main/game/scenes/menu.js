@@ -79,7 +79,7 @@ export default class menu extends Phaser.Scene {
 
     this.hideInstagram()
     await this.hideButtonsAndLogo(ease)
-
+    this.resetPositionsToHidden()
     return new Promise((resolve) => resolve())
   }
 
@@ -87,6 +87,12 @@ export default class menu extends Phaser.Scene {
     for (const element in this.hidden_positions_y) {
       eval(`this.${[element]}.y = ${this.hidden_positions_y[element]}`)
     }
+
+    this.logo.y = this.hidden_positions_y.logo
+    this.play_button.y = this.hidden_positions_y.play_button
+    this.sound_button.y = this.hidden_positions_y.sound_button
+    this.music_button.y = this.hidden_positions_y.music_button
+
     return this
   }
 
@@ -266,6 +272,7 @@ export default class menu extends Phaser.Scene {
         */
 
         await this.animateHideMenu()
+
         this.scene.wake("levelSelect")
         this.scene.get("levelSelect").animateLevelSelectShow()
         /*  
@@ -316,7 +323,7 @@ export default class menu extends Phaser.Scene {
     this.tweens.add({
       targets: button,
       ease,
-      duration: 200,
+      duration: 300,
       y: this.game.GH - 25,
     })
   }
@@ -325,14 +332,14 @@ export default class menu extends Phaser.Scene {
     this.animateBottomButton(this.customize_button, ease)
 
     this.time.addEvent({
-      delay: 100,
+      delay: 50,
       callback: () => {
         this.animateBottomButton(this.music_button, ease)
       },
     })
 
     this.time.addEvent({
-      delay: 200,
+      delay: 100,
       callback: () => {
         this.animateBottomButton(this.sound_button, ease)
       },
@@ -358,7 +365,7 @@ export default class menu extends Phaser.Scene {
           this.logo,
         ],
         ease: ease,
-        y: `+=${this.game.GH + this.logo.displayHeight / 2}`,
+        y: `+=${this.game.GH}`,
         duration: 200,
 
         onComplete: () => resolve(),

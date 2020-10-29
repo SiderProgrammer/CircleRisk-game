@@ -55,6 +55,7 @@ export default class PerfectManager {
       quantity: -1,
       //  angle: { min: 0, max: 360 },
       maxParticles: 8,
+      reserve: 8,
       // tint: [0xffff00, 0xff0000, 0x00ff00, 0x0000ff],
     })
     stars_emtiter.explode(8)

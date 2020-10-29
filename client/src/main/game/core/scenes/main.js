@@ -7,15 +7,17 @@ import Leaderboard from "../../scenes/leaderboard.js"
 import Offline from "../../scenes/offline.js"
 import Fetching from "../../scenes/fetching.js"
 import Pause from "../../scenes/pause.js"
+import Lose from "../../scenes/lose.js"
 
 export default [
-Preloader,
-Loader,
-Menu,
-LevelSelect,
-Customize,
-Leaderboard,
-Offline,
-Fetching,
-Pause,
+  Preloader,
+  Loader,
+  Menu,
+  LevelSelect,
+  Customize,
+  Leaderboard,
+  Offline,
+  Fetching,
+  Pause,
+  Lose,
 ]

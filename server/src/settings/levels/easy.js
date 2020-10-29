@@ -184,6 +184,23 @@ module.exports = [
   },
   {
     info: {
+      score_to_next_level: 100,
+      tint: "0x06E0FF",
+      name: "carousel",
+    },
+    config: {
+      background: "perfect-bg",
+      rotation_speed: 1,
+      acceleration: 0.06,
+      targets_amount: 8,
+      ball_distance: 130,
+      additional_angle: 22.5,
+      starting_target: 1,
+      targets_speed:1
+    },
+  },
+  {
+    info: {
       score_to_next_level: 110,
       tint: "0x06E0FF",
       name: "chameleon",

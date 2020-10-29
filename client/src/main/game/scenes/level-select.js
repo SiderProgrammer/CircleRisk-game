@@ -67,16 +67,23 @@ export default class levelSelect extends Phaser.Scene {
 
     this.elements = this.createPageElements()
 
+    this.createChangePageButtons()
+    this.createHomeButton()
+    this.resetPositionsToHidden()
+    // helper.sceneIntro(this)
+    this.shadow = helper
+      .createBackground(this, "black-bg")
+      .setAlpha(0)
+      .setDepth(100)
+  }
+
+  resetPositionsToHidden() {
+    // if I  use hide animation when starting level I could not hide
     this.elements.forEach((element) => {
       element.y += this.game.GH
     })
-
-    this.createChangePageButtons()
-    this.createHomeButton()
-
-    // helper.sceneIntro(this)
+    this.home_button.resetPosition()
   }
-
   animateLevelSelectHide() {
     const ease = "Sine.easeIn"
 
@@ -88,7 +95,10 @@ export default class levelSelect extends Phaser.Scene {
         y: `+=${this.game.GH}`,
         duration: 250,
         ease: ease,
-        onComplete: () => resolve(),
+        onComplete: () => {
+          this.home_button.resetPosition()
+          resolve()
+        },
       })
     })
   }
@@ -359,9 +369,10 @@ export default class levelSelect extends Phaser.Scene {
       this.actualPage.y + 250,
       "ranking-icon",
       () => {
-        this.scene.start("leaderboard", {
+        this.scene.launch("leaderboard", {
           level: this.current_page_number + 1,
         })
+        // this.scene.sleep()
       }
     )
     return button
@@ -377,17 +388,42 @@ export default class levelSelect extends Phaser.Scene {
     const this_level_configuration =
       levelsConfiguration[this.current_page_number]
 
-    this.scene.sleep()
-    this.scene.sleep("menu")
-    
-    this.scene.start(
-      `${this_level_configuration.info.name.capitalize()}_${this_level_configuration.info.difficulty.capitalize()}`,
-      {
-        config: this_level_configuration.config,
-        level: this.current_page_number + 1,
-        score_to_next_level: this_level_configuration.info.score_to_next_level,
-      }
-    )
+    const { name, difficulty } = this_level_configuration.info
+
+    const level_scene_to_start = `${name.capitalize()}_${difficulty.capitalize()}`
+
+    this.tweens.add({
+      targets: this.shadow,
+      alpha: 1,
+      duration: 400,
+      onComplete: () => {
+        this.scene.sleep("menu")
+
+        this.scene.launch(level_scene_to_start, {
+          config: this_level_configuration.config,
+          level: this.current_page_number + 1,
+          score_to_next_level:
+            this_level_configuration.info.score_to_next_level,
+        })
+
+        this.scene
+          .get(level_scene_to_start)
+          .scene.launch("lose", {
+            scene: this.scene.get(level_scene_to_start),
+          })
+          .bringToTop("lose")
+          .sleep("lose")
+
+        this.shadow.setAlpha(0)
+        this.resetPositionsToHidden()
+        this.scene.sleep()
+      },
+    })
+
+    this.time.addEvent({
+      delay: 300,
+      callback: () => {},
+    })
   }
 
   tweenPage(sign) {
@@ -478,14 +514,19 @@ export default class levelSelect extends Phaser.Scene {
         "home-button",
         async () => {
           await this.animateLevelSelectHide()
+
           this.scene.get("menu").animateShowMenu()
-          this.scene.sleep("levelSelect")
+          this.scene.sleep()
           //this.scene.start("menu")
         }
       )
       .setOrigin(0.5, 1)
 
     this.home_button.y += this.home_button.displayHeight
+    const hidden_y = this.home_button.y
+    this.home_button.resetPosition = function () {
+      this.y = hidden_y
+    }
   }
 
   animateHomeButtonShow(ease) {

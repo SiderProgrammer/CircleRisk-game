@@ -103,7 +103,8 @@ export default class Leaderboard extends Phaser.Scene {
 
     helper
       .createButton(this, x, y, "arrow-button-brown", () => {
-        this.scene.start("levelSelect", { page: this.level - 1 })
+      //  this.scene.wake("levelSelect")
+        this.scene.stop()
       })
       .setAngle(270)
       .setDepth(1)
