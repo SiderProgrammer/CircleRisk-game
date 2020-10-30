@@ -19,7 +19,7 @@ export default (game) => {
       }
     } else {
       if (!is_online) return
-      currentScene = game.scene.getScenes(true)[0] // repair?
+      currentScene = game.scene.getScenes(true)[0]
       if (!currentScene) return
       START_RECONNECTING_SCENE(currentScene)
       is_online = false

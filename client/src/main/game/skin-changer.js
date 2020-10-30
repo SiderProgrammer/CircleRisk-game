@@ -108,14 +108,14 @@ export default class {
 
   createSkinPrice(x, y, price) {
     const text = this.scene.add
-      .text(x + 160, y, price, {
+      .text(x + 180, y, price, {
         font: `70px ${main_font}`,
       })
       .setOrigin(0, 0.5)
       .setAlpha(0)
 
     text.getCoinX = function () {
-      return this.x + this.displayWidth + 20
+      return this.x + this.displayWidth + 40
     }
 
     text.coin = this.scene.add
@@ -123,16 +123,23 @@ export default class {
       .setOrigin(0, 0.5)
       .setAlpha(0)
 
+    text.bg = this.scene.add
+      .image(text.x + text.displayWidth / 2, text.y, "price-bg")
+      .setAlpha(0)
+    text.bg.displayWidth = text.displayWidth + 60
+    text.bg.displayHeight = text.displayWidth
     return text
   }
 
   updateSkinPrice(price_text, price) {
     price_text.setText(price)
     price_text.coin.x = price_text.getCoinX()
+    price_text.bg.x = price_text.x + price_text.displayWidth / 2
+    price_text.bg.displayWidth = price_text.displayWidth + 60
   }
   showSkinPrice(price) {
     this.scene.tweens.add({
-      targets: [price, price.coin],
+      targets: [price, price.coin, price.bg],
       alpha: 1,
       duration: 200,
     })
@@ -143,10 +150,15 @@ export default class {
       targets: [
         this.scene.target_price,
         this.scene.target_price.coin,
+        this.scene.target_price.bg,
+
         this.scene.stick_price,
         this.scene.stick_price.coin,
+        this.scene.stick_price.bg,
+
         this.scene.circle_price,
         this.scene.circle_price.coin,
+        this.scene.circle_price.bg,
       ],
       alpha: 0,
       duration: 150,
@@ -158,10 +170,7 @@ export default class {
     const circle = this.scene.add.image(this.x, this.y, sprite)
     this.circle = circle
 
-    circle.cost = this.getSpriteFromSetup(
-      "circles",
-      this.circle_skin_number
-    ).cost
+    circle.cost = this.getSkinFromSetup("circles", this.circle_skin_number).cost
 
     this.positions.circle = circle.y
 
@@ -219,16 +228,15 @@ export default class {
     const stick = this.scene.add
       .image(this.x, this.circle.y + this.circle.displayHeight / 2, sprite)
       .setAngle(90)
-
+    stick.y += stick.displayWidth / 2
     this.stick = stick
 
-    stick.cost = this.getSpriteFromSetup("sticks", this.stick_skin_number).cost
+    stick.cost = this.getSkinFromSetup("sticks", this.stick_skin_number).cost
 
     const other_stick = this.scene.add
       .image(stick.x, stick.y, stick.texture.key)
       .setAngle(90)
 
-    stick.y += stick.displayWidth / 2
     other_stick.y += stick.displayWidth / 2
 
     this.sets.stick.push(stick, other_stick)
@@ -286,10 +294,7 @@ export default class {
       sprite
     )
 
-    target.cost = this.getSpriteFromSetup(
-      "targets",
-      this.target_skin_number
-    ).cost
+    target.cost = this.getSkinFromSetup("targets", this.target_skin_number).cost
 
     const other_target = this.scene.add.image(
       target.x,
@@ -342,13 +347,12 @@ export default class {
     this.positions.target = target.y
   }
 
-  getSpriteFromSetup(part, skin_number) {
+  getSkinFromSetup(part, skin_number) {
     return this.setup[part][skin_number]
   }
 
   changeSkinButtonClicked(sprite1, sprite2, part, sign, skin_number) {
     this.can_change = false
-    let price_to_update = {}
 
     let shift = sign === "+" ? (shift = 1) : (shift = -1)
 
@@ -383,9 +387,9 @@ export default class {
       shift = -(this.setup[part].length - 1)
     }
 
-    const first_skin = this.getSpriteFromSetup(part, skin_number).skin
+    const first_skin = this.getSkinFromSetup(part, skin_number).skin
 
-    const second_skin = this.getSpriteFromSetup(part, skin_number + shift).skin
+    const second_skin = this.getSkinFromSetup(part, skin_number + shift).skin
 
     if (!sprite1.key) {
       sprite1.key = this.scene.add
@@ -393,7 +397,7 @@ export default class {
         .setAlpha(0)
     }
 
-    sprite2.cost = this.getSpriteFromSetup(part, skin_number).cost
+    sprite2.cost = this.getSkinFromSetup(part, skin_number).cost
 
     if (!sprite2.key) {
       sprite2.key = createButton(

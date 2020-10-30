@@ -3,7 +3,7 @@ const imgPath = "./assets/img"
 export default class loader extends Phaser.Scene {
   constructor() {
     super("loader")
-    this.skins_amount = 3
+    this.skins_amount = 15
   }
 
   loadImage(name, path) {
@@ -167,7 +167,7 @@ export default class loader extends Phaser.Scene {
     this.load.image("lightning", `${imgPath}/lightning.png`)
 
     this.load.image("bubble", `${imgPath}/bubble.png`)
-
+    this.load.image("ball", `${imgPath}/ball.png`)
     this.load.atlas("colors", `${imgPath}/colors.png`, `${imgPath}/colors.json`)
     this.load.atlas(
       "particles",
@@ -177,8 +177,10 @@ export default class loader extends Phaser.Scene {
     this.load.image("menu-1", `${imgPath}/menu-1.png`)
     this.load.image("menu-2", `${imgPath}/menu-2.png`)
     this.load.image("bubbles-menu", `${imgPath}/bubbles-menu.png`)
+    this.load.image("price-bg", `${imgPath}/price-bg.png`)
 
     this.load.image("circlerisk", `${imgPath}/circlerisk.png`)
+    this.load.image("tick", `${imgPath}/tick.png`)
     this.backgrounds()
     this.buttons()
     this.mix()

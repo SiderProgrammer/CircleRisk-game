@@ -12,13 +12,14 @@ export default class Customize extends Phaser.Scene {
 
   init() {
     this.progress = getProgress()
+    this.purchase_offer_elements = []
   }
 
   create() {
     this.skinChangerManager = new SkinChangerManager(
       this,
       this.game.GW / 2 - 150,
-      this.game.GH / 2 - 150
+      200
     )
     this.createMoney()
     this.createHomeButton()
@@ -74,6 +75,8 @@ export default class Customize extends Phaser.Scene {
       this.skinChangerManager.sets.stick[0].cost
     )
   }
+
+  createSkinsTicks() {}
 
   hideHomeButton() {
     return new Promise((resolve) => {
@@ -164,46 +167,40 @@ export default class Customize extends Phaser.Scene {
   createPurchaseOffer(skin, callback) {
     this.can_change = false
     const texture = skin.texture.key
+    if (this.purchase_offer_elements.length > 0) {
+      this.purchase_offer_elements.forEach((e) => e.destroy())
+      this.purchase_offer_elements.length = 0
+    }
 
-    const elements = []
-    elements.push(helper.createBackground(this, "black-bg"))
+    const y =
+      this.target_price.y + (this.home_button.y - this.target_price.y) / 2 - 40
 
-    const text = this.add
-      .text(this.game.GW / 2, this.game.GH / 2 - 100, skin.cost, {
-        font: `70px ${main_font}`,
-      })
-      .setOrigin(0.5)
-
-    text.x -= text.displayWidth / 2
-    const coin = this.add
-      .image(text.x + text.displayWidth / 2 + 20, text.y, "coin")
-      .setOrigin(0, 0.5)
-
-    elements.push(text, coin)
-    elements.push(this.add.image(this.game.GW / 2, this.game.GH / 2, texture))
+    this.purchase_offer_elements.push(
+      this.add.image(this.game.GW / 2, y, texture)
+    )
 
     const close_button = helper.createButton(
       this,
       this.game.GW / 2 + 100,
-      this.game.GH / 2 + 100,
+      y + 80,
       "close-button",
       () => {
-        elements.forEach((e) => e.destroy())
+        this.purchase_offer_elements.forEach((e) => e.destroy())
         this.can_change = true
       }
     )
-    elements.push(close_button)
+    this.purchase_offer_elements.push(close_button)
 
     if (this.progress.money >= skin.cost) {
-      elements.push(
+      this.purchase_offer_elements.push(
         helper.createButton(
           this,
           this.game.GW / 2 - 100,
-          this.game.GH / 2 + 100,
+          y + 80,
           "tick-button",
           () => {
             callback(skin.cost)
-            elements.forEach((e) => e.destroy())
+            this.purchase_offer_elements.forEach((e) => e.destroy())
             this.can_change = true
           }
         )

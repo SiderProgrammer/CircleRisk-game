@@ -166,6 +166,7 @@ module.exports = [
       time_left: 10, //in seconds
     },
   },
+  /*
   {
     info: {
       score_to_next_level: 100,
@@ -182,6 +183,7 @@ module.exports = [
       starting_target: 1,
     },
   },
+  */
   {
     info: {
       score_to_next_level: 110,

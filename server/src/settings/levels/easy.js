@@ -166,6 +166,7 @@ module.exports = [
       time_left: 10, //in seconds
     },
   },
+  /*
   {
     info: {
       score_to_next_level: 100,
@@ -182,6 +183,7 @@ module.exports = [
       starting_target: 1,
     },
   },
+  */
   {
     info: {
       score_to_next_level: 100,
@@ -189,14 +191,14 @@ module.exports = [
       name: "carousel",
     },
     config: {
-      background: "perfect-bg",
+      background:"carousel-bg",
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,
       ball_distance: 130,
       additional_angle: 22.5,
       starting_target: 1,
-      targets_speed:1
+      targets_speed: 1,
     },
   },
   {

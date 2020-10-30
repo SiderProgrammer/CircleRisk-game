@@ -258,30 +258,27 @@ export default class menu extends Phaser.Scene {
       this.game.GH,
       "play-button-big",
       async () => {
-        /*
-        const test = helper
-          .createBackground(this, "colors", "blue_1")
-          .setAlpha(0)
-        this.background.setDepth(0.1)
-        helper.createBackground(this, "levelSelect-bg").setDepth(0.15)
-        this.mountains_small.setDepth(0.2)
-        this.mountains_big.setDepth(0.2)
-
-        this.bubbles.forEach((b) => b.setDepth(0.3))
-
-        */
-
         await this.animateHideMenu()
 
         this.scene.wake("levelSelect")
-        this.scene.get("levelSelect").animateLevelSelectShow()
-        /*  
-        this.scene.launch("levelSelect", {
-          mountains: [this.mountains_small, this.mountains_big],
-          background: this.background,
-          //   test: test,
+        /*
+        const level_select_bg = helper.createBackground(this, "red").setAlpha(0)
+        helper.createBackground(this, "levelSelect-bg")
+        this.mountains_small.setDepth(0.2)
+        this.mountains_big.setDepth(0.2)
+        //this.bubbles.forEach((b) => b.setDepth(0.3))
+
+        this.tweens.add({ targets: this.background, duration: 300, alpha: 0 })
+        this.tweens.add({ targets: level_select_bg, duration: 300, alpha: 1 })
+
+        this.tweens.add({
+          targets: [this.mountains_big, this.mountains_small],
+          alpha: 0.2,
+          duration: 300,
         })
+
         */
+        this.scene.get("levelSelect").animateLevelSelectShow()
       }
     )
 
