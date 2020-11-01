@@ -8,53 +8,16 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   init(data) {
-    // this.tints = []
     this.progress = getProgress()
-    /*
-    for (const level in levelsConfiguration) {
-      this.tints.push(levelsConfiguration[level].info.tint)
-    }
-*/
     this.pages_amount = levelsConfiguration.length
 
-    this.current_page_number = 10 //  page || this.progress.levels_scores.length - 1
+    this.current_page_number = 0 //  page || this.progress.levels_scores.length - 1
 
     if (data.page === 0) this.current_page_number = 0 // 0 is false
-    this.canChangePage = true
-
-    /*
-    this.tweens.add({
-      targets: data.mountains,
-      alpha: 0.3,
-      duration: 400,
-    })
-    //helper.createBackground(this, "levelSelect-bg")
-    //const b = helper.createBackground(this, "red").setAlpha(0)
-    this.tweens.add({
-      targets: data.background,
-      alpha: 0,
-      duration: 400,
-    })
-
-    helper.createBackground(this, "red")
-    */
-
-    /*
-    this.tweens.add({
-      targets: data.test,
-      alpha: 1,
-      duration: 400,
-    })
-    */
-    //helper.setGameSize(data.background.setTexture("red"), true, true)
-
-    // helper.createBackground(this, "red").setAlpha(0)
-    // data.mountains.forEach((mountain) => mountain.setAlpha(0.3))
+    this.canChangePage = false
   }
 
   create() {
-    //this.createBackground()
-
     this.createBlackBorder() // hidden
 
     this.createHardLevelGlow() // hidden
@@ -70,20 +33,73 @@ export default class levelSelect extends Phaser.Scene {
     this.createChangePageButtons()
     this.createHomeButton()
     this.resetPositionsToHidden()
-    // helper.sceneIntro(this)
-    this.shadow = helper
-      .createBackground(this, "black-bg")
-      .setAlpha(0)
-      .setDepth(100)
   }
 
-  resetPositionsToHidden() {
-    // if I  use hide animation when starting level I could not hide
-    this.elements.forEach((element) => {
-      element.y += this.game.GH
-    })
-    this.home_button.resetPosition()
+  showAllElementsInMenuContext() {
+    this.level_select_elements_in_menu_context.forEach((element) =>
+      element.setVisible(true).setActive(true)
+    )
+    return this
   }
+
+  hideAllElementsInMenuContext() {
+    this.level_select_elements_in_menu_context.forEach((element) =>
+      element.setVisible(false).setActive(false)
+    )
+  }
+  createLevelSelectElementsInMenuContext(scene) {
+    // depth reasons
+    this.level_select_elements_in_menu_context = []
+
+    this.background = helper
+      .createBackground(scene, "colors", "purple_5")
+      .setVisible(false)
+      .setActive(false)
+    this.level_select_elements_in_menu_context.push(this.background)
+
+    this.level_select_elements_in_menu_context.push(
+      helper
+        .createBackground(scene, "levelSelect-bg")
+        .setVisible(false)
+        .setActive(false)
+    )
+
+    this.level_select_elements_in_menu_context.push(
+      scene.add
+        .image(
+          this.game.GW / 2 - 5,
+          this.game.GH / 2 - 90,
+          "bubbles-levelselect"
+        )
+        .setVisible(false)
+        .setActive(false)
+    )
+
+    this.level_select_elements_in_menu_context.push(
+      helper
+        .setGameSize(
+          scene.add
+            .image(this.game.GW / 2, this.game.GH, "levelselect-2")
+            .setOrigin(0.5, 1),
+          true
+        )
+        .setVisible(false)
+        .setActive(false)
+    )
+
+    this.level_select_elements_in_menu_context.push(
+      helper
+        .setGameSize(
+          scene.add
+            .image(this.game.GW / 2, this.game.GH, "levelselect-1")
+            .setOrigin(0.5, 1),
+          true
+        )
+        .setVisible(false)
+        .setActive(false)
+    )
+  }
+
   animateLevelSelectHide() {
     const ease = "Sine.easeIn"
 
@@ -111,10 +127,20 @@ export default class levelSelect extends Phaser.Scene {
       y: `-=${this.game.GH}`,
       duration: 500,
       ease: ease,
-      onComplete: () => this.animateHomeButtonShow(ease),
+      onComplete: () => {
+        this.animateHomeButtonShow(ease)
+      },
     })
 
     this.animateShowChangePageButtons()
+  }
+
+  resetPositionsToHidden() {
+    // if I  use hide animation when starting level I could not hide
+    this.elements.forEach((element) => {
+      element.y += this.game.GH
+    })
+    this.home_button.resetPosition()
   }
 
   animateHideChangePageButtons() {
@@ -199,6 +225,7 @@ export default class levelSelect extends Phaser.Scene {
       .createBackground(this, "black-border")
       .setVisible(false)
   }
+
   createThorns() {
     const thorns_up = this.add
       .image(0, 0, "thorns_up")
@@ -392,41 +419,28 @@ export default class levelSelect extends Phaser.Scene {
 
     const level_scene_to_start = `${name.capitalize()}_${difficulty.capitalize()}`
 
-    this.tweens.add({
-      targets: this.shadow,
-      alpha: 1,
-      duration: 400,
-      onComplete: () => {
-        this.scene.sleep("menu")
+    this.scene.sleep("menu")
 
-        this.scene.launch(level_scene_to_start, {
-          config: this_level_configuration.config,
-          level: this.current_page_number + 1,
-          score_to_next_level:
-            this_level_configuration.info.score_to_next_level,
-        })
-
-        this.scene
-          .get(level_scene_to_start)
-          .scene.launch("lose", {
-            scene: this.scene.get(level_scene_to_start),
-          })
-          .bringToTop("lose")
-          .sleep("lose")
-
-        this.shadow.setAlpha(0)
-        this.resetPositionsToHidden()
-        this.scene.sleep()
-      },
+    this.scene.launch(level_scene_to_start, {
+      config: this_level_configuration.config,
+      level: this.current_page_number + 1,
+      score_to_next_level: this_level_configuration.info.score_to_next_level,
     })
 
-    this.time.addEvent({
-      delay: 300,
-      callback: () => {},
-    })
+    this.scene
+      .get(level_scene_to_start)
+      .scene.launch("lose", {
+        scene: this.scene.get(level_scene_to_start),
+      })
+      .bringToTop("lose")
+      .sleep("lose")
+
+    this.resetPositionsToHidden()
+    this.scene.sleep()
   }
 
   tweenPage(sign) {
+    const ease = "Bounce.easeOut"
     if (!this.canChangePage) return
 
     let pageShift = -this.game.GW
@@ -449,10 +463,16 @@ export default class levelSelect extends Phaser.Scene {
       targets: past_page_elements,
       x: `${sign}=${this.game.GW}`,
       duration: 500,
-      ease: "Bounce.easeOut",
+      ease: ease,
       onStart: () => {
         // this.background.setTint(this.tints[this.current_page_number])
-
+        const bg_color =
+          levelsConfiguration[this.current_page_number].color || "blue_1"
+        helper.setGameSize(
+          this.background.setTexture("colors", bg_color),
+          true,
+          true
+        )
         this.elements = this.createPageElements()
 
         this.elements.forEach((t) => (t.x -= pageShift))
@@ -461,7 +481,7 @@ export default class levelSelect extends Phaser.Scene {
           targets: this.elements,
           x: `${sign}=${this.game.GW}`,
           duration: 500,
-          ease: "Bounce.easeOut",
+          ease: ease,
         })
       },
       onComplete: () => {
@@ -470,11 +490,6 @@ export default class levelSelect extends Phaser.Scene {
         this.canChangePage = true
       },
     })
-  }
-  createBackground() {
-    helper.createBackground(this, "red") // levelsConfiguration[this.current_page_number].page_color AND ATLAS AFTER COMMA ,
-    this.background = helper.createBackground(this, "levelSelect-bg")
-    // .setTint(this.tints[this.current_page_number])
   }
 
   createChangePageButtons() {
@@ -515,9 +530,11 @@ export default class levelSelect extends Phaser.Scene {
         async () => {
           await this.animateLevelSelectHide()
 
+          this.hideAllElementsInMenuContext()
+
+          this.scene.get("menu").showElementsSharedWithLevelSelect()
           this.scene.get("menu").animateShowMenu()
           this.scene.sleep()
-          //this.scene.start("menu")
         }
       )
       .setOrigin(0.5, 1)
@@ -535,6 +552,9 @@ export default class levelSelect extends Phaser.Scene {
       y: this.game.GH - 15,
       duration: 200,
       ease: ease,
+      onComplete: () => {
+        this.canChangePage = true
+      },
     })
   }
   animateHomeButtonHide(ease) {

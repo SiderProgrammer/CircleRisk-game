@@ -16,8 +16,9 @@ export default class PerfectManager {
       .text(this.scene.GW - 10, 20, this.getScoreText(), {
         font: `60px ${main_font}`,
       })
-      .setDepth(1)
+
       .setOrigin(1, 0)
+      .setDepth(1)
   }
   updateScoreText() {
     this.score_text.setText(this.getScoreText())

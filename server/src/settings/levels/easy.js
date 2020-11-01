@@ -1,9 +1,9 @@
 module.exports = [
   {
-    page_color: "red",
+    color: "purple_5",
     info: {
       score_to_next_level: 10,
-      tint: "0x00FF00",
+
       name: "basic",
     },
     config: {
@@ -18,9 +18,10 @@ module.exports = [
   },
 
   {
+    color: "red_1",
     info: {
       score_to_next_level: 20,
-      tint: "0xFF6E00",
+
       name: "wind",
     },
     config: {
@@ -35,9 +36,10 @@ module.exports = [
     },
   },
   {
+    color: "yellow_1",
     info: {
       score_to_next_level: 30,
-      tint: "0xFF00FF",
+
       name: "night",
     },
     config: {
@@ -191,7 +193,7 @@ module.exports = [
       name: "carousel",
     },
     config: {
-      background:"carousel-bg",
+      background: "carousel-bg",
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,

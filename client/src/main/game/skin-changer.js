@@ -46,15 +46,15 @@ export default class {
   show() {
     const ease = "Sine"
 
-    this.animateSetShow("circle", ease).then(() =>
-      this.showSkinPrice(this.scene.circle_price)
-    )
+    this.animateSetShow("circle", ease).then(() => {
+      this.showTickAndMoney(this.circle.tick)
+    })
 
     this.scene.time.addEvent({
       delay: 125,
       callback: () => {
         this.animateSetShow("stick", ease).then(() =>
-          this.showSkinPrice(this.scene.stick_price)
+          this.showTickAndMoney(this.stick.tick)
         )
       },
     })
@@ -64,7 +64,7 @@ export default class {
         delay: 250,
         callback: async () => {
           await this.animateSetShow("target", ease).then(() =>
-            this.showSkinPrice(this.scene.target_price)
+            this.showTickAndMoney(this.target.tick)
           )
           resolve()
         },
@@ -75,7 +75,7 @@ export default class {
   hide() {
     const ease = "Sine.easeIn"
     this.hideSkinsPrices()
-
+    this.hideSkinsTicks()
     return new Promise((resolve) => {
       this.scene.tweens.add({
         targets: [...this.sets.circle, ...this.sets.stick, ...this.sets.target],
@@ -137,31 +137,55 @@ export default class {
     price_text.bg.x = price_text.x + price_text.displayWidth / 2
     price_text.bg.displayWidth = price_text.displayWidth + 60
   }
-  showSkinPrice(price) {
-    this.scene.tweens.add({
-      targets: [price, price.coin, price.bg],
-      alpha: 1,
-      duration: 200,
-    })
-  }
 
   hideSkinsPrices() {
     this.scene.tweens.add({
       targets: [
-        this.scene.target_price,
-        this.scene.target_price.coin,
-        this.scene.target_price.bg,
+        this.target.price,
+        this.target.price.coin,
+        this.target.price.bg,
 
-        this.scene.stick_price,
-        this.scene.stick_price.coin,
-        this.scene.stick_price.bg,
+        this.stick.price,
+        this.stick.price.coin,
+        this.stick.price.bg,
 
-        this.scene.circle_price,
-        this.scene.circle_price.coin,
-        this.scene.circle_price.bg,
+        this.circle.price,
+        this.circle.price.coin,
+        this.circle.price.bg,
       ],
       alpha: 0,
       duration: 150,
+    })
+  }
+
+  hideSkinsTicks() {
+    this.scene.tweens.add({
+      targets: [this.stick.tick, this.target.tick, this.circle.tick],
+      alpha: 0,
+      duration: 150,
+    })
+  }
+
+  createSkinTick(x, y) {
+    return this.scene.add
+      .image(x + 180, y, "tick")
+      .setOrigin(0, 0.5)
+      .setAlpha(0)
+  }
+
+  showTickAndMoney(tick) {
+    this.scene.tweens.add({
+      targets: [
+        tick,
+        this.circle.price.bg,
+        this.circle.price.coin,
+        this.stick.price.bg,
+        this.stick.price.coin,
+        this.target.price.bg,
+        this.target.price.coin,
+      ],
+      alpha: 1,
+      duration: 200,
     })
   }
 
@@ -170,7 +194,13 @@ export default class {
     const circle = this.scene.add.image(this.x, this.y, sprite)
     this.circle = circle
 
-    circle.cost = this.getSkinFromSetup("circles", this.circle_skin_number).cost
+    this.circle.price = this.createSkinPrice(
+      this.circle.x,
+      this.circle.y,
+      this.getSkinFromSetup("circles", this.circle_skin_number).cost
+    )
+
+    this.circle.tick = this.createSkinTick(this.circle.x, this.circle.y)
 
     this.positions.circle = circle.y
 
@@ -191,8 +221,9 @@ export default class {
 
           this.circle_skin_number--
           this.changeSkinButtonClicked(
-            circle,
             other_circle,
+            this.circle,
+
             "circles",
             "+",
             this.circle_skin_number
@@ -212,8 +243,9 @@ export default class {
 
           this.circle_skin_number++
           this.changeSkinButtonClicked(
-            circle,
             other_circle,
+            this.circle,
+
             "circles",
             "-",
             this.circle_skin_number
@@ -231,7 +263,13 @@ export default class {
     stick.y += stick.displayWidth / 2
     this.stick = stick
 
-    stick.cost = this.getSkinFromSetup("sticks", this.stick_skin_number).cost
+    this.stick.tick = this.createSkinTick(this.stick.x, this.stick.y)
+
+    this.stick.price = this.createSkinPrice(
+      this.stick.x,
+      this.stick.y,
+      this.getSkinFromSetup("sticks", this.stick_skin_number).cost
+    )
 
     const other_stick = this.scene.add
       .image(stick.x, stick.y, stick.texture.key)
@@ -251,8 +289,8 @@ export default class {
           if (!this.can_change) return
           this.stick_skin_number--
           this.changeSkinButtonClicked(
-            stick,
             other_stick,
+            this.stick,
             "sticks",
             "+",
             this.stick_skin_number
@@ -272,8 +310,8 @@ export default class {
 
           this.stick_skin_number++
           this.changeSkinButtonClicked(
-            stick,
             other_stick,
+            this.stick,
             "sticks",
             "-",
             this.stick_skin_number
@@ -293,8 +331,15 @@ export default class {
       this.stick.y + this.stick.displayWidth / 2 + 150,
       sprite
     )
+    this.target = target
 
-    target.cost = this.getSkinFromSetup("targets", this.target_skin_number).cost
+    this.target.tick = this.createSkinTick(this.target.x, this.target.y)
+
+    this.target.price = this.createSkinPrice(
+      this.target.x,
+      this.target.y,
+      this.getSkinFromSetup("targets", this.target_skin_number).cost
+    )
 
     const other_target = this.scene.add.image(
       target.x,
@@ -314,8 +359,8 @@ export default class {
           if (!this.can_change) return
           this.target_skin_number--
           this.changeSkinButtonClicked(
-            target,
             other_target,
+            this.target,
             "targets",
             "+",
             this.target_skin_number
@@ -334,8 +379,9 @@ export default class {
           if (!this.can_change) return
           this.target_skin_number++
           this.changeSkinButtonClicked(
-            target,
             other_target,
+            this.target,
+
             "targets",
             "-",
             this.target_skin_number
@@ -350,8 +396,12 @@ export default class {
   getSkinFromSetup(part, skin_number) {
     return this.setup[part][skin_number]
   }
-
+  isSkinUnlocked(part, skin) {
+    return this.progress.skins[part].includes(skin)
+  }
   changeSkinButtonClicked(sprite1, sprite2, part, sign, skin_number) {
+    this.scene.hidePurchaseOffer()
+
     this.can_change = false
 
     let shift = sign === "+" ? (shift = 1) : (shift = -1)
@@ -416,13 +466,19 @@ export default class {
       ).setAlpha(0)
     }
 
-    if (!this.progress.skins[part].includes(first_skin)) {
+    if (!this.isSkinUnlocked(part, first_skin)) {
       this.showItem(sprite2.key, sign)
+      sprite2.price.setAlpha(1)
+
+      sprite2.tick.setAlpha(0)
     } else {
       sprite2.key.setAlpha(0)
+      sprite2.tick.setAlpha(1)
+
+      sprite2.price.setAlpha(0)
     }
 
-    if (!this.progress.skins[part].includes(second_skin)) {
+    if (!this.isSkinUnlocked(part, second_skin)) {
       sprite1.key.setAlpha(1)
       this.hideItem(sprite1.key, sign)
     }
@@ -439,7 +495,7 @@ export default class {
     }
 
     this.updateSkinPrice(
-      eval(`this.scene.${part.slice(0, -1)}_price`), // get part price context
+      sprite2.price, // get part price context
       sprite2.cost
     )
 

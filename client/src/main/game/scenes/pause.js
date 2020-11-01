@@ -26,7 +26,10 @@ export default class Pause extends Phaser.Scene {
         scene.scene.stop()
         this.scene.stop()
 
+        this.scene.get("levelSelect").hideAllElementsInMenuContext()
+
         scene.scene.wake("menu")
+        this.scene.get("menu").showElementsSharedWithLevelSelect()
         this.scene.get("menu").animateShowMenu()
       }
     )

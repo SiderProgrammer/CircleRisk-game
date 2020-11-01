@@ -70,7 +70,30 @@ export default class Manager {
       .setDepth(1)
       .play("tap")
   }
+  showNewLevelUnlockedAlert() {
+    const LS_middle = this.scene.add.image(this.GW / 2, 0, "new-level-unlocked")
 
+    const lock = this.scene.add.sprite(
+      LS_middle.x,
+      LS_middle.y,
+      "lock",
+      "locked"
+    )
+
+    this.scene.tweens.add({
+      targets: [LS_middle, lock],
+      y: "+=150",
+      duration: 1000,
+      onComplete: () => {
+        lock.setTexture("lock", "unlocked")
+        this.scene.tweens.add({
+          targets: [LS_middle, lock],
+          alpha: 0,
+          duration: 1500,
+        })
+      },
+    })
+  }
   checkIfMissedTarget() {
     const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
     //distance_from_target > 90
@@ -106,6 +129,14 @@ export default class Manager {
         this.perfectManager.showPerfectEffect()
       } else {
         this.score++
+      }
+
+      if (
+        this.isNewLevelNeededScoreReached() &&
+        !this.level_unlock_alert_shown
+      ) {
+        this.level_unlock_alert_shown = true
+        this.showNewLevelUnlockedAlert()
       }
 
       this.perfectManager.updateScoreText()
@@ -330,20 +361,24 @@ export default class Manager {
       target.y += target_shiftY
     })
   }
+  isNewLevelNeededScoreReached() {
+    return (
+      typeof this.progress.levels_scores[this.scene.level] === "undefined" &&
+      this.score >= this.scene.score_to_next_level
+    )
+  }
 
   async gameOver() {
     if (typeof this.scene.stopTimer === "function") {
       this.scene.stopTimer()
-      
     }
     this.circles.forEach((c) => c.setDepth(0))
     this.stick.setDepth(0)
     this.target_array.forEach((t) => t.setDepth(0))
 
-    // this.loseMenuManager.update()
     const lose_scene = this.scene.scene.get("lose")
-    lose_scene.updatePoints(this.score, this.perfect)
 
+    lose_scene.updatePoints(this.score, this.perfect)
     this.scene.scene.wake("lose")
 
     this.scene.input.removeAllListeners()
@@ -351,10 +386,7 @@ export default class Manager {
 
     this.progress.money += this.score // earned money
 
-    if (
-      !this.progress.levels_scores[this.scene.level] &&
-      this.score >= this.scene.score_to_next_level
-    ) {
+    if (this.isNewLevelNeededScoreReached()) {
       this.progress.levels_scores[this.scene.level] = 0
       await POST_LEVEL_SCORE({
         score: 0,
@@ -362,12 +394,12 @@ export default class Manager {
         level: this.scene.level,
       })
 
-      lose_scene.createNextLevelButton()
+      lose_scene.showNextLevelButton()
+      lose_scene.hideRestartButton()
     } else {
-      lose_scene.createReplayButton()
+      lose_scene.showRestartButton()
+      lose_scene.hideNextLevelButton()
     }
-
-    lose_scene.showMenu()
 
     const this_level_score = this.progress.levels_scores[this.scene.level - 1]
     if (this.score > this_level_score || !this_level_score) {
@@ -386,7 +418,10 @@ export default class Manager {
     SAVE_MONEY({ money: this.progress.money, nickname: my_nickname })
 
     this.scene.tweens.add({
-      targets: helper.createBackground(this.scene, "black-bg").setAlpha(0),
+      targets: helper
+        .createBackground(this.scene, "black-bg")
+        .setAlpha(0)
+        .setDepth(2),
       duration: 400,
       alpha: 1,
     })

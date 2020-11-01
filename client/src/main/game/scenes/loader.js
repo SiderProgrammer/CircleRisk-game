@@ -40,6 +40,7 @@ export default class loader extends Phaser.Scene {
     this.loadImage("sense-bg", "backgrounds")
     this.loadImage("tiny-bg", "backgrounds")
     this.loadImage("teleport-bg", "backgrounds")
+    this.loadImage("carousel-bg", "backgrounds")
 
     this.loadImage("black-border", "backgrounds")
   }
@@ -174,13 +175,18 @@ export default class loader extends Phaser.Scene {
       `${imgPath}/particles.png`,
       `${imgPath}/particles.json`
     )
+    this.load.image("levelselect-1", `${imgPath}/levelselect-1.png`)
+    this.load.image("levelselect-2", `${imgPath}/levelselect-2.png`)
+
     this.load.image("menu-1", `${imgPath}/menu-1.png`)
     this.load.image("menu-2", `${imgPath}/menu-2.png`)
     this.load.image("bubbles-menu", `${imgPath}/bubbles-menu.png`)
+    this.load.image("bubbles-levelselect", `${imgPath}/bubbles-levelselect.png`)
     this.load.image("price-bg", `${imgPath}/price-bg.png`)
-
+    this.load.atlas("lock", `${imgPath}/lock.png`, `${imgPath}/lock.json`)
     this.load.image("circlerisk", `${imgPath}/circlerisk.png`)
     this.load.image("tick", `${imgPath}/tick.png`)
+    this.load.image("new-level-unlocked", `${imgPath}/new-level-unlocked.png`)
     this.backgrounds()
     this.buttons()
     this.mix()
@@ -191,8 +197,10 @@ export default class loader extends Phaser.Scene {
       this.sticks(i)
       this.targets(i)
     }
-    this.loadImage("menu-stick-blue", "sticks")
-    this.loadImage("menu-stick-yellow", "sticks")
+    this.load.image(
+      "leaderboard-button-aura",
+      `${imgPath}/leaderboard-button-aura.png`
+    )
   }
   create() {
     this.scene.start("menu")

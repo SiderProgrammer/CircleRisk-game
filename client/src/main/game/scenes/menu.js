@@ -16,6 +16,7 @@ export default class menu extends Phaser.Scene {
 
   init() {
     this.bubbles = []
+    this.elements_to_hide_to_levelselect = []
 
     this.hidden_positions_y = {
       logo: 0,
@@ -29,21 +30,20 @@ export default class menu extends Phaser.Scene {
       START_FETCHING_SCENE(this)
       this.fetchFromServer().then(() => {
         this.scene.launch("levelSelect")
+        this.scene
+          .get("levelSelect")
+          .createLevelSelectElementsInMenuContext(this)
+
+        this.scene.sleep("levelSelect")
+
         this.scene.launch("customize")
         this.scene.sleep("customize")
-        this.scene.sleep("levelSelect")
       })
     }
   }
 
   create() {
-    if (this.is_everything_fetched) {
-      this.scene.launch("customize")
-      this.scene.launch("levelSelect")
-    }
-
     this.createBackground()
-
     this.createDecorations()
 
     this.createInstagram()
@@ -98,22 +98,30 @@ export default class menu extends Phaser.Scene {
 
   createBackground() {
     this.background = helper.createBackground(this, "menu-bg")
+    this.elements_to_hide_to_levelselect.push(this.background)
   }
 
   createDecorations() {
-    this.add.image(this.game.GW / 2, this.game.GH / 2, "bubbles-menu")
-
-    this.mountains_big = helper.setGameSize(
-      this.add
-        .image(this.game.GW / 2, this.game.GH, "menu-2")
-        .setOrigin(0.5, 1),
-      true
+    this.elements_to_hide_to_levelselect.push(
+      this.add.image(this.game.GW / 2, this.game.GH / 2, "bubbles-menu")
     )
-    this.mountains_small = helper.setGameSize(
-      this.add
-        .image(this.game.GW / 2, this.game.GH, "menu-1")
-        .setOrigin(0.5, 1),
-      true
+
+    this.elements_to_hide_to_levelselect.push(
+      helper.setGameSize(
+        this.add
+          .image(this.game.GW / 2, this.game.GH, "menu-2")
+          .setOrigin(0.5, 1),
+        true
+      )
+    )
+
+    this.elements_to_hide_to_levelselect.push(
+      helper.setGameSize(
+        this.add
+          .image(this.game.GW / 2, this.game.GH, "menu-1")
+          .setOrigin(0.5, 1),
+        true
+      )
     )
 
     this.logo = this.add
@@ -251,6 +259,17 @@ export default class menu extends Phaser.Scene {
     this.hidden_positions_y.customize_button = this.customize_button.y
   }
 
+  hideElementsSharedWithLevelSelect() {
+    this.elements_to_hide_to_levelselect.forEach((element) =>
+      element.setActive(false).setVisible(false)
+    )
+  }
+
+  showElementsSharedWithLevelSelect() {
+    this.elements_to_hide_to_levelselect.forEach((element) =>
+      element.setActive(true).setVisible(true)
+    )
+  }
   createPlayButton() {
     this.play_button = helper.createButton(
       this,
@@ -258,27 +277,19 @@ export default class menu extends Phaser.Scene {
       this.game.GH,
       "play-button-big",
       async () => {
+        if (!this.can_play) return
+        this.can_play = false
+
         await this.animateHideMenu()
 
         this.scene.wake("levelSelect")
-        /*
-        const level_select_bg = helper.createBackground(this, "red").setAlpha(0)
-        helper.createBackground(this, "levelSelect-bg")
-        this.mountains_small.setDepth(0.2)
-        this.mountains_big.setDepth(0.2)
-        //this.bubbles.forEach((b) => b.setDepth(0.3))
 
-        this.tweens.add({ targets: this.background, duration: 300, alpha: 0 })
-        this.tweens.add({ targets: level_select_bg, duration: 300, alpha: 1 })
+        this.hideElementsSharedWithLevelSelect()
 
-        this.tweens.add({
-          targets: [this.mountains_big, this.mountains_small],
-          alpha: 0.2,
-          duration: 300,
-        })
-
-        */
-        this.scene.get("levelSelect").animateLevelSelectShow()
+        this.scene
+          .get("levelSelect")
+          .showAllElementsInMenuContext(this)
+          .animateLevelSelectShow()
       }
     )
 
@@ -311,7 +322,10 @@ export default class menu extends Phaser.Scene {
         y: this.game.GH / 2 + 35,
         duration: 400,
         ease,
-        onComplete: () => resolve(),
+        onComplete: () => {
+          resolve()
+          this.can_play = true
+        },
       })
     })
   }

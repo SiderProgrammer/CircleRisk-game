@@ -1,4 +1,4 @@
-import { createButton, sceneTransition } from "../GUI-helper"
+import { createButton } from "../GUI-helper"
 import { getProgress } from "../../shortcuts/save"
 export default class Lose extends Phaser.Scene {
   constructor() {
@@ -7,23 +7,15 @@ export default class Lose extends Phaser.Scene {
   init(data) {
     this.progress = getProgress()
     this.level_scene = data.scene
-    this.elements = []
   }
   create() {
     this.score = this.createScore()
-    this.perfect_score = this.createPerfect()
     this.createBest()
+    this.perfect_score = this.createPerfect()
+
+    this.emptySpace =
+      this.game.GH - (this.purple_strap.y + this.purple_strap.displayHeight / 2)
     this.createButtons()
-  }
-
-  showMenu() {
-    this.elements.forEach((el) => el.setVisible(true).setActive(true))
-  }
-
-  hideMenu() {
-    this.elements.forEach((el) =>
-      el.setVisible(false).setActive(false).setDepth(1)
-    )
   }
 
   updatePoints(score, perfect) {
@@ -31,26 +23,18 @@ export default class Lose extends Phaser.Scene {
     this.perfect_score.setText(perfect)
   }
 
-  createWhiteSquare() {
-    const blue_strap = this.add
-      .image(this.game.GW / 2, 20, "blue-square")
-      .setOrigin(0.5, 0)
-    this.elements.push(blue_strap)
-  }
-
   createScore() {
-    this.blue_strap = this.add.image(0, 100, "blue-strap").setOrigin(0, 0.5)
+    this.blue_strap = this.add.image(0, 0, "blue-strap").setOrigin(0, 0.5)
+    this.blue_strap.y += this.blue_strap.displayHeight / 2
 
-    this.blue_strap.displayWidth = this.game.GW
-
-    const a = this.add
-      .text(this.game.GW / 2, this.blue_strap.y, "SCORE", {
+    this.add
+      .text(50, this.blue_strap.y, "SCORE", {
         font: "60px LuckiestGuy", /// SCORE TEXT
       })
-      .setOrigin(0.5)
+      .setOrigin(0, 0.5)
 
     const divider = this.add
-      .text(this.game.GW / 2, this.blue_strap.y + 90 + 15, "/", {
+      .text(this.game.GW - 200, this.blue_strap.y, "/", {
         font: "50px LuckiestGuy", /// DIVIDER
       })
       .setOrigin(0.5)
@@ -58,7 +42,7 @@ export default class Lose extends Phaser.Scene {
     const b = this.add
       .text(
         divider.x - divider.displayWidth / 2,
-        this.blue_strap.y + 90, /// CURRENT SCORE
+        this.blue_strap.y, /// CURRENT SCORE
         0,
         {
           font: "90px LuckiestGuy",
@@ -66,91 +50,72 @@ export default class Lose extends Phaser.Scene {
       )
       .setOrigin(1, 0.5)
 
-    const c = this.add
+    this.add
       .text(
         divider.x + divider.displayWidth / 2,
-        this.blue_strap.y + 90 + 15,
+        this.blue_strap.y + 15,
         this.level_scene.score_to_next_level, /// NEEDED SCORE
         {
           font: "50px LuckiestGuy",
         }
       )
       .setOrigin(0, 0.5)
-    this.elements.push(this.blue_strap, a, divider, b, c)
-    return b
-  }
 
-  createPerfect() {
-    const purple_strap = this.add /// PURPLE STRAP
-      .image(
-        this.game.GW / 2,
-        this.blue_strap.y + this.blue_strap.displayHeight / 2 + 200,
-        "purple-strap"
-      )
-      .setOrigin(1, 0.5)
-
-    purple_strap.displayWidth = this.game.GW / 2
-
-    const a = this.add /// PERFECT TEXT
-      .text(
-        purple_strap.x - purple_strap.displayWidth / 2,
-        purple_strap.y,
-        "PERFECT",
-        {
-          font: "45px LuckiestGuy",
-        }
-      )
-      .setOrigin(0.5)
-
-    const b = this.add /// CURRENT PERFECT SCORE
-      .text(
-        purple_strap.x - purple_strap.displayWidth / 2,
-        purple_strap.y + purple_strap.displayHeight / 2 + 30,
-        0,
-        {
-          font: "60px LuckiestGuy",
-        }
-      )
-      .setOrigin(0.5)
-    this.elements.push(purple_strap, a, b)
     return b
   }
 
   createBest() {
-    const red_strap = this.add
+    this.red_strap = this.add
       .image(
-        this.game.GW / 2, /// RED STRAP
-        this.blue_strap.y + this.blue_strap.displayHeight / 2 + 200,
+        0, /// RED STRAP
+        this.blue_strap.y + this.blue_strap.displayHeight,
         "red-strap"
       )
       .setOrigin(0, 0.5)
 
-    red_strap.displayWidth = this.game.GW / 2
-
-    const a = this.add
-      .text(red_strap.x + red_strap.displayWidth / 2, red_strap.y, "BEST", {
+    this.add
+      .text(50, this.red_strap.y, "BEST", {
         font: "45px LuckiestGuy", /// BEST TEXT
       })
-      .setOrigin(0.5)
+      .setOrigin(0, 0.5)
 
-    const b = this.add
+    this.add
       .text(
-        red_strap.x + red_strap.displayWidth / 2,
-        red_strap.y + red_strap.displayHeight / 2 + 30,
+        this.game.GW - 200,
+        this.red_strap.y,
         this.progress.levels_scores[this.level_scene.level - 1], /// CURRENT BEST SCORE
         {
           font: "60px LuckiestGuy",
         }
       )
       .setOrigin(0.5)
-    this.elements.push(red_strap, a, b)
+  }
+
+  createPerfect() {
+    this.purple_strap = this.add /// PURPLE STRAP
+      .image(0, this.red_strap.y + this.red_strap.displayHeight, "purple-strap")
+      .setOrigin(0, 0.5)
+
+    this.add /// PERFECT TEXT
+      .text(50, this.purple_strap.y, "PERFECT", {
+        font: "45px LuckiestGuy",
+      })
+      .setOrigin(0, 0.5)
+
+    const b = this.add /// CURRENT PERFECT SCORE
+      .text(this.game.GW - 200, this.purple_strap.y, 0, {
+        font: "60px LuckiestGuy",
+      })
+      .setOrigin(0.5)
+
+    return b
   }
 
   createButtons() {
     const a = createButton(
       this,
       this.game.GW / 2,
-      this.game.GH - 100,
+      this.game.GH - this.emptySpace / 2 - 150,
       "ranking-icon",
       () => {
         this.scene.launch("leaderboard", {
@@ -159,26 +124,31 @@ export default class Lose extends Phaser.Scene {
 
         this.scene.bringToTop("leaderboard")
       }
-    )
-    const shift = 170
-    const b = createButton(
+    ).setDepth(0.1)
+
+    this.add.image(a.x, a.y, "leaderboard-button-aura")
+
+    const shift = 200
+    createButton(
       this,
       this.game.GW / 2 - shift,
-      this.game.GH - 100,
+      this.game.GH - this.emptySpace / 2 + 130,
       "customize-button",
       () => {
         this.level_scene.scene.stop()
         this.scene.stop()
 
         this.level_scene.scene.wake("menu")
+        this.scene.get("menu").showElementsSharedWithLevelSelect()
+        this.scene.get("levelSelect").hideAllElementsInMenuContext()
         this.level_scene.scene.wake("customize")
         this.level_scene.scene.get("customize").animateCustomizeShow()
       }
     )
-    const c = createButton(
+    createButton(
       this,
       this.game.GW / 2 + shift,
-      this.game.GH - 100,
+      this.game.GH - this.emptySpace / 2 + 130,
       "levelSelect-button",
       () => {
         this.level_scene.scene.stop()
@@ -189,44 +159,72 @@ export default class Lose extends Phaser.Scene {
         this.level_scene.scene.get("levelSelect").animateLevelSelectShow()
       } //sceneTransition(this.level_scene, "levelSelect")
     )
-    this.elements.push(a, b, c)
+
+    this.createRestartButton()
+    this.createNextLevelButton()
+  }
+  showNextLevelButton() {
+    this.next_level_button.setVisible(true).setActive(true)
+  }
+  showRestartButton() {
+    this.restart_button.setVisible(true).setActive(true)
+  }
+
+  hideRestartButton() {
+    this.restart_button.setVisible(false).setActive(false)
+  }
+  hideNextLevelButton() {
+    this.next_level_button.setVisible(false).setActive(false)
   }
   createNextLevelButton() {
-    const a = createButton(
+    this.next_level_button = createButton(
       this,
       this.game.GW / 2,
-      this.game.GH - 240,
+      this.game.GH - this.emptySpace / 2 + 10,
       "next-button",
       () => {
+        this.scene.stop()
+
         const this_level_configuration =
           levelsConfiguration[this.level_scene.level]
-        this.level_scene.scene.start(
-          `${this_level_configuration.info.name.capitalize()}_${this_level_configuration.info.difficulty.capitalize()}`,
-          {
-            config: this_level_configuration.config,
-            level: this.level_scene.level + 1,
-            score_to_next_level:
-              this_level_configuration.info.score_to_next_level,
-          }
-        )
-      }
-    ).setDepth(11)
+        const { name, difficulty } = this_level_configuration.info
 
-    this.elements.push(a)
+        const level_scene_to_start = `${name.capitalize()}_${difficulty.capitalize()}`
+
+        this.level_scene.scene.start(level_scene_to_start, {
+          config: this_level_configuration.config,
+          level: this.level_scene.level + 1,
+          score_to_next_level:
+            this_level_configuration.info.score_to_next_level,
+        })
+
+        this.scene
+          .get(level_scene_to_start)
+          .scene.launch("lose", {
+            scene: this.scene.get(level_scene_to_start),
+          })
+          .bringToTop("lose")
+          .sleep("lose")
+      }
+    )
+      .setDepth(11)
+      .setActive(false)
+      .setVisible(false)
   }
 
-  createReplayButton() {
-    const a = createButton(
+  createRestartButton() {
+    this.restart_button = createButton(
       this,
       this.game.GW / 2,
-      this.game.GH - 280,
+      this.game.GH - this.emptySpace / 2 + 10,
       "replay-button",
       () => {
         this.level_scene.scene.sleep("lose")
         this.level_scene.scene.restart()
       }
-    ).setDepth(11)
-
-    this.elements.push(a)
+    )
+      .setDepth(11)
+      .setActive(false)
+      .setVisible(false)
   }
 }

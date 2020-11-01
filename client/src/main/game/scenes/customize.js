@@ -24,7 +24,6 @@ export default class Customize extends Phaser.Scene {
     this.createMoney()
     this.createHomeButton()
     this.createSkinChanger()
-    this.createSkinsPrice()
 
     this.skinChangerManager.hideSetsWithoutAnimation()
   }
@@ -37,7 +36,7 @@ export default class Customize extends Phaser.Scene {
 
   async animateCustomizeHide() {
     this.hideMoney()
-    await this.hideHomeButton()
+    this.hideHomeButton()
 
     await this.skinChangerManager.hide()
 
@@ -55,28 +54,6 @@ export default class Customize extends Phaser.Scene {
       "target_" + this.progress.current_skins["targets"]
     )
   }
-
-  createSkinsPrice() {
-    this.target_price = this.skinChangerManager.createSkinPrice(
-      this.skinChangerManager.sets.target[0].x,
-      this.skinChangerManager.sets.target[0].y,
-      this.skinChangerManager.sets.target[0].cost
-    )
-
-    this.circle_price = this.skinChangerManager.createSkinPrice(
-      this.skinChangerManager.sets.circle[0].x,
-      this.skinChangerManager.sets.circle[0].y,
-      this.skinChangerManager.sets.circle[0].cost
-    )
-
-    this.stick_price = this.skinChangerManager.createSkinPrice(
-      this.skinChangerManager.sets.stick[0].x,
-      this.skinChangerManager.sets.stick[0].y,
-      this.skinChangerManager.sets.stick[0].cost
-    )
-  }
-
-  createSkinsTicks() {}
 
   hideHomeButton() {
     return new Promise((resolve) => {
@@ -114,6 +91,7 @@ export default class Customize extends Phaser.Scene {
         "home-button",
         async () => {
           this.skinChangerManager.save()
+          this.hidePurchaseOffer()
 
           await this.animateCustomizeHide()
           this.home_button.resetPosition()
@@ -163,17 +141,23 @@ export default class Customize extends Phaser.Scene {
       alpha: 1,
     })
   }
-
+  hidePurchaseOffer() {
+    if (this.purchase_offer_elements.length > 0) {
+    this.purchase_offer_elements.forEach((e) => e.destroy())
+    this.purchase_offer_elements.length = 0
+  }
+  }
   createPurchaseOffer(skin, callback) {
     this.can_change = false
     const texture = skin.texture.key
-    if (this.purchase_offer_elements.length > 0) {
-      this.purchase_offer_elements.forEach((e) => e.destroy())
-      this.purchase_offer_elements.length = 0
-    }
+   
+      this.hidePurchaseOffer()
+    
 
     const y =
-      this.target_price.y + (this.home_button.y - this.target_price.y) / 2 - 40
+      this.skinChangerManager.target.price.y +
+      (this.home_button.y - this.skinChangerManager.target.price.y) / 2 -
+      40
 
     this.purchase_offer_elements.push(
       this.add.image(this.game.GW / 2, y, texture)
@@ -185,7 +169,7 @@ export default class Customize extends Phaser.Scene {
       y + 80,
       "close-button",
       () => {
-        this.purchase_offer_elements.forEach((e) => e.destroy())
+        this.hidePurchaseOffer()
         this.can_change = true
       }
     )
@@ -200,7 +184,7 @@ export default class Customize extends Phaser.Scene {
           "tick-button",
           () => {
             callback(skin.cost)
-            this.purchase_offer_elements.forEach((e) => e.destroy())
+            this.hidePurchaseOffer()
             this.can_change = true
           }
         )
