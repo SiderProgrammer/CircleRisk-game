@@ -85,7 +85,7 @@ export default class loader extends Phaser.Scene {
     this.loadImage("instagram", "mix")
     this.loadImage("geometrytrinity", "mix")
     this.loadImage("coin", "mix")
-    this.loadImage("lock", "mix")
+    this.loadImage("lock2", "mix")
     this.loadImage("level-locked", "mix")
     this.loadImage("blue-strap", "mix")
     this.loadImage("red-strap", "mix")

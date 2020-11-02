@@ -18,17 +18,20 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   create() {
-    this.createBlackBorder() // hidden
+    // this.createBlackBorder() // hidden
 
-    this.createHardLevelGlow() // hidden
+    // this.createHardLevelGlow() // hidden
 
-    this.page_thorns = this.createPageThorns()
-    this.hidePageThorns()
+    // this.page_thorns = this.createPageThorns()
+    // this.hidePageThorns()
 
-    this.thorns = this.createThorns()
-    this.hideThorns()
+    // this.thorns = this.createThorns()
+    // this.hideThorns()
 
-    this.elements = this.createPageElements()
+    //this.elements = this.createPageElements()
+    this.current_page = this.createPage()
+    this.second_page = this.createPage()
+    this.second_page.hide()
 
     this.createChangePageButtons()
     this.createHomeButton()
@@ -107,7 +110,10 @@ export default class levelSelect extends Phaser.Scene {
 
     return new Promise((resolve) => {
       this.tweens.add({
-        targets: [...this.elements, this.home_button],
+        targets: [
+          ...this.current_page.getElementsConvertedIntoArray(),
+          this.home_button,
+        ],
         y: `+=${this.game.GH}`,
         duration: 250,
         ease: ease,
@@ -123,7 +129,7 @@ export default class levelSelect extends Phaser.Scene {
     const ease = "Sine.easeOut"
 
     this.tweens.add({
-      targets: this.elements,
+      targets: this.current_page.getElementsConvertedIntoArray(),
       y: `-=${this.game.GH}`,
       duration: 500,
       ease: ease,
@@ -137,7 +143,7 @@ export default class levelSelect extends Phaser.Scene {
 
   resetPositionsToHidden() {
     // if I  use hide animation when starting level I could not hide
-    this.elements.forEach((element) => {
+    this.current_page.getElementsConvertedIntoArray().forEach((element) => {
       element.y += this.game.GH
     })
     this.home_button.resetPosition()
@@ -168,56 +174,6 @@ export default class levelSelect extends Phaser.Scene {
         "level-select-decoration-hard"
       )
       .setVisible(false)
-  }
-  createPageElements() {
-    const elements = []
-
-    elements[0] = this.actualPage = this.createPage()
-
-    const pageInfo = this.createPageInfo()
-
-    elements.push(...pageInfo[0], ...pageInfo[1])
-
-    const is_level_unlocked =
-      this.progress.levels_scores.length >= this.current_page_number + 1
-
-    if (is_level_unlocked) {
-      elements.push(...this.createPageRequirements())
-      elements.push(this.createPageRanking())
-    } else {
-      elements.push(this.createLevelLock())
-    }
-
-    elements.push(this.createPageIcon())
-
-    const difficulty =
-      levelsConfiguration[this.current_page_number].info.difficulty
-
-    if (difficulty === "hard" || difficulty === "medium") {
-      this.showThorns()
-
-      if (difficulty === "hard") {
-        if (is_level_unlocked) {
-          this.score_bar.setTexture("level-select-score-bar-hard")
-          this.hard_level_glow.setVisible(true)
-        }
-
-        this.showPageThorns()
-        this.name_bar.setTexture("level-select-name-bar-hard")
-        this.black_border.setVisible(true)
-      } else {
-        this.hard_level_glow.setVisible(false)
-        this.hidePageThorns()
-        this.black_border.setVisible(false)
-      }
-    } else {
-      this.hard_level_glow.setVisible(false)
-      this.hideThorns()
-      this.hidePageThorns()
-      this.black_border.setVisible(false)
-    }
-
-    return elements
   }
 
   createBlackBorder() {
@@ -282,39 +238,35 @@ export default class levelSelect extends Phaser.Scene {
     this.page_thorns.forEach((thorn) => thorn.setVisible(true))
   }
 
-  createLevelLock() {
-    return this.add
-      .image(this.actualPage.x, this.actualPage.y, "level-locked")
-      .setOrigin(0.5, 0)
+  createLevelLock(x, y) {
+    return { lock: this.add.image(x, y, "level-locked").setOrigin(0.5, 0) }
   }
 
-  createPage() {
+  createPageElementsBackground() {
     const page = this.add
       .image(this.game.GW / 2, this.game.GH / 2, "levelSelect-middle")
       .setInteractive()
       .on("pointerup", this.pageClickCallback, this)
     return page
   }
-  createPageRequirements() {
+  createPageRequirements(x, y) {
     let score = this.progress.levels_scores[this.current_page_number]
     if (score == null) score = 0
 
-    this.score_bar = this.add.image(
-      this.actualPage.x,
-      this.actualPage.y,
-      "level-select-score-bar"
-    )
+    const elements = {}
 
-    const divider = this.add
-      .text(this.actualPage.x, this.actualPage.y + 15, "/", {
+    elements.score_bar = this.add.image(x, y, "level-select-score-bar")
+
+    elements.divider = this.add
+      .text(x, y + 15, "/", {
         font: "50px LuckiestGuy", /// DIVIDER
       })
       .setOrigin(0.5)
 
-    const current_score = this.add
+    elements.current_score = this.add
       .text(
-        divider.x - divider.displayWidth / 2,
-        divider.y - 10, /// CURRENT SCORE
+        elements.divider.x - elements.divider.displayWidth / 2,
+        elements.divider.y - 10, /// CURRENT SCORE
         score,
         {
           font: "80px LuckiestGuy",
@@ -322,10 +274,16 @@ export default class levelSelect extends Phaser.Scene {
       )
       .setOrigin(1, 0.5)
 
-    const score_to_reach = this.add
+    elements.current_score.update = (page_number) => {
+      let score = this.progress.levels_scores[page_number]
+      if (score == null) score = 0
+
+      elements.current_score.setText(score)
+    }
+    elements.score_to_reach = this.add
       .text(
-        divider.x + divider.displayWidth / 2,
-        divider.y,
+        elements.divider.x + elements.divider.displayWidth / 2,
+        elements.divider.y,
         levelsConfiguration[this.current_page_number].info.score_to_next_level, /// NEEDED SCORE
         {
           font: "50px LuckiestGuy",
@@ -333,76 +291,205 @@ export default class levelSelect extends Phaser.Scene {
       )
       .setOrigin(0, 0.5)
 
-    return [current_score, score_to_reach, divider, this.score_bar]
+    elements.score_to_reach.update = function (page_number) {
+      this.setText(levelsConfiguration[page_number].info.score_to_next_level)
+    }
+
+    return elements
   }
 
-  createPageIcon() {
+  createPageIcon(x, y) {
     const icon =
       levelsConfiguration[this.current_page_number].info.name + "_icon"
-
-    return this.add.image(this.actualPage.x, this.actualPage.y - 80, icon)
+    const image = this.add.image(x, y - 80, icon)
+    image.update = function (page_number) {
+      this.setTexture(levelsConfiguration[page_number].info.name + "_icon")
+    }
+    return { icon: image }
   }
-  createPageInfo() {
-    const texts = []
-    const bars = []
+
+  createPageInfo(x, y, displayHeight) {
+    const elements = {}
 
     const { difficulty, name } = levelsConfiguration[
       this.current_page_number
     ].info
 
-    texts[0] = this.add
-      .text(
-        this.actualPage.x,
-        this.actualPage.y - this.actualPage.displayHeight / 2 + 70,
-        difficulty,
-        {
-          font: "50px LuckiestGuy",
-        }
-      )
+    elements.difficulty = this.add
+      .text(x, y - displayHeight / 2 + 70, difficulty, {
+        font: "50px LuckiestGuy",
+      })
+      .setOrigin(0.5)
+      .setDepth(0.1)
+    elements.difficulty.update = function (page_number) {
+      this.setText(levelsConfiguration[page_number].info.difficulty)
+    }
+
+    elements.name = this.add
+      .text(x, y - displayHeight / 2 + 220, name, {
+        font: "50px LuckiestGuy",
+      })
       .setOrigin(0.5)
       .setDepth(0.1)
 
-    texts[1] = this.add
-      .text(
-        this.actualPage.x,
-        this.actualPage.y - this.actualPage.displayHeight / 2 + 220,
-        name,
-        {
-          font: "50px LuckiestGuy",
-        }
-      )
-      .setOrigin(0.5)
-      .setDepth(0.1)
+    elements.name.update = function (page_number) {
+      this.setText(levelsConfiguration[page_number].info.name)
+    }
 
-    bars[0] = this.add.image(
-      texts[0].x,
-      texts[0].y,
+    elements.difficulty_bar = this.add.image(
+      elements.difficulty.x,
+      elements.difficulty.y,
       "level-select-difficulty-bar"
     )
 
-    bars[1] = this.name_bar = this.add.image(
-      texts[1].x,
-      texts[1].y,
+    elements.name_bar = this.add.image(
+      elements.name.x,
+      elements.name.y,
       "level-select-name-bar"
     )
 
-    return [texts, bars]
+    return elements
   }
 
-  createPageRanking() {
-    const button = helper.createButton(
-      this,
-      this.actualPage.x,
-      this.actualPage.y + 250,
-      "ranking-icon",
-      () => {
-        this.scene.launch("leaderboard", {
-          level: this.current_page_number + 1,
-        })
-        // this.scene.sleep()
+  createPageRanking(x, y) {
+    const button = helper.createButton(this, x, y + 250, "ranking-icon", () => {
+      this.scene.launch("leaderboard", {
+        level: this.current_page_number + 1,
+      })
+      // this.scene.sleep()
+    })
+    return {
+      ranking_button: button,
+    }
+  }
+
+  isLevelUnlocked() {
+    return this.progress.levels_scores.length >= this.current_page_number + 1
+  }
+  tweenPage(sign) {
+    const ease = "Bounce.easeOut"
+    const duration = 500
+
+    if (!this.canChangePage) return
+    this.canChangePage = false
+
+    let second_page_shift = 0
+
+    if (sign === "+") {
+      second_page_shift = -this.game.GW
+      //going left
+      this.current_page_number--
+      if (this.current_page_number == -1)
+        this.current_page_number = this.pages_amount - 1
+    } else {
+      second_page_shift = this.game.GW
+      //going right
+      this.current_page_number++
+      if (this.current_page_number == this.pages_amount)
+        this.current_page_number = 0
+    }
+    this.second_page = this.updatePage(this.second_page)
+
+    const pages_elements_to_tween = [
+      ...this.current_page.getElementsConvertedIntoArray(),
+      ...this.second_page.getElementsConvertedIntoArray(),
+    ]
+
+    this.second_page
+      .getElementsConvertedIntoArray()
+      .forEach((e) => (e.x += second_page_shift))
+
+    this.second_page.show()
+
+    this.tweens.add({
+      targets: pages_elements_to_tween,
+      x: `${sign}=${this.game.GW}`,
+      duration: duration,
+      ease: ease,
+      onStart: () => {
+        this.updateBackgroundColor()
+      },
+      onComplete: () => {
+        this.current_page.hide()
+
+        this.current_page
+          .getElementsConvertedIntoArray()
+          .forEach((e) => (e.x += second_page_shift))
+
+        const past_current_page = this.current_page
+        this.current_page = this.second_page
+        this.second_page = past_current_page
+
+        this.canChangePage = true
+      },
+    })
+  }
+
+  createPage() {
+    const page = this.createPageElementsBackground()
+    const { x, y, displayHeight } = page
+
+    page.elements = {
+      ...this.createPageInfo(x, y, displayHeight),
+      ...this.createPageRequirements(x, y, displayHeight),
+      ...this.createPageRanking(x, y, displayHeight),
+      ...this.createPageIcon(x, y, displayHeight),
+      ...this.createLevelLock(x, y, displayHeight),
+    }
+
+    page.show = function () {
+      this.setVisible(true)
+      for (const element in this.elements) {
+        this.elements[element].setVisible(true)
       }
+    }
+
+    page.hide = function () {
+      this.setVisible(false)
+      for (const element in this.elements) {
+        this.elements[element].setVisible(false)
+      }
+    }
+
+    page.getElementsConvertedIntoArray = function () {
+      const array = [this]
+
+      for (const element in this.elements) {
+        array.push(this.elements[element])
+      }
+
+      return array
+    }
+
+    return page
+  }
+
+  updatePage(page) {
+    const { elements } = page
+    for (const element in elements) {
+      if (typeof elements[element].update === "function") {
+        elements[element].update(this.current_page_number)
+      }
+    }
+
+    if (this.isLevelUnlocked()) {
+      ;[elements.score_bar, elements.divider].forEach((e) => e.setVisible(true))
+      elements.lock.setVisible(false)
+    } else {
+    }
+    // TODO
+    return page
+  }
+
+  updateBackgroundColor() {
+    const bg_color =
+      levelsConfiguration[this.current_page_number].color || "blue_1"
+
+    helper.setGameSize(
+      this.background.setTexture("colors", bg_color),
+      true,
+      true
     )
-    return button
   }
 
   pageClickCallback() {
@@ -411,85 +498,63 @@ export default class levelSelect extends Phaser.Scene {
       this.current_page_number > this.progress.levels_scores.length - 1
     )
       return
-
-    const this_level_configuration =
-      levelsConfiguration[this.current_page_number]
-
-    const { name, difficulty } = this_level_configuration.info
-
-    const level_scene_to_start = `${name.capitalize()}_${difficulty.capitalize()}`
-
-    this.scene.sleep("menu")
-
-    this.scene.launch(level_scene_to_start, {
-      config: this_level_configuration.config,
-      level: this.current_page_number + 1,
-      score_to_next_level: this_level_configuration.info.score_to_next_level,
+    const level = this.current_page_number + 1
+    this.scene.start(`level_${level}`, {
+      config: levelsConfiguration[this.current_page_number].config,
+      level: level,
+      score_to_next_level:
+        levelsConfiguration[this.current_page_number].info.score_to_next_level,
     })
-
-    this.scene
-      .get(level_scene_to_start)
-      .scene.launch("lose", {
-        scene: this.scene.get(level_scene_to_start),
-      })
-      .bringToTop("lose")
-      .sleep("lose")
-
-    this.resetPositionsToHidden()
-    this.scene.sleep()
   }
+  createPageElements() {
+    const elements = []
 
-  tweenPage(sign) {
-    const ease = "Bounce.easeOut"
-    if (!this.canChangePage) return
+    elements[0] = this.actualPage = this.createPage()
 
-    let pageShift = -this.game.GW
-    this.canChangePage = false
+    const pageInfo = this.createPageInfo()
 
-    if (sign == "+") {
-      pageShift = this.game.GW
-      this.current_page_number--
-      if (this.current_page_number == -1)
-        this.current_page_number = this.pages_amount - 1
+    elements.push(...pageInfo[0], ...pageInfo[1])
+
+    const is_level_unlocked =
+      this.progress.levels_scores.length >= this.current_page_number + 1
+
+    if (is_level_unlocked) {
+      elements.push(...this.createPageRequirements())
+      elements.push(this.createPageRanking())
     } else {
-      this.current_page_number++
-      if (this.current_page_number == this.pages_amount)
-        this.current_page_number = 0
+      elements.push(this.createLevelLock())
     }
 
-    const past_page_elements = this.elements
+    elements.push(this.createPageIcon())
 
-    this.tweens.add({
-      targets: past_page_elements,
-      x: `${sign}=${this.game.GW}`,
-      duration: 500,
-      ease: ease,
-      onStart: () => {
-        // this.background.setTint(this.tints[this.current_page_number])
-        const bg_color =
-          levelsConfiguration[this.current_page_number].color || "blue_1"
-        helper.setGameSize(
-          this.background.setTexture("colors", bg_color),
-          true,
-          true
-        )
-        this.elements = this.createPageElements()
+    const difficulty =
+      levelsConfiguration[this.current_page_number].info.difficulty
 
-        this.elements.forEach((t) => (t.x -= pageShift))
+    if (difficulty === "hard" || difficulty === "medium") {
+      this.showThorns()
 
-        this.tweens.add({
-          targets: this.elements,
-          x: `${sign}=${this.game.GW}`,
-          duration: 500,
-          ease: ease,
-        })
-      },
-      onComplete: () => {
-        past_page_elements.forEach((t) => t.destroy())
+      if (difficulty === "hard") {
+        if (is_level_unlocked) {
+          this.score_bar.setTexture("level-select-score-bar-hard")
+          this.hard_level_glow.setVisible(true)
+        }
 
-        this.canChangePage = true
-      },
-    })
+        this.showPageThorns()
+        this.name_bar.setTexture("level-select-name-bar-hard")
+        this.black_border.setVisible(true)
+      } else {
+        this.hard_level_glow.setVisible(false)
+        this.hidePageThorns()
+        this.black_border.setVisible(false)
+      }
+    } else {
+      this.hard_level_glow.setVisible(false)
+      this.hideThorns()
+      this.hidePageThorns()
+      this.black_border.setVisible(false)
+    }
+
+    return elements
   }
 
   createChangePageButtons() {

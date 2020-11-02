@@ -443,7 +443,7 @@ export default class {
 
     if (!sprite1.key) {
       sprite1.key = this.scene.add
-        .image(sprite1.x, sprite1.y, "lock")
+        .image(sprite1.x, sprite1.y, "lock2")
         .setAlpha(0)
     }
 
@@ -454,7 +454,7 @@ export default class {
         this.scene,
         sprite2.x,
         sprite2.y,
-        "lock",
+        "lock2",
         () => {
           if (!this.can_change) return
           if (sprite2.key.alpha != 0) {
