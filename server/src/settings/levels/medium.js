@@ -405,6 +405,7 @@ module.exports = [
       ball_distance: 135,
       additional_angle: 22.5,
       starting_target: 1,
+      time_left: 10,
     },
   },
 ]

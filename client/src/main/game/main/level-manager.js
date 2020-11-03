@@ -285,7 +285,6 @@ export default class Manager {
       if (!this.game_started) {
         this.finger.destroy()
         this.game_started = true
-        if (typeof this.scene.setTimer === "function") this.scene.setTimer() ///
       } else this.changeBall()
     })
   }
@@ -369,9 +368,6 @@ export default class Manager {
   }
 
   async gameOver() {
-    if (typeof this.scene.stopTimer === "function") {
-      this.scene.stopTimer()
-    }
     this.circles.forEach((c) => c.setDepth(0))
     this.stick.setDepth(0)
     this.target_array.forEach((t) => t.setDepth(0))

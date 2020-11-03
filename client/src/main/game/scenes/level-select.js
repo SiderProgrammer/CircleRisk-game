@@ -11,7 +11,7 @@ export default class levelSelect extends Phaser.Scene {
     this.progress = getProgress()
     this.pages_amount = levelsConfiguration.length
 
-    this.current_page_number = 0 //  page || this.progress.levels_scores.length - 1
+    this.current_page_number = 30 //  page || this.progress.levels_scores.length - 1
 
     if (data.page === 0) this.current_page_number = 0 // 0 is false
     this.canChangePage = false
@@ -30,6 +30,8 @@ export default class levelSelect extends Phaser.Scene {
 
     //this.elements = this.createPageElements()
     this.current_page = this.createPage()
+    this.updatePage(this.current_page)
+
     this.second_page = this.createPage()
     this.second_page.hide()
 
@@ -388,7 +390,6 @@ export default class levelSelect extends Phaser.Scene {
       if (this.current_page_number == this.pages_amount)
         this.current_page_number = 0
     }
-    this.second_page = this.updatePage(this.second_page)
 
     const pages_elements_to_tween = [
       ...this.current_page.getElementsConvertedIntoArray(),
@@ -400,6 +401,8 @@ export default class levelSelect extends Phaser.Scene {
       .forEach((e) => (e.x += second_page_shift))
 
     this.second_page.show()
+
+    this.updatePage(this.second_page)
 
     this.tweens.add({
       targets: pages_elements_to_tween,
@@ -473,12 +476,56 @@ export default class levelSelect extends Phaser.Scene {
     }
 
     if (this.isLevelUnlocked()) {
-      ;[elements.score_bar, elements.divider].forEach((e) => e.setVisible(true))
+      ;[
+        elements.score_bar,
+        elements.divider,
+        elements.current_score,
+        elements.score_to_reach,
+        elements.ranking_button,
+      ].forEach((e) => e.setVisible(true))
+
       elements.lock.setVisible(false)
     } else {
+      ;[
+        elements.score_bar,
+        elements.divider,
+        elements.current_score,
+        elements.score_to_reach,
+        elements.ranking_button,
+      ].forEach((e) => e.setVisible(false))
+
+      elements.lock.setVisible(true)
     }
-    // TODO
-    return page
+
+    /*
+    const difficulty =
+    levelsConfiguration[this.current_page_number].info.difficulty
+
+  if (difficulty === "hard" || difficulty === "medium") {
+    this.showThorns()
+
+    if (difficulty === "hard") {
+      if (this.isLevelUnlocked()) {
+        this.score_bar.setTexture("level-select-score-bar-hard")
+        this.hard_level_glow.setVisible(true)
+      }
+
+      this.showPageThorns()
+      this.name_bar.setTexture("level-select-name-bar-hard")
+      this.black_border.setVisible(true)
+    } else {
+      this.hard_level_glow.setVisible(false)
+      this.hidePageThorns()
+      this.black_border.setVisible(false)
+    }
+  } else {
+    this.hard_level_glow.setVisible(false)
+    this.hideThorns()
+    this.hidePageThorns()
+    this.black_border.setVisible(false)
+  }
+
+*/
   }
 
   updateBackgroundColor() {
@@ -498,13 +545,32 @@ export default class levelSelect extends Phaser.Scene {
       this.current_page_number > this.progress.levels_scores.length - 1
     )
       return
-    const level = this.current_page_number + 1
-    this.scene.start(`level_${level}`, {
-      config: levelsConfiguration[this.current_page_number].config,
-      level: level,
-      score_to_next_level:
-        levelsConfiguration[this.current_page_number].info.score_to_next_level,
+
+    const this_level_configuration =
+      levelsConfiguration[this.current_page_number]
+
+    const { name, difficulty } = this_level_configuration.info
+
+    const level_scene_to_start = `${name.capitalize()}_${difficulty.capitalize()}`
+
+    this.scene.launch(level_scene_to_start, {
+      config: this_level_configuration.config,
+      level: this.current_page_number + 1,
+      score_to_next_level: this_level_configuration.info.score_to_next_level,
     })
+
+    this.scene
+      .get(level_scene_to_start)
+      .scene.launch("lose", {
+        scene: this.scene.get(level_scene_to_start),
+      })
+      .bringToTop("lose")
+      .sleep("lose")
+
+    this.scene.sleep("menu")
+    this.scene.sleep()
+
+    this.resetPositionsToHidden()
   }
   createPageElements() {
     const elements = []

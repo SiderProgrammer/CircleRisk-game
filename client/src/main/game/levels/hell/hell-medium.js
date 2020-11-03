@@ -1,10 +1,10 @@
 import Manager from "../../main/level-manager.js"
-import ClockFunctionsManager from "./functions"
-import ChameleonFunctionsManager from "../chameleon/functions"
+import HellFunctionsManager from "./functions"
+import ClockFunctionsManager from "../clock/functions.js"
 
-export default class Clock_Medium extends Phaser.Scene {
+export default class Hell_Medium extends Phaser.Scene {
   constructor() {
-    super("Clock_Medium")
+    super("Hell_Medium")
   }
 
   init(config) {
@@ -13,7 +13,6 @@ export default class Clock_Medium extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-
     this.time_left = this.manager.config.time_left
   }
 
@@ -31,12 +30,14 @@ export default class Clock_Medium extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
-    this.chameleonFunctionsManager = new ChameleonFunctionsManager(this)
+    this.manager.GUI_helper.sceneIntro(this)
+
+    this.hellFunctionsManager = new HellFunctionsManager(this)
+    this.hellFunctionsManager.createBlame()
+
     this.clockFunctionsManager = new ClockFunctionsManager(this)
     this.clockFunctionsManager.createTimerText()
     this.clockFunctionsManager.setTimer()
-    
-    this.manager.GUI_helper.sceneIntro(this)
   }
   update() {
     if (!this.manager.game_started) return
@@ -45,5 +46,7 @@ export default class Clock_Medium extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
 
-
+  hideTargets() {
+    this.hellFunctionsManager.hideTargets()
+  }
 }

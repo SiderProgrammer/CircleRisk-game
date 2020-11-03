@@ -18,6 +18,8 @@ import Confusion_Medium from "../../levels/confusion/confusion-medium"
 import Sense_Medium from "../../levels/sense/sense-medium"
 import Blind_Medium from "../../levels/blind/blind-medium"
 import Basic_Medium from "../../levels/basic/basic-medium"
+import Carousel_Medium from "../../levels/carousel/carousel-medium"
+import Hell_Medium from "../../levels/hell/hell-medium"
 
 export default [
   Wind_Medium,
@@ -39,5 +41,7 @@ export default [
   Confusion_Medium,
   Sense_Medium,
   Blind_Medium,
-  Basic_Medium
+  Basic_Medium,
+  Carousel_Medium,
+  Hell_Medium,
 ]

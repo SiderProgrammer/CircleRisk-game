@@ -16,10 +16,10 @@ export default class {
       repeat: this.scene.time_left,
     })
   }
-  stopTimer() {
-    this.scene.timer.remove()
-  }
+
   timerTick() {
+    if (!this.scene.manager.game_started) return
+
     this.scene.time_left--
     if (this.scene.time_left === 0) {
       this.scene.timer.remove()

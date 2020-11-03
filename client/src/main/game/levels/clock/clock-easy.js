@@ -32,6 +32,7 @@ export default class Clock_Easy extends Phaser.Scene {
 
     this.clockFunctionsManager = new ClockFunctionsManager(this)
     this.clockFunctionsManager.createTimerText()
+    this.clockFunctionsManager.setTimer()
 
     this.manager.GUI_helper.sceneIntro(this)
   }
@@ -42,11 +43,5 @@ export default class Clock_Easy extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
 
-  setTimer() {
-    this.clockFunctionsManager.setTimer()
-  }
 
-  stopTimer() {
-    this.clockFunctionsManager.stopTimer()
-  }
 }
