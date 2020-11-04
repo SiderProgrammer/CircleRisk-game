@@ -3,6 +3,8 @@ export default class {
     this.scene = scene
   }
   blindTheScreen() {
+    if (!this.scene.manager.game_started) return
+
     this.scene.blind.setVisible(true)
 
     this.scene.time.addEvent({

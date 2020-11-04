@@ -285,6 +285,15 @@ export default class Manager {
       if (!this.game_started) {
         this.finger.destroy()
         this.game_started = true
+
+        if (typeof this.scene.blindTheScreen === "function") {
+          this.scene.time.addEvent({
+            delay: 2000,
+            callback: () => {
+              this.scene.blindTheScreen()
+            },
+          })
+        }
       } else this.changeBall()
     })
   }
@@ -375,7 +384,14 @@ export default class Manager {
     const lose_scene = this.scene.scene.get("lose")
 
     lose_scene.updatePoints(this.score, this.perfect)
+
     this.scene.scene.wake("lose")
+    lose_scene.unactivateButtons()
+
+    this.scene.time.addEvent({
+      delay: 150, // delay to not instant miss click any button when game over
+      callback: () => lose_scene.activateButtons(),
+    })
 
     this.scene.input.removeAllListeners()
     this.game_started = false

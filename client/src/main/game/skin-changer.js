@@ -126,8 +126,9 @@ export default class {
     text.bg = this.scene.add
       .image(text.x + text.displayWidth / 2, text.y, "price-bg")
       .setAlpha(0)
-    text.bg.displayWidth = text.displayWidth + 60
-    text.bg.displayHeight = text.displayWidth
+
+    text.bg.displayHeight = text.displayHeight + 20
+
     return text
   }
 
@@ -189,6 +190,28 @@ export default class {
     })
   }
 
+  changeSkinsToEquiped() {
+    this.circle.setTexture("circle_" + this.progress.current_skins["circles"])
+    this.circle_skin_number = this.getSkinNumber(this.circle.texture.key)
+    this.updateTick(this.circle)
+
+    this.stick.setTexture("stick_" + this.progress.current_skins["sticks"])
+    this.stick_skin_number = this.getSkinNumber(this.stick.texture.key)
+    this.updateTick(this.stick)
+
+    this.target.setTexture("target_" + this.progress.current_skins["targets"])
+    this.target_skin_number = this.getSkinNumber(this.target.texture.key)
+    this.updateTick(this.target)
+  }
+
+  updateTick(sprite) {
+    sprite.price.bg.displayWidth = sprite.tick.displayWidth + 70
+    sprite.tick.setPosition(
+      sprite.price.bg.x - sprite.tick.displayWidth / 2,
+      sprite.price.bg.y
+    )
+  }
+
   createCircleSet(sprite) {
     this.circle_skin_number = this.getSkinNumber(sprite)
     const circle = this.scene.add.image(this.x, this.y, sprite)
@@ -201,6 +224,8 @@ export default class {
     )
 
     this.circle.tick = this.createSkinTick(this.circle.x, this.circle.y)
+
+    this.updateTick(this.circle)
 
     this.positions.circle = circle.y
 
@@ -271,6 +296,8 @@ export default class {
       this.getSkinFromSetup("sticks", this.stick_skin_number).cost
     )
 
+    this.updateTick(this.stick)
+
     const other_stick = this.scene.add
       .image(stick.x, stick.y, stick.texture.key)
       .setAngle(90)
@@ -340,6 +367,8 @@ export default class {
       this.target.y,
       this.getSkinFromSetup("targets", this.target_skin_number).cost
     )
+
+    this.updateTick(this.target)
 
     const other_target = this.scene.add.image(
       target.x,
@@ -466,15 +495,21 @@ export default class {
       ).setAlpha(0)
     }
 
+    this.updateSkinPrice(
+      sprite2.price, // get part price context
+      sprite2.cost
+    )
+
     if (!this.isSkinUnlocked(part, first_skin)) {
       this.showItem(sprite2.key, sign)
+      sprite2.key.setAlpha(1)
       sprite2.price.setAlpha(1)
-
       sprite2.tick.setAlpha(0)
     } else {
       sprite2.key.setAlpha(0)
-      sprite2.tick.setAlpha(1)
 
+      this.updateTick(sprite2)
+      sprite2.tick.setAlpha(1)
       sprite2.price.setAlpha(0)
     }
 
@@ -494,10 +529,11 @@ export default class {
       this.progress.current_skins[part] = skin_number + 1
     }
 
-    this.updateSkinPrice(
-      sprite2.price, // get part price context
-      sprite2.cost
-    )
+    if (sprite2.key.alpha != 0) {
+      this.scene.createPurchaseOffer(sprite2, (price) => {
+        return this.scene.purchaseCallback(sprite2, part, price)
+      })
+    }
 
     this.hideItem(sprite1, sign)
     this.showItem(sprite2, sign)

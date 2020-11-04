@@ -664,7 +664,7 @@ export default class levelSelect extends Phaser.Scene {
           this.hideAllElementsInMenuContext()
 
           this.scene.get("menu").showElementsSharedWithLevelSelect()
-          this.scene.get("menu").animateShowMenu()
+          this.scene.get("menu").resetPositionsToHidden().animateShowMenu()
           this.scene.sleep()
         }
       )

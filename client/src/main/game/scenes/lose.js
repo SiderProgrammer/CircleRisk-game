@@ -7,6 +7,7 @@ export default class Lose extends Phaser.Scene {
   init(data) {
     this.progress = getProgress()
     this.level_scene = data.scene
+    this.are_buttons_active = false
   }
   create() {
     this.score = this.createScore()
@@ -16,6 +17,14 @@ export default class Lose extends Phaser.Scene {
     this.emptySpace =
       this.game.GH - (this.purple_strap.y + this.purple_strap.displayHeight / 2)
     this.createButtons()
+  }
+
+  activateButtons() {
+    this.are_buttons_active = true
+  }
+
+  unactivateButtons() {
+    this.are_buttons_active = false
   }
 
   updatePoints(score, perfect) {
@@ -118,6 +127,7 @@ export default class Lose extends Phaser.Scene {
       this.game.GH - this.emptySpace / 2 - 150,
       "ranking-icon",
       () => {
+        if (!this.are_buttons_active) return
         this.scene.launch("leaderboard", {
           level: this.level_scene.level,
         })
@@ -135,6 +145,7 @@ export default class Lose extends Phaser.Scene {
       this.game.GH - this.emptySpace / 2 + 130,
       "customize-button",
       () => {
+        if (!this.are_buttons_active) return
         this.level_scene.scene.stop()
         this.scene.stop()
 
@@ -151,6 +162,7 @@ export default class Lose extends Phaser.Scene {
       this.game.GH - this.emptySpace / 2 + 130,
       "levelSelect-button",
       () => {
+        if (!this.are_buttons_active) return
         this.level_scene.scene.stop()
         this.scene.stop()
 
@@ -183,6 +195,7 @@ export default class Lose extends Phaser.Scene {
       this.game.GH - this.emptySpace / 2 + 10,
       "next-button",
       () => {
+        if (!this.are_buttons_active) return
         this.scene.stop()
 
         const this_level_configuration =
@@ -219,6 +232,7 @@ export default class Lose extends Phaser.Scene {
       this.game.GH - this.emptySpace / 2 + 10,
       "replay-button",
       () => {
+        if (!this.are_buttons_active) return
         this.level_scene.scene.sleep("lose")
         this.level_scene.scene.restart()
       }

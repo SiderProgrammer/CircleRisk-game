@@ -98,6 +98,8 @@ export default class Customize extends Phaser.Scene {
 
           this.scene.get("menu").animateShowMenu()
           this.scene.sleep()
+          this.skinChangerManager.changeSkinsToEquiped()
+          
           // maybe stop customize scene
         }
       )
@@ -143,16 +145,15 @@ export default class Customize extends Phaser.Scene {
   }
   hidePurchaseOffer() {
     if (this.purchase_offer_elements.length > 0) {
-    this.purchase_offer_elements.forEach((e) => e.destroy())
-    this.purchase_offer_elements.length = 0
-  }
+      this.purchase_offer_elements.forEach((e) => e.destroy())
+      this.purchase_offer_elements.length = 0
+    }
   }
   createPurchaseOffer(skin, callback) {
     this.can_change = false
     const texture = skin.texture.key
-   
-      this.hidePurchaseOffer()
-    
+
+    this.hidePurchaseOffer()
 
     const y =
       this.skinChangerManager.target.price.y +
@@ -204,7 +205,10 @@ export default class Customize extends Phaser.Scene {
       })
 
       if (response.ok) {
+        skin.tick.setAlpha(1)
+        skin.price.setAlpha(0)
         skin.key.setAlpha(0)
+
         this.progress.skins[part].push(skin.texture.key)
         this.progress.money -= price
         this.money_text.setText(this.progress.money)

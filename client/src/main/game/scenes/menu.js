@@ -29,15 +29,7 @@ export default class menu extends Phaser.Scene {
     if (!this.is_everything_fetched) {
       START_FETCHING_SCENE(this)
       this.fetchFromServer().then(() => {
-        this.scene.launch("levelSelect")
-        this.scene
-          .get("levelSelect")
-          .createLevelSelectElementsInMenuContext(this)
-
-        this.scene.sleep("levelSelect")
-
-        this.scene.launch("customize")
-        this.scene.sleep("customize")
+        this.launchScenes()
       })
     }
   }
@@ -58,10 +50,7 @@ export default class menu extends Phaser.Scene {
   }
 
   update() {
-    this.bubbles.forEach((bubble) => {
-      bubble.y -= bubble.speedY
-      bubble.x += bubble.speedX
-    })
+    this.updateBubbles()
   }
 
   async animateShowMenu() {
@@ -83,13 +72,31 @@ export default class menu extends Phaser.Scene {
     return new Promise((resolve) => resolve())
   }
 
+  launchScenes() {
+    this.scene.launch("levelSelect")
+    this.scene.get("levelSelect").createLevelSelectElementsInMenuContext(this)
+
+    this.scene.sleep("levelSelect")
+
+    this.scene.launch("customize")
+    this.scene.sleep("customize")
+  }
+
+  updateBubbles() {
+    this.bubbles.forEach((bubble) => {
+      bubble.y -= bubble.speedY
+      bubble.x += bubble.speedX
+    })
+  }
+
   resetPositionsToHidden() {
     for (const element in this.hidden_positions_y) {
       eval(`this.${[element]}.y = ${this.hidden_positions_y[element]}`)
     }
-
-    this.logo.y = this.hidden_positions_y.logo
     this.play_button.y = this.hidden_positions_y.play_button
+    this.logo.y = this.hidden_positions_y.logo
+
+    this.customize_button.y = this.hidden_positions_y.customize_button
     this.sound_button.y = this.hidden_positions_y.sound_button
     this.music_button.y = this.hidden_positions_y.music_button
 
@@ -340,6 +347,8 @@ export default class menu extends Phaser.Scene {
   }
 
   showBottomButtons(ease) {
+    if (!this.can_play) return
+
     this.animateBottomButton(this.customize_button, ease)
 
     this.time.addEvent({

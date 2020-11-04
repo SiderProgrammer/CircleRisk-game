@@ -36,7 +36,8 @@ export default class Confusion_Medium extends Phaser.Scene {
     this.manager.GUI_helper.sceneIntro(this)
     this.blindFunctionsManager = new BlindFunctionsManager(this)
     this.blind = this.manager.GUI_helper.createBackground(this, "black")
-    this.blindFunctionsManager.blindTheScreen()
+    this.blind.setDepth(1).setVisible(false)
+    //  this.blindFunctionsManager.blindTheScreen()
   }
   update() {
     if (!this.manager.game_started) return
