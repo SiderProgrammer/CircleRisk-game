@@ -49,12 +49,17 @@ export const STOP_FETCHING_SCENE = function (scene) {
 
 export const CREATE_FETCH_ERROR = (scene, x, y) => {
   scene.add
-    .text(x, y, "Oops... Something went wrong, try again later", {
-      font: `60px ${main_font}`,
-      fontwordWrap: {
-        width: scene.game.GW * 0.8,
-      },
-    })
+    .text(
+      x,
+      y,
+      "Oops... Something went wrong. Check your internet connection or try again later...",
+      {
+        font: `60px ${main_font}`,
+        fontwordWrap: {
+          width: scene.game.GW * 0.8,
+        },
+      }
+    )
     .setOrigin(0.5)
 }
 export const CREATE_RECONNECTING_TEXT = (scene, x, y) => {

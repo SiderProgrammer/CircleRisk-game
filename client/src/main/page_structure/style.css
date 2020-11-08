@@ -23,6 +23,18 @@ body {
   outline: none;
 }
 
+#interactive-div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#first-login {
+  text-align: center;
+  display: none;
+  height: 100%;
+}
+
 #nickname-input {
   width: 250px;
   height: 60px;
@@ -32,15 +44,6 @@ body {
   font-size: 25px;
   border-radius: 10px;
   transform: skewX(-5deg);
-}
-
-#first-login {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  left: 50%;
-  top: 50%;
-  text-align: center;
-  display: none;
 }
 
 #accept-nickname {
@@ -56,6 +59,20 @@ body {
   -webkit-text-stroke: 2px black;
 }
 
+#creating-info-div {
+  height: 40%;
+  display: flex;
+  justify-content: center;
+}
+
 #creating-info {
-  font-size: 30px;
+  font-size: 25px;
+  align-self: flex-end;
+  padding-bottom: 20px;
+}
+
+@media only screen and (pointer: none) and (pointer: coarse) {
+  #first-login {
+    transform: scale(2);
+  }
 }

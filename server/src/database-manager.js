@@ -38,6 +38,9 @@ class DatabaseManager {
       }
     )
   }
+  isServerAlive(res) {
+    res.sendStatus(200)
+  }
   getConfigurations(res) {
     res.send({ skins_setup: customizeSkinsSetup, levels_config: levelsConfig })
   }
@@ -58,31 +61,6 @@ class DatabaseManager {
         ).exec()
       })
     })
-    /*
-    // maybe fetch all levels in one request
-      .sort({ score: -1 })
-      .then((docs) => { // with then 
-        docs.forEach((doc, i) => {
-          Levels.updateOne(
-            { _id: doc._id },
-            { $set: { rank: i + 1} },
-            { multi: true }
-          ).exec()
-        })
-      })
-
-*/
-    /*
-      .exec((err, docs) => { // with exec
-        docs.forEach((doc, i) => {
-          Levels.updateOne(
-            { _id: doc._id },
-            { $set: { rank: i + 1 } },
-            { multi: true }
-          ).exec()
-        })
-      })
-      */
   }
 
   createAccount(req, res) {

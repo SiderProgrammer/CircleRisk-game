@@ -21,27 +21,28 @@ const createAccountAndStartGame = () => {
   creator_div.style.display = "none"
   startGame()
 }
-
+/*
 const handleError = async () => {
   if (!(await IS_ONLINE())) {
-    info.innerHTML = "No internet connection"
-  } else {
-    info.innerHTML = "Something went wrong, try again later..."
+    info.innerHTML =
+      "Oops... Something went wrong. Check your internet connection or try again later."
   }
 }
+*/
+
 const VALIDATE_OK = (string) => {
   const VALIDATE_REGEXP = /^[a-z0-9wа-я]+$/i
-  const MIN_NICKNAME_LENGTH = 5
+  const MIN_NICKNAME_LENGTH = 1
 
   let characters_test = VALIDATE_REGEXP.test(string)
 
-  if (!characters_test) {
-    info.innerHTML = "Remove special characters please"
+  if (string.length < MIN_NICKNAME_LENGTH) {
+    info.innerHTML = `You need at least ${MIN_NICKNAME_LENGTH} character`
     return false
   }
 
-  if (string.length < MIN_NICKNAME_LENGTH) {
-    info.innerHTML = "You need at least 5 characters"
+  if (!characters_test) {
+    info.innerHTML = "Remove special characters please"
     return false
   }
 
@@ -65,7 +66,9 @@ export default () => {
         ? createAccountAndStartGame()
         : (info.innerHTML = "The nickname already exists")
     } catch {
-      handleError()
+      //  handleError()
+      info.innerHTML =
+        "Oops... Something went wrong. Check your internet connection or try again later."
     }
   }
 }

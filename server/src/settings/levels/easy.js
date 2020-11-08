@@ -394,4 +394,21 @@ module.exports = [
       starting_target: 1,
     },
   },
+
+  {
+    info: {
+      score_to_next_level: 220,
+      tint: "0x06E0FF",
+      name: "neighbor",
+    },
+    config: {
+      background: "hell-bg",
+      rotation_speed: 1,
+      acceleration: 0.3,
+      targets_amount: 8,
+      ball_distance: 135,
+      additional_angle: 22.5,
+      starting_target: 1,
+    },
+  },
 ]

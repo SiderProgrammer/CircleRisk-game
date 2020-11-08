@@ -40,17 +40,14 @@ export const EQUIP_SKIN = (data) => {
   postFunction(data, "equipSkin")
 }
 
-export const IS_ONLINE = () => {
-  return fetch("http://192.168.1.12:3001", {
-    // change to https://google.com
-    mode: "no-cors",
-  })
-    .then((response) => {
-      if (response.status != 200) {
-        return true
-      }
+export const IS_ONLINE = async () => {
+  try {
+    const response = await fetch("http://192.168.1.12:3001/isServerAlive", {
+      // change to https://google.com
+      // mode: "no-cors",
     })
-    .catch(() => {
-      return false
-    })
+    if (response.status === 200) return true
+  } catch (e) {
+    return false
+  }
 }

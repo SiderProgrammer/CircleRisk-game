@@ -108,14 +108,22 @@ export default class {
 
   createSkinPrice(x, y, price) {
     const text = this.scene.add
-      .text(x + 180, y, price, {
+      .text(x, y, price, {
         font: `70px ${main_font}`,
       })
-      .setOrigin(0, 0.5)
+      .setOrigin(0.5, 0.5)
       .setAlpha(0)
 
+    text.bg = this.scene.add
+      .image(x + 180, y, "price-bg")
+      .setOrigin(0, 0.5)
+      .setAlpha(0)
+    text.bg.displayHeight = text.displayHeight + 20
+
+    text.x = text.bg.x + text.bg.displayWidth * 0.5
+
     text.getCoinX = function () {
-      return this.x + this.displayWidth + 40
+      return this.bg.x + this.bg.displayWidth + 40
     }
 
     text.coin = this.scene.add
@@ -123,20 +131,15 @@ export default class {
       .setOrigin(0, 0.5)
       .setAlpha(0)
 
-    text.bg = this.scene.add
-      .image(text.x + text.displayWidth / 2, text.y, "price-bg")
-      .setAlpha(0)
-
-    text.bg.displayHeight = text.displayHeight + 20
-
     return text
   }
 
   updateSkinPrice(price_text, price) {
     price_text.setText(price)
-    price_text.coin.x = price_text.getCoinX()
-    price_text.bg.x = price_text.x + price_text.displayWidth / 2
+
     price_text.bg.displayWidth = price_text.displayWidth + 60
+    price_text.x = price_text.bg.x + price_text.bg.displayWidth * 0.5
+    price_text.coin.x = price_text.getCoinX()
   }
 
   hideSkinsPrices() {
@@ -207,9 +210,13 @@ export default class {
   updateTick(sprite) {
     sprite.price.bg.displayWidth = sprite.tick.displayWidth + 70
     sprite.tick.setPosition(
-      sprite.price.bg.x - sprite.tick.displayWidth / 2,
+      sprite.price.bg.x -
+        sprite.tick.displayWidth / 2 +
+        sprite.price.bg.displayWidth * 0.5,
       sprite.price.bg.y
     )
+
+    sprite.price.coin.x = sprite.price.getCoinX()
   }
 
   createCircleSet(sprite) {

@@ -545,6 +545,7 @@ export default class levelSelect extends Phaser.Scene {
       this.current_page_number > this.progress.levels_scores.length - 1
     )
       return
+    this.canChangePage = false
 
     const this_level_configuration =
       levelsConfiguration[this.current_page_number]
@@ -659,6 +660,7 @@ export default class levelSelect extends Phaser.Scene {
         this.game.GH,
         "home-button",
         async () => {
+          this.canChangePage = false
           await this.animateLevelSelectHide()
 
           this.hideAllElementsInMenuContext()

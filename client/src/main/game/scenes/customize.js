@@ -99,7 +99,7 @@ export default class Customize extends Phaser.Scene {
           this.scene.get("menu").animateShowMenu()
           this.scene.sleep()
           this.skinChangerManager.changeSkinsToEquiped()
-          
+
           // maybe stop customize scene
         }
       )
@@ -214,6 +214,7 @@ export default class Customize extends Phaser.Scene {
         this.money_text.setText(this.progress.money)
         this.progress.current_skins[part] =
           this.skinChangerManager.getSkinNumber(skin.texture.key) + 1 // set new skin
+        this.skinChangerManager.updateTick(skin)
 
         SAVE_MONEY({
           money: this.progress.money,

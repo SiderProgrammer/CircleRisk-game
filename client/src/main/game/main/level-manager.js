@@ -151,6 +151,10 @@ export default class Manager {
       this.target_array[this.current_target].setTexture(this.target_texture)
 
       this.helper.randomNextTarget()
+      if (typeof this.scene.swapTargetToTheNearset === "function") {
+        this.scene.swapTargetToTheNearset()
+      }
+
       this.helper.checkNewTargetsQueue()
 
       if (typeof this.scene.handleFakeTargetToCatch === "function") {

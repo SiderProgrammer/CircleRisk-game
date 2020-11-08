@@ -1,5 +1,6 @@
-const imgPath = "./assets/img"
+import { createBackground } from "../GUI-helper"
 
+const imgPath = "./assets/img"
 export default class loader extends Phaser.Scene {
   constructor() {
     super("loader")
@@ -46,7 +47,8 @@ export default class loader extends Phaser.Scene {
   }
   buttons() {
     this.loadImage("pause-button", "buttons")
-    this.loadImage("play-button", "buttons")
+    this.loadImage("play-button-small", "buttons")
+    this.loadImage("play-button-big", "buttons")
 
     this.loadImage("unmute-button", "buttons")
     this.loadImage("mute-button", "buttons")
@@ -55,11 +57,12 @@ export default class loader extends Phaser.Scene {
     this.loadImage("music-mute-button", "buttons")
 
     this.loadImage("customize-button-big", "buttons")
-    this.loadImage("play-button-big", "buttons")
 
     this.loadImage("arrow-button-blue", "buttons")
     this.loadImage("customize-button", "buttons")
     this.loadImage("home-button", "buttons")
+    this.loadImage("home-button-big", "buttons")
+
     this.loadImage("arrow-button", "buttons")
     this.loadImage("levelSelect-button", "buttons")
     this.loadImage("replay-button", "buttons")
@@ -153,8 +156,7 @@ export default class loader extends Phaser.Scene {
     this.loadImage("sense_icon", "levelsIcons")
     this.loadImage("tiny_icon", "levelsIcons")
   }
-
-  preload() {
+  loadAssets() {
     this.load.spritesheet("fingers", `${imgPath}/mix/fingers.png`, {
       frameWidth: 239,
       frameHeight: 354,
@@ -203,6 +205,25 @@ export default class loader extends Phaser.Scene {
       "leaderboard-button-aura",
       `${imgPath}/leaderboard-button-aura.png`
     )
+  }
+
+  updateBar(percentage) {
+    this.scene.loading_bar.displayWidth = percentage * this.scene.game.GW
+  }
+  createGUI() {
+    createBackground(this, "loading-bg")
+    this.loading_bar = this.add.image(this.game.GW / 2, 50, "loading-bar")
+    this.add.image(this.game.GW / 2, 200, "pipcompany")
+    this.add.image(this.game.GW / 2, this.game.GH / 2, "gentelman")
+    this.add
+      .image(this.game.GW, this.game.GH, "loading-circle-arm")
+      .setOrigin(1, 1)
+  }
+  preload() {
+    this.createGUI()
+    this.load.on("progress", this.updateBar)
+
+    this.loadAssets()
   }
   create() {
     this.scene.start("menu")

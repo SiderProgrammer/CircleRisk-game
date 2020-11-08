@@ -2,7 +2,6 @@ import {
   START_RECONNECTING_SCENE,
   STOP_RECONNECTING_SCENE,
 } from "./fetch-helper"
-
 import { IS_ONLINE } from "./shortcuts/requests"
 
 export default (game) => {
@@ -11,16 +10,26 @@ export default (game) => {
   let is_online = true
 
   setInterval(async () => {
+    /*
+    window.androidFullScreen
+      .isImmersiveModeSupported()
+      .then(() => window.androidFullScreen.immersiveMode())
+      */
     //console.log(game.scene.getScenes(true))
+
     if (await IS_ONLINE()) {
       if (!is_online) {
         STOP_RECONNECTING_SCENE(currentScene)
+
         is_online = true
       }
     } else {
       if (!is_online) return
+
       currentScene = game.scene.getScenes(true)[0]
+
       if (!currentScene) return
+
       START_RECONNECTING_SCENE(currentScene)
       is_online = false
     }

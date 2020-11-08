@@ -24,7 +24,7 @@ export default class {
       speedY: { min: -200, max: -300 },
 
       frequency: 50,
-      reserve: 20,
+      reserve: 30,
     })
   }
 }

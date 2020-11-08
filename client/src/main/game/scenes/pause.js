@@ -10,7 +10,7 @@ export default class Pause extends Phaser.Scene {
       this,
       this.game.GW / 2,
       this.game.GH / 2,
-      "play-button",
+      "play-button-small",
       () => {
         this.scene.stop()
         scene.scene.resume()
@@ -21,7 +21,7 @@ export default class Pause extends Phaser.Scene {
       this,
       this.game.GW / 2 - 150,
       this.game.GH / 2 + 150,
-      "home-button",
+      "home-button-big",
       () => {
         scene.scene.stop()
         this.scene.stop()

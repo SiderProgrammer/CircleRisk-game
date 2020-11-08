@@ -14,7 +14,7 @@ module.exports = {
     { skin: "stick_5", cost: 3000 },
   ],
   targets: [
-    { skin: "target_1", cost: 400 },
+    { skin: "target_1", cost: 4000 },
     { skin: "target_2", cost: 30 },
     { skin: "target_3", cost: 30 },
     { skin: "target_4", cost: 30 },

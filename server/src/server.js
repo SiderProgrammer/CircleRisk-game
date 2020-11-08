@@ -16,6 +16,8 @@ server.use(bodyParser.urlencoded({ extended: false }))
 
 const databaseManager = new DatabaseManager()
 
+server.get("/isServerAlive", (req, res) => databaseManager.isServerAlive(res))
+
 server.post("/createAccount", (req, res) =>
   databaseManager.createAccount(req, res)
 )

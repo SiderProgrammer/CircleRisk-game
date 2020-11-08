@@ -1,10 +1,9 @@
 import Manager from "../../main/level-manager.js"
-import BlindFunctionsManager from "./functions"
-import ChameleonFunctionsManager from "../chameleon/functions"
+import NeighborFunctionsManager from "./functions"
 
-export default class Blind_Medium extends Phaser.Scene {
+export default class Neighbor_Easy extends Phaser.Scene {
   constructor() {
-    super("Blind_Medium")
+    super("Neighbor_Easy")
   }
 
   init(config) {
@@ -13,12 +12,14 @@ export default class Blind_Medium extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+    this.neighborFunctionsManager = new NeighborFunctionsManager(this)
   }
 
   create() {
     this.manager.create()
 
     this.manager.createGUI()
+
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()
@@ -30,12 +31,7 @@ export default class Blind_Medium extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-
-    this.chameleonFunctionsManager = new ChameleonFunctionsManager(this)
-    this.blindFunctionsManager = new BlindFunctionsManager(this)
-
-    this.blind = this.manager.GUI_helper.createBackground(this, "black")
-    this.blind.setDepth(1).setVisible(false)
+   
   }
   update() {
     if (!this.manager.game_started) return
@@ -44,14 +40,7 @@ export default class Blind_Medium extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
 
-  blindTheScreen() {
-    this.blindFunctionsManager.blindTheScreen()
-  }
-  removeTargetToCatchSkin() {
-    this.chameleonFunctionsManager.removeTargetToCatchSkin()
-  }
-
-  removeTargetToCatchSkin() {
-    this.chameleonFunctionsManager.removeTargetToCatchSkin()
+  swapTargetToTheNearset(){
+      this.neighborFunctionsManager.swapTargetToTheNearset()
   }
 }
