@@ -155,6 +155,7 @@ export default class loader extends Phaser.Scene {
     this.loadImage("blind_icon", "levelsIcons")
     this.loadImage("sense_icon", "levelsIcons")
     this.loadImage("tiny_icon", "levelsIcons")
+    this.loadImage("carousel_icon", "levelsIcons")
   }
   loadAssets() {
     this.load.spritesheet("fingers", `${imgPath}/mix/fingers.png`, {

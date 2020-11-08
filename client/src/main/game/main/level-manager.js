@@ -5,6 +5,8 @@ import { POST_LEVEL_SCORE, SAVE_MONEY } from "../../shortcuts/requests"
 import { getProgress, saveProgress } from "../../shortcuts/save"
 import PerfectManager from "./perfect-manager"
 
+import LevelFunctionsCaller from "./level-functions-caller"
+
 export default class Manager {
   constructor(scene, config) {
     this.scene = scene
@@ -38,6 +40,7 @@ export default class Manager {
   }
 
   create() {
+    this.levelFunctionsCaller = new LevelFunctionsCaller(this.scene)
     this.perfectManager = new PerfectManager(this)
     this.perfectManager.createPerfectText()
     this.perfectManager.createScoreText()
@@ -110,18 +113,15 @@ export default class Manager {
     return distanceToTarget < 85 * this.target_array[0].scale
   }
   changeBall() {
-    if (typeof this.scene.changeRotationSpeed === "function") {
-      this.scene.changeRotationSpeed()
-    }
+    this.levelFunctionsCaller.tryChangeRotationSpeed()
+
     this.rotation_speed += this.config.acceleration
 
     const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
 
     if (this.hasHitTarget(distance_from_target)) {
-      if (typeof this.scene.shake === "function") {
-        ///
-        this.scene.shake()
-      }
+      this.levelFunctionsCaller.tryShake()
+
       if (distance_from_target < 10) {
         this.score += 2
         this.perfect++
@@ -142,38 +142,25 @@ export default class Manager {
       this.perfectManager.updateScoreText()
       this.is_possible_miss = false
 
-      if (typeof this.scene.calculateCirclesPosition === "function") {
-        ////
-        this.scene.calculateCirclesPosition()
-      }
-
+      this.levelFunctionsCaller.tryCalculateCirclesPosition()
       this.current_target = this.next_target
       this.target_array[this.current_target].setTexture(this.target_texture)
 
       this.helper.randomNextTarget()
-      if (typeof this.scene.swapTargetToTheNearset === "function") {
-        this.scene.swapTargetToTheNearset()
-      }
+
+      this.levelFunctionsCaller.trySwapFunctionsToTheNearset()
 
       this.helper.checkNewTargetsQueue()
 
-      if (typeof this.scene.handleFakeTargetToCatch === "function") {
-        this.scene.handleFakeTargetToCatch() // one fake target
-      }
+      this.levelFunctionsCaller.tryHandleFakeTargetToCatch()
 
-      if (typeof this.scene.handleFakeTargetsToCatch === "function") {
-        this.scene.handleFakeTargetsToCatch() // many fake targets
-      }
+      this.levelFunctionsCaller.tryHandleFakeTargetsToCatch()
 
       this.setNewTarget()
 
-      if (typeof this.scene.removeCorrectTargetTextureToCatch === "function") {
-        this.scene.removeCorrectTargetTextureToCatch() // many fake targets
-      }
+      this.levelFunctionsCaller.tryRemoveCorrectTargetTextureToCatch()
 
-      if (typeof this.scene.removeTargetToCatchSkin === "function") {
-        this.scene.removeTargetToCatchSkin() ///
-      }
+      this.levelFunctionsCaller.tryRemoveTargetToCatchSkin()
 
       this.current_circle = 1 - this.current_circle
 
@@ -184,30 +171,17 @@ export default class Manager {
         )
       )
 
-      if (typeof this.scene.teleportCircle === "function") {
-        this.scene.teleportCircle()
-      }
+      this.levelFunctionsCaller.tryTeleportCircle()
 
-      if (typeof this.scene.slideCircle === "function") {
-        ////
-        this.scene.slideCircle()
-      }
+      this.levelFunctionsCaller.trySlideCircle()
 
       this.helper.extendStick()
 
-      if (typeof this.scene.darkenTargets === "function") {
-        ////
-        this.scene.darkenTargets()
-      }
+      this.levelFunctionsCaller.tryDarkenTargets()
 
-      if (typeof this.scene.hideSetForAWhile === "function") {
-        ////
-        this.scene.hideSetForAWhile()
-      }
+      this.levelFunctionsCaller.tryHideSetForAWhile()
 
-      if (typeof this.scene.hideTargets === "function") {
-        this.scene.hideTargets()
-      }
+      this.levelFunctionsCaller.tryHideTargets()
     } else {
       this.gameOver()
     }
@@ -290,14 +264,7 @@ export default class Manager {
         this.finger.destroy()
         this.game_started = true
 
-        if (typeof this.scene.blindTheScreen === "function") {
-          this.scene.time.addEvent({
-            delay: 2000,
-            callback: () => {
-              this.scene.blindTheScreen()
-            },
-          })
-        }
+        this.levelFunctionsCaller.tryBlindTheScreen()
       } else this.changeBall()
     })
   }

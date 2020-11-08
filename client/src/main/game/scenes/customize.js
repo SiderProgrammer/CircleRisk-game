@@ -40,7 +40,7 @@ export default class Customize extends Phaser.Scene {
 
     await this.skinChangerManager.hide()
 
-    return new Promise((resolve) => resolve())
+    //  return new Promise((resolve) => resolve())
   }
 
   createSkinChanger() {

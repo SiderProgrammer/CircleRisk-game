@@ -1,6 +1,6 @@
 const SERVER_URL = "http://192.168.1.12:3001"
 
-const post_headers = {
+const headers = {
   "Content-Type": "application/json",
   Accept: "application/json",
 }
@@ -8,43 +8,52 @@ const post_headers = {
 export const postFunction = (data, url) => {
   return fetch(`${SERVER_URL}/${url}`, {
     method: "post",
-    headers: post_headers,
+    headers: headers,
     body: JSON.stringify(data),
   })
 }
 
 export const getFunction = (url) => {
   return fetch(`${SERVER_URL}/${url}`, {
-    headers: post_headers,
+    headers: headers,
   })
 }
 
-export const START_RECONNECTING_SCENE = function (scene, x, y) {
-  scene.scene.pause()
-  scene.scene.launch("offline", {
-    x: scene.game.GW / 2,
-    y: scene.game.GH / 2,
+export const START_RECONNECTING_SCENE = function (scenes) {
+  scenes.forEach(({ scene }) => scene.pause())
+
+  scenes[0].scene.launch("offline", {
+    x: scenes[0].game.GW / 2,
+    y: scenes[0].game.GH / 2,
   })
-  scene.scene.bringToTop("offline")
+  scenes[0].scene.bringToTop("offline")
 }
 
-export const STOP_RECONNECTING_SCENE = function (scene) {
-  scene.scene.resume()
-  scene.scene.stop("offline")
+export const STOP_RECONNECTING_SCENE = function (scenes) {
+  scenes[0].scene.stop("offline")
+  scenes.forEach(({ scene }) => scene.resume())
 }
 
-export const START_FETCHING_SCENE = function (scene, x, y) {
-  scene.scene.pause()
-  scene.scene.launch("fetching", {
-    x: scene.game.GW / 2,
-    y: scene.game.GH / 2,
+let paused_fetching_scenes = []
+
+export const START_FETCHING_SCENE = function (scene) {
+  paused_fetching_scenes = scene.game.scene.getScenes(true)
+
+  paused_fetching_scenes.push(scene) /// if scene start didnt complete, it is counted as not active so i have to add it manually
+  scene.scene.pause() /// and pause manually
+
+  paused_fetching_scenes.forEach(({ scene }) => scene.pause())
+
+  paused_fetching_scenes[0].scene.launch("fetching", {
+    x: paused_fetching_scenes[0].game.GW / 2,
+    y: paused_fetching_scenes[0].game.GH / 2,
   })
-  scene.scene.bringToTop("fetching")
+  paused_fetching_scenes[0].scene.bringToTop("fetching")
 }
 
 export const STOP_FETCHING_SCENE = function (scene) {
-  scene.scene.resume()
-  scene.scene.stop("fetching")
+  paused_fetching_scenes.forEach(({ scene }) => scene.resume())
+  paused_fetching_scenes[0].scene.stop("fetching")
 }
 
 export const CREATE_FETCH_ERROR = (scene, x, y) => {

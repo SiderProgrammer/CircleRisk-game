@@ -4,7 +4,9 @@ import {
   GET_ACCOUNT_PROGRESS,
   GET_CONFIGURATIONS,
 } from "../../shortcuts/requests"
+
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
+import manageNetworkStatus from "../../network-status"
 
 export default class menu extends Phaser.Scene {
   constructor() {
@@ -28,9 +30,7 @@ export default class menu extends Phaser.Scene {
 
     if (!this.is_everything_fetched) {
       START_FETCHING_SCENE(this)
-      this.fetchFromServer().then(() => {
-        this.launchScenes()
-      })
+      this.fetchFromServerAndLaunchScenes()
     }
   }
 
@@ -69,7 +69,7 @@ export default class menu extends Phaser.Scene {
     this.hideInstagram()
     await this.hideButtonsAndLogo(ease)
     this.resetPositionsToHidden()
-    return new Promise((resolve) => resolve())
+    //   return new Promise((resolve) => resolve())
   }
 
   launchScenes() {
@@ -393,28 +393,27 @@ export default class menu extends Phaser.Scene {
     })
   }
 
-  async fetchFromServer() {
+  async fetchFromServerAndLaunchScenes() {
     try {
       await this.getConfigurations()
       await this.restoreProgress()
+
       this.finishFetching()
-      return new Promise((resolve) => resolve())
+      this.launchScenes()
+      manageNetworkStatus(this.game)
     } catch {
-      // if something went wrong, try to fetch again
       setTimeout(() => {
-        this.fetchFromServer()
+        this.fetchFromServerAndLaunchScenes()
       }, 3000)
     }
   }
 
   async getConfigurations() {
     const response = await GET_CONFIGURATIONS()
-    window.customize_skins_setup = response.skins_setup
-
-    // assign to window because the level select scene can be started by many scenes,
-    //not like customize scene which is started only from menu
     // WINDOW ASSIGNED VARIABLES LIKE NICKNAME CAN BE EASY HACKED  !!!
+    window.customize_skins_setup = response.skins_setup
     window.levelsConfiguration = response.levels_config
+    return
   }
 
   async restoreProgress() {

@@ -3,6 +3,9 @@ const express = require("express")
 const cors = require("cors")
 const bodyParser = require("body-parser")
 
+const customizeSkinsSetup = require("./settings/customize-skins-setup")
+const levelsConfig = require("./settings/levels/levels-config")
+
 const DatabaseManager = require("./database-manager")
 
 const port = 3001
@@ -16,7 +19,7 @@ server.use(bodyParser.urlencoded({ extended: false }))
 
 const databaseManager = new DatabaseManager()
 
-server.get("/isServerAlive", (req, res) => databaseManager.isServerAlive(res))
+server.get("/isServerAlive", (req, res) => res.sendStatus(200))
 
 server.post("/createAccount", (req, res) =>
   databaseManager.createAccount(req, res)
@@ -50,7 +53,7 @@ server.post("/postLevelScore", (req, res) => {
 })
 
 server.get("/getConfigurations", (req, res) =>
-  databaseManager.getConfigurations(res)
+  res.send({ skins_setup: customizeSkinsSetup, levels_config: levelsConfig })
 )
 
 server.listen(port, host, () => databaseManager.connectDatabase())

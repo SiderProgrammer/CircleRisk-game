@@ -3,15 +3,13 @@ const mongoose = require("mongoose")
 const srvConfig = require("./settings/db-config")
 const { Accounts, Levels } = require("./settings/db-models")
 
-const customizeSkinsSetup = require("./settings/customize-skins-setup")
-const levelsConfig = require("./settings/levels/levels-config")
 const defaultAccountConfig = require("./settings/account-default-db")
 
 const DATABASE_URL = `mongodb+srv://${srvConfig.USERNAME}:${srvConfig.PASSWORD}@${srvConfig.HOST}/${srvConfig.DB}?retryWrites=true&w=majority`
 
 class DatabaseManager {
   constructor() {
-    this.levels_amount = 4 //levelsConfig.length;
+    this.levels_amount = 50 //levelsConfig.length;
 
     this.leaderboards_refresh_time = 1000 * 60 * 1
   }
@@ -22,6 +20,8 @@ class DatabaseManager {
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        // poolSize: 500
+        // autoIndex: false,
       },
       () => {
         // console.log(`Server started on port ${port}`);
@@ -32,17 +32,11 @@ class DatabaseManager {
         setInterval(() => {
           for (let i = 1; i <= this.levels_amount; i++) {
             // score is updated 24/7 but ranks only 1 minute interval  ** TODO REPAIR IT
-            this.updateRanksAndScores(i) /// make interval to update ranks from time to time
+            // this.updateRanksAndScores(i) /// make interval to update ranks from time to time
           }
         }, this.leaderboards_refresh_time)
       }
     )
-  }
-  isServerAlive(res) {
-    res.sendStatus(200)
-  }
-  getConfigurations(res) {
-    res.send({ skins_setup: customizeSkinsSetup, levels_config: levelsConfig })
   }
 
   updateRanksAndScores(level) {
@@ -55,7 +49,7 @@ class DatabaseManager {
 
       docs.forEach((level, i) => {
         Levels.updateOne(
-          { _id: level._id },
+          { _id: level._id }, // nickname : level.nickname ( FOR PERFORMANCE REASONS)
           { $set: { rank: i + 1, score: level.score_to_update } },
           { multi: true }
         ).exec()
