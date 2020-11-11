@@ -1,4 +1,4 @@
-import { CREATE_ACCOUNT, IS_ONLINE } from "./shortcuts/requests"
+import { CREATE_ACCOUNT, IS_ONLINE,IS_SERVER_ALIVE } from "./shortcuts/requests"
 import { saveProgress } from "./shortcuts/save.js"
 import { startGame } from "../index"
 
@@ -21,14 +21,22 @@ const createAccountAndStartGame = () => {
   creator_div.style.display = "none"
   startGame()
 }
-/*
+
 const handleError = async () => {
   if (!(await IS_ONLINE())) {
     info.innerHTML =
-      "Oops... Something went wrong. Check your internet connection or try again later."
+      "Please check your internet connection and try again..."
+      return
   }
+if(!(await IS_SERVER_ALIVE())){
+  info.innerHTML =
+  "The game servers were down for maintenance. Try again later ..."
+  return
 }
-*/
+ 
+"Something went wrong. Try again later ..."
+}
+
 
 const VALIDATE_OK = (string) => {
   const VALIDATE_REGEXP = /^[a-z0-9wа-я]+$/i
@@ -66,9 +74,8 @@ export default () => {
         ? createAccountAndStartGame()
         : (info.innerHTML = "The nickname already exists")
     } catch {
-      //  handleError()
-      info.innerHTML =
-        "Oops... Something went wrong. Check your internet connection or try again later."
+        handleError()
+      
     }
   }
 }

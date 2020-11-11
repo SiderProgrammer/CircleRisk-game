@@ -1,5 +1,7 @@
 import { createBackground } from "../GUI-helper"
+import { IS_SERVER_ALIVE, IS_ONLINE } from "../../shortcuts/requests"
 
+import { START_SERVER_MAINTENANCE_SCENE } from "../../fetch-helper"
 const imgPath = "./assets/img"
 export default class loader extends Phaser.Scene {
   constructor() {
@@ -226,7 +228,11 @@ export default class loader extends Phaser.Scene {
 
     this.loadAssets()
   }
-  create() {
-    this.scene.start("menu")
+  async create() {
+    if ((await IS_ONLINE()) && !(await IS_SERVER_ALIVE())) {
+      START_SERVER_MAINTENANCE_SCENE(this.game.scene.getScenes(true))
+    } else {
+      this.scene.start("menu")
+    }
   }
 }

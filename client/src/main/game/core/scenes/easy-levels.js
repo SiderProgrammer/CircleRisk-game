@@ -21,7 +21,8 @@ import Sense_Easy from "../../levels/sense/sense-easy"
 import Tiny_Easy from "../../levels/tiny/tiny-easy"
 import Hell_Easy from "../../levels/hell/hell-easy"
 import Carousel_Easy from "../../levels/carousel/carousel-easy"
-import Neighbor_Easy from "../../levels/neighbor/neighbor-easy"
+import OneStep_Easy from "../../levels/1-step/1-step-easy"
+import ThreeStep_Easy from "../../levels/3-step/3-step-easy"
 
 export default [
   Basic_Easy,
@@ -47,5 +48,6 @@ export default [
   Tiny_Easy,
   Hell_Easy,
   Carousel_Easy,
-  Neighbor_Easy,
+  OneStep_Easy,
+  ThreeStep_Easy,
 ]

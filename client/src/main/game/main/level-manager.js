@@ -369,7 +369,10 @@ export default class Manager {
 
     this.progress.money += this.score // earned money
 
+    let is_any_update = false
+
     if (this.isNewLevelNeededScoreReached()) {
+      is_any_update = true
       this.progress.levels_scores[this.scene.level] = 0
       await POST_LEVEL_SCORE({
         score: 0,
@@ -386,6 +389,7 @@ export default class Manager {
 
     const this_level_score = this.progress.levels_scores[this.scene.level - 1]
     if (this.score > this_level_score || !this_level_score) {
+      is_any_update = true
       /// -1, array is counted from 0
       this.progress.levels_scores[this.scene.level - 1] = this.score /// -1, array is counted from 0
 
@@ -399,6 +403,8 @@ export default class Manager {
     saveProgress(this.progress)
 
     SAVE_MONEY({ money: this.progress.money, nickname: my_nickname })
+
+    is_any_update && this.scene.scene.get("levelSelect").updateVisiblePage()
 
     this.scene.tweens.add({
       targets: helper

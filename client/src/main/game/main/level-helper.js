@@ -37,10 +37,7 @@ if (this.scene.stick.displayWidth < 0) this.scene.stick.setVisible(false)
 
   checkNewTargetsQueue() {
     if (this.scene.next_target > this.scene.config.targets_amount - 1) {
-      this.scene.next_target = Phaser.Math.Between(
-        1,
-        this.scene.next_target - this.scene.config.targets_amount - 1
-      )
+      this.scene.next_target -= this.scene.config.targets_amount
     }
   }
 

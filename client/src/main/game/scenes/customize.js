@@ -185,7 +185,7 @@ export default class Customize extends Phaser.Scene {
           "tick-button",
           () => {
             callback(skin.cost)
-            this.hidePurchaseOffer()
+
             this.can_change = true
           }
         )
@@ -205,6 +205,7 @@ export default class Customize extends Phaser.Scene {
       })
 
       if (response.ok) {
+        this.hidePurchaseOffer()
         skin.tick.setAlpha(1)
         skin.price.setAlpha(0)
         skin.key.setAlpha(0)
@@ -224,7 +225,7 @@ export default class Customize extends Phaser.Scene {
         saveProgress(this.progress)
       }
     } catch {
-      CREATE_FETCH_ERROR(this, this.game.GW / 2, this.game.GH / 2 - 300)
+      // CREATE_FETCH_ERROR(this, this.game.GW / 2, this.game.GH / 2 - 300)
     } finally {
       STOP_FETCHING_SCENE(this)
     }

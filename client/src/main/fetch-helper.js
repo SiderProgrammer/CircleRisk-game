@@ -19,6 +19,13 @@ export const getFunction = (url) => {
   })
 }
 
+export const START_SERVER_MAINTENANCE_SCENE = function(scenes){
+  scenes.forEach(({ scene }) => scene.pause())
+
+  scenes[0].scene.launch("serverMaintenance")
+  scenes[0].scene.bringToTop("serverMaintenance")
+}
+
 export const START_RECONNECTING_SCENE = function (scenes) {
   scenes.forEach(({ scene }) => scene.pause())
 
@@ -73,6 +80,8 @@ export const CREATE_FETCH_ERROR = (scene, x, y) => {
 }
 export const CREATE_RECONNECTING_TEXT = (scene, x, y) => {
   scene.add
+
     .text(x, y, "Reconnecting ...", { font: `60px ${main_font}` })
     .setOrigin(0.5)
 }
+

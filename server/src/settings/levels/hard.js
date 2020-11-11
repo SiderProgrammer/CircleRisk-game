@@ -48,6 +48,8 @@ module.exports = [
       ball_distance: 130,
       additional_angle: 22.5,
       starting_target: 1,
+
+      target_rotate_speed: 0.5,
     },
   },
 
@@ -65,6 +67,10 @@ module.exports = [
       ball_distance: 100,
       additional_angle: 22.5,
       starting_target: 1,
+      rotation_speed_change: {
+        min: 0.5,
+        max: 3.5,
+      },
     },
   },
   {
@@ -131,6 +137,24 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      time_left: 10, //in seconds
+    },
+  },
+  {
+    info: {
+      score_to_next_level: 100,
+      tint: "0x06E0FF",
+      name: "carousel",
+    },
+    config: {
+      background: "carousel-bg",
+      rotation_speed: 1,
+      acceleration: 0.06,
+      targets_amount: 8,
+      ball_distance: 130,
+      additional_angle: 22.5,
+      starting_target: 1,
+      targets_speed: 1,
     },
   },
   {
@@ -144,9 +168,13 @@ module.exports = [
       rotation_speed: 1,
       acceleration: 0.06,
       targets_amount: 8,
-      ball_distance: 90,
+      ball_distance: 130,
       additional_angle: 22.5,
       starting_target: 1,
+      teleport_value: {
+        min: -1,
+        max: -3,
+      },
     },
   },
   {
@@ -198,6 +226,11 @@ module.exports = [
       ball_distance: 90,
       additional_angle: 22.5,
       starting_target: 1,
+      targets_speed: 1,
+      teleport_value: {
+        min: -1,
+        max: -3,
+      },
     },
   },
 

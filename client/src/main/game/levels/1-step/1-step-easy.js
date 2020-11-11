@@ -1,9 +1,9 @@
 import Manager from "../../main/level-manager.js"
-import NeighborFunctionsManager from "./functions"
+import OneStepFunctionsManager from "./functions"
 
-export default class Neighbor_Easy extends Phaser.Scene {
+export default class OneStep_Easy extends Phaser.Scene {
   constructor() {
-    super("Neighbor_Easy")
+    super("OneStep_Easy")
   }
 
   init(config) {
@@ -12,7 +12,7 @@ export default class Neighbor_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.neighborFunctionsManager = new NeighborFunctionsManager(this)
+    this.oneStepFunctionsManager = new OneStepFunctionsManager(this)
   }
 
   create() {
@@ -41,6 +41,6 @@ export default class Neighbor_Easy extends Phaser.Scene {
   }
 
   swapTargetToTheNearset(){
-      this.neighborFunctionsManager.swapTargetToTheNearset()
+      this.oneStepFunctionsManager.swapTargetToTheNearset()
   }
 }

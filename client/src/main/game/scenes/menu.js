@@ -16,7 +16,7 @@ export default class menu extends Phaser.Scene {
     this.tween_duration = 300
   }
 
-  init() {
+  async init() {
     this.bubbles = []
     this.elements_to_hide_to_levelselect = []
 
@@ -30,6 +30,7 @@ export default class menu extends Phaser.Scene {
 
     if (!this.is_everything_fetched) {
       START_FETCHING_SCENE(this)
+
       this.fetchFromServerAndLaunchScenes()
     }
   }

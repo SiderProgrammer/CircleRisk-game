@@ -103,7 +103,7 @@ export default class Leaderboard extends Phaser.Scene {
 
     helper
       .createButton(this, x, y, "arrow-button-brown", () => {
-      //  this.scene.wake("levelSelect")
+        //  this.scene.wake("levelSelect")
         this.scene.stop()
       })
       .setAngle(270)
@@ -220,12 +220,15 @@ export default class Leaderboard extends Phaser.Scene {
   async getUsers(start, stop) {
     this.last_start_search_rank = start
     this.last_stop_search_rank = stop
-
-    return await GET_LEVEL_SCORES_AND_NICKNAMES({
-      level: this.level,
-      start_search_rank: start,
-      stop_search_rank: stop,
-    })
+    try {
+      return await GET_LEVEL_SCORES_AND_NICKNAMES({
+        level: this.level,
+        start_search_rank: start,
+        stop_search_rank: stop,
+      })
+    } catch {
+      STOP_FETCHING_SCENE(this)
+    }
   }
 
   async getUsersAndUpdateTexts(sign) {

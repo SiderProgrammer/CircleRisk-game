@@ -8,6 +8,7 @@ import Offline from "../../scenes/offline.js"
 import Fetching from "../../scenes/fetching.js"
 import Pause from "../../scenes/pause.js"
 import Lose from "../../scenes/lose.js"
+import ServerMaintenance from "../../scenes/server-maintenance.js"
 
 export default [
   Preloader,
@@ -20,4 +21,5 @@ export default [
   Fetching,
   Pause,
   Lose,
+  ServerMaintenance,
 ]

@@ -1,6 +1,5 @@
 import Phaser from "./main/lib/phaser-full"
 
-
 import config from "./main/game/core/game-config"
 import accountCreator from "./main/account-creator"
 import { getProgress } from "./main/shortcuts/save.js"
@@ -15,7 +14,6 @@ export const startGame = () => {
   game.GH = config.height
 
   if (!game.device.os.desktop) game.input.mouse.enabled = false
-  
 }
 
 window.onload = () => {
