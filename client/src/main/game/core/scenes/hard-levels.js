@@ -9,15 +9,6 @@ import Earthquake_Hard from "../../levels/earthquake/earthquake-hard"
 import Twins_Hard from "../../levels/twins/twins-hard"
 import Clock_Hard from "../../levels/clock/clock-hard"
 import Chameleon_Hard from "../../levels/chameleon/chameleon-hard"
-/*
-
-
-
-
-
-
-import Perfect_Hard from "../../levels/perfect/perfect-hard"
-
 import Confusion_Hard from "../../levels/confusion/confusion-hard"
 import Speed_Hard from "../../levels/speed/speed-hard"
 import Flower_Hard from "../../levels/flower/flower-hard"
@@ -31,6 +22,8 @@ import Hell_Hard from "../../levels/hell/hell-hard"
 import Carousel_Hard from "../../levels/carousel/carousel-hard"
 import OneStep_Hard from "../../levels/1-step/1-step-hard"
 import ThreeStep_Hard from "../../levels/3-step/3-step-hard"
+/*
+import Perfect_Hard from "../../levels/perfect/perfect-hard"
 */
 
 export default [
@@ -43,19 +36,8 @@ export default [
   Expand_Hard,
   Earthquake_Hard,
   Twins_Hard,
-
   Clock_Hard,
   Chameleon_Hard,
-  /*
- 
- 
-  
-  
-
-
- 
-  Perfect_Hard,
-
   Confusion_Hard,
   Speed_Hard,
   Flower_Hard,
@@ -69,5 +51,7 @@ export default [
   Carousel_Hard,
   OneStep_Hard,
   ThreeStep_Hard,
+  /*
+  Perfect_Hard,
   */
 ]

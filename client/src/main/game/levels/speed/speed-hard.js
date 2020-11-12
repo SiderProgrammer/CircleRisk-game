@@ -1,10 +1,10 @@
 import Manager from "../../main/level-manager.js"
-import EarthquakeFunctionsManager from "./functions"
-import ThreeStepFunctionsManager from "../3-step/functions"
+import TinyFunctionsManager from "../tiny/functions"
+import NightFunctionsManager from "../night/functions"
 
-export default class Earthquake_Medium extends Phaser.Scene {
+export default class Speed_Hard extends Phaser.Scene {
   constructor() {
-    super("Earthquake_Medium")
+    super("Speed_Hard")
   }
 
   init(config) {
@@ -13,14 +13,12 @@ export default class Earthquake_Medium extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.earthquakeFunctionsManager = new EarthquakeFunctionsManager(this)
   }
 
   create() {
     this.manager.create()
 
     this.manager.createGUI()
-
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()
@@ -31,9 +29,12 @@ export default class Earthquake_Medium extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
-    this.threeStepFunctionsManage = new ThreeStepFunctionsManager(this)
-
     this.manager.GUI_helper.sceneIntro(this)
+
+    this.tinyFunctionsManager = new TinyFunctionsManager(this)
+    this.tinyFunctionsManager.resizeTargets()
+    this.nightFunctionsManager = new NightFunctionsManager(this)
+    this.nightFunctionsManager.darkenTargets()
   }
   update() {
     if (!this.manager.game_started) return
@@ -41,11 +42,8 @@ export default class Earthquake_Medium extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-  shake() {
-    this.earthquakeFunctionsManager.shake()
-  }
 
-  swapTargetToTheNearset() {
-    this.threeStepFunctionsManage.swapTargetToTheNearset()
+  darkenTargets() {
+    this.nightFunctionsManager.darkenTargets()
   }
 }

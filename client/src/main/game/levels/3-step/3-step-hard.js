@@ -1,10 +1,10 @@
 import Manager from "../../main/level-manager.js"
-import EarthquakeFunctionsManager from "./functions"
-import ThreeStepFunctionsManager from "../3-step/functions"
+import ThreeStepFunctionsManager from "./functions"
+import ConfusionFunctionsManager from "../confusion/functions"
 
-export default class Earthquake_Medium extends Phaser.Scene {
+export default class ThreeStep_Hard extends Phaser.Scene {
   constructor() {
-    super("Earthquake_Medium")
+    super("ThreeStep_Hard")
   }
 
   init(config) {
@@ -13,7 +13,11 @@ export default class Earthquake_Medium extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.earthquakeFunctionsManager = new EarthquakeFunctionsManager(this)
+    this.threeStepFunctionsManage = new ThreeStepFunctionsManager(this)
+    this.confusionFunctionsManager = new ConfusionFunctionsManager(this)
+
+    this.fake_targets = []
+    this.manager.rotation_direction = -1
   }
 
   create() {
@@ -23,6 +27,9 @@ export default class Earthquake_Medium extends Phaser.Scene {
 
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    this.manager.target_array.reverse()
+    this.manager.helper.checkNewTargetsQueue()
+
     this.manager.setNewTarget()
 
     this.manager.centerTargets()
@@ -30,8 +37,6 @@ export default class Earthquake_Medium extends Phaser.Scene {
     this.manager.createStick()
     this.manager.createCircles()
     this.manager.bindInputEvents()
-
-    this.threeStepFunctionsManage = new ThreeStepFunctionsManager(this)
 
     this.manager.GUI_helper.sceneIntro(this)
   }
@@ -41,11 +46,15 @@ export default class Earthquake_Medium extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-  shake() {
-    this.earthquakeFunctionsManager.shake()
-  }
 
   swapTargetToTheNearset() {
     this.threeStepFunctionsManage.swapTargetToTheNearset()
+  }
+  handleFakeTargetsToCatch() {
+    this.confusionFunctionsManager.handleFakeTargetsToCatch()
+  }
+
+  removeCorrectTargetTextureToCatch() {
+    this.confusionFunctionsManager.removeCorrectTargetTextureToCatch()
   }
 }

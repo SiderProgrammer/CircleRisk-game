@@ -11,7 +11,7 @@ export default class levelSelect extends Phaser.Scene {
     this.progress = getProgress()
     this.pages_amount = levelsConfiguration.length
 
-    this.current_page_number = 57 //  page || this.progress.levels_scores.length - 1
+    this.current_page_number = 65 //  page || this.progress.levels_scores.length - 1
 
     if (data.page === 0) this.current_page_number = 0 // 0 is false
     this.canChangePage = false

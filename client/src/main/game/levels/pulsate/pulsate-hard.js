@@ -1,10 +1,11 @@
 import Manager from "../../main/level-manager.js"
-import EarthquakeFunctionsManager from "./functions"
-import ThreeStepFunctionsManager from "../3-step/functions"
+import PulsateFunctionsManager from "./functions"
+import NightFunctionsManager from "../night/functions"
+import BlindFunctionsManager from "../blind/functions"
 
-export default class Earthquake_Medium extends Phaser.Scene {
+export default class Pulsate_Hard extends Phaser.Scene {
   constructor() {
-    super("Earthquake_Medium")
+    super("Pulsate_Hard")
   }
 
   init(config) {
@@ -13,27 +14,30 @@ export default class Earthquake_Medium extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.earthquakeFunctionsManager = new EarthquakeFunctionsManager(this)
+    this.pulsateFunctionsManager = new PulsateFunctionsManager(this)
   }
 
   create() {
     this.manager.create()
 
     this.manager.createGUI()
-
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()
 
     this.manager.centerTargets()
-    this.manager.showTargets()
+    //this.manager.showTargets()
     this.manager.createStick()
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
-    this.threeStepFunctionsManage = new ThreeStepFunctionsManager(this)
-
     this.manager.GUI_helper.sceneIntro(this)
+
+    this.pulsateFunctionsManager.makeTargetsPulse()
+    this.nightFunctionsManager = new NightFunctionsManager(this)
+    this.blindFunctionsManager = new BlindFunctionsManager(this)
+    this.blind = this.manager.GUI_helper.createBackground(this, "black")
+    this.blind.setDepth(1).setVisible(false)
   }
   update() {
     if (!this.manager.game_started) return
@@ -41,11 +45,10 @@ export default class Earthquake_Medium extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-  shake() {
-    this.earthquakeFunctionsManager.shake()
+  darkenTargets() {
+    this.nightFunctionsManager.darkenTargets()
   }
-
-  swapTargetToTheNearset() {
-    this.threeStepFunctionsManage.swapTargetToTheNearset()
+  blindTheScreen() {
+    this.blindFunctionsManager.blindTheScreen()
   }
 }

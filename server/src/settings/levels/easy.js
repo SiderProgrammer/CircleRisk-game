@@ -416,7 +416,7 @@ module.exports = [
     info: {
       score_to_next_level: 220,
       tint: "0x06E0FF",
-      name: "ThreeStep",
+      name: "threeStep",
     },
     config: {
       background: "hell-bg",

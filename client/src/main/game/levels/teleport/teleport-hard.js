@@ -1,10 +1,11 @@
 import Manager from "../../main/level-manager.js"
-import EarthquakeFunctionsManager from "./functions"
-import ThreeStepFunctionsManager from "../3-step/functions"
+import TeleportFunctionsManager from "./functions"
+import ChameleonFunctionsManager from "../chameleon/functions"
+import CarouselFunctionsManager from "../carousel/functions"
 
-export default class Earthquake_Medium extends Phaser.Scene {
+export default class Teleport_Hard extends Phaser.Scene {
   constructor() {
-    super("Earthquake_Medium")
+    super("Teleport_Hard")
   }
 
   init(config) {
@@ -13,14 +14,14 @@ export default class Earthquake_Medium extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.earthquakeFunctionsManager = new EarthquakeFunctionsManager(this)
+    this.targets_speed = this.manager.config.targets_speed
+    this.fake_targets = []
   }
 
   create() {
     this.manager.create()
 
     this.manager.createGUI()
-
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()
@@ -31,21 +32,23 @@ export default class Earthquake_Medium extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
-    this.threeStepFunctionsManage = new ThreeStepFunctionsManager(this)
-
     this.manager.GUI_helper.sceneIntro(this)
+    this.teleportFunctionsManager = new TeleportFunctionsManager(this)
+    this.chameleonFunctionsManager = new ChameleonFunctionsManager(this)
+    this.carouselFunctionsManager = new CarouselFunctionsManager(this)
   }
   update() {
     if (!this.manager.game_started) return
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
-  }
-  shake() {
-    this.earthquakeFunctionsManager.shake()
+    this.carouselFunctionsManager.moveTargetsAndBounceOffWalls()
   }
 
-  swapTargetToTheNearset() {
-    this.threeStepFunctionsManage.swapTargetToTheNearset()
+  teleportCircle() {
+    this.teleportFunctionsManager.teleportCircle()
+  }
+  removeTargetToCatchSkin() {
+    this.chameleonFunctionsManager.removeTargetToCatchSkin()
   }
 }

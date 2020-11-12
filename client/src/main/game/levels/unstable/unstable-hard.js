@@ -1,10 +1,10 @@
 import Manager from "../../main/level-manager.js"
-import EarthquakeFunctionsManager from "./functions"
-import ThreeStepFunctionsManager from "../3-step/functions"
+import UnstableFunctionsManager from "./functions"
+import SnowFunctionsManager from "../snow/functions"
 
-export default class Earthquake_Medium extends Phaser.Scene {
+export default class Unstable_Hard extends Phaser.Scene {
   constructor() {
-    super("Earthquake_Medium")
+    super("Unstable_Hard")
   }
 
   init(config) {
@@ -13,14 +13,12 @@ export default class Earthquake_Medium extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.earthquakeFunctionsManager = new EarthquakeFunctionsManager(this)
   }
 
   create() {
     this.manager.create()
 
     this.manager.createGUI()
-
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()
@@ -31,9 +29,10 @@ export default class Earthquake_Medium extends Phaser.Scene {
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
-    this.threeStepFunctionsManage = new ThreeStepFunctionsManager(this)
-
     this.manager.GUI_helper.sceneIntro(this)
+
+    this.unstableFunctionsManager = new UnstableFunctionsManager(this)
+    this.snowFunctionsManager = new SnowFunctionsManager(this)
   }
   update() {
     if (!this.manager.game_started) return
@@ -41,11 +40,11 @@ export default class Earthquake_Medium extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-  shake() {
-    this.earthquakeFunctionsManager.shake()
+  changeRotationSpeed() {
+    this.unstableFunctionsManager.changeRotationSpeed()
   }
 
-  swapTargetToTheNearset() {
-    this.threeStepFunctionsManage.swapTargetToTheNearset()
+  slideCircle() {
+    this.snowFunctionsManager.slideCircle()
   }
 }

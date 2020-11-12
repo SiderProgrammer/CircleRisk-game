@@ -27,7 +27,7 @@ class DatabaseManager {
         // console.log(`Server started on port ${port}`);
         //   moongose.connection.close()
         // mongoose.disconnect();
-        // mongoose.connection.dropDatabase()
+        // // //   mongoose.connection.dropDatabase()
 
         setInterval(() => {
           for (let i = 1; i <= this.levels_amount; i++) {

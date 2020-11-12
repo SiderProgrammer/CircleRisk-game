@@ -1,5 +1,5 @@
 import Manager from "../../main/level-manager.js"
-import TeleportFunctionsManager from "../teleport/functions"
+import OneStepFunctionsManager from "../1-step/functions"
 
 export default class Speed_Medium extends Phaser.Scene {
   constructor() {
@@ -29,7 +29,7 @@ export default class Speed_Medium extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-    this.teleportFunctionsManager = new TeleportFunctionsManager(this)
+    this.oneStepFunctionsManager = new OneStepFunctionsManager(this)
   }
   update() {
     if (!this.manager.game_started) return
@@ -38,7 +38,7 @@ export default class Speed_Medium extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
 
-  teleportCircle() {
-    this.teleportFunctionsManager.teleportCircle()
+  swapTargetToTheNearset() {
+    this.oneStepFunctionsManager.swapTargetToTheNearset()
   }
 }

@@ -30,6 +30,7 @@ export default class Lose extends Phaser.Scene {
   updatePoints(score, perfect) {
     this.score.setText(score)
     this.perfect_score.setText(perfect)
+    this.best = this.progress.levels_scores[this.level_scene.level - 1];
   }
 
   createScore() {
@@ -89,7 +90,7 @@ export default class Lose extends Phaser.Scene {
       .setOrigin(0, 0.5)
 
     this.add
-      .text(
+  this.best = this.add.text(
         this.game.GW - 200,
         this.red_strap.y,
         this.progress.levels_scores[this.level_scene.level - 1], /// CURRENT BEST SCORE
