@@ -101,7 +101,7 @@ export default class Manager {
     const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
     //distance_from_target > 90
     if (!this.hasHitTarget(distance_from_target) && this.is_possible_miss) {
-      // this.gameOver();
+      this.gameOver()
     }
 
     if (distance_from_target < 10) {
@@ -122,7 +122,7 @@ export default class Manager {
     if (this.hasHitTarget(distance_from_target)) {
       this.levelFunctionsCaller.tryShake()
 
-      if (distance_from_target < 10) {
+      if (distance_from_target < 5) {
         this.score += 2
         this.perfect++
         this.perfectManager.showPerfectText()

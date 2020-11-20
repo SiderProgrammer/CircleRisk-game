@@ -221,7 +221,7 @@ export default class {
 
   createCircleSet(sprite) {
     this.circle_skin_number = this.getSkinNumber(sprite)
-    const circle = this.scene.add.image(this.x, this.y, sprite)
+    const circle = this.scene.add.image(this.x, this.y, sprite).setDepth(1)
     this.circle = circle
 
     this.circle.price = this.createSkinPrice(
@@ -239,6 +239,7 @@ export default class {
     const other_circle = this.scene.add
       .image(circle.x, circle.y, circle.texture.key)
       .setAlpha(0)
+      .setDepth(1)
 
     this.sets.circle.push(circle, other_circle)
 
@@ -290,7 +291,7 @@ export default class {
     this.stick_skin_number = this.getSkinNumber(sprite)
 
     const stick = this.scene.add
-      .image(this.x, this.circle.y + this.circle.displayHeight / 2, sprite)
+      .image(this.x, this.circle.y + this.circle.displayHeight / 2 - 5, sprite)
       .setAngle(90)
     stick.y += stick.displayWidth / 2
     this.stick = stick

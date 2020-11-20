@@ -11,24 +11,23 @@ export default class levelSelect extends Phaser.Scene {
     this.progress = getProgress()
     this.pages_amount = levelsConfiguration.length
 
-    this.current_page_number = 65 //  page || this.progress.levels_scores.length - 1
+    this.current_page_number = this.initPageNumber()
 
     if (data.page === 0) this.current_page_number = 0 // 0 is false
     this.canChangePage = false
   }
 
   create() {
-    // this.createBlackBorder() // hidden
+    this.black_border = this.createBlackBorder().setVisible(false)
 
-    // this.createHardLevelGlow() // hidden
+    this.page_glow = this.createPageGlow().setVisible(false)
 
-    // this.page_thorns = this.createPageThorns()
-    // this.hidePageThorns()
+    this.page_thorns = this.createPageThorns()
+    this.hidePageThorns()
 
-    // this.thorns = this.createThorns()
-    // this.hideThorns()
+    this.thorns = this.createThorns()
+    this.hideThorns()
 
-    //this.elements = this.createPageElements()
     this.current_page = this.createPage()
     this.updatePage(this.current_page)
 
@@ -40,6 +39,9 @@ export default class levelSelect extends Phaser.Scene {
     this.resetPositionsToHidden()
   }
 
+  initPageNumber() {
+    return getProgress().levels_scores.length - 1 // 0 //  page
+  }
   showAllElementsInMenuContext() {
     this.level_select_elements_in_menu_context.forEach((element) =>
       element.setVisible(true).setActive(true)
@@ -53,56 +55,45 @@ export default class levelSelect extends Phaser.Scene {
     )
   }
   createLevelSelectElementsInMenuContext(scene) {
-    // depth reasons
+    this.current_page_number = this.initPageNumber()
     this.level_select_elements_in_menu_context = []
 
-    this.background = helper
-      .createBackground(scene, "colors", "purple_5")
-      .setVisible(false)
-      .setActive(false)
+    this.background = helper.createBackground(scene, "colors", "blue_1")
+    this.updateBackgroundColor()
+
     this.level_select_elements_in_menu_context.push(this.background)
 
     this.level_select_elements_in_menu_context.push(
-      helper
-        .createBackground(scene, "levelSelect-bg")
-        .setVisible(false)
-        .setActive(false)
+      helper.createBackground(scene, "levelSelect-bg")
     )
 
     this.level_select_elements_in_menu_context.push(
-      scene.add
-        .image(
-          this.game.GW / 2 - 5,
-          this.game.GH / 2 - 90,
-          "bubbles-levelselect"
-        )
-        .setVisible(false)
-        .setActive(false)
+      scene.add.image(
+        this.game.GW / 2 - 5,
+        this.game.GH / 2 - 90,
+        "bubbles-levelselect"
+      )
     )
 
     this.level_select_elements_in_menu_context.push(
-      helper
-        .setGameSize(
-          scene.add
-            .image(this.game.GW / 2, this.game.GH, "levelselect-2")
-            .setOrigin(0.5, 1),
-          true
-        )
-        .setVisible(false)
-        .setActive(false)
+      helper.setGameSize(
+        scene.add
+          .image(this.game.GW / 2, this.game.GH, "levelselect-2")
+          .setOrigin(0.5, 1),
+        true
+      )
     )
 
     this.level_select_elements_in_menu_context.push(
-      helper
-        .setGameSize(
-          scene.add
-            .image(this.game.GW / 2, this.game.GH, "levelselect-1")
-            .setOrigin(0.5, 1),
-          true
-        )
-        .setVisible(false)
-        .setActive(false)
+      helper.setGameSize(
+        scene.add
+          .image(this.game.GW / 2, this.game.GH, "levelselect-1")
+          .setOrigin(0.5, 1),
+        true
+      )
     )
+
+    this.hideAllElementsInMenuContext()
   }
 
   animateLevelSelectHide() {
@@ -168,20 +159,16 @@ export default class levelSelect extends Phaser.Scene {
     })
   }
 
-  createHardLevelGlow() {
-    this.hard_level_glow = this.add
-      .image(
-        this.game.GW / 2,
-        this.game.GH / 2 + 200,
-        "level-select-decoration-hard"
-      )
-      .setVisible(false)
+  createPageGlow() {
+    return this.add.image(
+      this.game.GW / 2,
+      this.game.GH / 2 + 200,
+      "level-select-decoration-hard"
+    )
   }
 
   createBlackBorder() {
-    this.black_border = helper
-      .createBackground(this, "black-border")
-      .setVisible(false)
+    return helper.createBackground(this, "black-border")
   }
 
   createThorns() {
@@ -257,10 +244,10 @@ export default class levelSelect extends Phaser.Scene {
 
     const elements = {}
 
-    elements.score_bar = this.add.image(x, y, "level-select-score-bar")
+    elements.score_bar = this.add.image(x, y + 130, "level-select-score-bar")
 
     elements.divider = this.add
-      .text(x, y + 15, "/", {
+      .text(x + 55, elements.score_bar.y + 15, "/", {
         font: "50px LuckiestGuy", /// DIVIDER
       })
       .setOrigin(0.5)
@@ -268,10 +255,10 @@ export default class levelSelect extends Phaser.Scene {
     elements.current_score = this.add
       .text(
         elements.divider.x - elements.divider.displayWidth / 2,
-        elements.divider.y - 10, /// CURRENT SCORE
+        elements.divider.y - 40, /// CURRENT SCORE
         score,
         {
-          font: "80px LuckiestGuy",
+          font: "160px LuckiestGuy",
         }
       )
       .setOrigin(1, 0.5)
@@ -288,7 +275,7 @@ export default class levelSelect extends Phaser.Scene {
         elements.divider.y,
         levelsConfiguration[this.current_page_number].info.score_to_next_level, /// NEEDED SCORE
         {
-          font: "50px LuckiestGuy",
+          font: "40px LuckiestGuy",
         }
       )
       .setOrigin(0, 0.5)
@@ -303,7 +290,7 @@ export default class levelSelect extends Phaser.Scene {
   createPageIcon(x, y) {
     const icon =
       levelsConfiguration[this.current_page_number].info.name + "_icon"
-    const image = this.add.image(x, y - 80, icon)
+    const image = this.add.image(x, y - 130, icon)
     image.update = function (page_number) {
       this.setTexture(levelsConfiguration[page_number].info.name + "_icon")
     }
@@ -318,7 +305,7 @@ export default class levelSelect extends Phaser.Scene {
     ].info
 
     elements.difficulty = this.add
-      .text(x, y - displayHeight / 2 + 70, difficulty, {
+      .text(x, y - displayHeight / 2 + 260, difficulty, {
         font: "50px LuckiestGuy",
       })
       .setOrigin(0.5)
@@ -328,7 +315,7 @@ export default class levelSelect extends Phaser.Scene {
     }
 
     elements.name = this.add
-      .text(x, y - displayHeight / 2 + 220, name, {
+      .text(x, y - displayHeight / 2 + 110, name, {
         font: "50px LuckiestGuy",
       })
       .setOrigin(0.5)
@@ -354,7 +341,7 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   createPageRanking(x, y) {
-    const button = helper.createButton(this, x, y + 250, "ranking-icon", () => {
+    const button = helper.createButton(this, x, y + 400, "ranking-icon", () => {
       this.scene.launch("leaderboard", {
         level: this.current_page_number + 1,
       })
@@ -502,46 +489,45 @@ export default class levelSelect extends Phaser.Scene {
       elements.lock.setVisible(true)
     }
 
-    /*
     const difficulty =
-    levelsConfiguration[this.current_page_number].info.difficulty
+      levelsConfiguration[this.current_page_number].info.difficulty
 
-  if (difficulty === "hard" || difficulty === "medium") {
-    this.showThorns()
+    if (difficulty === "hard" || difficulty === "medium") {
+      this.showThorns()
 
-    if (difficulty === "hard") {
-      if (this.isLevelUnlocked()) {
-        this.score_bar.setTexture("level-select-score-bar-hard")
-        this.hard_level_glow.setVisible(true)
-      }
-
-      this.showPageThorns()
-      this.name_bar.setTexture("level-select-name-bar-hard")
-      this.black_border.setVisible(true)
+      difficulty === "hard"
+        ? this.showHardLevelsOrnaments(elements)
+        : this.hideHardLevelsOrnaments(elements)
     } else {
-      this.hard_level_glow.setVisible(false)
-      this.hidePageThorns()
-      this.black_border.setVisible(false)
+      this.hideHardLevelsOrnaments(elements)
+      this.hideThorns()
     }
-  } else {
-    this.hard_level_glow.setVisible(false)
-    this.hideThorns()
-    this.hidePageThorns()
-    this.black_border.setVisible(false)
   }
 
-*/
+  showHardLevelsOrnaments({ score_bar, name_bar }) {
+    this.showPageThorns()
+
+    score_bar.setTexture("level-select-score-bar-hard")
+    name_bar.setTexture("level-select-name-bar-hard")
+
+    this.page_glow.setVisible(true)
+    this.black_border.setVisible(true)
+  }
+
+  hideHardLevelsOrnaments({ score_bar, name_bar }) {
+    this.hidePageThorns()
+
+    score_bar.setTexture("level-select-score-bar")
+    name_bar.setTexture("level-select-name-bar")
+
+    this.page_glow.setVisible(false)
+    this.black_border.setVisible(false)
   }
 
   updateBackgroundColor() {
     const bg_color =
       levelsConfiguration[this.current_page_number].color || "blue_1"
-
-    helper.setGameSize(
-      this.background.setTexture("colors", bg_color),
-      true,
-      true
-    )
+    this.background.setFrame(bg_color)
   }
 
   pageClickCallback() {
@@ -577,56 +563,6 @@ export default class levelSelect extends Phaser.Scene {
     this.scene.sleep()
 
     this.resetPositionsToHidden()
-  }
-  createPageElements() {
-    const elements = []
-
-    elements[0] = this.actualPage = this.createPage()
-
-    const pageInfo = this.createPageInfo()
-
-    elements.push(...pageInfo[0], ...pageInfo[1])
-
-    const is_level_unlocked =
-      this.progress.levels_scores.length >= this.current_page_number + 1
-
-    if (is_level_unlocked) {
-      elements.push(...this.createPageRequirements())
-      elements.push(this.createPageRanking())
-    } else {
-      elements.push(this.createLevelLock())
-    }
-
-    elements.push(this.createPageIcon())
-
-    const difficulty =
-      levelsConfiguration[this.current_page_number].info.difficulty
-
-    if (difficulty === "hard" || difficulty === "medium") {
-      this.showThorns()
-
-      if (difficulty === "hard") {
-        if (is_level_unlocked) {
-          this.score_bar.setTexture("level-select-score-bar-hard")
-          this.hard_level_glow.setVisible(true)
-        }
-
-        this.showPageThorns()
-        this.name_bar.setTexture("level-select-name-bar-hard")
-        this.black_border.setVisible(true)
-      } else {
-        this.hard_level_glow.setVisible(false)
-        this.hidePageThorns()
-        this.black_border.setVisible(false)
-      }
-    } else {
-      this.hard_level_glow.setVisible(false)
-      this.hideThorns()
-      this.hidePageThorns()
-      this.black_border.setVisible(false)
-    }
-
-    return elements
   }
 
   createChangePageButtons() {

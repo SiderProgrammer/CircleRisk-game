@@ -2,7 +2,7 @@ export default class {
   constructor(scene) {
     this.scene = scene
     this.targets_speed = scene.targets_speed
-    this.speed_up_value = 0.1
+    this.speed_up_value = 0.02
   }
   isBouncingWallX(target) {
     return (
@@ -45,7 +45,7 @@ export default class {
   moveTargetsAndCircles({ x, y }) {
     this.scene.manager.target_array.forEach((target) => {
       target.x += x
-      target.y += y
+      target.y += y * 2
     })
 
     const not_rotating_circle = this.scene.manager.circles[
@@ -55,7 +55,7 @@ export default class {
     this.scene.manager.helper.centerStick(this)
 
     not_rotating_circle.x += x
-    not_rotating_circle.y += y
+    not_rotating_circle.y += y * 2
   }
   createFlyingleafs() {
     this.scene.add.particles("particles").createEmitter({

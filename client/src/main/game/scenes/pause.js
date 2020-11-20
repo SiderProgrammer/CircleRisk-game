@@ -9,7 +9,7 @@ export default class Pause extends Phaser.Scene {
     createButton(
       this,
       this.game.GW / 2,
-      this.game.GH / 2,
+      this.game.GH / 2 - 50,
       "play-button-small",
       () => {
         this.scene.stop()

@@ -9,7 +9,7 @@ const DATABASE_URL = `mongodb+srv://${srvConfig.USERNAME}:${srvConfig.PASSWORD}@
 
 class DatabaseManager {
   constructor() {
-    this.levels_amount = 50 //levelsConfig.length;
+    this.levels_amount = 20 //levelsConfig.length;
 
     this.leaderboards_refresh_time = 1000 * 60 * 1
   }
@@ -32,7 +32,7 @@ class DatabaseManager {
         setInterval(() => {
           for (let i = 1; i <= this.levels_amount; i++) {
             // score is updated 24/7 but ranks only 1 minute interval  ** TODO REPAIR IT
-            // this.updateRanksAndScores(i) /// make interval to update ranks from time to time
+            this.updateRanksAndScores(i) /// make interval to update ranks from time to time
           }
         }, this.leaderboards_refresh_time)
       }
@@ -71,7 +71,11 @@ class DatabaseManager {
             nickname: nickname,
             ...defaultAccountConfig,
           },
-          () => res.sendStatus(200)
+          () => {
+            //
+            //  account.save()
+            res.sendStatus(200)
+          }
         )
         console.log("account created")
       }
@@ -130,8 +134,12 @@ class DatabaseManager {
     // saving in account progress
     Accounts.findOne({ nickname: nickname }, (err, account) => {
       account.levels_scores[level] = score
+
+      delete account._doc.__v
+
       account.markModified("levels_scores")
-      account.save() // update
+
+      account.save()
     })
 
     res.sendStatus(200)

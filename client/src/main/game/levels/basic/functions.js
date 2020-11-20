@@ -9,7 +9,7 @@ export default class {
       y: this.scene.game.GH + 100,
 
       angle: { min: 0, max: 360 },
-      scale: { min: 0.2, max: 0.4 },
+      scale: { min: 0.05, max: 0.1 },
 
       frame: { frames: ["cube_1", "cube_2", "cube_3", "cube_4"] },
       alpha: 0.3,
@@ -21,8 +21,9 @@ export default class {
 
       speedY: { min: -200, max: -300 },
 
-      frequency: 900,
+      frequency: 1500,
       reserve: 10,
+      delay: 2500,
     })
   }
 }

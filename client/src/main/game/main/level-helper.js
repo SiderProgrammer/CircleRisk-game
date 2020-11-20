@@ -15,17 +15,12 @@ export default class LevelHelper {
         this.scene.target_array[this.scene.next_target]
       ) - this.scene.circles[1 - this.scene.current_circle].displayWidth
 
-    this.scene.stick.displayWidth = this.scene.circle_distance_to_circle
-
-    /* 
-if (this.scene.stick.displayWidth < 0) this.scene.stick.setVisible(false)
-    else this.scene.stick.setVisible(true)
-    */
+    this.scene.stick.displayWidth = this.scene.circle_distance_to_circle + 10
   }
   centerStick() {
     const radians_angle = Phaser.Math.DegToRad(this.scene.rotation_angle + 90)
     const width =
-      this.scene.circles[1 - this.scene.current_circle].displayWidth / 2
+      this.scene.circles[1 - this.scene.current_circle].displayWidth / 2 - 5
 
     this.scene.stick.setPosition(
       this.scene.circles[1 - this.scene.current_circle].x +

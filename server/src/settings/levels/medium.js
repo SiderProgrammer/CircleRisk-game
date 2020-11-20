@@ -1,3 +1,5 @@
+const config = require("./constants")
+
 module.exports = [
   {
     page_color: "red",
@@ -8,12 +10,7 @@ module.exports = [
     },
     config: {
       background: "basic-bg",
-      rotation_speed: 1,
-      acceleration: 0.01,
-      targets_amount: 8,
-      ball_distance: 175,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
 
@@ -25,12 +22,7 @@ module.exports = [
     },
     config: {
       background: "autumn-bg",
-      rotation_speed: 1,
-      acceleration: 0.02,
-      targets_amount: 8,
-      ball_distance: 110,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
       targets_speed: 0.3,
     },
   },
@@ -42,12 +34,7 @@ module.exports = [
     },
     config: {
       background: "night-bg",
-      rotation_speed: 1,
-      acceleration: 0.03,
-      targets_amount: 8,
-      ball_distance: 130,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
       target_rotate_speed: 0.5,
     },
   },
@@ -64,12 +51,7 @@ module.exports = [
         max: 3.5,
       },
       background: "snow-bg",
-      rotation_speed: 1,
-      acceleration: 0.04,
-      targets_amount: 8,
-      ball_distance: 100,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
   {
@@ -80,11 +62,7 @@ module.exports = [
     },
     config: {
       background: "reverse-bg",
-      rotation_speed: 1,
-      acceleration: 0.05,
-      targets_amount: 8,
-      ball_distance: 130,
-      additional_angle: 22.5,
+      ...config,
       starting_target: 6,
     },
   },
@@ -96,12 +74,7 @@ module.exports = [
     },
     config: {
       background: "sunny-bg",
-      rotation_speed: 0.2,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 130,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
       target_rotate_speed: 0.5,
     },
   },
@@ -113,12 +86,7 @@ module.exports = [
     },
     config: {
       background: "star-bg",
-      rotation_speed: 1,
-      acceleration: 0.07,
-      targets_amount: 8,
-      ball_distance: 140,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
 
@@ -130,12 +98,7 @@ module.exports = [
     },
     config: {
       background: "earthquake-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
       time_left: 10, //in seconds
     },
   },
@@ -147,12 +110,7 @@ module.exports = [
     },
     config: {
       background: "twins-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
   {
@@ -163,12 +121,7 @@ module.exports = [
     },
     config: {
       background: "time-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
       time_left: 10, //in seconds
     },
   },
@@ -198,12 +151,7 @@ module.exports = [
     },
     config: {
       background: "carousel-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 130,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
       targets_speed: 1,
     },
   },
@@ -215,12 +163,7 @@ module.exports = [
     },
     config: {
       background: "cosmo-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
       teleport_value: {
         min: -1,
         max: -3,
@@ -236,12 +179,7 @@ module.exports = [
     },
     config: {
       background: "many-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
 
@@ -253,12 +191,7 @@ module.exports = [
     },
     config: {
       background: "speed-bg",
-      rotation_speed: 3,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
       teleport_value: {
         min: -1,
         max: -3,
@@ -274,12 +207,7 @@ module.exports = [
     },
     config: {
       background: "flower-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 110,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
   {
@@ -290,12 +218,7 @@ module.exports = [
     },
     config: {
       background: "teleport-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
       teleport_value: {
         min: -1,
         max: -3,
@@ -311,17 +234,12 @@ module.exports = [
     },
     config: {
       background: "unstable-bg",
-      rotation_speed: 1,
+
       rotation_speed_change: {
         min: 0.5,
         max: 3.5,
       },
-
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 110,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
   {
@@ -332,12 +250,7 @@ module.exports = [
     },
     config: {
       background: "pulsate-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
   {
@@ -348,12 +261,7 @@ module.exports = [
     },
     config: {
       background: "blind-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
 
@@ -365,12 +273,7 @@ module.exports = [
     },
     config: {
       background: "sense-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
 
@@ -382,12 +285,7 @@ module.exports = [
     },
     config: {
       background: "tiny-bg",
-      rotation_speed: 3,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
 
@@ -399,12 +297,7 @@ module.exports = [
     },
     config: {
       background: "hell-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
       time_left: 10,
     },
   },
@@ -416,12 +309,7 @@ module.exports = [
     },
     config: {
       background: "hell-bg",
-      rotation_speed: 1,
-      acceleration: 0.3,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
 
@@ -433,12 +321,7 @@ module.exports = [
     },
     config: {
       background: "hell-bg",
-      rotation_speed: 1,
-      acceleration: 0.3,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
     },
   },
 ]

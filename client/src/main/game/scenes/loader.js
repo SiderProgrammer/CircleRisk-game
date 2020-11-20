@@ -44,7 +44,8 @@ export default class loader extends Phaser.Scene {
     this.loadImage("tiny-bg", "backgrounds")
     this.loadImage("teleport-bg", "backgrounds")
     this.loadImage("carousel-bg", "backgrounds")
-
+    this.loadImage("threeStep-bg", "backgrounds")
+    this.loadImage("oneStep-bg", "backgrounds")
     this.loadImage("black-border", "backgrounds")
   }
   buttons() {
@@ -158,6 +159,8 @@ export default class loader extends Phaser.Scene {
     this.loadImage("sense_icon", "levelsIcons")
     this.loadImage("tiny_icon", "levelsIcons")
     this.loadImage("carousel_icon", "levelsIcons")
+    this.loadImage("oneStep_icon", "levelsIcons")
+    this.loadImage("threeStep_icon", "levelsIcons")
   }
   loadAssets() {
     this.load.spritesheet("fingers", `${imgPath}/mix/fingers.png`, {
@@ -215,11 +218,13 @@ export default class loader extends Phaser.Scene {
   }
   createGUI() {
     createBackground(this, "loading-bg")
-    this.loading_bar = this.add.image(this.game.GW / 2, 50, "loading-bar")
-    this.add.image(this.game.GW / 2, 200, "pipcompany")
-    this.add.image(this.game.GW / 2, this.game.GH / 2, "gentelman")
+    this.loading_bar = this.add
+      .image(this.game.GW / 2, this.game.GH - 20, "loading-bar")
+      .setOrigin(0.5, 1)
+    this.add.image(this.game.GW / 2, 60, "pipcompany")
+    this.add.image(this.game.GW / 2, this.game.GH * 0.3, "gentelman")
     this.add
-      .image(this.game.GW, this.game.GH, "loading-circle-arm")
+      .image(this.game.GW + 200, this.game.GH + 90, "loading-circle-arm")
       .setOrigin(1, 1)
   }
   preload() {

@@ -12,19 +12,48 @@ export default class PerfectManager {
       .setDepth(1)
   }
   createScoreText() {
-    this.score_text = this.scene.scene.add
-      .text(this.scene.GW - 10, 20, this.getScoreText(), {
-        font: `60px ${main_font}`,
-      })
-
+    const needed_score = this.scene.scene.add
+      .text(
+        this.scene.GW - 30,
+        53,
+        this.scene.scene.score_to_next_level, /// NEEDED SCORE
+        {
+          font: `50px ${main_font}`,
+        }
+      )
       .setOrigin(1, 0)
+      .setDepth(1)
+
+    const divider = this.scene.scene.add
+      .text(
+        needed_score.x - needed_score.displayWidth - 10,
+        needed_score.y + needed_score.displayHeight / 2,
+        "/",
+        {
+          font: `50px ${main_font}`, /// DIVIDER
+        }
+      )
+      .setOrigin(1, 0.5)
+      .setDepth(1)
+
+    this.score_text = this.scene.scene.add
+      .text(
+        divider.x - divider.displayWidth - 10,
+        divider.y - 22,
+        this.getScoreText(),
+        {
+          font: `120px ${main_font}`,
+        }
+      )
+
+      .setOrigin(1, 0.5)
       .setDepth(1)
   }
   updateScoreText() {
     this.score_text.setText(this.getScoreText())
   }
   getScoreText() {
-    return this.scene.score + "/" + this.scene.scene.score_to_next_level
+    return this.scene.score //+ "/" + this.scene.scene.score_to_next_level
   }
   showPerfectText() {
     this.scene.scene.tweens.add({

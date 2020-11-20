@@ -16,6 +16,8 @@ export default class Lose extends Phaser.Scene {
 
     this.emptySpace =
       this.game.GH - (this.purple_strap.y + this.purple_strap.displayHeight / 2)
+
+    this.restartAndNextButtonY = this.game.GH - this.emptySpace / 2 + 10
     this.createButtons()
   }
 
@@ -30,7 +32,7 @@ export default class Lose extends Phaser.Scene {
   updatePoints(score, perfect) {
     this.score.setText(score)
     this.perfect_score.setText(perfect)
-    this.best = this.progress.levels_scores[this.level_scene.level - 1];
+    this.best = this.progress.levels_scores[this.level_scene.level - 1]
   }
 
   createScore() {
@@ -44,7 +46,7 @@ export default class Lose extends Phaser.Scene {
       .setOrigin(0, 0.5)
 
     const divider = this.add
-      .text(this.game.GW - 200, this.blue_strap.y, "/", {
+      .text(this.game.GW - 260, this.blue_strap.y + 20, "/", {
         font: "50px LuckiestGuy", /// DIVIDER
       })
       .setOrigin(0.5)
@@ -52,10 +54,10 @@ export default class Lose extends Phaser.Scene {
     const b = this.add
       .text(
         divider.x - divider.displayWidth / 2,
-        this.blue_strap.y, /// CURRENT SCORE
+        this.blue_strap.y - 14, /// CURRENT SCORE
         0,
         {
-          font: "90px LuckiestGuy",
+          font: "120px LuckiestGuy",
         }
       )
       .setOrigin(1, 0.5)
@@ -63,7 +65,7 @@ export default class Lose extends Phaser.Scene {
     this.add
       .text(
         divider.x + divider.displayWidth / 2,
-        this.blue_strap.y + 15,
+        divider.y,
         this.level_scene.score_to_next_level, /// NEEDED SCORE
         {
           font: "50px LuckiestGuy",
@@ -90,12 +92,13 @@ export default class Lose extends Phaser.Scene {
       .setOrigin(0, 0.5)
 
     this.add
-  this.best = this.add.text(
-        this.game.GW - 200,
+    this.best = this.add
+      .text(
+        this.score.x - this.score.displayWidth / 2,
         this.red_strap.y,
         this.progress.levels_scores[this.level_scene.level - 1], /// CURRENT BEST SCORE
         {
-          font: "60px LuckiestGuy",
+          font: "90px LuckiestGuy",
         }
       )
       .setOrigin(0.5)
@@ -113,9 +116,14 @@ export default class Lose extends Phaser.Scene {
       .setOrigin(0, 0.5)
 
     const b = this.add /// CURRENT PERFECT SCORE
-      .text(this.game.GW - 200, this.purple_strap.y, 0, {
-        font: "60px LuckiestGuy",
-      })
+      .text(
+        this.score.x - this.score.displayWidth / 2,
+        this.purple_strap.y,
+        0,
+        {
+          font: "90px LuckiestGuy",
+        }
+      )
       .setOrigin(0.5)
 
     return b
@@ -125,7 +133,8 @@ export default class Lose extends Phaser.Scene {
     const a = createButton(
       this,
       this.game.GW / 2,
-      this.game.GH - this.emptySpace / 2 - 150,
+      this.restartAndNextButtonY -
+        (this.restartAndNextButtonY - this.purple_strap.y) / 2,
       "ranking-icon",
       () => {
         if (!this.are_buttons_active) return
@@ -193,7 +202,7 @@ export default class Lose extends Phaser.Scene {
     this.next_level_button = createButton(
       this,
       this.game.GW / 2,
-      this.game.GH - this.emptySpace / 2 + 10,
+      this.restartAndNextButtonY,
       "next-button",
       () => {
         if (!this.are_buttons_active) return
@@ -201,6 +210,7 @@ export default class Lose extends Phaser.Scene {
 
         const this_level_configuration =
           levelsConfiguration[this.level_scene.level]
+
         const { name, difficulty } = this_level_configuration.info
 
         const level_scene_to_start = `${name.capitalize()}_${difficulty.capitalize()}`
@@ -230,7 +240,7 @@ export default class Lose extends Phaser.Scene {
     this.restart_button = createButton(
       this,
       this.game.GW / 2,
-      this.game.GH - this.emptySpace / 2 + 10,
+      this.restartAndNextButtonY,
       "replay-button",
       () => {
         if (!this.are_buttons_active) return

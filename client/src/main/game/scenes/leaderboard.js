@@ -61,14 +61,17 @@ export default class Leaderboard extends Phaser.Scene {
   createLevelInfo() {
     const { difficulty, name } = levelsConfiguration[this.level - 1].info
 
+    this.add.image(this.game.GW / 2, 57, "level-select-difficulty-bar")
     this.add
-      .text(this.game.GW / 2, 80, difficulty, { font: `50px ${main_font}` })
+      .text(this.game.GW / 2, 54, difficulty, { font: `50px ${main_font}` })
       .setOrigin(0.5)
+
+    this.add.image(this.game.GW / 2, 200, "glow")
     this.add.image(this.game.GW / 2, 200, name + "_icon")
   }
   createOrnaments() {
     this.add.image(this.game.GW, this.game.GH, "lb-eyes").setOrigin(1, 1)
-    this.add.image(this.game.GW / 2 - 20, this.game.GH / 2, "lb-face")
+    this.add.image(this.game.GW / 2, this.game.GH / 2 - 70, "lb-face")
     this.add.image(0, 200, "lb-bubbles").setOrigin(0, 0.5)
   }
   calculateVariablesHeightDependend() {
