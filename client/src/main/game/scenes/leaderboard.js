@@ -17,6 +17,7 @@ export default class Leaderboard extends Phaser.Scene {
   }
   init(data) {
     this.level = data.level
+    this.launcher = data.launcher
 
     this.GW = this.game.GW
     this.bars = []
@@ -26,7 +27,7 @@ export default class Leaderboard extends Phaser.Scene {
   async create() {
     helper.createBackground(this, "leaderboard-bg") // can set it to not visbile and show it later
     this.createMyScoretHighLight()
-    this.createUpperStrip()
+    const upper_strip = this.createUpperStrip()
 
     this.createHomeButton() // can set it to not visbile and show it later
     this.createLeaderboardButtons() // can set it to not visbile and show it later
@@ -43,7 +44,10 @@ export default class Leaderboard extends Phaser.Scene {
     this.createLeaderboardTexts()
     this.updateTexts(data)
     this.createOrnaments()
-    this.createLevelInfo()
+    this.createLevelInfo(
+      upper_strip.displayHeight +
+        (this.first_bar_y - upper_strip.displayHeight) / 2
+    )
 
     STOP_FETCHING_SCENE(this)
   }
@@ -57,8 +61,9 @@ export default class Leaderboard extends Phaser.Scene {
       .image(this.game.GW / 2, 0, "lb-strip")
       .setOrigin(0.5, 0)
     helper.setGameSize(strip, true)
+    return strip
   }
-  createLevelInfo() {
+  createLevelInfo(y) {
     const { difficulty, name } = levelsConfiguration[this.level - 1].info
 
     this.add.image(this.game.GW / 2, 57, "level-select-difficulty-bar")
@@ -66,8 +71,8 @@ export default class Leaderboard extends Phaser.Scene {
       .text(this.game.GW / 2, 54, difficulty, { font: `50px ${main_font}` })
       .setOrigin(0.5)
 
-    this.add.image(this.game.GW / 2, 200, "glow")
-    this.add.image(this.game.GW / 2, 200, name + "_icon")
+    this.add.image(this.game.GW / 2, y, "glow")
+    this.add.image(this.game.GW / 2, y, name + "_icon")
   }
   createOrnaments() {
     this.add.image(this.game.GW, this.game.GH, "lb-eyes").setOrigin(1, 1)
@@ -106,7 +111,7 @@ export default class Leaderboard extends Phaser.Scene {
 
     helper
       .createButton(this, x, y, "arrow-button-brown", () => {
-        //  this.scene.wake("levelSelect")
+        this.launcher.wake()
         this.scene.stop()
       })
       .setAngle(270)

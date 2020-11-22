@@ -9,7 +9,7 @@ const DATABASE_URL = `mongodb+srv://${srvConfig.USERNAME}:${srvConfig.PASSWORD}@
 
 class DatabaseManager {
   constructor() {
-    this.levels_amount = 20 //levelsConfig.length;
+    this.levels_amount = 40 //levelsConfig.length;
 
     this.leaderboards_refresh_time = 1000 * 60 * 1
   }

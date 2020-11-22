@@ -154,7 +154,7 @@ module.exports = [
     config: {
       background: "star-bg",
       ...config,
-      ball_distance: 145,
+      ball_distance: 116,
       rotation_speed: 1.15,
       acceleration: 0.035,
     },
@@ -199,7 +199,7 @@ module.exports = [
     config: {
       background: "flower-bg",
       ...config,
-      ball_distance: 120,
+      ball_distance: 116,
       rotation_speed: 1.2,
       acceleration: 0.05,
     },
@@ -208,7 +208,7 @@ module.exports = [
   {
     color: "blue_10",
     info: {
-      score_to_next_level: 30,
+      score_to_next_level: 25,
       tint: "0xF0F0F0",
       name: "snow",
     },
@@ -223,35 +223,37 @@ module.exports = [
   {
     color: "black_1",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 40,
       tint: "0x06E0FF",
       name: "threeStep",
     },
     config: {
       background: "threeStep-bg",
       ...config,
-      rotation_speed: 1.1,
-      acceleration: 0.035,
+      rotation_speed: 1.15,
+      acceleration: 0.04,
     },
   },
 
   {
     color: "pink_1",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 25,
       tint: "0x06E0FF",
       name: "chameleon",
     },
     config: {
       background: "cosmo-bg",
       ...config,
+      rotation_speed: 1.25,
+      acceleration: 0.05,
     },
   },
 
   {
     color: "yellow_5",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 30,
       tint: "0x06E0FF",
       name: "teleport",
     },
@@ -262,79 +264,93 @@ module.exports = [
         min: -1,
         max: -3,
       },
+      rotation_speed: 1.2,
+      targets_amount: 10,
+      additional_angle: 0,
+      starting_target: 2,
     },
   },
 
   {
     color: "green_7",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 25,
       tint: "0x06E0FF",
       name: "sense",
     },
     config: {
       background: "sense-bg",
       ...config,
+      rotation_speed: 1.15,
+      acceleration: 0.03,
     },
   },
 
   {
     color: "pink_2",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
       name: "clock",
     },
     config: {
       background: "time-bg",
       ...config,
-      time_left: 10, //in seconds
+      time_left: 15, //in seconds
+      rotation_speed: 1.4,
+      acceleration: 0.03,
     },
   },
 
   {
     color: "red_1",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
       name: "speed",
     },
     config: {
       background: "speed-bg",
       ...config,
+      rotation_speed: 2.3,
+      acceleration: 0.02,
     },
   },
 
   {
     color: "gray_2",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 25,
       tint: "0x06E0FF",
       name: "confusion",
     },
     config: {
       background: "many-bg",
       ...config,
+      rotation_speed: 1.25,
+      acceleration: 0.04,
     },
   },
 
   {
     color: "brown_1",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
       name: "earthquake",
     },
     config: {
       background: "earthquake-bg",
       ...config,
+      rotation_speed: 1.25,
+      acceleration: 0.05,
     },
   },
 
   {
     color: "red_2",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 15,
       tint: "0x06E0FF",
       name: "hell",
     },

@@ -12,7 +12,7 @@ export default class Pulsate_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.pulsateFunctionsManager = new PulsateFunctionsManager(this);
+    this.pulsateFunctionsManager = new PulsateFunctionsManager(this)
   }
 
   create() {
@@ -24,7 +24,7 @@ export default class Pulsate_Easy extends Phaser.Scene {
     this.manager.setNewTarget()
 
     this.manager.centerTargets()
-    //this.manager.showTargets()
+    this.manager.showTargets()
     this.manager.createStick()
     this.manager.createCircles()
     this.manager.bindInputEvents()
@@ -39,6 +39,4 @@ export default class Pulsate_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-
- 
 }

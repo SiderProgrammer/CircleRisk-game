@@ -82,6 +82,16 @@ export default class Customize extends Phaser.Scene {
       y: this.game.GH - 20,
     })
   }
+
+  showBackButton() {
+    this.tweens.add({
+      targets: this.back_button,
+      duration: 250,
+      ease: "Sine",
+      y: this.game.GH - 20,
+    })
+  }
+
   createHomeButton() {
     this.home_button = helper
       .createButton(
@@ -114,6 +124,8 @@ export default class Customize extends Phaser.Scene {
     }
   }
 
+
+  
   createMoney() {
     this.coin = this.add
       .image(this.game.GW - 10, 10, "coin")

@@ -342,11 +342,13 @@ export default class levelSelect extends Phaser.Scene {
 
   createPageRanking(x, y) {
     const button = helper.createButton(this, x, y + 400, "ranking-icon", () => {
+      this.scene.sleep()
       this.scene.launch("leaderboard", {
         level: this.current_page_number + 1,
+        launcher: this.scene,
       })
-      // this.scene.sleep()
     })
+
     return {
       ranking_button: button,
     }
@@ -494,11 +496,13 @@ export default class levelSelect extends Phaser.Scene {
 
     if (difficulty === "hard" || difficulty === "medium") {
       this.showThorns()
+      this.black_border.setVisible(true)
 
       difficulty === "hard"
         ? this.showHardLevelsOrnaments(elements)
         : this.hideHardLevelsOrnaments(elements)
     } else {
+      this.black_border.setVisible(false)
       this.hideHardLevelsOrnaments(elements)
       this.hideThorns()
     }
@@ -511,7 +515,6 @@ export default class levelSelect extends Phaser.Scene {
     name_bar.setTexture("level-select-name-bar-hard")
 
     this.page_glow.setVisible(true)
-    this.black_border.setVisible(true)
   }
 
   hideHardLevelsOrnaments({ score_bar, name_bar }) {
@@ -521,7 +524,7 @@ export default class levelSelect extends Phaser.Scene {
     name_bar.setTexture("level-select-name-bar")
 
     this.page_glow.setVisible(false)
-    this.black_border.setVisible(false)
+    // this.black_border.setVisible(false)
   }
 
   updateBackgroundColor() {

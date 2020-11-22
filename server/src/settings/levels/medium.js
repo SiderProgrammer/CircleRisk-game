@@ -4,38 +4,44 @@ module.exports = [
   {
     page_color: "red",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 35,
       tint: "0x00FF00",
       name: "basic",
     },
     config: {
       background: "basic-bg",
       ...config,
+      rotation_speed: 1.4,
+      acceleration: 0.06,
     },
   },
 
   {
     info: {
-      score_to_next_level: 20,
+      score_to_next_level: 30,
       tint: "0xFF6E00",
       name: "wind",
     },
     config: {
       background: "autumn-bg",
       ...config,
-      targets_speed: 0.3,
+      targets_speed: 0.9,
+      rotation_speed: 1.4,
+      acceleration: 0.05,
     },
   },
   {
     info: {
-      score_to_next_level: 30,
+      score_to_next_level: 20,
       tint: "0xFF00FF",
       name: "night",
     },
     config: {
       background: "night-bg",
       ...config,
-      target_rotate_speed: 0.5,
+      target_rotate_speed: 1,
+      rotation_speed: 1.3,
+      acceleration: 0.04,
     },
   },
 
@@ -104,13 +110,16 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 90,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
       name: "twins",
     },
     config: {
       background: "twins-bg",
       ...config,
+      starting_target: 6,
+      rotation_speed: 1.4,
+      acceleration: 0.06,
     },
   },
   {
@@ -145,14 +154,16 @@ module.exports = [
   */
   {
     info: {
-      score_to_next_level: 100,
+      score_to_next_level: 30,
       tint: "0x06E0FF",
       name: "carousel",
     },
     config: {
       background: "carousel-bg",
       ...config,
-      targets_speed: 1,
+      targets_speed: 2,
+      rotation_speed: 1.4,
+      acceleration: 0.06,
     },
   },
   {
@@ -228,7 +239,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 170,
+      score_to_next_level: 30,
       tint: "0x06E0FF",
       name: "unstable",
     },
@@ -236,21 +247,24 @@ module.exports = [
       background: "unstable-bg",
 
       rotation_speed_change: {
-        min: 0.5,
-        max: 3.5,
+        min: 1,
+        max: 3.75,
       },
       ...config,
+      ball_distance: 116,
     },
   },
   {
     info: {
-      score_to_next_level: 180,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
       name: "pulsate",
     },
     config: {
       background: "pulsate-bg",
       ...config,
+      rotation_speed: 1.3,
+      acceleration: 0.035,
     },
   },
   {
@@ -279,13 +293,15 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 210,
+      score_to_next_level: 15,
       tint: "0x06E0FF",
       name: "tiny",
     },
     config: {
       background: "tiny-bg",
       ...config,
+      rotation_speed: 2.2,
+      acceleration: 0.02,
     },
   },
 
@@ -303,13 +319,15 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 220,
+      score_to_next_level: 35,
       tint: "0x06E0FF",
       name: "oneStep",
     },
     config: {
-      background: "hell-bg",
+      background: "oneStep-bg",
       ...config,
+      rotation_speed: 1.1,
+      acceleration: 0.15,
     },
   },
 

@@ -74,6 +74,8 @@ export default class loader extends Phaser.Scene {
     this.loadImage("tick-button", "buttons")
     this.loadImage("arrow-button-brown", "buttons")
     this.loadImage("circle-button-brown", "buttons")
+
+    this.loadImage("back-button", "buttons")
   }
   sticks(i) {
     this.loadImage("stick_" + i, "sticks")

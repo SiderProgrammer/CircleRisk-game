@@ -27,7 +27,7 @@ export default class Pause extends Phaser.Scene {
         this.scene.stop()
 
         this.scene.get("levelSelect").hideAllElementsInMenuContext()
-
+        this.scene.stop("lose")
         scene.scene.wake("menu")
         this.scene.get("menu").showElementsSharedWithLevelSelect()
         this.scene.get("menu").animateShowMenu()
@@ -42,6 +42,7 @@ export default class Pause extends Phaser.Scene {
       () => {
         scene.scene.stop()
         this.scene.stop()
+        this.scene.stop("lose")
         scene.scene.wake("menu")
 
         scene.scene.wake("levelSelect")

@@ -1,6 +1,5 @@
 import Manager from "../../main/level-manager.js"
 import TwinsFunctionsManager from "./functions"
-import SenseFunctionsManager from "../sense/functions"
 
 export default class Twins_Medium extends Phaser.Scene {
   constructor() {
@@ -13,6 +12,7 @@ export default class Twins_Medium extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+    this.manager.rotation_direction = -1
   }
 
   create() {
@@ -21,16 +21,19 @@ export default class Twins_Medium extends Phaser.Scene {
     this.manager.createGUI()
     this.manager.createFirstTarget()
     this.manager.createTargets()
-    this.manager.setNewTarget()
 
     this.manager.centerTargets()
+    this.manager.target_array.reverse()
+    this.manager.helper.checkNewTargetsQueue()
+
+    this.manager.setNewTarget()
+
     this.manager.showTargets()
     this.manager.createStick()
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
     this.twinsFunctionsManager = new TwinsFunctionsManager(this)
-    this.senseFunctionsManager = new SenseFunctionsManager(this)
 
     const fake_target_index = this.twinsFunctionsManager.calculateFakeTargetIndex()
     this.twinsFunctionsManager.setFakeTargetToCatch(fake_target_index)
@@ -45,8 +48,5 @@ export default class Twins_Medium extends Phaser.Scene {
   }
   handleFakeTargetToCatch() {
     this.twinsFunctionsManager.handleFakeTargetToCatch()
-  }
-  hideSetForAWhile() {
-    this.senseFunctionsManager.hideSetForAWhile()
   }
 }

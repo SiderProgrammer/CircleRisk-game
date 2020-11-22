@@ -360,7 +360,7 @@ export default class Manager {
     lose_scene.unactivateButtons()
 
     this.scene.time.addEvent({
-      delay: 150, // delay to not instant miss click any button when game over
+      delay: 300, // delay to not instant miss click any button when game over
       callback: () => lose_scene.activateButtons(),
     })
 

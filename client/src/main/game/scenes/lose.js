@@ -138,8 +138,12 @@ export default class Lose extends Phaser.Scene {
       "ranking-icon",
       () => {
         if (!this.are_buttons_active) return
+
+        this.scene.sleep()
+
         this.scene.launch("leaderboard", {
           level: this.level_scene.level,
+          launcher: this.scene,
         })
 
         this.scene.bringToTop("leaderboard")

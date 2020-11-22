@@ -29,8 +29,7 @@ export default class Teleport_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-    this.teleportFunctionsManager = new TeleportFunctionsManager(this);
-
+    this.teleportFunctionsManager = new TeleportFunctionsManager(this)
   }
   update() {
     if (!this.manager.game_started) return
@@ -40,6 +39,6 @@ export default class Teleport_Easy extends Phaser.Scene {
   }
 
   teleportCircle() {
-   this.teleportFunctionsManager.teleportCircle()
+    this.teleportFunctionsManager.teleportCircle()
   }
 }
