@@ -11,7 +11,7 @@ export default class Lose extends Phaser.Scene {
   }
   create() {
     this.score = this.createScore()
-    this.createBest()
+    this.best = this.createBest()
     this.perfect_score = this.createPerfect()
 
     this.emptySpace =
@@ -29,10 +29,10 @@ export default class Lose extends Phaser.Scene {
     this.are_buttons_active = false
   }
 
-  updatePoints(score, perfect) {
+  updatePoints(score, perfect, best) {
     this.score.setText(score)
     this.perfect_score.setText(perfect)
-    this.best = this.progress.levels_scores[this.level_scene.level - 1]
+    this.best.setText(best)
   }
 
   createScore() {
@@ -91,8 +91,7 @@ export default class Lose extends Phaser.Scene {
       })
       .setOrigin(0, 0.5)
 
-    this.add
-    this.best = this.add
+    return this.add
       .text(
         this.score.x - this.score.displayWidth / 2,
         this.red_strap.y,
@@ -160,14 +159,16 @@ export default class Lose extends Phaser.Scene {
       "customize-button",
       () => {
         if (!this.are_buttons_active) return
-        this.level_scene.scene.stop()
-        this.scene.stop()
+        this.level_scene.scene.sleep()
+        this.scene.sleep()
 
         this.level_scene.scene.wake("menu")
         this.scene.get("menu").showElementsSharedWithLevelSelect()
         this.scene.get("levelSelect").hideAllElementsInMenuContext()
         this.level_scene.scene.wake("customize")
-        this.level_scene.scene.get("customize").animateCustomizeShow()
+        this.level_scene.scene
+          .get("customize")
+          .animateCustomizeShow("back", [this.level_scene.scene])
       }
     )
     createButton(

@@ -166,7 +166,7 @@ export default class loader extends Phaser.Scene {
   }
   loadAssets() {
     this.load.spritesheet("fingers", `${imgPath}/mix/fingers.png`, {
-      frameWidth: 239,
+      frameWidth: 240,
       frameHeight: 354,
     })
     this.load.spritesheet("bird", `${imgPath}/bird.png`, {

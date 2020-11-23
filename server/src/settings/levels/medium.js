@@ -54,7 +54,7 @@ module.exports = [
     config: {
       rotation_speed_change: {
         min: 0.5,
-        max: 3.5,
+        max: 3,
       },
       background: "snow-bg",
       ...config,
@@ -62,7 +62,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 50,
+      score_to_next_level: 25,
       tint: "0xFFF000",
       name: "reverse",
     },
@@ -70,29 +70,36 @@ module.exports = [
       background: "reverse-bg",
       ...config,
       starting_target: 6,
+      rotation_speed: 1.4,
+      acceleration: 0.06,
     },
   },
   {
     info: {
-      score_to_next_level: 60,
+      score_to_next_level: 20,
       tint: "0x0000FF",
       name: "sun",
     },
     config: {
       background: "sunny-bg",
       ...config,
-      target_rotate_speed: 0.5,
+      target_rotate_speed: 1,
+      rotation_speed: 1.1,
+      acceleration: 0.03,
     },
   },
   {
     info: {
-      score_to_next_level: 70,
+      score_to_next_level: 35,
       tint: "0x06E0FF",
       name: "expand",
     },
     config: {
       background: "star-bg",
       ...config,
+      ball_distance: 116,
+      rotation_speed: 1.2,
+      acceleration: 0.03,
     },
   },
 
@@ -212,13 +219,16 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 150,
+      score_to_next_level: 55,
       tint: "0x06E0FF",
       name: "flower",
     },
     config: {
       background: "flower-bg",
       ...config,
+      ball_distance: 116,
+      rotation_speed: 1.2,
+      acceleration: 0.05,
     },
   },
   {
@@ -269,7 +279,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 190,
+      score_to_next_level: 40,
       tint: "0x06E0FF",
       name: "blind",
     },

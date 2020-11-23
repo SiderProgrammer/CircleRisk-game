@@ -354,8 +354,6 @@ export default class Manager {
 
     const lose_scene = this.scene.scene.get("lose")
 
-    lose_scene.updatePoints(this.score, this.perfect)
-
     this.scene.scene.wake("lose")
     lose_scene.unactivateButtons()
 
@@ -399,6 +397,11 @@ export default class Manager {
         level: this.scene.level - 1,
       })
     }
+    lose_scene.updatePoints(
+      this.score,
+      this.perfect,
+      this.progress.levels_scores[this.scene.level - 1]
+    )
 
     saveProgress(this.progress)
 

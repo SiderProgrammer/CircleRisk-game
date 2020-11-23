@@ -12,7 +12,7 @@ export default (game) => {
   let paused_scenes = []
 
   const is_online_interval = setInterval(async () => {
-    //   console.log(game.scene.getScenes(true))
+    // console.log(game.scene.getScenes(true))
 
     if (await IS_ONLINE()) {
       if (!(await IS_SERVER_ALIVE())) {

@@ -23,20 +23,25 @@ export default class Customize extends Phaser.Scene {
     )
     this.createMoney()
     this.createHomeButton()
+    this.createBackButton()
     this.createSkinChanger()
 
     this.skinChangerManager.hideSetsWithoutAnimation()
   }
 
-  async animateCustomizeShow() {
+  async animateCustomizeShow(button = "home", scenes_to_wake = []) {
     this.showMoney()
     await this.skinChangerManager.show()
-    this.showHomeButton()
+
+    button === "home" && this.showHomeButton()
+    button === "back" && this.showBackButton()
+    this.scenes_to_wake = scenes_to_wake
   }
 
   async animateCustomizeHide() {
     this.hideMoney()
     this.hideHomeButton()
+    this.hideBackButton()
 
     await this.skinChangerManager.hide()
 
@@ -56,9 +61,17 @@ export default class Customize extends Phaser.Scene {
   }
 
   hideHomeButton() {
+    this.hideButtonTween(this.home_button)
+  }
+
+  hideBackButton() {
+    this.hideButtonTween(this.back_button)
+  }
+
+  hideButtonTween(button) {
     return new Promise((resolve) => {
       this.tweens.add({
-        targets: this.home_button,
+        targets: button,
         ease: "Sine.easeIn",
         y: `+=${this.game.GH}`,
         duration: 200,
@@ -66,7 +79,6 @@ export default class Customize extends Phaser.Scene {
       })
     })
   }
-
   hideMoney() {
     this.tweens.add({
       targets: [this.coin, this.money_text],
@@ -75,17 +87,16 @@ export default class Customize extends Phaser.Scene {
     })
   }
   showHomeButton() {
-    this.tweens.add({
-      targets: this.home_button,
-      duration: 250,
-      ease: "Sine",
-      y: this.game.GH - 20,
-    })
+    this.showButtonTween(this.home_button)
   }
 
   showBackButton() {
+    this.showButtonTween(this.back_button)
+  }
+
+  showButtonTween(button) {
     this.tweens.add({
-      targets: this.back_button,
+      targets: button,
       duration: 250,
       ease: "Sine",
       y: this.game.GH - 20,
@@ -105,7 +116,7 @@ export default class Customize extends Phaser.Scene {
 
           await this.animateCustomizeHide()
           this.home_button.resetPosition()
-
+          this.back_button.resetPosition()
           this.scene.get("menu").animateShowMenu()
           this.scene.sleep()
           this.skinChangerManager.changeSkinsToEquiped()
@@ -124,8 +135,39 @@ export default class Customize extends Phaser.Scene {
     }
   }
 
+  createBackButton() {
+    this.back_button = helper
+      .createButton(
+        this,
+        this.game.GW / 2,
+        this.game.GH,
+        "back-button",
+        async () => {
+          this.skinChangerManager.save()
+          this.hidePurchaseOffer()
 
-  
+          await this.animateCustomizeHide()
+          this.back_button.resetPosition()
+          this.home_button.resetPosition()
+          this.scenes_to_wake.forEach((s) => s.wake())
+          this.scene.wake("lose")
+          this.scene.sleep("menu")
+          //  this.scene.get("menu").animateShowMenu()
+          this.scene.sleep()
+          this.skinChangerManager.changeSkinsToEquiped()
+        }
+      )
+      .setOrigin(0.5, 1)
+
+    this.back_button.y += this.back_button.displayHeight
+
+    const hidden_y = this.back_button.y
+
+    this.back_button.resetPosition = function () {
+      this.y = hidden_y
+    }
+  }
+
   createMoney() {
     this.coin = this.add
       .image(this.game.GW - 10, 10, "coin")
@@ -155,6 +197,17 @@ export default class Customize extends Phaser.Scene {
       alpha: 1,
     })
   }
+
+  getPurchaseItemsY() {
+    let y = this.back_button.y
+    if (this.home_button.y < y) y = this.home_button.y
+
+    return (
+      this.skinChangerManager.target.price.y +
+      (y - this.skinChangerManager.target.price.y) / 2 -
+      40
+    )
+  }
   hidePurchaseOffer() {
     if (this.purchase_offer_elements.length > 0) {
       this.purchase_offer_elements.forEach((e) => e.destroy())
@@ -167,10 +220,7 @@ export default class Customize extends Phaser.Scene {
 
     this.hidePurchaseOffer()
 
-    const y =
-      this.skinChangerManager.target.price.y +
-      (this.home_button.y - this.skinChangerManager.target.price.y) / 2 -
-      40
+    const y = this.getPurchaseItemsY()
 
     this.purchase_offer_elements.push(
       this.add.image(this.game.GW / 2, y, texture)
