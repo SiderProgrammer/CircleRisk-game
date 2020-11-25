@@ -35,6 +35,7 @@ class DatabaseManager {
             this.updateRanksAndScores(i) /// make interval to update ranks from time to time
           }
         }, this.leaderboards_refresh_time)
+        //  console.timeEnd("start")
       }
     )
   }
@@ -103,7 +104,8 @@ class DatabaseManager {
       .where("rank")
       .gt(start_search_rank - 1)
       .lt(stop_search_rank + 1)
-
+      //  .lean()
+      // .explain("executionStats")
       .then((levels) => {
         const sorted_levels = levels.sort((a, b) => a.rank - b.rank)
         res.status(200).json(sorted_levels)
@@ -147,19 +149,23 @@ class DatabaseManager {
 
   saveMoney(req, res) {
     const options = {
-      upsert: true,
-      new: true, // remove unnecessary options
-      setDefaultsOnInsert: true,
+      // upsert: true,
+      //  new: true, // remove unnecessary options
+      // setDefaultsOnInsert: true,
       useFindAndModify: false,
     }
-    Accounts.findOneAndUpdate(
-      { nickname: req.body.nickname },
-      { money: req.body.money },
-      options,
-      () => {
-        res.sendStatus(200)
-      }
-    )
+  
+      Accounts.findOneAndUpdate(
+        { nickname: req.body.nickname },
+        { money: req.body.money },
+        options,
+        () => {
+          res.sendStatus(200)
+        }
+      )
+        .lean()
+        .select("money")
+ 
   }
 
   saveNewSkin(req, res) {

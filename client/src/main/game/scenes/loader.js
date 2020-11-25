@@ -2,7 +2,10 @@ import { createBackground } from "../GUI-helper"
 import { IS_SERVER_ALIVE, IS_ONLINE } from "../../shortcuts/requests"
 
 import { START_SERVER_MAINTENANCE_SCENE } from "../../fetch-helper"
+
 const imgPath = "./assets/img"
+const audioPath = "./assets/audio"
+
 export default class loader extends Phaser.Scene {
   constructor() {
     super("loader")
@@ -11,6 +14,9 @@ export default class loader extends Phaser.Scene {
 
   loadImage(name, path) {
     this.load.image(name, `${imgPath}/${path}/${name}.png`)
+  }
+  loadSound(name, path) {
+    this.load.audio(name, `${audioPath}/${path}/${name}.mp3`)
   }
 
   backgrounds() {
@@ -229,13 +235,21 @@ export default class loader extends Phaser.Scene {
       .image(this.game.GW + 200, this.game.GH + 90, "loading-circle-arm")
       .setOrigin(1, 1)
   }
+  loadAudio() {
+    this.loadSound("tap", "sound")
+  }
   preload() {
     this.createGUI()
     this.load.on("progress", this.updateBar)
-
+    this.loadAudio()
     this.loadAssets()
   }
+
   async create() {
+    this.game.audio = { sounds: {} }
+
+    this.game.audio.sounds.tap = this.sound.add("tap")
+
     if ((await IS_ONLINE()) && !(await IS_SERVER_ALIVE())) {
       START_SERVER_MAINTENANCE_SCENE(this.game.scene.getScenes(true))
     } else {

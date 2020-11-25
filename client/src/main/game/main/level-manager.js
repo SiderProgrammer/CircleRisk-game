@@ -36,7 +36,8 @@ export default class Manager {
     this.perfect = 0
 
     this.target_texture = "target_" + this.progress.current_skins["targets"]
-    this.target_to_catch_texture = "targetToCatch_1" // + this.progress.current_skins["targets"]
+    this.target_to_catch_texture =
+      "targetToCatch_" + this.progress.current_skins["targets"]
   }
 
   create() {
@@ -49,12 +50,13 @@ export default class Manager {
     this.helper.randomNextTarget()
 
     this.createTappingAnimation()
-
+    /*
     this.fps_text = this.scene.add
       .text(150, 150, this.scene.game.loop.actualFps, {
         font: "70px LuckiestGuy",
       })
       .setDepth(100)
+      */
   }
   createTappingAnimation() {
     this.scene.anims.create({
@@ -139,7 +141,9 @@ export default class Manager {
         this.showNewLevelUnlockedAlert()
       }
 
+      this.scene.game.audio.sounds.tap.play()
       this.perfectManager.updateScoreText()
+
       this.is_possible_miss = false
 
       this.levelFunctionsCaller.tryCalculateCirclesPosition()
@@ -257,7 +261,7 @@ export default class Manager {
   }
   bindInputEvents() {
     this.scene.input.on("pointerdown", ({ x, y }) => {
-      this.fps_text.setText(this.scene.game.loop.actualFps)
+      // this.fps_text.setText(this.scene.game.loop.actualFps)
 
       if (Phaser.Geom.Rectangle.Contains(this.pause_button.bounds, x, y)) return
       if (!this.game_started) {
@@ -358,7 +362,7 @@ export default class Manager {
     lose_scene.unactivateButtons()
 
     this.scene.time.addEvent({
-      delay: 300, // delay to not instant miss click any button when game over
+      delay: 400, // delay to not instant miss click any button when game over
       callback: () => lose_scene.activateButtons(),
     })
 

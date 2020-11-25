@@ -47,7 +47,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 40,
+      score_to_next_level: 25,
       tint: "0xF0F0F0",
       name: "snow",
     },
@@ -175,7 +175,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 110,
+      score_to_next_level: 60,
       tint: "0x06E0FF",
       name: "chameleon",
     },
@@ -184,8 +184,10 @@ module.exports = [
       ...config,
       teleport_value: {
         min: -1,
-        max: -3,
+        max: -2,
       },
+      rotation_speed: 1.25,
+      acceleration: 0.04,
     },
   },
 
@@ -233,7 +235,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 160,
+      score_to_next_level: 30,
       tint: "0x06E0FF",
       name: "teleport",
     },
@@ -244,6 +246,11 @@ module.exports = [
         min: -1,
         max: -3,
       },
+      rotation_speed: 1.3,
+      acceleration: 0.04,
+      targets_amount: 10,
+      additional_angle: 0,
+      starting_target: 2,
     },
   },
 
@@ -343,13 +350,14 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 220,
+      score_to_next_level: 55,
       tint: "0x06E0FF",
       name: "threeStep",
     },
     config: {
-      background: "hell-bg",
+      background: "threeStep-bg",
       ...config,
+      rotation_speed: 2,
     },
   },
 ]
