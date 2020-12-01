@@ -289,7 +289,7 @@ module.exports = [
   {
     color: "pink_2",
     info: {
-      score_to_next_level: 20,
+      score_to_next_level: 13,
       tint: "0x06E0FF",
       name: "clock",
     },
@@ -297,8 +297,6 @@ module.exports = [
       background: "time-bg",
       ...config,
       time_left: 15, //in seconds
-      rotation_speed: 1.4,
-      acceleration: 0.03,
     },
   },
 

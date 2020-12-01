@@ -41,6 +41,8 @@ export default class Carousel_Hard extends Phaser.Scene {
 
     const fake_target_index = this.twinsFunctionsManager.calculateFakeTargetIndex()
     this.twinsFunctionsManager.setFakeTargetToCatch(fake_target_index)
+
+ this.carouselFunctionsManager.extractBouncingTargets();
     /*
     this.anims.create({
       key: "boost",

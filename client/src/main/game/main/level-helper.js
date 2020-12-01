@@ -39,6 +39,7 @@ export default class LevelHelper {
   calculateMinMaxTargetsPos() {
     const pos = this.scene.target_array.reduce((acc, tar) => {
       if (acc.texture) {
+        // if acc is empty
         acc = {
           x: tar.x,
           y: tar.y,

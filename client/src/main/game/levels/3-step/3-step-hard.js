@@ -29,7 +29,7 @@ export default class ThreeStep_Hard extends Phaser.Scene {
     this.manager.createTargets()
     this.manager.target_array.reverse()
     this.manager.helper.checkNewTargetsQueue()
-
+    this.swapTargetToTheNearset()
     this.manager.setNewTarget()
 
     this.manager.centerTargets()

@@ -12,6 +12,7 @@ export default class Speed_Medium extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+    this.oneStepFunctionsManager = new OneStepFunctionsManager(this)
   }
 
   create() {
@@ -20,6 +21,7 @@ export default class Speed_Medium extends Phaser.Scene {
     this.manager.createGUI()
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    this.swapTargetToTheNearset()
     this.manager.setNewTarget()
 
     this.manager.centerTargets()
@@ -29,7 +31,6 @@ export default class Speed_Medium extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-    this.oneStepFunctionsManager = new OneStepFunctionsManager(this)
   }
   update() {
     if (!this.manager.game_started) return

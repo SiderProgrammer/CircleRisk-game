@@ -22,20 +22,20 @@ export default class levelSelect extends Phaser.Scene {
 
     this.page_glow = this.createPageGlow().setVisible(false)
 
-    this.page_thorns = this.createPageThorns()
-    this.hidePageThorns()
-
-    this.thorns = this.createThorns()
-    this.hideThorns()
-
     this.current_page = this.createPage()
-    this.updatePage(this.current_page)
 
     this.second_page = this.createPage()
     this.second_page.hide()
 
+    this.page_thorns = this.createPageThorns()
+    this.hidePageThorns()
+
+    this.thorns = this.createThornBorder()
+    this.hideThornBorder()
+    this.updatePage(this.current_page)
     this.createChangePageButtons()
     this.createHomeButton()
+
     this.resetPositionsToHidden()
   }
 
@@ -171,11 +171,12 @@ export default class levelSelect extends Phaser.Scene {
     return helper.createBackground(this, "black-border")
   }
 
-  createThorns() {
+  createThornBorder() {
     const thorns_up = this.add
       .image(0, 0, "thorns_up")
       .setOrigin(0, 0)
       .setFlipY(true)
+      .setFlipX(true)
     helper.setGameSize(thorns_up, true)
 
     const thorns_down = this.add
@@ -184,7 +185,10 @@ export default class levelSelect extends Phaser.Scene {
 
     helper.setGameSize(thorns_down, true)
 
-    const thorns_left = this.add.image(0, 0, "thorns_sides").setOrigin(0, 0)
+    const thorns_left = this.add
+      .image(0, 0, "thorns_sides")
+      .setOrigin(0, 0)
+      .setFlipY(true)
 
     helper.setGameSize(thorns_left, false, true)
 
@@ -197,7 +201,7 @@ export default class levelSelect extends Phaser.Scene {
     return [thorns_up, thorns_left, thorns_right, thorns_down]
   }
 
-  hideThorns() {
+  hideThornBorder() {
     this.thorns.forEach((thorn) => thorn.setVisible(false))
   }
 
@@ -207,13 +211,13 @@ export default class levelSelect extends Phaser.Scene {
 
   createPageThorns() {
     const thorns_up = this.add
-      .image(this.game.GW, 150, "thorns_1")
+      .image(this.game.GW + 30, 150, "thorns_1")
       .setOrigin(1, 0.5)
 
-    const thorns_mid = this.add.image(0, 450, "thorns_2").setOrigin(0, 0.5)
+    const thorns_mid = this.add.image(-30, 300, "thorns_2").setOrigin(0, 0.5)
 
     const thorns_down = this.add
-      .image(this.game.GW, this.game.GH - 200, "thorns_3")
+      .image(this.game.GW, this.game.GH - 170, "thorns_3")
       .setOrigin(1, 0.5)
 
     return [thorns_up, thorns_mid, thorns_down]
@@ -290,7 +294,7 @@ export default class levelSelect extends Phaser.Scene {
   createPageIcon(x, y) {
     const icon =
       levelsConfiguration[this.current_page_number].info.name + "_icon"
-    const image = this.add.image(x, y - 130, icon)
+    const image = this.add.image(x, y - 130, icon).setDepth(1)
     image.update = function (page_number) {
       this.setTexture(levelsConfiguration[page_number].info.name + "_icon")
     }
@@ -325,17 +329,17 @@ export default class levelSelect extends Phaser.Scene {
       this.setText(levelsConfiguration[page_number].info.name)
     }
 
-    elements.difficulty_bar = this.add.image(
-      elements.difficulty.x,
-      elements.difficulty.y,
-      "level-select-difficulty-bar"
-    )
+    elements.difficulty_bar = this.add
+      .image(
+        elements.difficulty.x,
+        elements.difficulty.y,
+        "level-select-difficulty-bar"
+      )
+      .setDepth(0.09)
 
-    elements.name_bar = this.add.image(
-      elements.name.x,
-      elements.name.y,
-      "level-select-name-bar"
-    )
+    elements.name_bar = this.add
+      .image(elements.name.x, elements.name.y, "level-select-name-bar")
+      .setDepth(0.09)
 
     return elements
   }
@@ -348,7 +352,7 @@ export default class levelSelect extends Phaser.Scene {
         launcher: this.scene,
       })
     })
-
+    this.page_glow.y = button.y
     return {
       ranking_button: button,
     }
@@ -504,7 +508,7 @@ export default class levelSelect extends Phaser.Scene {
     } else {
       this.black_border.setVisible(false)
       this.hideHardLevelsOrnaments(elements)
-      this.hideThorns()
+      this.hideThornBorder()
     }
   }
 
@@ -554,10 +558,12 @@ export default class levelSelect extends Phaser.Scene {
       score_to_next_level: this_level_configuration.info.score_to_next_level,
     })
 
-    this.scene
-      .get(level_scene_to_start)
-      .scene.launch("lose", {
-        scene: this.scene.get(level_scene_to_start),
+    const started_scene = this.scene.get(level_scene_to_start)
+    started_scene.is_first_try = true
+
+    started_scene.scene
+      .launch("lose", {
+        scene: started_scene,
       })
       .bringToTop("lose")
       .sleep("lose")

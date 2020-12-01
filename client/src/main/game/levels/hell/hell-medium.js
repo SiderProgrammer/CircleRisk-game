@@ -1,6 +1,6 @@
 import Manager from "../../main/level-manager.js"
 import HellFunctionsManager from "./functions"
-import ClockFunctionsManager from "../clock/functions.js"
+import ThreeStepFunctionsManager from "../3-step/functions"
 
 export default class Hell_Medium extends Phaser.Scene {
   constructor() {
@@ -14,6 +14,7 @@ export default class Hell_Medium extends Phaser.Scene {
     this.manager = new Manager(this, config.config)
     this.manager.init()
     this.time_left = this.manager.config.time_left
+    this.threeStepFunctionsManage = new ThreeStepFunctionsManager(this)
   }
 
   create() {
@@ -22,6 +23,7 @@ export default class Hell_Medium extends Phaser.Scene {
     this.manager.createGUI()
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    this.swapTargetToTheNearset()
     this.manager.setNewTarget()
 
     this.manager.centerTargets()
@@ -34,10 +36,6 @@ export default class Hell_Medium extends Phaser.Scene {
 
     this.hellFunctionsManager = new HellFunctionsManager(this)
     this.hellFunctionsManager.createBlame()
-
-    this.clockFunctionsManager = new ClockFunctionsManager(this)
-    this.clockFunctionsManager.createTimerText()
-    this.clockFunctionsManager.setTimer()
   }
   update() {
     if (!this.manager.game_started) return
@@ -48,5 +46,9 @@ export default class Hell_Medium extends Phaser.Scene {
 
   hideTargets() {
     this.hellFunctionsManager.hideTargets()
+  }
+
+  swapTargetToTheNearset() {
+    this.threeStepFunctionsManage.swapTargetToTheNearset()
   }
 }

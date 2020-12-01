@@ -4,13 +4,15 @@ module.exports = [
   {
     page_color: "red",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 60,
       tint: "0x00FF00",
       name: "basic",
     },
     config: {
       background: "basic-bg",
       ...config,
+      rotation_speed: 1.75,
+      acceleration: 0.04,
     },
   },
 
@@ -23,7 +25,9 @@ module.exports = [
     config: {
       background: "autumn-bg",
       ...config,
-      targets_speed: 0.3,
+      targets_speed: 1.5,
+      rotation_speed: 1.75,
+      acceleration: 0.04,
     },
   },
   {
@@ -35,8 +39,9 @@ module.exports = [
     config: {
       background: "night-bg",
       ...config,
-
-      target_rotate_speed: 0.5,
+      rotation_speed: 1.5,
+      target_rotate_speed: 1.5,
+      acceleration: 0.1,
     },
   },
 
@@ -115,14 +120,16 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 100,
+      score_to_next_level: 75,
       tint: "0x06E0FF",
       name: "carousel",
     },
     config: {
       background: "carousel-bg",
       ...config,
-      targets_speed: 1,
+      targets_speed: 2.5,
+      rotation_speed: 1.75,
+      acceleration: 0.04,
     },
   },
   {

@@ -27,6 +27,11 @@ export default class Customize extends Phaser.Scene {
     this.createSkinChanger()
 
     this.skinChangerManager.hideSetsWithoutAnimation()
+
+    this.events.on("wake", () => {
+      this.progress.money = getProgress().money
+      this.money_text.setText(this.progress.money)
+    })
   }
 
   async animateCustomizeShow(button = "home", scenes_to_wake = []) {

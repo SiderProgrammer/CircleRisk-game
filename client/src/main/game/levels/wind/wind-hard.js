@@ -44,6 +44,7 @@ export default class Wind_Hard extends Phaser.Scene {
 
     this.manager.GUI_helper.sceneIntro(this)
     this.pulsateFunctionsManager.makeTargetsPulse()
+    this.windFunctionsManager.extractBouncingTargets()
   }
   update() {
     if (!this.manager.game_started) return

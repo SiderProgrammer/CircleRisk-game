@@ -13,6 +13,7 @@ export default class Flower_Hard extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+    this.oneStepFunctionsManager = new OneStepFunctionsManager(this)
   }
 
   create() {
@@ -21,6 +22,7 @@ export default class Flower_Hard extends Phaser.Scene {
     this.manager.createGUI()
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    this.swapTargetToTheNearset()
     this.manager.setNewTarget()
 
     this.manager.centerTargets()
@@ -30,7 +32,7 @@ export default class Flower_Hard extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-    this.oneStepFunctionsManager = new OneStepFunctionsManager(this)
+
     this.unstableFunctionsManager = new UnstableFunctionsManager(this)
   }
   update() {

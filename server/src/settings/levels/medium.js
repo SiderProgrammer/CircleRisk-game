@@ -105,14 +105,16 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 80,
+      score_to_next_level: 60,
       tint: "0x06E0FF",
       name: "earthquake",
     },
     config: {
       background: "earthquake-bg",
       ...config,
-      time_left: 10, //in seconds
+      rotation_speed: 1.2,
+      acceleration: 0.03,
+      // time_left: 10, //in seconds
     },
   },
   {
@@ -131,14 +133,16 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 18,
       tint: "0x06E0FF",
       name: "clock",
     },
     config: {
       background: "time-bg",
       ...config,
-      time_left: 10, //in seconds
+      time_left: 15, //in seconds
+      rotation_speed: 1.1,
+      acceleration: 0.03,
     },
   },
   /*
@@ -193,29 +197,28 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 130,
+      score_to_next_level: 35,
       tint: "0x06E0FF",
       name: "confusion",
     },
     config: {
       background: "many-bg",
       ...config,
+      rotation_speed: 1.15,
     },
   },
 
   {
     info: {
-      score_to_next_level: 140,
+      score_to_next_level: 45,
       tint: "0x06E0FF",
       name: "speed",
     },
     config: {
       background: "speed-bg",
       ...config,
-      teleport_value: {
-        min: -1,
-        max: -3,
-      },
+      rotation_speed: 5,
+      acceleration: 0.04,
     },
   },
 
@@ -235,7 +238,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 30,
+      score_to_next_level: 25,
       tint: "0x06E0FF",
       name: "teleport",
     },
@@ -298,13 +301,14 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 200,
+      score_to_next_level: 10,
       tint: "0x06E0FF",
       name: "sense",
     },
     config: {
       background: "sense-bg",
       ...config,
+      starting_target: 6,
     },
   },
 
@@ -324,7 +328,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 220,
+      score_to_next_level: 40,
       tint: "0x06E0FF",
       name: "hell",
     },

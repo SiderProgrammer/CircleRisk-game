@@ -31,7 +31,6 @@ export default class Basic_Hard extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-   
   }
   update() {
     if (!this.manager.game_started) return

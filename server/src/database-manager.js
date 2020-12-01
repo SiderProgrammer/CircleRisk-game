@@ -85,7 +85,6 @@ class DatabaseManager {
 
   getAccountProgress(req, res) {
     Accounts.findOne({ nickname: req.body.nickname }).then((progress) => {
-      console.log(progress)
       res.status(200).json(progress)
     })
   }
@@ -154,18 +153,17 @@ class DatabaseManager {
       // setDefaultsOnInsert: true,
       useFindAndModify: false,
     }
-  
-      Accounts.findOneAndUpdate(
-        { nickname: req.body.nickname },
-        { money: req.body.money },
-        options,
-        () => {
-          res.sendStatus(200)
-        }
-      )
-        .lean()
-        .select("money")
- 
+
+    Accounts.findOneAndUpdate(
+      { nickname: req.body.nickname },
+      { money: req.body.money },
+      options,
+      () => {
+        res.sendStatus(200)
+      }
+    )
+      .lean()
+      .select("money")
   }
 
   saveNewSkin(req, res) {

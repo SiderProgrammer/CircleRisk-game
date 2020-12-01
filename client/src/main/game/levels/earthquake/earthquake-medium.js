@@ -14,6 +14,7 @@ export default class Earthquake_Medium extends Phaser.Scene {
     this.manager = new Manager(this, config.config)
     this.manager.init()
     this.earthquakeFunctionsManager = new EarthquakeFunctionsManager(this)
+    this.threeStepFunctionsManage = new ThreeStepFunctionsManager(this)
   }
 
   create() {
@@ -23,6 +24,7 @@ export default class Earthquake_Medium extends Phaser.Scene {
 
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    this.swapTargetToTheNearset()
     this.manager.setNewTarget()
 
     this.manager.centerTargets()
@@ -30,8 +32,6 @@ export default class Earthquake_Medium extends Phaser.Scene {
     this.manager.createStick()
     this.manager.createCircles()
     this.manager.bindInputEvents()
-
-    this.threeStepFunctionsManage = new ThreeStepFunctionsManager(this)
 
     this.manager.GUI_helper.sceneIntro(this)
   }

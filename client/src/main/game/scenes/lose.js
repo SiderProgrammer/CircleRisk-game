@@ -226,11 +226,12 @@ export default class Lose extends Phaser.Scene {
           score_to_next_level:
             this_level_configuration.info.score_to_next_level,
         })
+        const started_scene = this.scene.get(level_scene_to_start)
+        started_scene.is_first_try = true
 
-        this.scene
-          .get(level_scene_to_start)
-          .scene.launch("lose", {
-            scene: this.scene.get(level_scene_to_start),
+        started_scene.scene
+          .launch("lose", {
+            scene: started_scene,
           })
           .bringToTop("lose")
           .sleep("lose")

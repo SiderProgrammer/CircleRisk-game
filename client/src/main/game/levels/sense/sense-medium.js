@@ -1,6 +1,6 @@
 import Manager from "../../main/level-manager.js"
 import SenseFunctionsManager from "./functions"
-import HellFunctionsManager from "../hell/functions"
+import NightFunctionsManager from "../night/functions"
 
 export default class Sense_Medium extends Phaser.Scene {
   constructor() {
@@ -13,6 +13,7 @@ export default class Sense_Medium extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+    this.manager.rotation_direction = -1
   }
 
   create() {
@@ -21,6 +22,9 @@ export default class Sense_Medium extends Phaser.Scene {
     this.manager.createGUI()
     this.manager.createFirstTarget()
     this.manager.createTargets()
+
+    this.manager.target_array.reverse()
+    this.manager.helper.checkNewTargetsQueue()
     this.manager.setNewTarget()
 
     this.manager.centerTargets()
@@ -31,9 +35,9 @@ export default class Sense_Medium extends Phaser.Scene {
 
     this.manager.GUI_helper.sceneIntro(this)
 
-    this.senseFunctionsManager = new SenseFunctionsManager(this);
-    this.hellFunctionsManager = new HellFunctionsManager(this)
-   
+    this.senseFunctionsManager = new SenseFunctionsManager(this)
+    this.nightFunctionsManager = new NightFunctionsManager(this)
+    this.nightFunctionsManager.darkenTargets()
   }
   update() {
     if (!this.manager.game_started) return
@@ -41,10 +45,10 @@ export default class Sense_Medium extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-hideSetForAWhile() {
-  this.senseFunctionsManager.hideSetForAWhile()
-}
-hideTargets() {
-    this.hellFunctionsManager.hideTargets()
-   }
+  hideSetForAWhile() {
+    this.senseFunctionsManager.hideSetForAWhile()
+  }
+  darkenTargets() {
+    this.nightFunctionsManager.darkenTargets()
+  }
 }

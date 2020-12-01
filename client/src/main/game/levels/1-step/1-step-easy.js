@@ -22,6 +22,7 @@ export default class OneStep_Easy extends Phaser.Scene {
 
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    this.swapTargetToTheNearset()
     this.manager.setNewTarget()
 
     this.manager.centerTargets()

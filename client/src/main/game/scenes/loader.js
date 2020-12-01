@@ -15,8 +15,8 @@ export default class loader extends Phaser.Scene {
   loadImage(name, path) {
     this.load.image(name, `${imgPath}/${path}/${name}.png`)
   }
-  loadSound(name, path) {
-    this.load.audio(name, `${audioPath}/${path}/${name}.mp3`)
+  loadSound(name, path, extension) {
+    this.load.audio(name, `${audioPath}/${path}/${name}.${extension}`)
   }
 
   backgrounds() {
@@ -236,7 +236,9 @@ export default class loader extends Phaser.Scene {
       .setOrigin(1, 1)
   }
   loadAudio() {
-    this.loadSound("tap", "sound")
+    this.loadSound("tap", "sound", "mp3")
+    this.loadSound("perfect_1", "sound", "ogg")
+    this.loadSound("perfect_2", "sound", "ogg")
   }
   preload() {
     this.createGUI()
@@ -249,6 +251,12 @@ export default class loader extends Phaser.Scene {
     this.game.audio = { sounds: {} }
 
     this.game.audio.sounds.tap = this.sound.add("tap")
+    this.game.audio.sounds.perfect_1 = this.sound
+      .add("perfect_1")
+      .setVolume(0.75)
+    this.game.audio.sounds.perfect_2 = this.sound
+      .add("perfect_2")
+      .setVolume(0.75)
 
     if ((await IS_ONLINE()) && !(await IS_SERVER_ALIVE())) {
       START_SERVER_MAINTENANCE_SCENE(this.game.scene.getScenes(true))

@@ -38,6 +38,7 @@ export default class Wind_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+    this.windFunctionsManager.extractBouncingTargets()
   }
   update() {
     if (!this.manager.game_started) return

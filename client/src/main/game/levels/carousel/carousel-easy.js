@@ -34,6 +34,7 @@ export default class Carousel_Easy extends Phaser.Scene {
 
     this.manager.GUI_helper.sceneIntro(this)
 
+    this.carouselFunctionsManager.extractBouncingTargets()
   }
   update() {
     if (!this.manager.game_started) return

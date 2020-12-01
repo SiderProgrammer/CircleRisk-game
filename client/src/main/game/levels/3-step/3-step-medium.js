@@ -22,6 +22,7 @@ export default class ThreeStep_Medium extends Phaser.Scene {
 
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    this.swapTargetToTheNearset()
     this.manager.setNewTarget()
 
     this.manager.centerTargets()

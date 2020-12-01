@@ -35,7 +35,7 @@ export default class Clock_Medium extends Phaser.Scene {
     this.clockFunctionsManager = new ClockFunctionsManager(this)
     this.clockFunctionsManager.createTimerText()
     this.clockFunctionsManager.setTimer()
-    
+
     this.manager.GUI_helper.sceneIntro(this)
   }
   update() {
@@ -45,5 +45,7 @@ export default class Clock_Medium extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
 
-
+  removeTargetToCatchSkin() {
+    this.chameleonFunctionsManager.removeTargetToCatchSkin()
+  }
 }

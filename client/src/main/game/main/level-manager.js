@@ -32,6 +32,7 @@ export default class Manager {
     this.rotation_speed = this.config.rotation_speed
     this.intro_duration = 1000
 
+    this.perfect_combo = 0
     this.score = 0
     this.perfect = 0
 
@@ -48,8 +49,8 @@ export default class Manager {
 
     this.helper = new LevelHelper(this)
     this.helper.randomNextTarget()
-
-    this.createTappingAnimation()
+  
+    if (this.scene.is_first_try) this.createTappingAnimation()
     /*
     this.fps_text = this.scene.add
       .text(150, 150, this.scene.game.loop.actualFps, {
@@ -59,6 +60,7 @@ export default class Manager {
       */
   }
   createTappingAnimation() {
+    this.scene.is_first_try = false
     this.scene.anims.create({
       key: "tap",
       frames: this.scene.anims.generateFrameNumbers("fingers", {
@@ -101,7 +103,7 @@ export default class Manager {
   }
   checkIfMissedTarget() {
     const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
-    //distance_from_target > 90
+
     if (!this.hasHitTarget(distance_from_target) && this.is_possible_miss) {
       this.gameOver()
     }
@@ -127,12 +129,17 @@ export default class Manager {
       if (distance_from_target < 5) {
         this.score += 2
         this.perfect++
+        this.perfect_combo++
         this.perfectManager.showPerfectText()
         this.perfectManager.showPerfectEffect()
+        this.perfect_combo >= 3
+          ? this.scene.game.audio.sounds.perfect_2.play()
+          : this.scene.game.audio.sounds.perfect_1.play()
       } else {
         this.score++
+        this.perfect_combo = 0
       }
-
+      this.scene.game.audio.sounds.tap.play()
       if (
         this.isNewLevelNeededScoreReached() &&
         !this.level_unlock_alert_shown
@@ -141,7 +148,6 @@ export default class Manager {
         this.showNewLevelUnlockedAlert()
       }
 
-      this.scene.game.audio.sounds.tap.play()
       this.perfectManager.updateScoreText()
 
       this.is_possible_miss = false
@@ -265,12 +271,14 @@ export default class Manager {
 
       if (Phaser.Geom.Rectangle.Contains(this.pause_button.bounds, x, y)) return
       if (!this.game_started) {
-        this.finger.destroy()
+        if(this.finger)this.finger.destroy()
         this.game_started = true
 
         this.levelFunctionsCaller.tryBlindTheScreen()
       } else this.changeBall()
     })
+
+    this.perfectManager.createPerfectEmitter() // it should be in each level at the end of create function
   }
 
   updateRotationAngle() {

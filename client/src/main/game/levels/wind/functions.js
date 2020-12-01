@@ -18,22 +18,14 @@ export default class {
   }
 
   moveTargetsAndBounceOffWalls() {
-    if (
-      this.scene.manager.target_array.some((target) =>
-        this.isBouncingWallX(target)
-      )
-    ) {
+    if (this.targetsX.some((target) => this.isBouncingWallX(target))) {
       this.targets_speed.x = -this.targets_speed.x
       this.targets_speed.x > 0
         ? (this.targets_speed.x += this.speed_up_value)
         : (this.targets_speed.x -= this.speed_up_value)
     }
 
-    if (
-      this.scene.manager.target_array.some((target) =>
-        this.isBouncingWallY(target)
-      )
-    ) {
+    if (this.targetsY.some((target) => this.isBouncingWallY(target))) {
       this.targets_speed.y = -this.targets_speed.y
       this.targets_speed.y > 0
         ? (this.targets_speed.y += this.speed_up_value)
@@ -79,5 +71,26 @@ export default class {
       frequency: 600,
       reserve: 10,
     })
+  }
+
+  extractBouncingTargets() {
+    this.targetsX = []
+    this.targetsY = []
+
+    const pos = this.scene.manager.helper.calculateMinMaxTargetsPos()
+
+    this.targetsX.push(
+      this.scene.manager.helper.findTargetIndexByPosition({ x: pos.minX })
+    )
+    this.targetsX.push(
+      this.scene.manager.helper.findTargetIndexByPosition({ x: pos.x })
+    )
+
+    this.targetsY.push(
+      this.scene.manager.helper.findTargetIndexByPosition({ y: pos.minY })
+    )
+    this.targetsY.push(
+      this.scene.manager.helper.findTargetIndexByPosition({ y: pos.y })
+    )
   }
 }

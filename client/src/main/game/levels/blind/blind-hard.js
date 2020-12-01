@@ -43,6 +43,7 @@ export default class Blind_Hard extends Phaser.Scene {
     this.blind.setDepth(1).setVisible(false)
 
     this.windFunctionsManager = new WindFunctionsManager(this)
+    this.windFunctionsManager.extractBouncingTargets()
   }
   update() {
     if (!this.manager.game_started) return

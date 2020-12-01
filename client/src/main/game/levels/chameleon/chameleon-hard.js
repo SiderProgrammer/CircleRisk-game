@@ -36,6 +36,7 @@ export default class Chameleon_Hard extends Phaser.Scene {
     this.chameleonFunctionsManager = new ChameleonFunctionsManager(this)
     this.teleportFunctionsManager = new TeleportFunctionsManager(this)
     this.carouselFunctionsManager = new CarouselFunctionsManager(this)
+    this.carouselFunctionsManager.extractBouncingTargets();
   }
   update() {
     if (!this.manager.game_started) return
