@@ -239,6 +239,34 @@ export default class loader extends Phaser.Scene {
     this.loadSound("tap", "sound", "mp3")
     this.loadSound("perfect_1", "sound", "ogg")
     this.loadSound("perfect_2", "sound", "ogg")
+    this.loadSound("start_sound", "sound", "mp3")
+    this.loadSound("restart_sound", "sound", "ogg")
+    this.loadSound("new_level_sound", "sound", "ogg")
+    this.loadSound("buy_sound", "sound", "ogg")
+    this.loadSound("menu_theme", "music", "ogg")
+  }
+
+  addAudio() {
+    this.game.audio = { sounds: {}, music: {} }
+
+    const addMusic = (name) => {
+      return (this.game.audio.music[name] = this.sound.add(name))
+    }
+
+    addMusic("menu_theme")
+
+    const addSound = (name) => {
+      return (this.game.audio.sounds[name] = this.sound.add(name))
+    }
+    //addSound([tap,perfect_1,perfect_2]) // i could do like that but i have to set volume some sounds
+    addSound("tap")
+    addSound("perfect_1").setVolume(0.75)
+    addSound("perfect_2").setVolume(0.75)
+    addSound("start_sound")
+    addSound("new_level_sound")
+    addSound("restart_sound")
+    addSound("buy_sound")
+   
   }
   preload() {
     this.createGUI()
@@ -248,16 +276,7 @@ export default class loader extends Phaser.Scene {
   }
 
   async create() {
-    this.game.audio = { sounds: {} }
-
-    this.game.audio.sounds.tap = this.sound.add("tap")
-    this.game.audio.sounds.perfect_1 = this.sound
-      .add("perfect_1")
-      .setVolume(0.75)
-    this.game.audio.sounds.perfect_2 = this.sound
-      .add("perfect_2")
-      .setVolume(0.75)
-
+    this.addAudio()
     if ((await IS_ONLINE()) && !(await IS_SERVER_ALIVE())) {
       START_SERVER_MAINTENANCE_SCENE(this.game.scene.getScenes(true))
     } else {

@@ -120,11 +120,9 @@ export default class {
       const option = Phaser.Math.Between(0, 1)
 
       let y = 0
-      option ? (y = this.scene.game.GH - 250) : (y = 250)
+      option ? (y = this.scene.game.GH / 3 - 100) : (y = -50)
 
-      const tween_y_value =
-        this.scene.game.GH / 2 -
-        Phaser.Math.Between(0, this.scene.game.GH * 0.4)
+      const tween_y_value = Phaser.Math.Between(30, this.scene.game.GH / 3)
 
       let tween_string = ""
       option

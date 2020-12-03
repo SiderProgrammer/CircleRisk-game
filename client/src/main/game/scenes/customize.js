@@ -63,6 +63,8 @@ export default class Customize extends Phaser.Scene {
     this.skinChangerManager.createTargetSet(
       "target_" + this.progress.current_skins["targets"]
     )
+
+    this.skinChangerManager.createPrices()
   }
 
   hideHomeButton() {
@@ -272,6 +274,7 @@ export default class Customize extends Phaser.Scene {
       })
 
       if (response.ok) {
+        this.game.audio.sounds.buy_sound.play()
         this.hidePurchaseOffer()
         skin.tick.setAlpha(1)
         skin.price.setAlpha(0)

@@ -14,6 +14,7 @@ export default class {
     this.hidden_scale = 0.7
     this.shift_value = 90
     this.shift_duration = 200
+    this.skin_change_tween = "Power1"
     this.can_change = true
 
     this.positions = {
@@ -29,6 +30,7 @@ export default class {
     }
 
     this.hidden_y = this.scene.game.GH + 200
+    this.arrows_shift = 135
   }
 
   getSkinNumber(sprite) {
@@ -106,29 +108,61 @@ export default class {
     }
   }
 
+  createPrices() {
+    const x = this.calculatePriceBGX()
+
+    this.circle.price = this.createSkinPrice(
+      x,
+      this.circle.y,
+      this.getSkinFromSetup("circles", this.circle_skin_number).cost
+    )
+    this.circle.tick = this.createSkinTick(x, this.circle.y)
+    this.updateTick(this.circle)
+
+    this.stick.price = this.createSkinPrice(
+      x,
+      this.stick.y,
+      this.getSkinFromSetup("sticks", this.stick_skin_number).cost
+    )
+
+    this.stick.tick = this.createSkinTick(x, this.stick.y)
+    this.updateTick(this.stick)
+
+    this.target.price = this.createSkinPrice(
+      x,
+      this.target.y,
+      this.getSkinFromSetup("targets", this.target_skin_number).cost
+    )
+
+    this.target.tick = this.createSkinTick(x, this.target.y)
+    this.updateTick(this.target)
+  }
+
+  createSkinTick(x, y) {
+    return this.scene.add.image(x, y, "tick").setAlpha(0)
+  }
+  calculatePriceBGX() {
+    return (
+      this.scene.game.GW - (this.scene.game.GW - this.sets.circle[3].x) / 2 - 10
+    ) // right arrow
+  }
   createSkinPrice(x, y, price) {
     const text = this.scene.add
-      .text(x, y, price, {
-        font: `70px ${main_font}`,
+      .text(x, y - 5, price, {
+        font: `60px ${main_font}`,
       })
+      .setAlpha(0)
       .setOrigin(0.5, 0.5)
-      .setAlpha(0)
 
-    text.bg = this.scene.add
-      .image(x + 180, y, "price-bg")
-      .setOrigin(0, 0.5)
-      .setAlpha(0)
+    text.bg = this.scene.add.image(x, y, "price-bg").setAlpha(0)
     text.bg.displayHeight = text.displayHeight + 20
 
-    text.x = text.bg.x + text.bg.displayWidth * 0.5
-
     text.getCoinX = function () {
-      return this.bg.x + this.bg.displayWidth + 40
+      return this.bg.x + this.bg.displayWidth / 2 + 10
     }
 
     text.coin = this.scene.add
-      .image(text.getCoinX(), text.y, "coin")
-      .setOrigin(0, 0.5)
+      .image(text.getCoinX(), text.y + 5, "coin")
       .setAlpha(0)
 
     return text
@@ -136,10 +170,15 @@ export default class {
 
   updateSkinPrice(price_text, price) {
     price_text.setText(price)
-
-    price_text.bg.displayWidth = price_text.displayWidth + 60
-    price_text.x = price_text.bg.x + price_text.bg.displayWidth * 0.5
+    price_text.bg.displayWidth = price_text.displayWidth + 90
+    price_text.x = price_text.bg.x
     price_text.coin.x = price_text.getCoinX()
+  }
+
+  updateTick(sprite) {
+    sprite.price.bg.displayWidth = sprite.tick.displayWidth + 100
+    sprite.tick.setPosition(sprite.price.bg.x, sprite.price.bg.y)
+    sprite.price.coin.x = sprite.price.getCoinX()
   }
 
   hideSkinsPrices() {
@@ -168,13 +207,6 @@ export default class {
       alpha: 0,
       duration: 150,
     })
-  }
-
-  createSkinTick(x, y) {
-    return this.scene.add
-      .image(x + 180, y, "tick")
-      .setOrigin(0, 0.5)
-      .setAlpha(0)
   }
 
   showTickAndMoney(tick) {
@@ -207,32 +239,10 @@ export default class {
     this.updateTick(this.target)
   }
 
-  updateTick(sprite) {
-    sprite.price.bg.displayWidth = sprite.tick.displayWidth + 70
-    sprite.tick.setPosition(
-      sprite.price.bg.x -
-        sprite.tick.displayWidth / 2 +
-        sprite.price.bg.displayWidth * 0.5,
-      sprite.price.bg.y
-    )
-
-    sprite.price.coin.x = sprite.price.getCoinX()
-  }
-
   createCircleSet(sprite) {
     this.circle_skin_number = this.getSkinNumber(sprite)
     const circle = this.scene.add.image(this.x, this.y, sprite).setDepth(1)
     this.circle = circle
-
-    this.circle.price = this.createSkinPrice(
-      this.circle.x,
-      this.circle.y,
-      this.getSkinFromSetup("circles", this.circle_skin_number).cost
-    )
-
-    this.circle.tick = this.createSkinTick(this.circle.x, this.circle.y)
-
-    this.updateTick(this.circle)
 
     this.positions.circle = circle.y
 
@@ -246,7 +256,7 @@ export default class {
     this.sets.circle.push(
       createButton(
         this.scene,
-        circle.x - 100,
+        circle.x - this.arrows_shift,
         circle.y,
         "arrow-button-blue",
         () => {
@@ -268,7 +278,7 @@ export default class {
     this.sets.circle.push(
       createButton(
         this.scene,
-        circle.x + 100,
+        circle.x + this.arrows_shift,
         circle.y,
         "arrow-button-blue",
         () => {
@@ -296,16 +306,6 @@ export default class {
     stick.y += stick.displayWidth / 2
     this.stick = stick
 
-    this.stick.tick = this.createSkinTick(this.stick.x, this.stick.y)
-
-    this.stick.price = this.createSkinPrice(
-      this.stick.x,
-      this.stick.y,
-      this.getSkinFromSetup("sticks", this.stick_skin_number).cost
-    )
-
-    this.updateTick(this.stick)
-
     const other_stick = this.scene.add
       .image(stick.x, stick.y, stick.texture.key)
       .setAngle(90)
@@ -317,7 +317,7 @@ export default class {
     this.sets.stick.push(
       createButton(
         this.scene,
-        stick.x - 100,
+        stick.x - this.arrows_shift,
         stick.y,
         "arrow-button-blue",
         () => {
@@ -337,7 +337,7 @@ export default class {
     this.sets.stick.push(
       createButton(
         this.scene,
-        stick.x + 100,
+        stick.x + this.arrows_shift,
         stick.y,
         "arrow-button-blue",
         () => {
@@ -368,16 +368,6 @@ export default class {
     )
     this.target = target
 
-    this.target.tick = this.createSkinTick(this.target.x, this.target.y)
-
-    this.target.price = this.createSkinPrice(
-      this.target.x,
-      this.target.y,
-      this.getSkinFromSetup("targets", this.target_skin_number).cost
-    )
-
-    this.updateTick(this.target)
-
     const other_target = this.scene.add.image(
       target.x,
       target.y,
@@ -389,7 +379,7 @@ export default class {
     this.sets.target.push(
       createButton(
         this.scene,
-        target.x - 100,
+        target.x - this.arrows_shift,
         target.y,
         "arrow-button-blue",
         () => {
@@ -409,7 +399,7 @@ export default class {
     this.sets.target.push(
       createButton(
         this.scene,
-        target.x + 100,
+        target.x + this.arrows_shift,
         target.y,
         "arrow-button-blue",
         () => {
@@ -555,6 +545,7 @@ export default class {
     item.setScale(1).setAlpha(1)
 
     this.scene.tweens.add({
+      ease: this.skin_change_tween,
       targets: item,
       duration: this.shift_duration,
       alpha: 0,
@@ -574,6 +565,7 @@ export default class {
     item.x += move_value
 
     this.scene.tweens.add({
+      ease: this.skin_change_tween,
       targets: item,
       duration: this.shift_duration,
       alpha: 1,

@@ -29,6 +29,9 @@ export default class menu extends Phaser.Scene {
     }
 
     if (!this.is_everything_fetched) {
+      this.game.audio.music.menu_theme.play()
+      this.events.on("wake", () => this.game.audio.music.menu_theme.play())
+      this.events.on("sleep", () => this.game.audio.music.menu_theme.stop())
       START_FETCHING_SCENE(this)
 
       this.fetchFromServerAndLaunchScenes()
@@ -139,6 +142,20 @@ export default class menu extends Phaser.Scene {
   }
 
   createMuteButton() {
+    const mute = () => {
+      this.sound_button.setTexture("unmute-button")
+      Object.values(this.game.audio.sounds).forEach((sound) =>
+        sound.setMute(true)
+      )
+    }
+
+    const unmute = () => {
+      this.sound_button.setTexture("mute-button")
+      Object.values(this.game.audio.sounds).forEach((sound) =>
+        sound.setMute(false)
+      )
+    }
+
     this.sound_button = helper
       .createButton(
         this,
@@ -146,9 +163,7 @@ export default class menu extends Phaser.Scene {
         this.game.GH,
         "mute-button",
         () => {
-          this.sound_button.texture.key === "mute-button"
-            ? this.sound_button.setTexture("unmute-button")
-            : this.sound_button.setTexture("mute-button")
+          this.sound_button.texture.key === "mute-button" ? mute() : unmute()
         }
       )
 
@@ -159,6 +174,20 @@ export default class menu extends Phaser.Scene {
   }
 
   createMusicButton() {
+    const mute = () => {
+      this.music_button.setTexture("music-unmute-button")
+      Object.values(this.game.audio.music).forEach((music) =>
+        music.setMute(true)
+      )
+    }
+
+    const unmute = () => {
+      this.music_button.setTexture("music-mute-button")
+      Object.values(this.game.audio.music).forEach((music) =>
+        music.setMute(false)
+      )
+    }
+
     this.music_button = helper
       .createButton(
         this,
@@ -167,8 +196,8 @@ export default class menu extends Phaser.Scene {
         "music-mute-button",
         () => {
           this.music_button.texture.key === "music-mute-button"
-            ? this.music_button.setTexture("music-unmute-button")
-            : this.music_button.setTexture("music-mute-button")
+            ? mute()
+            : unmute()
         }
       )
 

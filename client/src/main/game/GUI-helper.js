@@ -9,7 +9,7 @@ export const setGameSize = function (obj, scaleW = false, scaleH = false) {
   return obj
 }
 
-export const createBackground = function (scene, sprite,frame) {
+export const createBackground = function (scene, sprite, frame) {
   const background = scene.add.image(
     scene.game.GW / 2,
     scene.game.GH / 2,

@@ -250,6 +250,7 @@ export default class Lose extends Phaser.Scene {
       "replay-button",
       () => {
         if (!this.are_buttons_active) return
+        this.level_scene.game.audio.sounds.restart_sound.play()
         this.level_scene.scene.sleep("lose")
         this.level_scene.scene.restart()
       }

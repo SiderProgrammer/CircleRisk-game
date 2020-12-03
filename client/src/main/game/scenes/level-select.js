@@ -362,22 +362,22 @@ export default class levelSelect extends Phaser.Scene {
     return this.progress.levels_scores.length >= this.current_page_number + 1
   }
   tweenPage(sign) {
-    const ease = "Bounce.easeOut"
-    const duration = 500
+    const ease = "Power1"
+    const duration = 300
 
     if (!this.canChangePage) return
     this.canChangePage = false
 
-    let second_page_shift = 0
+    let second_page_shift = this.game.GW
 
     if (sign === "+") {
-      second_page_shift = -this.game.GW
+      second_page_shift = -second_page_shift
       //going left
       this.current_page_number--
       if (this.current_page_number == -1)
         this.current_page_number = this.pages_amount - 1
     } else {
-      second_page_shift = this.game.GW
+      //  second_page_shift = this.game.GW
       //going right
       this.current_page_number++
       if (this.current_page_number == this.pages_amount)
@@ -399,7 +399,7 @@ export default class levelSelect extends Phaser.Scene {
 
     this.tweens.add({
       targets: pages_elements_to_tween,
-      x: `${sign}=${this.game.GW}`,
+      x: `${sign}=${Math.abs(second_page_shift)}`,
       duration: duration,
       ease: ease,
       onStart: () => {
@@ -543,7 +543,11 @@ export default class levelSelect extends Phaser.Scene {
       this.current_page_number > this.progress.levels_scores.length - 1
     )
       return
+
     this.canChangePage = false
+
+    //this.scene.get("menu").game.audio.music.menu_theme.stop()
+    this.game.audio.sounds.start_sound.play()
 
     const this_level_configuration =
       levelsConfiguration[this.current_page_number]

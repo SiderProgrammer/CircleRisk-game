@@ -70,6 +70,7 @@ export default class {
 
       frequency: 600,
       reserve: 10,
+      delay: 2500,
     })
   }
 

@@ -146,6 +146,7 @@ export default class Manager {
       ) {
         this.level_unlock_alert_shown = true
         this.showNewLevelUnlockedAlert()
+        this.game.audio.sounds.new_level_sound.play()
       }
 
       this.perfectManager.updateScoreText()
