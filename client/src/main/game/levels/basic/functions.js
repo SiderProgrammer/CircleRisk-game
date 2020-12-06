@@ -4,13 +4,12 @@ export default class {
   }
 
   createFlyingCubes() {
-    const particles = this.scene.add.particles("particles")
-    const emitter = particles.createEmitter({
-      x: { min: 0, max: this.scene.game.GW },
+    const emitter = this.scene.add.particles("particles").createEmitter({
+      x: { min: 50, max: this.scene.game.GW - 50 },
       y: this.scene.game.GH + 100,
 
       angle: { min: 0, max: 360 },
-      scale: { random: [0.1, 1] },
+      scale: { min: 0.3, max: 0.5 },
 
       frame: { frames: ["cube_1", "cube_2", "cube_3", "cube_4"] },
       alpha: 0.3,
@@ -22,9 +21,11 @@ export default class {
 
       speedY: { min: -200, max: -300 },
 
-      frequency: 1500,
+      frequency: 1700,
       reserve: 10,
       delay: 2500,
     })
+
+    emitter.scaleX.onUpdate = emitter.scaleX.defaultUpdate
   }
 }

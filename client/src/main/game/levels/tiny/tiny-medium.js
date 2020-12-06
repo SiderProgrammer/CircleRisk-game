@@ -32,6 +32,7 @@ export default class Tiny_Medium extends Phaser.Scene {
 
     this.tinyFunctionsManager = new TinyFunctionsManager(this)
     this.tinyFunctionsManager.resizeTargets()
+    this.tinyFunctionsManager.createVanishingStars()
   }
   update() {
     if (!this.manager.game_started) return

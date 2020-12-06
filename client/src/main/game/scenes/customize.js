@@ -177,7 +177,7 @@ export default class Customize extends Phaser.Scene {
 
   createMoney() {
     this.coin = this.add
-      .image(this.game.GW - 10, 10, "coin")
+      .image(this.game.GW - 10, 10, "general-1", "coin")
       .setOrigin(1, 0)
       .setAlpha(0)
 

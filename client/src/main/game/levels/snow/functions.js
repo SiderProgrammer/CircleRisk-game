@@ -37,7 +37,7 @@ export default class {
   }
 
   createFallingSnow() {
-    this.scene.add.particles("particles").createEmitter({
+    const emitter = this.scene.add.particles("particles").createEmitter({
       x: { min: 0, max: this.scene.game.GW },
       y: -50,
 
@@ -58,10 +58,14 @@ export default class {
       lifespan: 20000,
 
       speedY: { min: 100, max: 200 },
-      speedX: { min: -10, max: 10 },
+      speedX: { min: -20, max: 20 },
 
-      frequency: 500,
+      frequency: 600,
       reserve: 20,
+
+      delay: 2500,
     })
+
+    emitter.scaleX.onUpdate = emitter.scaleX.defaultUpdate
   }
 }

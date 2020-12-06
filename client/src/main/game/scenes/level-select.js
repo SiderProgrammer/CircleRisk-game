@@ -27,8 +27,8 @@ export default class levelSelect extends Phaser.Scene {
     this.second_page = this.createPage()
     this.second_page.hide()
 
-    this.page_thorns = this.createPageThorns()
-    this.hidePageThorns()
+    this.spikes = helper.createBackground(this, "spikes")
+    this.spikes.setVisible(false)
 
     this.thorns = this.createThornBorder()
     this.hideThornBorder()
@@ -71,6 +71,7 @@ export default class levelSelect extends Phaser.Scene {
       scene.add.image(
         this.game.GW / 2 - 5,
         this.game.GH / 2 - 90,
+        "general-2",
         "bubbles-levelselect"
       )
     )
@@ -78,7 +79,7 @@ export default class levelSelect extends Phaser.Scene {
     this.level_select_elements_in_menu_context.push(
       helper.setGameSize(
         scene.add
-          .image(this.game.GW / 2, this.game.GH, "levelselect-2")
+          .image(this.game.GW / 2, this.game.GH, "general-2", "levelselect-2")
           .setOrigin(0.5, 1),
         true
       )
@@ -87,7 +88,7 @@ export default class levelSelect extends Phaser.Scene {
     this.level_select_elements_in_menu_context.push(
       helper.setGameSize(
         scene.add
-          .image(this.game.GW / 2, this.game.GH, "levelselect-1")
+          .image(this.game.GW / 2, this.game.GH, "general-2", "levelselect-1")
           .setOrigin(0.5, 1),
         true
       )
@@ -163,6 +164,7 @@ export default class levelSelect extends Phaser.Scene {
     return this.add.image(
       this.game.GW / 2,
       this.game.GH / 2 + 200,
+      "general-1",
       "level-select-decoration-hard"
     )
   }
@@ -173,27 +175,27 @@ export default class levelSelect extends Phaser.Scene {
 
   createThornBorder() {
     const thorns_up = this.add
-      .image(0, 0, "thorns_up")
+      .image(0, 0, "general-1", "thorns_up")
       .setOrigin(0, 0)
       .setFlipY(true)
       .setFlipX(true)
     helper.setGameSize(thorns_up, true)
 
     const thorns_down = this.add
-      .image(0, this.game.GH, "thorns_up")
+      .image(0, this.game.GH, "general-1", "thorns_up")
       .setOrigin(0, 1)
 
     helper.setGameSize(thorns_down, true)
 
     const thorns_left = this.add
-      .image(0, 0, "thorns_sides")
+      .image(0, 0, "general-1", "thorns_sides")
       .setOrigin(0, 0)
       .setFlipY(true)
 
     helper.setGameSize(thorns_left, false, true)
 
     const thorns_right = this.add
-      .image(this.game.GW, 0, "thorns_sides")
+      .image(this.game.GW, 0, "general-1", "thorns_sides")
       .setOrigin(1, 0)
       .setFlipX(true)
     helper.setGameSize(thorns_right, false, true)
@@ -209,30 +211,10 @@ export default class levelSelect extends Phaser.Scene {
     this.thorns.forEach((thorn) => thorn.setVisible(true))
   }
 
-  createPageThorns() {
-    const thorns_up = this.add
-      .image(this.game.GW + 30, 150, "thorns_1")
-      .setOrigin(1, 0.5)
-
-    const thorns_mid = this.add.image(-30, 300, "thorns_2").setOrigin(0, 0.5)
-
-    const thorns_down = this.add
-      .image(this.game.GW, this.game.GH - 170, "thorns_3")
-      .setOrigin(1, 0.5)
-
-    return [thorns_up, thorns_mid, thorns_down]
-  }
-
-  hidePageThorns() {
-    this.page_thorns.forEach((thorn) => thorn.setVisible(false))
-  }
-
-  showPageThorns() {
-    this.page_thorns.forEach((thorn) => thorn.setVisible(true))
-  }
-
   createLevelLock(x, y) {
-    return { lock: this.add.image(x, y, "level-locked").setOrigin(0.5, 0) }
+    return {
+      lock: this.add.image(x, y, "general-1", "level-locked").setOrigin(0.5, 0),
+    }
   }
 
   createPageElementsBackground() {
@@ -248,7 +230,12 @@ export default class levelSelect extends Phaser.Scene {
 
     const elements = {}
 
-    elements.score_bar = this.add.image(x, y + 130, "level-select-score-bar")
+    elements.score_bar = this.add.image(
+      x,
+      y + 130,
+      "general-1",
+      "level-select-score-bar"
+    )
 
     elements.divider = this.add
       .text(x + 55, elements.score_bar.y + 15, "/", {
@@ -294,9 +281,9 @@ export default class levelSelect extends Phaser.Scene {
   createPageIcon(x, y) {
     const icon =
       levelsConfiguration[this.current_page_number].info.name + "_icon"
-    const image = this.add.image(x, y - 130, icon).setDepth(1)
+    const image = this.add.image(x, y - 130, "levels-icons", icon).setDepth(1)
     image.update = function (page_number) {
-      this.setTexture(levelsConfiguration[page_number].info.name + "_icon")
+      this.setFrame(levelsConfiguration[page_number].info.name + "_icon")
     }
     return { icon: image }
   }
@@ -333,12 +320,18 @@ export default class levelSelect extends Phaser.Scene {
       .image(
         elements.difficulty.x,
         elements.difficulty.y,
+        "general-1",
         "level-select-difficulty-bar"
       )
       .setDepth(0.09)
 
     elements.name_bar = this.add
-      .image(elements.name.x, elements.name.y, "level-select-name-bar")
+      .image(
+        elements.name.x,
+        elements.name.y,
+        "general-1",
+        "level-select-name-bar"
+      )
       .setDepth(0.09)
 
     return elements
@@ -513,19 +506,18 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   showHardLevelsOrnaments({ score_bar, name_bar }) {
-    this.showPageThorns()
-
-    score_bar.setTexture("level-select-score-bar-hard")
-    name_bar.setTexture("level-select-name-bar-hard")
+    this.spikes.setVisible(true)
+    score_bar.setFrame("level-select-score-bar-hard")
+    name_bar.setFrame("level-select-name-bar-hard")
 
     this.page_glow.setVisible(true)
   }
 
   hideHardLevelsOrnaments({ score_bar, name_bar }) {
-    this.hidePageThorns()
+    this.spikes.setVisible(false)
 
-    score_bar.setTexture("level-select-score-bar")
-    name_bar.setTexture("level-select-name-bar")
+    score_bar.setFrame("level-select-score-bar")
+    name_bar.setFrame("level-select-name-bar")
 
     this.page_glow.setVisible(false)
     // this.black_border.setVisible(false)

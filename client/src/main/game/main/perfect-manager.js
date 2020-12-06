@@ -5,7 +5,7 @@ export default class PerfectManager {
   }
   createPerfectText() {
     this.perfect_text = this.scene.scene.add
-      .image(this.scene.GW / 2, 150, "perfect")
+      .image(this.scene.GW / 2, 150, "general-1", "perfect")
       .setAlpha(0)
       .setScale(0.5)
       .setDepth(1)

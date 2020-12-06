@@ -45,14 +45,14 @@ export const sceneIntro = function (scene) {
 
 export const createButton = function (scene, x, y, sprite, func) {
   const button = scene.add
-    .image(x, y, sprite)
+    .image(x, y,"buttons", sprite)
     .setInteractive()
     .on("pointerup", () => func())
   return button
 }
 
 export const createFetchingAnimation = function (scene, x, y) {
-  const image = scene.add.image(x, y, "loading").setDepth(1000)
+  const image = scene.add.image(x, y, "general-1","loading").setDepth(1000)
 
   const tween = scene.tweens.add({
     targets: image,

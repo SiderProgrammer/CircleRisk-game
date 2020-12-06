@@ -54,12 +54,12 @@ export default class {
   }
 
   createFlyingPentagons() {
-    this.scene.add.particles("pentagon").createEmitter({
+    const emitter = this.scene.add.particles("pentagon").createEmitter({
       x: this.scene.game.GW,
       y: { min: 0, max: this.scene.game.GH },
 
       angle: { min: 0, max: 360 },
-      scale: { min: 0.7, max: 1 },
+      scale: { min: 0.8, max: 1.5 },
 
       alpha: 0.5,
       deathZone: {
@@ -70,8 +70,10 @@ export default class {
 
       speedX: { min: -200, max: -300 },
 
-      frequency: 900,
+      frequency: 500,
       reserve: 10,
     })
+
+    emitter.scaleX.onUpdate = emitter.scaleX.defaultUpdate
   }
 }

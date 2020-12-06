@@ -8,12 +8,16 @@ export default class preloader extends Phaser.Scene {
   loadImage(name, path) {
     this.load.image(name, `${imgPath}/${path}/${name}.png`)
   }
+  loadAtlas(name) {
+    this.load.atlas(
+      `${name}`,
+      `${imgPath}/${name}.png`,
+      `${imgPath}/${name}.json`
+    )
+  }
 
   preload() {
-    this.loadImage("loading-bar", "mix")
-    this.loadImage("loading-circle-arm", "mix")
-    this.loadImage("pipcompany", "mix")
-    this.loadImage("gentelman", "mix")
+    this.loadAtlas("general-1")
     this.loadImage("loading-bg", "backgrounds")
   }
   create() {

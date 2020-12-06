@@ -50,12 +50,12 @@ export default class {
     not_rotating_circle.y += y * 2
   }
   createFlyingleafs() {
-    this.scene.add.particles("particles").createEmitter({
+    const emitter = this.scene.add.particles("particles").createEmitter({
       x: this.scene.game.GW + 50,
       y: { min: 0, max: 100 },
 
-      angle: { min: 0, max: 360 },
-      scale: { min: 0.6, max: 0.8 },
+      angle: { start: 0, end: 180 },
+      scale: { min: 0.6, max: 0.7 },
 
       frame: { frames: ["leaf_1", "leaf_2", "leaf_3", "leaf_4"] },
       alpha: 0.5,
@@ -63,15 +63,17 @@ export default class {
         type: "onEnter",
         source: new Phaser.Geom.Rectangle(-50, 0, 50, this.scene.game.GH),
       },
-      lifespan: 20000,
+      lifespan: 5000,
 
       speedY: { min: 200, max: 350 },
       speedX: { min: -50, max: -300 },
 
-      frequency: 600,
+      frequency: 900,
       reserve: 10,
       delay: 2500,
     })
+
+    emitter.scaleX.onUpdate = emitter.scaleX.defaultUpdate
   }
 
   extractBouncingTargets() {

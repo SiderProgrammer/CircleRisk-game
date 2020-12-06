@@ -139,7 +139,7 @@ export default class {
   }
 
   createSkinTick(x, y) {
-    return this.scene.add.image(x, y, "tick").setAlpha(0)
+    return this.scene.add.image(x, y,"general-2", "tick").setAlpha(0)
   }
   calculatePriceBGX() {
     return (
@@ -154,7 +154,7 @@ export default class {
       .setAlpha(0)
       .setOrigin(0.5, 0.5)
 
-    text.bg = this.scene.add.image(x, y, "price-bg").setAlpha(0)
+    text.bg = this.scene.add.image(x, y, "general-2","price-bg").setAlpha(0)
     text.bg.displayHeight = text.displayHeight + 20
 
     text.getCoinX = function () {
@@ -162,7 +162,7 @@ export default class {
     }
 
     text.coin = this.scene.add
-      .image(text.getCoinX(), text.y + 5, "coin")
+      .image(text.getCoinX(), text.y + 5,"general-1", "coin")
       .setAlpha(0)
 
     return text

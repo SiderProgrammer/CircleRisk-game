@@ -78,7 +78,7 @@ export default class Manager {
       .play("tap")
   }
   showNewLevelUnlockedAlert() {
-    const LS_middle = this.scene.add.image(this.GW / 2, 0, "new-level-unlocked")
+    const LS_middle = this.scene.add.image(this.GW / 2, 0, "general-2","new-level-unlocked")
 
     const lock = this.scene.add.sprite(
       LS_middle.x,
@@ -116,6 +116,9 @@ export default class Manager {
   hasHitTarget(distanceToTarget) {
     return distanceToTarget < 85 * this.target_array[0].scale
   }
+  playSound(sound){
+    this.scene.game.audio.sounds[sound].play()
+  }
   changeBall() {
     this.levelFunctionsCaller.tryChangeRotationSpeed()
 
@@ -133,13 +136,13 @@ export default class Manager {
         this.perfectManager.showPerfectText()
         this.perfectManager.showPerfectEffect()
         this.perfect_combo >= 3
-          ? this.scene.game.audio.sounds.perfect_2.play()
-          : this.scene.game.audio.sounds.perfect_1.play()
+          ? this.playSound("perfect_2")
+          : this.playSound("perfect_1")
       } else {
         this.score++
         this.perfect_combo = 0
       }
-      this.scene.game.audio.sounds.tap.play()
+     this.playSound("tap")
       if (
         this.isNewLevelNeededScoreReached() &&
         !this.level_unlock_alert_shown
@@ -361,6 +364,7 @@ export default class Manager {
   }
 
   async gameOver() {
+    this.playSound("die")
     this.circles.forEach((c) => c.setDepth(0))
     this.stick.setDepth(0)
     this.target_array.forEach((t) => t.setDepth(0))

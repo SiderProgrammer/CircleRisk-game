@@ -52,13 +52,13 @@ export default class Leaderboard extends Phaser.Scene {
     STOP_FETCHING_SCENE(this)
   }
   createMyScoretHighLight() {
-    this.aura = this.add.image(0, 0, "lb-aura").setVisible(false)
+    this.aura = this.add.image(0, 0, "general-1", "lb-aura").setVisible(false)
     helper.setGameSize(this.aura, true)
   }
 
   createUpperStrip() {
     const strip = this.add
-      .image(this.game.GW / 2, 0, "lb-strip")
+      .image(this.game.GW / 2, 0, "general-1", "lb-strip")
       .setOrigin(0.5, 0)
     helper.setGameSize(strip, true)
     return strip
@@ -71,17 +71,25 @@ export default class Leaderboard extends Phaser.Scene {
       .text(this.game.GW / 2, 54, difficulty, { font: `50px ${main_font}` })
       .setOrigin(0.5)
 
-    this.add.image(this.game.GW / 2, y, "glow")
-    this.add.image(this.game.GW / 2, y, name + "_icon")
+    this.add.image(this.game.GW / 2, y, "general-1", "glow")
+    this.add.image(this.game.GW / 2, y, "levels-icons", name + "_icon")
   }
   createOrnaments() {
-    this.add.image(this.game.GW, this.game.GH, "lb-eyes").setOrigin(1, 1)
-    this.add.image(this.game.GW / 2, this.game.GH / 2 - 70, "lb-face")
-    this.add.image(0, 200, "lb-bubbles").setOrigin(0, 0.5)
+    this.add
+      .image(this.game.GW, this.game.GH, "general-1", "lb-eyes")
+      .setOrigin(1, 1)
+    this.add.image(
+      this.game.GW / 2,
+      this.game.GH / 2 - 70,
+      "general-1",
+      "lb-face"
+    )
+    this.add.image(0, 200, "general-1", "lb-bubbles").setOrigin(0, 0.5)
   }
   calculateVariablesHeightDependend() {
-    const bar_height = this.game.textures.list["white-strap"].frames.__BASE
-      .cutHeight
+    const bar_height = this.game.textures.list["general-1"].frames[
+      "white-strap"
+    ].cutHeight
 
     const shift = 160
 
@@ -116,7 +124,7 @@ export default class Leaderboard extends Phaser.Scene {
       })
       .setAngle(270)
       .setDepth(1)
-    this.add.image(x + 10, y, "glow")
+    this.add.image(x + 10, y, "general-1", "glow")
   }
 
   createLeaderboardButtons() {
@@ -146,6 +154,7 @@ export default class Leaderboard extends Phaser.Scene {
     this.add.image(
       this.next_page_button.x,
       this.next_page_button.y - 10,
+      "general-1",
       "glow"
     )
 
@@ -156,7 +165,7 @@ export default class Leaderboard extends Phaser.Scene {
       "circle-button-brown",
       () => this.searchMeAndUpdateTexts()
     )
-    this.add.image(me.x, me.y, "glow")
+    this.add.image(me.x, me.y, "general-1", "glow")
   }
 
   createLeaderboardBars() {
@@ -318,6 +327,6 @@ export default class Leaderboard extends Phaser.Scene {
   }
 
   addScoreBar(y) {
-    return this.add.image(this.GW / 2, y, "white-strap")
+    return this.add.image(this.GW / 2, y, "general-1", "white-strap")
   }
 }

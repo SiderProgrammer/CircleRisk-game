@@ -36,7 +36,7 @@ export default class Lose extends Phaser.Scene {
   }
 
   createScore() {
-    this.blue_strap = this.add.image(0, 0, "blue-strap").setOrigin(0, 0.5)
+    this.blue_strap = this.add.image(0, 0,"general-1", "blue-strap").setOrigin(0, 0.5)
     this.blue_strap.y += this.blue_strap.displayHeight / 2
 
     this.add
@@ -81,7 +81,7 @@ export default class Lose extends Phaser.Scene {
       .image(
         0, /// RED STRAP
         this.blue_strap.y + this.blue_strap.displayHeight,
-        "red-strap"
+        "general-1","red-strap"
       )
       .setOrigin(0, 0.5)
 
@@ -105,7 +105,7 @@ export default class Lose extends Phaser.Scene {
 
   createPerfect() {
     this.purple_strap = this.add /// PURPLE STRAP
-      .image(0, this.red_strap.y + this.red_strap.displayHeight, "purple-strap")
+      .image(0, this.red_strap.y + this.red_strap.displayHeight,"general-1", "purple-strap")
       .setOrigin(0, 0.5)
 
     this.add /// PERFECT TEXT
@@ -149,7 +149,7 @@ export default class Lose extends Phaser.Scene {
       }
     ).setDepth(0.1)
 
-    this.add.image(a.x, a.y, "leaderboard-button-aura")
+    this.add.image(a.x, a.y,"general-2", "leaderboard-button-aura")
 
     const shift = 200
     createButton(
@@ -250,7 +250,7 @@ export default class Lose extends Phaser.Scene {
       "replay-button",
       () => {
         if (!this.are_buttons_active) return
-        this.level_scene.game.audio.sounds.restart_sound.play()
+     //   this.level_scene.game.audio.sounds.restart_sound.play()
         this.level_scene.scene.sleep("lose")
         this.level_scene.scene.restart()
       }

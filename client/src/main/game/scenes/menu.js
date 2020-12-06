@@ -114,13 +114,13 @@ export default class menu extends Phaser.Scene {
 
   createDecorations() {
     this.elements_to_hide_to_levelselect.push(
-      this.add.image(this.game.GW / 2, this.game.GH / 2, "bubbles-menu")
+      this.add.image(this.game.GW / 2, this.game.GH / 2,"general-2", "bubbles-menu")
     )
 
     this.elements_to_hide_to_levelselect.push(
       helper.setGameSize(
         this.add
-          .image(this.game.GW / 2, this.game.GH, "menu-2")
+          .image(this.game.GW / 2, this.game.GH, "general-2","menu-2")
           .setOrigin(0.5, 1),
         true
       )
@@ -129,28 +129,28 @@ export default class menu extends Phaser.Scene {
     this.elements_to_hide_to_levelselect.push(
       helper.setGameSize(
         this.add
-          .image(this.game.GW / 2, this.game.GH, "menu-1")
+          .image(this.game.GW / 2, this.game.GH,"general-2", "menu-1")
           .setOrigin(0.5, 1),
         true
       )
     )
 
     this.logo = this.add
-      .image(this.game.GW / 2, this.game.GH, "circlerisk")
+      .image(this.game.GW / 2, this.game.GH, "general-2","circlerisk")
       .setOrigin(0.5, 0)
     this.hidden_positions_y.logo = this.logo.y
   }
 
   createMuteButton() {
     const mute = () => {
-      this.sound_button.setTexture("unmute-button")
+      this.sound_button.setFrame("unmute-button")
       Object.values(this.game.audio.sounds).forEach((sound) =>
         sound.setMute(true)
       )
     }
 
     const unmute = () => {
-      this.sound_button.setTexture("mute-button")
+      this.sound_button.setFrame("mute-button")
       Object.values(this.game.audio.sounds).forEach((sound) =>
         sound.setMute(false)
       )
@@ -163,7 +163,7 @@ export default class menu extends Phaser.Scene {
         this.game.GH,
         "mute-button",
         () => {
-          this.sound_button.texture.key === "mute-button" ? mute() : unmute()
+          this.sound_button.frame.name === "mute-button" ? mute() : unmute()
         }
       )
 
@@ -175,14 +175,14 @@ export default class menu extends Phaser.Scene {
 
   createMusicButton() {
     const mute = () => {
-      this.music_button.setTexture("music-unmute-button")
+      this.music_button.setFrame("music-unmute-button")
       Object.values(this.game.audio.music).forEach((music) =>
         music.setMute(true)
       )
     }
 
     const unmute = () => {
-      this.music_button.setTexture("music-mute-button")
+      this.music_button.setFrame("music-mute-button")
       Object.values(this.game.audio.music).forEach((music) =>
         music.setMute(false)
       )
@@ -195,7 +195,7 @@ export default class menu extends Phaser.Scene {
         this.game.GH,
         "music-mute-button",
         () => {
-          this.music_button.texture.key === "music-mute-button"
+          this.music_button.frame.name === "music-mute-button"
             ? mute()
             : unmute()
         }
@@ -208,7 +208,7 @@ export default class menu extends Phaser.Scene {
   }
 
   createBubble(x, y) {
-    const bubble = this.add.image(x, y, "bubble")
+    const bubble = this.add.image(x, y, "general-2","bubble")
     this.bubbles.push(bubble)
 
     bubble.fly_direction = 1
