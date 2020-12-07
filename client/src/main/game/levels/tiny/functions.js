@@ -9,8 +9,8 @@ export default class {
   createVanishingStars(){
     
   this.scene.add.particles("pentagon").createEmitter({
-      x: { min: 0, max: this.game.GW },
-      y: { min: 0, max: this.game.GH },
+      x: { min: 0, max: this.scene.game.GW },
+      y: { min: 0, max: this.scene.game.GH },
 
       //  angle: { min: 0, max: 360 },
       scale: { start: 0.8, end: 1.5 },

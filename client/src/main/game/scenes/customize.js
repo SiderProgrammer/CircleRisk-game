@@ -129,7 +129,7 @@ export default class Customize extends Phaser.Scene {
           this.skinChangerManager.changeSkinsToEquiped()
 
           // maybe stop customize scene
-        }
+        },"button"
       )
       .setOrigin(0.5, 1)
 
@@ -162,7 +162,7 @@ export default class Customize extends Phaser.Scene {
           //  this.scene.get("menu").animateShowMenu()
           this.scene.sleep()
           this.skinChangerManager.changeSkinsToEquiped()
-        }
+        },"button"
       )
       .setOrigin(0.5, 1)
 
@@ -241,7 +241,7 @@ export default class Customize extends Phaser.Scene {
       () => {
         this.hidePurchaseOffer()
         this.can_change = true
-      }
+      },"button"
     )
     this.purchase_offer_elements.push(close_button)
 

@@ -67,6 +67,7 @@ module.exports = [
       name: "reverse",
     },
     config: {
+      canvas_color: "00ff00",
       background: "reverse-bg",
       ...config,
     },
@@ -102,6 +103,7 @@ module.exports = [
       name: "earthquake",
     },
     config: {
+      canvas_color: "add8e6",
       background: "earthquake-bg",
       ...config,
       time_left: 10, //in seconds

@@ -59,6 +59,7 @@ export default class loader extends Phaser.Scene {
     this.loadImage("threeStep-bg", "backgrounds")
     this.loadImage("oneStep-bg", "backgrounds")
     this.loadImage("black-border", "backgrounds")
+    this.loadImage("lose-bg", "backgrounds")
   }
 
   sticks(i) {
@@ -111,6 +112,8 @@ export default class loader extends Phaser.Scene {
       this.sticks(i)
       this.targets(i)
     }
+
+    this.loadImage("lb-strap", "mix2")
   }
 
   updateBar(percentage) {
@@ -118,6 +121,7 @@ export default class loader extends Phaser.Scene {
   }
   createGUI() {
     createBackground(this, "loading-bg")
+
     this.loading_bar = this.add
       .image(this.game.GW / 2, this.game.GH - 20, "general-1", "loading-bar")
       .setOrigin(0.5, 1)
@@ -146,6 +150,8 @@ export default class loader extends Phaser.Scene {
     this.loadSound("new_level_sound", "sound", "ogg")
     this.loadSound("buy_sound", "sound", "ogg")
     this.loadSound("menu_theme", "music", "ogg")
+    this.loadSound("button", "sound", "ogg")
+    this.loadSound("change_object", "sound", "ogg")
     this.loadSound("die", "sound", "mp3")
   }
 
@@ -170,6 +176,8 @@ export default class loader extends Phaser.Scene {
     // addSound("restart_sound")
     addSound("buy_sound")
     addSound("die")
+    addSound("button")
+    addSound("change_object")
   }
   preload() {
     this.createGUI()

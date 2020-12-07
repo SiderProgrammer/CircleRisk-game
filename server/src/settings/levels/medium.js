@@ -67,6 +67,7 @@ module.exports = [
       name: "reverse",
     },
     config: {
+      canvas_color: "00ff00",
       background: "reverse-bg",
       ...config,
       starting_target: 6,
@@ -110,6 +111,7 @@ module.exports = [
       name: "earthquake",
     },
     config: {
+      canvas_color: "add8e6",
       background: "earthquake-bg",
       ...config,
       rotation_speed: 1.2,
@@ -345,6 +347,7 @@ module.exports = [
       name: "oneStep",
     },
     config: {
+      canvas_color: "add8e6",
       background: "oneStep-bg",
       ...config,
       rotation_speed: 1.1,

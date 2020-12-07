@@ -36,6 +36,7 @@ export default class Tiny_Hard extends Phaser.Scene {
 
     this.tinyFunctionsManager = new TinyFunctionsManager(this)
     this.tinyFunctionsManager.resizeTargets()
+    this.tinyFunctionsManager.createVanishingStars()
   }
   update() {
     if (!this.manager.game_started) return

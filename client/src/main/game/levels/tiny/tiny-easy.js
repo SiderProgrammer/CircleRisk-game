@@ -29,9 +29,10 @@ export default class Tiny_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-    
+
     this.tinyFunctionsManager = new TinyFunctionsManager(this)
     this.tinyFunctionsManager.resizeTargets()
+    this.tinyFunctionsManager.createVanishingStars()
   }
   update() {
     if (!this.manager.game_started) return
@@ -39,6 +40,4 @@ export default class Tiny_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-
-
 }

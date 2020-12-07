@@ -1,6 +1,7 @@
 import { createButton } from "./GUI-helper"
 import { EQUIP_SKIN } from "../shortcuts/requests"
 import { saveProgress, getProgress } from "../shortcuts/save"
+import playSound from "../shortcuts/audio-player"
 
 export default class {
   constructor(scene, x, y) {
@@ -139,7 +140,7 @@ export default class {
   }
 
   createSkinTick(x, y) {
-    return this.scene.add.image(x, y,"general-2", "tick").setAlpha(0)
+    return this.scene.add.image(x, y, "general-2", "tick").setAlpha(0)
   }
   calculatePriceBGX() {
     return (
@@ -154,7 +155,7 @@ export default class {
       .setAlpha(0)
       .setOrigin(0.5, 0.5)
 
-    text.bg = this.scene.add.image(x, y, "general-2","price-bg").setAlpha(0)
+    text.bg = this.scene.add.image(x, y, "general-2", "price-bg").setAlpha(0)
     text.bg.displayHeight = text.displayHeight + 20
 
     text.getCoinX = function () {
@@ -162,7 +163,7 @@ export default class {
     }
 
     text.coin = this.scene.add
-      .image(text.getCoinX(), text.y + 5,"general-1", "coin")
+      .image(text.getCoinX(), text.y + 5, "general-1", "coin")
       .setAlpha(0)
 
     return text
@@ -427,6 +428,7 @@ export default class {
     return this.progress.skins[part].includes(skin)
   }
   changeSkinButtonClicked(sprite1, sprite2, part, sign, skin_number) {
+    playSound(this.scene, "change_object")
     this.scene.hidePurchaseOffer()
 
     this.can_change = false

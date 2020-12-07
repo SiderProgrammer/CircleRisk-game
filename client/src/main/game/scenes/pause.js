@@ -14,7 +14,8 @@ export default class Pause extends Phaser.Scene {
       () => {
         this.scene.stop()
         scene.scene.resume()
-      }
+      },
+      "button"
     )
 
     createButton(
@@ -31,7 +32,8 @@ export default class Pause extends Phaser.Scene {
         scene.scene.wake("menu")
         this.scene.get("menu").showElementsSharedWithLevelSelect()
         this.scene.get("menu").animateShowMenu()
-      }
+      },
+      "button"
     )
 
     createButton(
@@ -51,7 +53,8 @@ export default class Pause extends Phaser.Scene {
           .get("levelSelect")
 
           .animateLevelSelectShow()
-      }
+      },
+      "button"
     )
   }
 }

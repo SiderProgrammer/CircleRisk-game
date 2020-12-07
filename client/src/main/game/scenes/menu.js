@@ -8,6 +8,7 @@ import {
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 import manageNetworkStatus from "../../network-status"
 
+
 export default class menu extends Phaser.Scene {
   constructor() {
     super("menu")
@@ -39,6 +40,8 @@ export default class menu extends Phaser.Scene {
   }
 
   create() {
+
+   
     this.createBackground()
     this.createDecorations()
 
@@ -114,13 +117,18 @@ export default class menu extends Phaser.Scene {
 
   createDecorations() {
     this.elements_to_hide_to_levelselect.push(
-      this.add.image(this.game.GW / 2, this.game.GH / 2,"general-2", "bubbles-menu")
+      this.add.image(
+        this.game.GW / 2,
+        this.game.GH / 2,
+        "general-2",
+        "bubbles-menu"
+      )
     )
 
     this.elements_to_hide_to_levelselect.push(
       helper.setGameSize(
         this.add
-          .image(this.game.GW / 2, this.game.GH, "general-2","menu-2")
+          .image(this.game.GW / 2, this.game.GH, "general-2", "menu-2")
           .setOrigin(0.5, 1),
         true
       )
@@ -129,14 +137,14 @@ export default class menu extends Phaser.Scene {
     this.elements_to_hide_to_levelselect.push(
       helper.setGameSize(
         this.add
-          .image(this.game.GW / 2, this.game.GH,"general-2", "menu-1")
+          .image(this.game.GW / 2, this.game.GH, "general-2", "menu-1")
           .setOrigin(0.5, 1),
         true
       )
     )
 
     this.logo = this.add
-      .image(this.game.GW / 2, this.game.GH, "general-2","circlerisk")
+      .image(this.game.GW / 2, this.game.GH, "general-2", "circlerisk")
       .setOrigin(0.5, 0)
     this.hidden_positions_y.logo = this.logo.y
   }
@@ -162,9 +170,11 @@ export default class menu extends Phaser.Scene {
         this.game.GW - 25,
         this.game.GH,
         "mute-button",
+
         () => {
           this.sound_button.frame.name === "mute-button" ? mute() : unmute()
-        }
+        },
+        "button"
       )
 
       .setOrigin(1, 1)
@@ -194,11 +204,13 @@ export default class menu extends Phaser.Scene {
         this.game.GW / 2,
         this.game.GH,
         "music-mute-button",
+
         () => {
           this.music_button.frame.name === "music-mute-button"
             ? mute()
             : unmute()
-        }
+        },
+        "button"
       )
 
       .setOrigin(0.5, 1)
@@ -208,7 +220,7 @@ export default class menu extends Phaser.Scene {
   }
 
   createBubble(x, y) {
-    const bubble = this.add.image(x, y, "general-2","bubble")
+    const bubble = this.add.image(x, y, "general-2", "bubble")
     this.bubbles.push(bubble)
 
     bubble.fly_direction = 1
@@ -275,20 +287,34 @@ export default class menu extends Phaser.Scene {
 
   createInstagram() {
     this.instagram_button = helper
-      .createButton(this, this.game.GW - 20, 20, "instagram", () => {
-        window.open("https://www.instagram.com/pip_games/", "_blank")
-      })
+      .createButton(
+        this,
+        this.game.GW - 20,
+        20,
+        "instagram",
+        () => {
+          window.open("https://www.instagram.com/pip_games/", "_blank")
+        },
+        "button"
+      )
       .setOrigin(1, 0)
   }
 
   createCustomizeButton() {
     this.customize_button = helper
-      .createButton(this, 25, this.game.GH, "customize-button", async () => {
-        await this.animateHideMenu()
-        this.scene.wake("customize")
-        this.scene.get("customize").animateCustomizeShow()
-        //this.scene.launch("customize")
-      })
+      .createButton(
+        this,
+        25,
+        this.game.GH,
+        "customize-button",
+        async () => {
+          await this.animateHideMenu()
+          this.scene.wake("customize")
+          this.scene.get("customize").animateCustomizeShow()
+          //this.scene.launch("customize")
+        },
+        "button"
+      )
 
       .setOrigin(0, 1)
 
@@ -313,6 +339,7 @@ export default class menu extends Phaser.Scene {
       this.game.GW / 2,
       this.game.GH,
       "play-button-big",
+
       async () => {
         if (!this.can_play) return
         this.can_play = false
@@ -327,7 +354,8 @@ export default class menu extends Phaser.Scene {
           .get("levelSelect")
           .showAllElementsInMenuContext(this)
           .animateLevelSelectShow()
-      }
+      },
+      "button"
     )
 
     this.play_button.y += this.play_button.displayHeight

@@ -1,5 +1,5 @@
 import * as helper from "../GUI-helper.js"
-
+import playSound from "../../shortcuts/audio-player"
 import { getProgress } from "../../shortcuts/save"
 
 export default class levelSelect extends Phaser.Scene {
@@ -338,13 +338,20 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   createPageRanking(x, y) {
-    const button = helper.createButton(this, x, y + 400, "ranking-icon", () => {
-      this.scene.sleep()
-      this.scene.launch("leaderboard", {
-        level: this.current_page_number + 1,
-        launcher: this.scene,
-      })
-    })
+    const button = helper.createButton(
+      this,
+      x,
+      y + 400,
+      "ranking-icon",
+      () => {
+        this.scene.sleep()
+        this.scene.launch("leaderboard", {
+          level: this.current_page_number + 1,
+          launcher: this.scene,
+        })
+      },
+      "button"
+    )
     this.page_glow.y = button.y
     return {
       ranking_button: button,
@@ -355,6 +362,7 @@ export default class levelSelect extends Phaser.Scene {
     return this.progress.levels_scores.length >= this.current_page_number + 1
   }
   tweenPage(sign) {
+    playSound(this, "change_object")
     const ease = "Power1"
     const duration = 300
 
@@ -536,31 +544,23 @@ export default class levelSelect extends Phaser.Scene {
     )
       return
 
+    this.game.audio.sounds.start_sound.play()
     this.canChangePage = false
 
-    //this.scene.get("menu").game.audio.music.menu_theme.stop()
-    this.game.audio.sounds.start_sound.play()
+    const level_object = levelsConfiguration[this.current_page_number]
+    const { name, difficulty } = level_object.info
+    const level_to_start = `${name.capitalize()}_${difficulty.capitalize()}`
 
-    const this_level_configuration =
-      levelsConfiguration[this.current_page_number]
-
-    const { name, difficulty } = this_level_configuration.info
-
-    const level_scene_to_start = `${name.capitalize()}_${difficulty.capitalize()}`
-
-    this.scene.launch(level_scene_to_start, {
-      config: this_level_configuration.config,
+    this.scene.launch(level_to_start, {
+      config: level_object.config,
       level: this.current_page_number + 1,
-      score_to_next_level: this_level_configuration.info.score_to_next_level,
+      score_to_next_level: level_object.info.score_to_next_level,
     })
 
-    const started_scene = this.scene.get(level_scene_to_start)
+    const started_scene = this.scene.get(level_to_start)
     started_scene.is_first_try = true
-
     started_scene.scene
-      .launch("lose", {
-        scene: started_scene,
-      })
+      .launch("lose", { scene: started_scene })
       .bringToTop("lose")
       .sleep("lose")
 
@@ -614,7 +614,8 @@ export default class levelSelect extends Phaser.Scene {
           this.scene.get("menu").showElementsSharedWithLevelSelect()
           this.scene.get("menu").resetPositionsToHidden().animateShowMenu()
           this.scene.sleep()
-        }
+        },
+        "button"
       )
       .setOrigin(0.5, 1)
 

@@ -9,6 +9,7 @@ import Fetching from "../../scenes/fetching.js"
 import Pause from "../../scenes/pause.js"
 import Lose from "../../scenes/lose.js"
 import ServerMaintenance from "../../scenes/server-maintenance.js"
+import UI from "../../scenes/UI"
 
 export default [
   Preloader,
@@ -22,4 +23,5 @@ export default [
   Pause,
   Lose,
   ServerMaintenance,
+  UI,
 ]

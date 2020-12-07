@@ -25,7 +25,7 @@ export default class Leaderboard extends Phaser.Scene {
   }
 
   async create() {
-    helper.createBackground(this, "leaderboard-bg") // can set it to not visbile and show it later
+    helper.createBackground(this, "loading-bg") // can set it to not visbile and show it later
     this.createMyScoretHighLight()
     const upper_strip = this.createUpperStrip()
 
@@ -118,10 +118,17 @@ export default class Leaderboard extends Phaser.Scene {
     const y = 50
 
     helper
-      .createButton(this, x, y, "arrow-button-brown", () => {
-        this.launcher.wake()
-        this.scene.stop()
-      })
+      .createButton(
+        this,
+        x,
+        y,
+        "arrow-button-brown",
+        () => {
+          this.launcher.wake()
+          this.scene.stop()
+        },
+        "button"
+      )
       .setAngle(270)
       .setDepth(1)
     this.add.image(x + 10, y, "general-1", "glow")
@@ -129,8 +136,13 @@ export default class Leaderboard extends Phaser.Scene {
 
   createLeaderboardButtons() {
     this.previous_page_button = helper
-      .createButton(this, this.GW - 70, 50, "arrow-button-brown", () =>
-        this.getUsersAndUpdateTexts("-")
+      .createButton(
+        this,
+        this.GW - 70,
+        50,
+        "arrow-button-brown",
+        () => this.getUsersAndUpdateTexts("-"),
+        "button"
       )
       .setDepth(1)
 
@@ -146,7 +158,8 @@ export default class Leaderboard extends Phaser.Scene {
         this.GW - 70,
         this.game.GH - 50,
         "arrow-button-brown",
-        () => this.getUsersAndUpdateTexts("+")
+        () => this.getUsersAndUpdateTexts("+"),
+        "button"
       )
       .setFlipY(true)
       .setDepth(1)
@@ -163,7 +176,8 @@ export default class Leaderboard extends Phaser.Scene {
       this.GW / 2,
       this.game.GH - 50,
       "circle-button-brown",
-      () => this.searchMeAndUpdateTexts()
+      () => this.searchMeAndUpdateTexts(),
+      "button"
     )
     this.add.image(me.x, me.y, "general-1", "glow")
   }

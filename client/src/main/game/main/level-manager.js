@@ -4,7 +4,7 @@ import * as helper from "../GUI-helper.js"
 import { POST_LEVEL_SCORE, SAVE_MONEY } from "../../shortcuts/requests"
 import { getProgress, saveProgress } from "../../shortcuts/save"
 import PerfectManager from "./perfect-manager"
-
+import playAudio from "../../shortcuts/audio-player"
 import LevelFunctionsCaller from "./level-functions-caller"
 
 export default class Manager {
@@ -42,15 +42,21 @@ export default class Manager {
   }
 
   create() {
+
+    this.scene.cameras.main.setBackgroundColor(
+      this.config.canvas_color || 0x000000
+    )
+    this.scene.scene.launch("UI", { context: this })
+    this.attachSceneListeners()
+
     this.levelFunctionsCaller = new LevelFunctionsCaller(this.scene)
     this.perfectManager = new PerfectManager(this)
     this.perfectManager.createPerfectText()
-    this.perfectManager.createScoreText()
 
     this.helper = new LevelHelper(this)
     this.helper.randomNextTarget()
-  
-    if (this.scene.is_first_try) this.createTappingAnimation()
+
+    this.scene.is_first_try && this.createTappingAnimation()
     /*
     this.fps_text = this.scene.add
       .text(150, 150, this.scene.game.loop.actualFps, {
@@ -78,7 +84,12 @@ export default class Manager {
       .play("tap")
   }
   showNewLevelUnlockedAlert() {
-    const LS_middle = this.scene.add.image(this.GW / 2, 0, "general-2","new-level-unlocked")
+    const LS_middle = this.scene.add.image(
+      this.GW / 2,
+      0,
+      "general-2",
+      "new-level-unlocked"
+    )
 
     const lock = this.scene.add.sprite(
       LS_middle.x,
@@ -116,8 +127,8 @@ export default class Manager {
   hasHitTarget(distanceToTarget) {
     return distanceToTarget < 85 * this.target_array[0].scale
   }
-  playSound(sound){
-    this.scene.game.audio.sounds[sound].play()
+  playSound(sound) {
+    playAudio(this.scene, sound)
   }
   changeBall() {
     this.levelFunctionsCaller.tryChangeRotationSpeed()
@@ -142,7 +153,7 @@ export default class Manager {
         this.score++
         this.perfect_combo = 0
       }
-     this.playSound("tap")
+      this.playSound("tap")
       if (
         this.isNewLevelNeededScoreReached() &&
         !this.level_unlock_alert_shown
@@ -151,8 +162,8 @@ export default class Manager {
         this.showNewLevelUnlockedAlert()
         this.game.audio.sounds.new_level_sound.play()
       }
-
-      this.perfectManager.updateScoreText()
+      this.UI.updateScoreText()
+      // this.perfectManager.updateScoreText()
 
       this.is_possible_miss = false
 
@@ -202,16 +213,6 @@ export default class Manager {
   }
   createGUI() {
     helper.createBackground(this.scene, this.config.background)
-
-    this.pause_button = helper
-      .createButton(this.scene, 10, 10, "pause-button", () => {
-        this.scene.scene.pause()
-        this.scene.scene.launch("pause", { scene: this.scene })
-        this.scene.scene.bringToTop("pause")
-      })
-      .setOrigin(0)
-
-    this.pause_button.bounds = this.pause_button.getBounds()
   }
 
   createFirstTarget() {
@@ -273,9 +274,10 @@ export default class Manager {
     this.scene.input.on("pointerdown", ({ x, y }) => {
       // this.fps_text.setText(this.scene.game.loop.actualFps)
 
-      if (Phaser.Geom.Rectangle.Contains(this.pause_button.bounds, x, y)) return
+      if (Phaser.Geom.Rectangle.Contains(this.UI.getPauseButtonBounds(), x, y))
+        return
       if (!this.game_started) {
-        if(this.finger)this.finger.destroy()
+        if (this.finger) this.finger.destroy()
         this.game_started = true
 
         this.levelFunctionsCaller.tryBlindTheScreen()
@@ -356,6 +358,21 @@ export default class Manager {
       target.y += target_shiftY
     })
   }
+
+  attachSceneListeners() {
+    this.UI = this.scene.scene.get("UI")
+    this.scene.scene.bringToTop("UI")
+
+    this.scene.events.on("pause", () => {
+      this.scene.scene.sleep("UI")
+    })
+
+    this.scene.events.on("resume", () => {
+      this.scene.scene.wake("UI")
+    })
+
+    this.scene.events.on("shutdown", () => this.scene.scene.stop("UI"))
+  }
   isNewLevelNeededScoreReached() {
     return (
       typeof this.progress.levels_scores[this.scene.level] === "undefined" &&
@@ -364,10 +381,14 @@ export default class Manager {
   }
 
   async gameOver() {
+    this.scene.tweens.add({
+      targets: [...this.circles, this.stick],
+      duration: 400,
+      alpha: 0.1,
+    })
+
+    this.UI.scene.stop()
     this.playSound("die")
-    this.circles.forEach((c) => c.setDepth(0))
-    this.stick.setDepth(0)
-    this.target_array.forEach((t) => t.setDepth(0))
 
     const lose_scene = this.scene.scene.get("lose")
 
