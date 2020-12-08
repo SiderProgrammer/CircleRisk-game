@@ -42,7 +42,6 @@ export default class Manager {
   }
 
   create() {
-
     this.scene.cameras.main.setBackgroundColor(
       this.config.canvas_color || 0x000000
     )

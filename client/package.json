@@ -1,6 +1,6 @@
 {
   "name": "game",
-  "displayName": "Phaser 3 WC",
+  "displayName": "Circle Risk",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -17,6 +17,8 @@
     "@babel/preset-env": "^7.7.7",
     "babel-loader": "^8.0.6",
     "copy-webpack-plugin": "^6.2.0",
+    "cordova-browser": "^6.0.0",
+    "cordova-plugin-browsersync": "^1.1.0",
     "cordova-plugin-whitelist": "^1.3.4",
     "css-loader": "^3.4.0",
     "file-loader": "^5.0.2",
@@ -33,29 +35,22 @@
   },
   "dependencies": {
     "cordova-admob-plus": "^0.40.0",
-    "cordova-admob-sdk": "0.24.1",
     "cordova-android": "^8.1.0",
-    "cordova-plugin-admob-free": "0.27.0",
     "cordova-plugin-fullscreen": "^1.3.0",
-    "cordova-plugin-statusbar": "^2.4.3",
-    "cordova-promise-polyfill": "0.0.2",
     "phaser": "^3.24.1"
   },
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
-      "cordova-plugin-statusbar": {},
       "cordova-plugin-fullscreen": {},
-      "cordova-plugin-admob-free": {
-        "ADMOB_APP_ID": "ca-app-pub-9411864465298475~4765400469"
-      },
       "cordova-admob-plus": {
         "APP_ID_ANDROID": "ca-app-pub-9411864465298475~4765400469",
         "PLAY_SERVICES_VERSION": "19.5.0"
       }
     },
     "platforms": [
-      "android"
+      "android",
+      "browser"
     ]
   }
 }

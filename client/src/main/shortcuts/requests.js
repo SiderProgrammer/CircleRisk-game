@@ -42,8 +42,9 @@ export const EQUIP_SKIN = (data) => {
 
 export const IS_ONLINE = async () => {
   try {
+    // it works only if the server is alive
     const response = await fetch("https://www.google.com", { mode: "no-cors" })
-  
+
     if (response) return true
   } catch {
     return false
