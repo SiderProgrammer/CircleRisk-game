@@ -21,6 +21,28 @@ export default class preloader extends Phaser.Scene {
     this.loadImage("loading-bg", "backgrounds")
   }
   create() {
+   if(admob){
+
+    const config = {
+      isTesting:true,
+      autoShow:false,
+    }
+    admob.banner.config({
+     ...config,
+      id: 'ca-app-pub-3940256099942544/6300978111',
+     })
+     
+     admob.banner.prepare()
+
+
+     admob.interstitial.config({
+      id: 'ca-app-pub-3940256099942544/1033173712',
+      ...config
+     })
+     
+     admob.interstitial.prepare()
+    }
+  
     this.scene.start("loader")
   }
 }

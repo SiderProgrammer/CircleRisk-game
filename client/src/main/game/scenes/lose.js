@@ -10,6 +10,7 @@ export default class Lose extends Phaser.Scene {
     this.are_buttons_active = false
   }
   create() {
+
     this.score = this.createScore()
     this.best = this.createBest()
     this.perfect_score = this.createPerfect()

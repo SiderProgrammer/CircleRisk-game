@@ -180,6 +180,7 @@ export default class loader extends Phaser.Scene {
     addSound("change_object")
   }
   preload() {
+    if(AndroidFullScreen)AndroidFullScreen.immersiveMode()
     this.createGUI()
     this.load.on("progress", this.updateBar)
     this.loadAudio()

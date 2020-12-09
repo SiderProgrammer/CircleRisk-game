@@ -42,6 +42,10 @@ export default class Manager {
   }
 
   create() {
+
+if(admob) admob.banner.hide()
+
+
     this.scene.cameras.main.setBackgroundColor(
       this.config.canvas_color || 0x000000
     )
@@ -454,5 +458,11 @@ export default class Manager {
       duration: 400,
       alpha: 1,
     })
+
+    if(admob){
+    admob.banner.show()
+    admob.interstitial.show()
+    admob.interstitial.prepare()
+  }
   }
 }

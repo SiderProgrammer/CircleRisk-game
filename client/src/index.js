@@ -7,12 +7,12 @@ import bindPrototypeExtendedFunctions from "./main/prototypes"
 
 bindPrototypeExtendedFunctions()
 window.main_font = "luckiestGuy"
-//localStorage.clear()
+localStorage.clear()
 export const startGame = () => {
   const game = new Phaser.Game(config)
   game.GW = config.width
   game.GH = config.height
-
+//  document.querySelector("canvas").style.position = "absolute"
   if (!game.device.os.desktop) game.input.mouse.enabled = false
 }
 
