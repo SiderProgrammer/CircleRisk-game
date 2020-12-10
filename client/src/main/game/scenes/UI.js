@@ -10,8 +10,8 @@ export default class UI extends Phaser.Scene {
   create() {
     const needed_score = this.add
       .text(
-        this.managerContext.GW - 30,
-        40,
+        this.managerContext.GW - 10,
+        50,
         this.managerContext.scene.score_to_next_level, /// NEEDED SCORE
         {
           font: `40px ${main_font}`,
@@ -22,7 +22,7 @@ export default class UI extends Phaser.Scene {
 
     const divider = this.add
       .text(
-        needed_score.x - needed_score.displayWidth - 10,
+        needed_score.x - needed_score.displayWidth - 6,
         needed_score.y + needed_score.displayHeight / 2,
         "/",
         {
@@ -34,16 +34,19 @@ export default class UI extends Phaser.Scene {
 
     this.score_text = this.add
       .text(
-        divider.x - divider.displayWidth - 10,
+        divider.x  - 26,
         divider.y - 20,
         this.getScoreText(),
         {
-          font: `100px ${main_font}`,
+          font: `80px ${main_font}`,
         }
       )
 
       .setOrigin(1, 0.5)
       .setDepth(1)
+
+divider.y -=5;
+needed_score.y -=5;
 
     this.pause_button = createButton(
       this,

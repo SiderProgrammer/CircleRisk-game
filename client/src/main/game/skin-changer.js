@@ -149,7 +149,7 @@ export default class {
   }
   createSkinPrice(x, y, price) {
     const text = this.scene.add
-      .text(x, y - 5, price, {
+      .text(x, y , price, {
         font: `60px ${main_font}`,
       })
       .setAlpha(0)
@@ -159,11 +159,11 @@ export default class {
     text.bg.displayHeight = text.displayHeight + 20
 
     text.getCoinX = function () {
-      return this.bg.x + this.bg.displayWidth / 2 + 10
+      return this.bg.x + this.bg.displayWidth / 2  - 15
     }
 
     text.coin = this.scene.add
-      .image(text.getCoinX(), text.y + 5, "general-1", "coin")
+      .image(text.getCoinX(), text.y, "general-1", "coin")
       .setAlpha(0)
 
     return text
@@ -171,14 +171,14 @@ export default class {
 
   updateSkinPrice(price_text, price) {
     price_text.setText(price)
-    price_text.bg.displayWidth = price_text.displayWidth + 90
-    price_text.x = price_text.bg.x
+    price_text.bg.displayWidth = price_text.displayWidth + 110
+    price_text.x = price_text.bg.x  - 20
     price_text.coin.x = price_text.getCoinX()
   }
 
   updateTick(sprite) {
-    sprite.price.bg.displayWidth = sprite.tick.displayWidth + 100
-    sprite.tick.setPosition(sprite.price.bg.x, sprite.price.bg.y)
+    sprite.price.bg.displayWidth = sprite.tick.displayWidth + 120
+    sprite.tick.setPosition(sprite.price.bg.x - 20, sprite.price.bg.y)
     sprite.price.coin.x = sprite.price.getCoinX()
   }
 

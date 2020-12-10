@@ -162,7 +162,7 @@ export default class Lose extends Phaser.Scene {
     this.add.image(a.x, a.y, "lb-strap")
 
     const shift = 200
-    createButton(
+    const customizeB = createButton(
       this,
       this.game.GW / 2 - shift,
       this.game.GH - this.emptySpace / 2 + 130,
@@ -182,6 +182,9 @@ export default class Lose extends Phaser.Scene {
       },
       "button"
     )
+customizeB.displayWidth = 155;
+customizeB.displayHeight = 155;
+
     createButton(
       this,
       this.game.GW / 2 + shift,

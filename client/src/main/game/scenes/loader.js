@@ -98,6 +98,7 @@ export default class loader extends Phaser.Scene {
     this.loadImage("black", "mix")
     this.loadImage("pentagon", "mix")
     this.loadImage("spikes", "mix")
+    this.loadImage("pause-bg","mix")
     this.load.atlas("colors", `${imgPath}/colors.png`, `${imgPath}/colors.json`)
     this.load.atlas(
       "particles",
@@ -180,7 +181,7 @@ export default class loader extends Phaser.Scene {
     addSound("change_object")
   }
   preload() {
-    if(AndroidFullScreen)AndroidFullScreen.immersiveMode()
+    if(window.AndroidFullScreen)AndroidFullScreen.immersiveMode()
     this.createGUI()
     this.load.on("progress", this.updateBar)
     this.loadAudio()

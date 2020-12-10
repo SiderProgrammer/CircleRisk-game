@@ -32,6 +32,7 @@ function mergeLevelsConfigurations() {
   mergeEasyWithMedium()
   mergeEasyMediumWithHard()
 
+
   return merged
 }
 

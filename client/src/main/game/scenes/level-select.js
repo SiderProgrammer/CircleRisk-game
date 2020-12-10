@@ -238,18 +238,18 @@ export default class levelSelect extends Phaser.Scene {
     )
 
     elements.divider = this.add
-      .text(x + 55, elements.score_bar.y + 15, "/", {
+      .text(x + 45, elements.score_bar.y +15, "/", {
         font: "50px LuckiestGuy", /// DIVIDER
       })
       .setOrigin(0.5)
 
     elements.current_score = this.add
       .text(
-        elements.divider.x - elements.divider.displayWidth / 2,
-        elements.divider.y - 40, /// CURRENT SCORE
+        elements.divider.x - 13,
+        elements.divider.y - 30, /// CURRENT SCORE
         score,
         {
-          font: "160px LuckiestGuy",
+          font: "145px LuckiestGuy",
         }
       )
       .setOrigin(1, 0.5)
@@ -262,11 +262,11 @@ export default class levelSelect extends Phaser.Scene {
     }
     elements.score_to_reach = this.add
       .text(
-        elements.divider.x + elements.divider.displayWidth / 2,
-        elements.divider.y,
+        elements.divider.x + 17 ,
+        elements.divider.y ,
         levelsConfiguration[this.current_page_number].info.score_to_next_level, /// NEEDED SCORE
         {
-          font: "40px LuckiestGuy",
+          font: "50px LuckiestGuy",
         }
       )
       .setOrigin(0, 0.5)
@@ -295,6 +295,8 @@ export default class levelSelect extends Phaser.Scene {
       this.current_page_number
     ].info
 
+
+
     elements.difficulty = this.add
       .text(x, y - displayHeight / 2 + 260, difficulty, {
         font: "50px LuckiestGuy",
@@ -302,18 +304,18 @@ export default class levelSelect extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(0.1)
     elements.difficulty.update = function (page_number) {
-      this.setText(levelsConfiguration[page_number].info.difficulty)
+      this.setText(levelsConfiguration[page_number].info.difficulty.toUpperCase())
     }
 
     elements.name = this.add
       .text(x, y - displayHeight / 2 + 110, name, {
-        font: "50px LuckiestGuy",
+        font: "60px LuckiestGuy",
       })
       .setOrigin(0.5)
       .setDepth(0.1)
 
     elements.name.update = function (page_number) {
-      this.setText(levelsConfiguration[page_number].info.name)
+      this.setText(levelsConfiguration[page_number].info.name.toUpperCase())
     }
 
     elements.difficulty_bar = this.add
@@ -332,6 +334,7 @@ export default class levelSelect extends Phaser.Scene {
         "general-1",
         "level-select-name-bar"
       )
+      .setScale(1.1,1)
       .setDepth(0.09)
 
     return elements

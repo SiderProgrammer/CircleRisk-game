@@ -183,14 +183,14 @@ export default class Customize extends Phaser.Scene {
 
     this.money_text = this.add
       .text(
-        this.coin.x - this.coin.displayWidth - 20,
-        this.coin.y,
+        this.coin.x - this.coin.displayWidth - 10,
+        this.coin.y + this.coin.displayHeight/2,
         this.progress.money,
         {
           font: `70px ${main_font}`,
         }
       )
-      .setOrigin(1, 0)
+      .setOrigin(1, 0.5)
       .setAlpha(0)
   }
 
@@ -261,6 +261,7 @@ export default class Customize extends Phaser.Scene {
       )
     } else {
       close_button.x -= 100
+      close_button.y += 40
     }
   }
   async purchaseCallback(skin, part, price) {

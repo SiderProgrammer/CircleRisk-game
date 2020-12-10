@@ -6,6 +6,8 @@ export default class Pause extends Phaser.Scene {
   }
   init({ scene }) {
     createBackground(this, "black-bg")
+
+    this.add.image(this.game.GW/2,this.game.GH/2+50,"pause-bg")
     createButton(
       this,
       this.game.GW / 2,

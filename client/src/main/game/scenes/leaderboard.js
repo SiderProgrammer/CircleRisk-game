@@ -65,13 +65,12 @@ export default class Leaderboard extends Phaser.Scene {
   }
   createLevelInfo(y) {
     const { difficulty, name } = levelsConfiguration[this.level - 1].info
-
-    this.add.image(this.game.GW / 2, 57, "level-select-difficulty-bar")
+ 
+   // this.add.image(this.game.GW / 2, 57, "general-1", "level-select-difficulty-bar")
     this.add
-      .text(this.game.GW / 2, 54, difficulty, { font: `50px ${main_font}` })
+      .text(this.game.GW / 2, 54, difficulty.toUpperCase(), { font: `75px ${main_font}` })
       .setOrigin(0.5)
 
-    this.add.image(this.game.GW / 2, y, "general-1", "glow")
     this.add.image(this.game.GW / 2, y, "levels-icons", name + "_icon")
   }
   createOrnaments() {
@@ -131,7 +130,7 @@ export default class Leaderboard extends Phaser.Scene {
       )
       .setAngle(270)
       .setDepth(1)
-    this.add.image(x + 10, y, "general-1", "glow")
+    
   }
 
   createLeaderboardButtons() {
@@ -146,11 +145,7 @@ export default class Leaderboard extends Phaser.Scene {
       )
       .setDepth(1)
 
-    this.add.image(
-      this.previous_page_button.x,
-      this.previous_page_button.y + 10,
-      "glow"
-    )
+
 
     this.next_page_button = helper
       .createButton(
@@ -164,12 +159,7 @@ export default class Leaderboard extends Phaser.Scene {
       .setFlipY(true)
       .setDepth(1)
 
-    this.add.image(
-      this.next_page_button.x,
-      this.next_page_button.y - 10,
-      "general-1",
-      "glow"
-    )
+  
 
     const me = helper.createButton(
       this,

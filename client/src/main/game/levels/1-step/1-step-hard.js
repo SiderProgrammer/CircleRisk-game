@@ -35,7 +35,7 @@ export default class OneStep_Hard extends Phaser.Scene {
 
     this.manager.GUI_helper.sceneIntro(this)
     this.hellFunctionsManager = new HellFunctionsManager(this)
-    this.hellFunctionsManager.createBlame()
+
     this.snowFunctionsManager = new SnowFunctionsManager(this)
   }
   update() {

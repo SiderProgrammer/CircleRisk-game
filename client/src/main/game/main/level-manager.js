@@ -43,7 +43,7 @@ export default class Manager {
 
   create() {
 
-if(admob) admob.banner.hide()
+if(window.admob) admob.banner.hide()
 
 
     this.scene.cameras.main.setBackgroundColor(
@@ -87,30 +87,24 @@ if(admob) admob.banner.hide()
       .play("tap")
   }
   showNewLevelUnlockedAlert() {
-    const LS_middle = this.scene.add.image(
+    const lock = this.scene.add.sprite(
       this.GW / 2,
       0,
-      "general-2",
-      "new-level-unlocked"
-    )
-
-    const lock = this.scene.add.sprite(
-      LS_middle.x,
-      LS_middle.y,
-      "lock",
+      "general-1",
       "locked"
     )
 
     this.scene.tweens.add({
-      targets: [LS_middle, lock],
+      targets: lock,
       y: "+=150",
       duration: 1000,
+      ease:"Power1",
       onComplete: () => {
-        lock.setTexture("lock", "unlocked")
+        lock.setFrame("unlocked")
         this.scene.tweens.add({
-          targets: [LS_middle, lock],
+          targets: lock,
           alpha: 0,
-          duration: 1500,
+          duration: 1400,
         })
       },
     })
@@ -163,7 +157,8 @@ if(admob) admob.banner.hide()
       ) {
         this.level_unlock_alert_shown = true
         this.showNewLevelUnlockedAlert()
-        this.game.audio.sounds.new_level_sound.play()
+        this.playSound("new_level_sound")
+       
       }
       this.UI.updateScoreText()
       // this.perfectManager.updateScoreText()
@@ -395,13 +390,7 @@ if(admob) admob.banner.hide()
 
     const lose_scene = this.scene.scene.get("lose")
 
-    this.scene.scene.wake("lose")
-    lose_scene.unactivateButtons()
 
-    this.scene.time.addEvent({
-      delay: 400, // delay to not instant miss click any button when game over
-      callback: () => lose_scene.activateButtons(),
-    })
 
     this.scene.input.removeAllListeners()
     this.game_started = false
@@ -425,6 +414,15 @@ if(admob) admob.banner.hide()
       lose_scene.showRestartButton()
       lose_scene.hideNextLevelButton()
     }
+
+    this.scene.scene.wake("lose")
+    lose_scene.unactivateButtons()
+
+    this.scene.time.addEvent({
+      delay: 400, // delay to not instant miss click any button when game over
+      callback: () => lose_scene.activateButtons(),
+    })
+
 
     const this_level_score = this.progress.levels_scores[this.scene.level - 1]
     if (this.score > this_level_score || !this_level_score) {
@@ -459,7 +457,7 @@ if(admob) admob.banner.hide()
       alpha: 1,
     })
 
-    if(admob){
+    if(window.admob){
     admob.banner.show()
     admob.interstitial.show()
     admob.interstitial.prepare()

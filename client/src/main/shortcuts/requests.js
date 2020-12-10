@@ -1,4 +1,5 @@
 import { getFunction, postFunction } from "../fetch-helper"
+import {SERVER_URL} from "../fetch-helper"
 
 export const GET_LEVEL_SCORES_AND_NICKNAMES = async (data) => {
   const response = await postFunction(data, "getLevelScoresAndNicknames")
@@ -53,7 +54,7 @@ export const IS_ONLINE = async () => {
 
 export const IS_SERVER_ALIVE = async () => {
   try {
-    const response = await fetch("http://192.168.1.12:3001/isServerAlive")
+    const response = await fetch(`${SERVER_URL}/isServerAlive`)
 
     if (response.status === 200) return true
   } catch {

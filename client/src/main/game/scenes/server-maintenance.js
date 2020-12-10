@@ -20,6 +20,7 @@ export default class ServerMaintenance extends Phaser.Scene {
           wordWrap: {
             width: this.game.GW * 0.8,
           },
+          align: 'center', 
         }
       )
       .setOrigin(0.5)

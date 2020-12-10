@@ -471,6 +471,9 @@ export default class menu extends Phaser.Scene {
     // WINDOW ASSIGNED VARIABLES LIKE NICKNAME CAN BE EASY HACKED  !!!
     window.customize_skins_setup = response.skins_setup
     window.levelsConfiguration = response.levels_config
+
+   
+  
     return
   }
 

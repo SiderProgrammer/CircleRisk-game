@@ -21,7 +21,7 @@ export default class preloader extends Phaser.Scene {
     this.loadImage("loading-bg", "backgrounds")
   }
   create() {
-   if(admob){
+   if(window.admob){
 
     const config = {
       isTesting:true,
