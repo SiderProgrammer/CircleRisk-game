@@ -5,7 +5,7 @@ import playSound from "../shortcuts/audio-player"
 
 export default class {
   constructor(scene, x, y) {
-    this.progress = scene.progress || getProgress()
+    this.progress = window.progress//scene.progress || getProgress()
 
     this.scene = scene
     this.setup = customize_skins_setup
@@ -39,7 +39,7 @@ export default class {
   }
 
   save() {
-    saveProgress(this.progress)
+    window.progress = this.progress//saveProgress(this.progress)
     EQUIP_SKIN({
       current_skins: this.progress.current_skins,
       nickname: this.progress.nickname,

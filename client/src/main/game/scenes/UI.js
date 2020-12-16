@@ -45,8 +45,8 @@ export default class UI extends Phaser.Scene {
       .setOrigin(1, 0.5)
       .setDepth(1)
 
-divider.y -=5;
-needed_score.y -=5;
+divider.y -=10;
+needed_score.y -=10;
 
     this.pause_button = createButton(
       this,

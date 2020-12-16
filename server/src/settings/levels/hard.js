@@ -18,7 +18,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 20,
+      score_to_next_level: 50,
       tint: "0xFF6E00",
       name: "wind",
     },
@@ -32,7 +32,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 30,
+      score_to_next_level: 55,
       tint: "0xFF00FF",
       name: "night",
     },
@@ -136,7 +136,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 90,
+      score_to_next_level:70,
       tint: "0x06E0FF",
       name: "twins",
     },
@@ -145,7 +145,7 @@ module.exports = [
       ...config,
       teleport_value: {
         min: -1,
-        max: -3,
+        max: -2,
       },
     },
   },
@@ -181,7 +181,7 @@ module.exports = [
   */
   {
     info: {
-      score_to_next_level: 110,
+      score_to_next_level: 1,
       tint: "0x06E0FF",
       name: "chameleon",
     },
@@ -198,7 +198,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 130,
+      score_to_next_level: 1,
       tint: "0x06E0FF",
       name: "confusion",
     },
@@ -210,7 +210,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 140,
+      score_to_next_level: 1,
       tint: "0x06E0FF",
       name: "speed",
     },
@@ -222,7 +222,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 150,
+      score_to_next_level: 1,
       tint: "0x06E0FF",
       name: "flower",
     },
@@ -237,7 +237,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 160,
+      score_to_next_level: 1,
       tint: "0x06E0FF",
       name: "teleport",
     },
@@ -254,7 +254,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 170,
+      score_to_next_level: 1,
       tint: "0x06E0FF",
       name: "unstable",
     },
@@ -270,18 +270,21 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 180,
+      score_to_next_level: 55, // 55
       tint: "0x06E0FF",
       name: "pulsate",
     },
     config: {
       background: "pulsate-bg",
       ...config,
+      rotation_speed:1.25,
+      acceleration:0.03,
+      blind_time:600,
     },
   },
   {
     info: {
-      score_to_next_level: 190,
+      score_to_next_level: 1,
       tint: "0x06E0FF",
       name: "blind",
     },
@@ -294,7 +297,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 200,
+      score_to_next_level: 1,
       tint: "0x06E0FF",
       name: "sense",
     },
@@ -306,13 +309,16 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 210,
+      score_to_next_level: 1,
       tint: "0x06E0FF",
       name: "tiny",
     },
     config: {
       background: "tiny-bg",
       ...config,
+      starting_target:6,
+      rotation_speed:1.5,
+      acceleration:0.04,
     },
   },
 
@@ -333,13 +339,15 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 220,
+      score_to_next_level: 45,
       tint: "0x06E0FF",
       name: "oneStep",
     },
     config: {
       background: "hell-bg",
       ...config,
+      rotation_speed:1.55,
+      acceleration:0.06,
     },
   },
 ]

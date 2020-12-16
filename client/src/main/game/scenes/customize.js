@@ -11,7 +11,7 @@ export default class Customize extends Phaser.Scene {
   }
 
   init() {
-    this.progress = getProgress()
+    this.progress = window.progress//getProgress()
     this.purchase_offer_elements = []
   }
 
@@ -29,7 +29,7 @@ export default class Customize extends Phaser.Scene {
     this.skinChangerManager.hideSetsWithoutAnimation()
 
     this.events.on("wake", () => {
-      this.progress.money = getProgress().money
+    this.progress.money = window.progress.money//getProgress().money
       this.money_text.setText(this.progress.money)
     })
   }
@@ -293,7 +293,7 @@ export default class Customize extends Phaser.Scene {
           nickname: this.progress.nickname,
         })
 
-        saveProgress(this.progress)
+        window.progress = this.progress // saveProgress(this.progress)
       }
     } catch {
       // CREATE_FETCH_ERROR(this, this.game.GW / 2, this.game.GH / 2 - 300)

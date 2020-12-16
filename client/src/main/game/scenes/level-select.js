@@ -8,7 +8,7 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   init(data) {
-    this.progress = getProgress()
+    this.progress = window.progress//getProgress()
     this.pages_amount = levelsConfiguration.length
 
     this.current_page_number = this.initPageNumber()
@@ -40,7 +40,7 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   initPageNumber() {
-    return getProgress().levels_scores.length - 1 // 0 //  page
+    return window.progress.levels_scores.length - 1//getProgress().levels_scores.length - 1 // 0 //  page
   }
   showAllElementsInMenuContext() {
     this.level_select_elements_in_menu_context.forEach((element) =>
@@ -465,7 +465,7 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   updateVisiblePage() {
-    this.progress.levels_scores = getProgress().levels_scores
+    this.progress.levels_scores = window.progress.levels_scores //getProgress().levels_scores
     this.updatePage(this.current_page)
   }
 
@@ -546,7 +546,7 @@ export default class levelSelect extends Phaser.Scene {
       this.current_page_number > this.progress.levels_scores.length - 1
     )
       return
-
+      this.game.audio.music.menu_theme.stop()
     this.game.audio.sounds.start_sound.play()
     this.canChangePage = false
 

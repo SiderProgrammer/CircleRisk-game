@@ -12,10 +12,10 @@ const accept_button = $("#accept-nickname")
 const info = $("#creating-info")
 
 const createAccountAndStartGame = () => {
-  const removeWhiteSpaces = new RegExp("/s/g,")
+ // const removeWhiteSpaces = new RegExp("/s/g,")
 
   saveProgress({
-    nickname: nickname_input.value.replace(removeWhiteSpaces, ""),
+    nickname: nickname_input.value//.replace(removeWhiteSpaces, ""),
   })
 
   creator_div.style.display = "none"

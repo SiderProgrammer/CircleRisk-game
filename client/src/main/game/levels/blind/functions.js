@@ -8,7 +8,7 @@ export default class {
     this.scene.blind.setVisible(true)
 
     this.scene.time.addEvent({
-      delay: 800,
+      delay: this.scene.manager.config.blind_time || 800,
       callback: () => {
         this.scene.blind.setVisible(false)
         this.scene.time.addEvent({

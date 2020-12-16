@@ -99,6 +99,10 @@ export default class loader extends Phaser.Scene {
     this.loadImage("pentagon", "mix")
     this.loadImage("spikes", "mix")
     this.loadImage("pause-bg","mix")
+
+    this.loadImage("buttons-lose-bg", "mix2")
+    this.loadImage("score-lose-bg","mix2")
+
     this.load.atlas("colors", `${imgPath}/colors.png`, `${imgPath}/colors.json`)
     this.load.atlas(
       "particles",

@@ -480,16 +480,16 @@ export default class menu extends Phaser.Scene {
   async restoreProgress() {
     window.my_nickname = getProgress().nickname
 
-    const progress = await GET_ACCOUNT_PROGRESS({ nickname: my_nickname })
+    window.progress = await GET_ACCOUNT_PROGRESS({ nickname: my_nickname })
 
     // converting skin numbers into full name strings
-    Object.keys(progress.skins).forEach((item) => {
-      progress.skins[item].forEach((skin_number, index, array) => {
+    Object.keys(window.progress.skins).forEach((item) => {
+      window.progress.skins[item].forEach((skin_number, index, array) => {
         array[index] = item.substring(0, item.length - 1) + "_" + skin_number
       })
     })
 
-    saveProgress(progress)
+   // saveProgress(progress)
   }
 
   finishFetching() {

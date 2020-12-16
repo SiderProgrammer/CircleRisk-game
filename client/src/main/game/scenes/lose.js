@@ -5,7 +5,7 @@ export default class Lose extends Phaser.Scene {
     super("lose")
   }
   init(data) {
-    this.progress = getProgress()
+    this.progress = window.progress//getProgress()
     this.level_scene = data.scene
     this.are_buttons_active = false
   }
@@ -14,12 +14,17 @@ export default class Lose extends Phaser.Scene {
     this.score = this.createScore()
     this.best = this.createBest()
     this.perfect_score = this.createPerfect()
+    this.add.image(this.game.GW/2,200,"score-lose-bg").setAlpha(0.5)
 
     this.emptySpace =
       this.game.GH - (this.purple_strap.y + this.purple_strap.displayHeight / 2)
 
+      this.bottom_buttons_y = this.game.GH - this.emptySpace / 2 + 130
     this.restartAndNextButtonY = this.game.GH - this.emptySpace / 2 + 10
+    this.buttons_bg_y = this.restartAndNextButtonY + (this.bottom_buttons_y - this.restartAndNextButtonY)/2 - 15;
+
     this.createButtons()
+   this.add.image(this.game.GW/2,this.buttons_bg_y,"buttons-lose-bg").setAlpha(0.5)
   }
 
   activateButtons() {
@@ -39,7 +44,7 @@ export default class Lose extends Phaser.Scene {
   createScore() {
     this.blue_strap = this.add
       .image(0, 0, "general-1", "blue-strap")
-      .setOrigin(0, 0.5)
+      .setOrigin(0, 0.5).setVisible(false)
     this.blue_strap.y += this.blue_strap.displayHeight / 2
 
     this.add
@@ -87,7 +92,7 @@ export default class Lose extends Phaser.Scene {
         "general-1",
         "red-strap"
       )
-      .setOrigin(0, 0.5)
+      .setOrigin(0, 0.5).setVisible(false)
 
     this.add
       .text(50, this.red_strap.y, "BEST", {
@@ -115,7 +120,7 @@ export default class Lose extends Phaser.Scene {
         "general-1",
         "purple-strap"
       )
-      .setOrigin(0, 0.5)
+      .setOrigin(0, 0.5).setVisible(false)
 
     this.add /// PERFECT TEXT
       .text(50, this.purple_strap.y, "PERFECT", {
@@ -165,7 +170,7 @@ export default class Lose extends Phaser.Scene {
     const customizeB = createButton(
       this,
       this.game.GW / 2 - shift,
-      this.game.GH - this.emptySpace / 2 + 130,
+      this.bottom_buttons_y,
       "customize-button",
       () => {
         if (!this.are_buttons_active) return
@@ -188,7 +193,7 @@ customizeB.displayHeight = 155;
     createButton(
       this,
       this.game.GW / 2 + shift,
-      this.game.GH - this.emptySpace / 2 + 130,
+      this.bottom_buttons_y,
       "levelSelect-button",
       () => {
         if (!this.are_buttons_active) return

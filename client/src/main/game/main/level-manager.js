@@ -10,7 +10,7 @@ import LevelFunctionsCaller from "./level-functions-caller"
 export default class Manager {
   constructor(scene, config) {
     this.scene = scene
-    this.progress = getProgress()
+    this.progress = window.progress// getProgress()
     this.config = config
   }
 
@@ -82,8 +82,8 @@ if(window.admob) admob.banner.hide()
     })
 
     this.finger = this.scene.add
-      .sprite(this.GW / 2, this.GH - 200, "fingers", 0)
-      .setDepth(1)
+      .sprite(this.GW / 2, this.GH - 150, "fingers", 0)
+      .setDepth(1).setScale(0.7)
       .play("tap")
   }
   showNewLevelUnlockedAlert() {
@@ -442,9 +442,11 @@ if(window.admob) admob.banner.hide()
       this.progress.levels_scores[this.scene.level - 1]
     )
 
-    saveProgress(this.progress)
-
-    SAVE_MONEY({ money: this.progress.money, nickname: my_nickname })
+    window.progress = this.progress // saveProgress(this.progress)
+//if(this.score > 0){
+  SAVE_MONEY({ money: this.progress.money, nickname: my_nickname })
+//}
+   
 
     is_any_update && this.scene.scene.get("levelSelect").updateVisiblePage()
 
