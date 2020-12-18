@@ -11,6 +11,11 @@ export const GET_LEVEL_SCORE_BY_NICKNAME = async (data) => {
   if (response.ok) return response.json()
 }
 
+export const GET_ACCOUNT_SCORES = async (data) => {
+  const response = await postFunction(data, "getAccountScores")
+  if (response.ok) return response.json()
+}
+
 export const GET_ACCOUNT_PROGRESS = async (data) => {
   const response = await postFunction(data, "getAccountProgress")
   if (response.ok) return response.json()
@@ -20,6 +25,12 @@ export const GET_CONFIGURATIONS = async () => {
   const response = await getFunction("getConfigurations")
   if (response.ok) return response.json()
 }
+
+export const GET_TOP_SCORES = async (data) => {
+  const response = await postFunction(data,"getTopScores")
+  if (response.ok) return response.json()
+}
+
 
 export const CREATE_ACCOUNT = (data) => {
   return postFunction(data, "createAccount")

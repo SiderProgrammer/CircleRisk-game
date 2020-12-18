@@ -2,8 +2,10 @@ import * as helper from "../GUI-helper"
 import {
   GET_LEVEL_SCORES_AND_NICKNAMES,
   GET_LEVEL_SCORE_BY_NICKNAME,
+  GET_TOP_SCORES
 } from "../../shortcuts/requests"
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
+import Utils from "../../utils"
 
 const bar_text_config = {
   font: `50px LuckiestGuy`,
@@ -35,14 +37,14 @@ export default class Leaderboard extends Phaser.Scene {
 
     START_FETCHING_SCENE(this)
 
-    const data = await this.getUsers(
-      this.last_start_search_rank,
-      this.last_stop_search_rank
-    )
 
+    this.data = await this.getUsers()
+    
+  //fresh_data.flatMap(scoreObj=>Object.values(scoreObj)) 
+  
     this.createLeaderboardBars()
     this.createLeaderboardTexts()
-    this.updateTexts(data)
+    this.updateTexts(this.chunkScores())
     this.createOrnaments()
     this.createLevelInfo(
       upper_strip.displayHeight +
@@ -51,6 +53,93 @@ export default class Leaderboard extends Phaser.Scene {
 
     STOP_FETCHING_SCENE(this)
   }
+  chunkScores(){
+   
+    const copy = [...this.data];
+    
+    return copy.splice(this.last_start_search_rank-1,this.leaderboard_shift_value)
+  }
+  
+  updateTexts(_sorted_data) {
+    const sorted_data = [..._sorted_data]
+    this.aura.setVisible(false)
+
+    this.texts.forEach((account_text, i) => {
+    
+     
+
+      if (!sorted_data[i]) {
+        sorted_data[i] = {
+          rank: "",
+          score: "",
+          nickname: "",
+        }
+      }else {
+        sorted_data[i].rank = this.last_start_search_rank +i;
+      }
+
+      if (sorted_data[i].nickname === my_nickname) {
+        account_text.nickname.setColor(bar_text_config.my_nickname_color)
+        this.aura
+          .setPosition(account_text.nickname.x, account_text.nickname.y)
+          .setVisible(true)
+      } else {
+        account_text.nickname.setColor(bar_text_config.color)
+      }
+
+      account_text.rank.setText(sorted_data[i].rank)
+      account_text.nickname.setText(sorted_data[i].nickname)
+      account_text.score.setText(sorted_data[i].score)
+    })
+  }
+
+
+  async getUsers() {
+   
+    try {
+     
+      return await GET_TOP_SCORES({
+        level: Utils.convertLevelNumberToLevelName(levelsConfiguration[this.level-1]),
+        players_amount:10,
+      })
+    } catch {
+      STOP_FETCHING_SCENE(this)
+    }
+  }
+
+  async getUsersAndUpdateTexts(sign) {
+   // START_FETCHING_SCENE(this)
+
+    let shift = this.leaderboard_shift_value
+ 
+    if (sign === "-") {
+      shift = -shift
+    }
+
+ if(this.last_start_search_rank + shift < 1) return
+
+    this.last_start_search_rank += shift
+    this.last_stop_search_rank += shift
+    
+   
+    const data = this.chunkScores()
+  
+    if (data.length > 0) {
+      // if exists next leaderboard page
+      this.updateTexts(data)
+    } else {
+      // back to previous page if next not exists
+      this.last_start_search_rank -= shift
+      this.last_stop_search_rank -= shift
+    }
+    
+   // this.last_start_search_rank += shift
+   // await this.searchRanksUpdateLastSearchAndUpdateTexts(shift) // to long function name
+   // STOP_FETCHING_SCENE(this)
+  }
+
+
+
   createMyScoretHighLight() {
     this.aura = this.add.image(0, 0, "general-1", "lb-aura").setVisible(false)
     helper.setGameSize(this.aura, true)
@@ -238,73 +327,9 @@ export default class Leaderboard extends Phaser.Scene {
     }
   }
 
-  async getUsers(start, stop) {
-    this.last_start_search_rank = start
-    this.last_stop_search_rank = stop
-    try {
-      return await GET_LEVEL_SCORES_AND_NICKNAMES({
-        level: this.level,
-        start_search_rank: start,
-        stop_search_rank: stop,
-      })
-    } catch {
-      STOP_FETCHING_SCENE(this)
-    }
-  }
+ 
 
-  async getUsersAndUpdateTexts(sign) {
-    START_FETCHING_SCENE(this)
-    let shift = this.leaderboard_shift_value
-
-    if (sign === "-") {
-      shift = -shift
-    }
-    await this.searchRanksUpdateLastSearchAndUpdateTexts(shift) // to long function name
-    STOP_FETCHING_SCENE(this)
-  }
-
-  async searchRanksUpdateLastSearchAndUpdateTexts(shift) {
-    const data = await this.getUsers(
-      this.last_start_search_rank + shift,
-      this.last_stop_search_rank + shift
-    )
-
-    if (data.length > 0) {
-      // if exists next leaderboard page
-      this.updateTexts(data) // TODO !
-    } else {
-      // back to previous page if next not exists
-      this.last_start_search_rank -= shift
-      this.last_stop_search_rank -= shift
-    }
-  }
-
-  updateTexts(sorted_data) {
-    this.aura.setVisible(false)
-
-    this.texts.forEach((account_text, i) => {
-      if (!sorted_data[i]) {
-        sorted_data[i] = {
-          rank: "",
-          score: "",
-          nickname: "",
-        }
-      }
-
-      if (sorted_data[i].nickname === my_nickname) {
-        account_text.nickname.setColor(bar_text_config.my_nickname_color)
-        this.aura
-          .setPosition(account_text.nickname.x, account_text.nickname.y)
-          .setVisible(true)
-      } else {
-        account_text.nickname.setColor(bar_text_config.color)
-      }
-
-      account_text.rank.setText(sorted_data[i].rank)
-      account_text.nickname.setText(sorted_data[i].nickname)
-      account_text.score.setText(sorted_data[i].score)
-    })
-  }
+  
 
   addAccountText(y) {
     const account_text = {}

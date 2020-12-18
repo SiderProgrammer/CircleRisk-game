@@ -1,6 +1,6 @@
 import LevelHelper from "./level-helper.js"
 import * as helper from "../GUI-helper.js"
-
+import Utils from "../../utils"
 import { POST_LEVEL_SCORE, SAVE_MONEY } from "../../shortcuts/requests"
 import { getProgress, saveProgress } from "../../shortcuts/save"
 import PerfectManager from "./perfect-manager"
@@ -378,7 +378,7 @@ if(window.admob) admob.banner.hide()
     )
   }
 
-  async gameOver() {
+  gameOver() {
     this.scene.tweens.add({
       targets: [...this.circles, this.stick],
       duration: 400,
@@ -402,10 +402,10 @@ if(window.admob) admob.banner.hide()
     if (this.isNewLevelNeededScoreReached()) {
       is_any_update = true
       this.progress.levels_scores[this.scene.level] = 0
-      await POST_LEVEL_SCORE({
+      POST_LEVEL_SCORE({
         score: 0,
         nickname: my_nickname,
-        level: this.scene.level,
+        level: Utils.convertLevelNumberToLevelName(levelsConfiguration[this.scene.level]),
       })
 
       lose_scene.showNextLevelButton()
@@ -430,11 +430,13 @@ if(window.admob) admob.banner.hide()
       /// -1, array is counted from 0
       this.progress.levels_scores[this.scene.level - 1] = this.score /// -1, array is counted from 0
 
+  
       POST_LEVEL_SCORE({
         score: this.score,
         nickname: my_nickname,
-        level: this.scene.level - 1,
+        level: Utils.convertLevelNumberToLevelName(levelsConfiguration[this.scene.level-1]),
       })
+
     }
     lose_scene.updatePoints(
       this.score,

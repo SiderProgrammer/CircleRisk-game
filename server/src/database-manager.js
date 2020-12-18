@@ -94,6 +94,11 @@ Promise.all(p).then(()=>console.log("done"))
           () => res.sendStatus(200)
 
         )
+
+        Levels.create({
+          nickname,
+          score:0,
+        })
         console.log("new account created")
       }
     })
@@ -101,10 +106,11 @@ Promise.all(p).then(()=>console.log("done"))
 
   getAccountProgress(req, res) {
     const nickname = req.body.nickname
-    Accounts.findOne({nickname}).then((account_data) => {
-      console.log(nickname + "  Joined")
-      res.status(200).json(account_data)
-    })
+    Accounts.findOne({nickname},
+      (err,account_data)=>{
+        console.log(nickname + "  Joined")
+        res.status(200).json(account_data)
+      })
   }
 
   saveMoney(req, res) {
@@ -132,44 +138,33 @@ Promise.all(p).then(()=>console.log("done"))
        
     }
 
-    getUserScores(req,res){
-      const {nickname,level} = req.body
-      const query = {level,_id:nickname}
-      Levels.find(query,(err,c)=>res.json(c))
+    getAccountScores(req,res){
+      const nickname = req.body.nickname
+    
+      Levels.find({nickname},(err,c)=>{res.json(c);console.log(c)}).lean().select("level score -_id")
     }
     postLevelScore(req, res) {
 
       const { score, nickname, level } = req.body
-      const query = { _id: nickname, level}
+      const query = {nickname, level}
       const options = { upsert: true}
       const update = {score:score}
   
-console.log(score,nickname,level)
-      Levels.findOneAndUpdate(query, update, options).exec(()=>res.sendStatus(200))
-  
-/*
-      Accounts.findOne({ nickname: nickname }, (err, account) => {
-        account.levels_scores[level] = score
-  
-        delete account._doc.__v
-  
-        account.markModified("levels_scores")
-  /*Document.prototype.$markValid()
-  Parameters
-  path «String» the field to mark as valid
-  Marks a path as valid, removing existing validation errors.
-  
-  
-        account.save()
-      })
-  */
-      
+//console.log(score,nickname,level)
+      Levels.findOneAndUpdate(query, update, options,()=>res.sendStatus(200))
+ 
     }
 
+    getTopScores(req,res){
+      const {level,players_amount} =req.body
 
+      Levels.find({level},
+        (err,players)=>res.json(players))
+      .sort({score:-1}).lean().limit(players_amount).select("score nickname -_id")
+    }
 
-
-  async getLevelScoreByNickname(req, res) {
+// ---------
+  getLevelScoreByNickname(req, res) {
     const { level, nickname } = req.body
 
   

@@ -3,6 +3,7 @@ import { saveProgress, getProgress } from "../../shortcuts/save"
 import {
   GET_ACCOUNT_PROGRESS,
   GET_CONFIGURATIONS,
+  GET_ACCOUNT_SCORES
 } from "../../shortcuts/requests"
 
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
@@ -455,11 +456,12 @@ export default class menu extends Phaser.Scene {
     try {
       await this.getConfigurations()
       await this.restoreProgress()
+      this.convertData();
 
       this.finishFetching()
       this.launchScenes()
       manageNetworkStatus(this.game)
-    } catch {
+    } catch (e){console.log(e);
       setTimeout(() => {
         this.fetchFromServerAndLaunchScenes()
       }, 3000)
@@ -471,17 +473,18 @@ export default class menu extends Phaser.Scene {
     // WINDOW ASSIGNED VARIABLES LIKE NICKNAME CAN BE EASY HACKED  !!!
     window.customize_skins_setup = response.skins_setup
     window.levelsConfiguration = response.levels_config
-
-   
-  
-    return
   }
 
   async restoreProgress() {
     window.my_nickname = getProgress().nickname
-
+ 
     window.progress = await GET_ACCOUNT_PROGRESS({ nickname: my_nickname })
+  window.progress.levels_scores = await GET_ACCOUNT_SCORES({nickname:my_nickname})
+   // saveProgress(progress)
+  }
 
+  convertData(){
+    
     // converting skin numbers into full name strings
     Object.keys(window.progress.skins).forEach((item) => {
       window.progress.skins[item].forEach((skin_number, index, array) => {
@@ -489,7 +492,18 @@ export default class menu extends Phaser.Scene {
       })
     })
 
-   // saveProgress(progress)
+
+//converting map names into array in a certain order 
+function convertLevelToScore(not_converted){
+  const {difficulty,name} = not_converted.info
+  const level = window.progress.levels_scores.find(level=>level.level === `${difficulty}-${name}`)
+  let score = -1;
+  if(level) score = level.score
+  return score
+}
+const converted = levelsConfiguration.map(not_converted_level=> not_converted_level = convertLevelToScore(not_converted_level))
+window.progress.levels_scores = converted.filter(score=>score >= 0);
+
   }
 
   finishFetching() {
