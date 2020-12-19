@@ -171,7 +171,7 @@ Promise.all(p).then(()=>console.log("done"))
     async getRankFromScore(req,res){
       const {level,score} =req.body
       console.time("time")
-     await Levels.countDocuments({level,score:{$gte:score}},(err,rank)=>res.json(rank))
+     await Levels.countDocuments({level,score:{$gt:score}},(err,rank)=>res.json(rank+1))
    // await Levels.findOne({level,score:{$gte:score}},()=>{}).count()
       console.timeEnd("time")
     // res.sendStatus(200)

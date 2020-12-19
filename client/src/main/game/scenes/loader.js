@@ -118,7 +118,11 @@ export default class loader extends Phaser.Scene {
       this.targets(i)
     }
 
+    this.loadImage("lb-me-bar", "mix2")
     this.loadImage("lb-strap", "mix2")
+    this.loadImage("lb-scores-bg", "mix2")
+    this.loadImage("lb-line", "mix2")
+    this.loadImage("ranking-icon", "mix2")
   }
 
   updateBar(percentage) {

@@ -25,46 +25,51 @@ export default class Leaderboard extends Phaser.Scene {
     this.GW = this.game.GW
     this.bars = []
     this.texts = []
+    this.lb_texture = "lb-white-bar"
   }
 
   async create() {
     helper.createBackground(this, "loading-bg") // can set it to not visbile and show it later
     this.createMyScoretHighLight()
-    const upper_strip = this.createUpperStrip()
-
-    this.createHomeButton() // can set it to not visbile and show it later
-    this.createLeaderboardButtons() // can set it to not visbile and show it later
-    
+    const upper_strip = this.createUpperStrip().setVisible(false)
 
     START_FETCHING_SCENE(this)
-
-
+ 
+    
     this.data = await this.getTopScoresData()
     const my_rank = await this.getMyRank()
-   
-   this.me = this.addAccountText(350);
-    this.me.bar = this.addScoreBar(350);
+ 
+    this.createHomeButton() // can set it to not visbile and show it later
+    this.createLeaderboardButtons() // can set it to not visbile and show it later
+
+    this.previous_page_button.y = upper_strip.displayHeight + 50
+    this.calculateVariablesHeightDependend() // too long func name
+
+
+   this.me = this.addAccountText(this.me_y);
+    this.me.bar = this.addScoreBar(this.me_y).setTexture("lb-me-bar");
 
    this.me.update({
      rank:my_rank,
      nickname:my_nickname,
      score:window.progress.levels_scores[this.level-1]
    })
+   this.add.image(this.game.GW,0,"ranking-icon").setOrigin(1,0)
+   
 
-   const icon_y =   upper_strip.displayHeight +
-   ((this.me.bar.y - this.me.bar.displayHeight/2)  - upper_strip.displayHeight)/2
-   this.previous_page_button.y = icon_y
+   const line =  this.add.image(this.game.GW/2,this.line_y,"lb-strap")
+   helper.setGameSize(line,true);
+   line.displayHeight = 20
+const bg = this.add.image(this.game.GW/2,this.score_bg_y ,"lb-scores-bg")
+bg.displayHeight = this.score_bg_height;
+bg.displayWidth = this.game.GW - 10
 
-   this.calculateVariablesHeightDependend() // too long func name
-  
     this.createLeaderboardBars()
     this.createLeaderboardTexts()
     this.updateTexts(this.chunkScores())
     this.createOrnaments()
 
-   
-
-    this.createLevelInfo(icon_y)
+    this.createLevelInfo(this.previous_page_button.y)
    
 
 
@@ -187,7 +192,8 @@ export default class Leaderboard extends Phaser.Scene {
       .text(this.game.GW / 2, 54, difficulty.toUpperCase(), { font: `75px ${main_font}` })
       .setOrigin(0.5)
 
-    this.add.image(this.game.GW / 2, y, "levels-icons", name + "_icon")
+    this.add.image(this.game.GW / 2, y, "levels-icons", name + "_icon").setDepth(0.1)
+    this.add.image(this.game.GW/2,y,"general-1","glow")
   }
   createOrnaments() {
     this.add
@@ -203,26 +209,21 @@ export default class Leaderboard extends Phaser.Scene {
   }
   calculateVariablesHeightDependend() {
     const bar_height = this.game.textures.list["general-1"].frames[
-      "white-strap"
+      this.lb_texture
     ].cutHeight
 
-    const shift = 0
+ 
+   const space_between_myRank_and_leaderboard = bar_height + 20 ;
+  const empty_space = this.next_page_button.y - this.previous_page_button.y - this.next_page_button.displayHeight*2 
+ 
+    const bars_amount = Math.floor((empty_space - space_between_myRank_and_leaderboard)/ bar_height)
+const distance_from_arrows = (empty_space - (space_between_myRank_and_leaderboard + bars_amount*bar_height))/2
 
-    const empty_space =
-      this.game.GH -
-      this.me.bar.displayHeight -
-      this.next_page_button.displayHeight -
-      shift - this.me.bar.displayHeight
-
-    const bars_amount = Math.floor(empty_space / bar_height)
-
-    this.first_bar_y =
-      (this.me.bar.displayHeight +
-        this.next_page_button.displayHeight) /
-        2 +
-      (empty_space - bar_height * bars_amount) / 2 +
-      shift + this.me.bar.displayHeight * 3 // @@ @
-
+    this.me_y = this.previous_page_button.y + this.previous_page_button.displayHeight/2 + bar_height/2 +  distance_from_arrows
+    this.first_bar_y = this.me_y + space_between_myRank_and_leaderboard + bar_height/2
+  this.line_y = this.me_y + (this.first_bar_y - this.me_y)/2
+  this.score_bg_y  = this.first_bar_y + (bars_amount*bar_height)/2  - bar_height/2
+  this.score_bg_height = bar_height * bars_amount + 30 
     this.last_start_search_rank = 1
     this.last_stop_search_rank = bars_amount
     this.leaderboard_shift_value = bars_amount
@@ -277,21 +278,13 @@ export default class Leaderboard extends Phaser.Scene {
 
   
 
-    const me = helper.createButton(
-      this,
-      this.GW / 2,
-      this.game.GH - 50,
-      "circle-button-brown",
-      () => this.searchMeAndUpdateTexts(),
-      "button"
-    )
-    this.add.image(me.x, me.y, "general-1", "glow")
+
   }
 
   createLeaderboardBars() {
     for (let i = 0; i < this.leaderboard_shift_value; i++) {
-      const bar = this.addScoreBar(this.first_bar_y).setOrigin(0.5, 0)
-      helper.setGameSize(bar, true)
+      const bar = this.addScoreBar(this.first_bar_y)
+     
       bar.y += i * bar.displayHeight
 
      // this.addAccountText(bar.y + bar.displayHeight / 2)
@@ -301,63 +294,16 @@ export default class Leaderboard extends Phaser.Scene {
     for (let i = 1; i <= this.bars.length - 1; i += 2) {
       this.bars[i].setVisible(false)
     }
-    /*
-    const makeScoreBar = () => {
-      const bar = this.addScoreBar(this.game.GH / 2)
-      helper.setGameSize(bar, true)
-      this.bars.push(bar)
-      return bar
-    }
-
-    makeScoreBar()
-
-    for (let i = 1; i <= 3; i++) {
-      for (let j = -1; j <= 1; j += 2) {
-        const bar = makeScoreBar()
-        bar.y += i * bar.displayHeight * j
-      }
-    }
-
-    this.bars.sort((a, b) => a.y - b.y)
-    */
+   
   }
 
   createLeaderboardTexts() {
-    for (let i = 0; i < this.bars.length - 1; i++) {
-      this.texts.push(this.addAccountText(this.bars[i].y + this.bars[i].displayHeight/2))
+    for (let i = 0; i < this.bars.length; i++) {
+      this.texts.push(this.addAccountText(this.bars[i].y))
       
     }
   }
 
-  async searchMeAndUpdateTexts() {
-    START_FETCHING_SCENE(this)
-
-    try {
-      const { rank } = await GET_LEVEL_SCORE_BY_NICKNAME({
-        level: this.level,
-        nickname: my_nickname,
-      })
-
-      let position_in_leaderboard = rank % this.leaderboard_shift_value
-
-      if (position_in_leaderboard === 0) {
-        // if mod === 0 the nickname should be placed in position which is mod value
-        position_in_leaderboard = this.leaderboard_shift_value
-      }
-      this.last_start_search_rank = rank - position_in_leaderboard + 1
-      this.last_stop_search_rank =
-        rank + this.leaderboard_shift_value - position_in_leaderboard
-
-      await this.searchRanksUpdateLastSearchAndUpdateTexts(0)
-    } catch {
-    } finally {
-      STOP_FETCHING_SCENE(this)
-    }
-  }
-
- 
-
-  
 
   addAccountText(y) {
 
@@ -392,6 +338,8 @@ return {
   }
 
   addScoreBar(y) {
-    return this.add.image(this.GW / 2, y, "general-1", "white-strap")
+    const bar = this.add.image(this.GW / 2, y, "general-1", this.lb_texture)
+    helper.setGameSize(bar, true).displayWidth -=30
+    return bar
   }
 }
