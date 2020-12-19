@@ -115,7 +115,7 @@ Promise.all(p).then(()=>console.log("done"))
 
   saveMoney(req, res) {
     const {money,nickname} = req.body;
-   Accounts.findOneAndUpdate({nickname},{money}).exec(()=>res.sendStatus(200))
+   Accounts.findOneAndUpdate({nickname},{money},()=>res.sendStatus(200))
     
     }
   
@@ -133,15 +133,20 @@ Promise.all(p).then(()=>console.log("done"))
       const {nickname,current_skins} = req.body
       Accounts.findOneAndUpdate(
         { nickname},
-        { current_skins}
-      ).exec(()=>res.sendStatus(200))
+        { current_skins},
+        ()=>res.sendStatus(200)
+      )
        
     }
 
     getAccountScores(req,res){
-      const nickname = req.body.nickname
+      const {level,nickname} = req.body
+      const query = {nickname}
+
+      if(level) query.level = level
+//if level omitted, each level is found and returned
     
-      Levels.find({nickname},(err,c)=>{res.json(c);console.log(c)}).lean().select("level score -_id")
+      Levels.find(query,(err,c)=>res.json(c)).lean().select("level score -_id")
     }
     postLevelScore(req, res) {
 
@@ -163,36 +168,16 @@ Promise.all(p).then(()=>console.log("done"))
       .sort({score:-1}).lean().limit(players_amount).select("score nickname -_id")
     }
 
-// ---------
-  getLevelScoreByNickname(req, res) {
-    const { level, nickname } = req.body
-
-  
-    Levels.findOne({ nickname: nickname, level: level }).then((level) => {
-      res.status(200).json(level)
-    })
-    
-  }
-
-  getLevelScoresAndNicknames(req, res) {
-
-    const { start_search_rank, stop_search_rank, level } = req.body
-
-    Levels.find({ level: level })
-      .where("rank")
-      .gt(start_search_rank - 1)
-      .lt(stop_search_rank + 1)
-      //  .lean()
-      // .explain("executionStats")
-      .then((levels) => {
-        const sorted_levels = levels.sort((a, b) => a.rank - b.rank)
-        res.status(200).json(sorted_levels)
-      })
-  }
-
-  
-
-
+    async getRankFromScore(req,res){
+      const {level,score} =req.body
+      console.time("time")
+     await Levels.countDocuments({level,score:{$gte:score}},(err,rank)=>res.json(rank))
+   // await Levels.findOne({level,score:{$gte:score}},()=>{}).count()
+      console.timeEnd("time")
+    // res.sendStatus(200)
+  //(err,count)=>console.log(count)
+    }
+ 
 }
 
 mongoose.connection.on("error", (error) => {

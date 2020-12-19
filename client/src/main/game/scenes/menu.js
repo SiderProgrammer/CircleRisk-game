@@ -480,6 +480,7 @@ export default class menu extends Phaser.Scene {
  
     window.progress = await GET_ACCOUNT_PROGRESS({ nickname: my_nickname })
   window.progress.levels_scores = await GET_ACCOUNT_SCORES({nickname:my_nickname})
+  console.log(window.progress.levels_scores)
    // saveProgress(progress)
   }
 
@@ -499,10 +500,10 @@ function convertLevelToScore(not_converted){
   const level = window.progress.levels_scores.find(level=>level.level === `${difficulty}-${name}`)
   let score = -1;
   if(level) score = level.score
-  return score
+  return score // level?.score || -1
 }
-const converted = levelsConfiguration.map(not_converted_level=> not_converted_level = convertLevelToScore(not_converted_level))
-window.progress.levels_scores = converted.filter(score=>score >= 0);
+window.progress.levels_scores = levelsConfiguration.map(not_converted_level=> not_converted_level = convertLevelToScore(not_converted_level))
+//window.progress.levels_scores = converted.filter(score=>score >= 0);
 
   }
 

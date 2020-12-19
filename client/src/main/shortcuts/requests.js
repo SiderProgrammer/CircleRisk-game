@@ -30,7 +30,10 @@ export const GET_TOP_SCORES = async (data) => {
   const response = await postFunction(data,"getTopScores")
   if (response.ok) return response.json()
 }
-
+export const GET_RANK_FROM_SCORE = async (data) => {
+  const response = await postFunction(data,"getRankFromScore")
+  if (response.ok) return response.json()
+}
 
 export const CREATE_ACCOUNT = (data) => {
   return postFunction(data, "createAccount")

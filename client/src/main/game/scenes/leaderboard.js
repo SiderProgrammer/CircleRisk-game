@@ -2,7 +2,8 @@ import * as helper from "../GUI-helper"
 import {
   GET_LEVEL_SCORES_AND_NICKNAMES,
   GET_LEVEL_SCORE_BY_NICKNAME,
-  GET_TOP_SCORES
+  GET_TOP_SCORES,
+  GET_RANK_FROM_SCORE
 } from "../../shortcuts/requests"
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 import Utils from "../../utils"
@@ -33,23 +34,39 @@ export default class Leaderboard extends Phaser.Scene {
 
     this.createHomeButton() // can set it to not visbile and show it later
     this.createLeaderboardButtons() // can set it to not visbile and show it later
-    this.calculateVariablesHeightDependend() // too long func name
+    
 
     START_FETCHING_SCENE(this)
 
 
-    this.data = await this.getUsers()
-    
-  //fresh_data.flatMap(scoreObj=>Object.values(scoreObj)) 
+    this.data = await this.getTopScoresData()
+    const my_rank = await this.getMyRank()
+   
+   this.me = this.addAccountText(350);
+    this.me.bar = this.addScoreBar(350);
+
+   this.me.update({
+     rank:my_rank,
+     nickname:my_nickname,
+     score:window.progress.levels_scores[this.level-1]
+   })
+
+   const icon_y =   upper_strip.displayHeight +
+   ((this.me.bar.y - this.me.bar.displayHeight/2)  - upper_strip.displayHeight)/2
+   this.previous_page_button.y = icon_y
+
+   this.calculateVariablesHeightDependend() // too long func name
   
     this.createLeaderboardBars()
     this.createLeaderboardTexts()
     this.updateTexts(this.chunkScores())
     this.createOrnaments()
-    this.createLevelInfo(
-      upper_strip.displayHeight +
-        (this.first_bar_y - upper_strip.displayHeight) / 2
-    )
+
+   
+
+    this.createLevelInfo(icon_y)
+   
+
 
     STOP_FETCHING_SCENE(this)
   }
@@ -86,15 +103,25 @@ export default class Leaderboard extends Phaser.Scene {
       } else {
         account_text.nickname.setColor(bar_text_config.color)
       }
-
-      account_text.rank.setText(sorted_data[i].rank)
-      account_text.nickname.setText(sorted_data[i].nickname)
-      account_text.score.setText(sorted_data[i].score)
+   
+      account_text.update(sorted_data[i])
+ 
     })
   }
 
+    async getMyRank(){
+      try{
+        
+        return await GET_RANK_FROM_SCORE({
+          level:Utils.convertLevelNumberToLevelName(levelsConfiguration[this.level-1]),
+          score:window.progress.levels_scores[this.level-1],
+        })
 
-  async getUsers() {
+      }catch(e){console.log(e);
+        STOP_FETCHING_SCENE(this)
+      }
+    }
+  async getTopScoresData() {
    
     try {
      
@@ -179,22 +206,22 @@ export default class Leaderboard extends Phaser.Scene {
       "white-strap"
     ].cutHeight
 
-    const shift = 160
+    const shift = 0
 
     const empty_space =
       this.game.GH -
-      this.previous_page_button.displayHeight -
+      this.me.bar.displayHeight -
       this.next_page_button.displayHeight -
-      shift
+      shift - this.me.bar.displayHeight
 
     const bars_amount = Math.floor(empty_space / bar_height)
 
     this.first_bar_y =
-      (this.previous_page_button.displayHeight +
+      (this.me.bar.displayHeight +
         this.next_page_button.displayHeight) /
         2 +
       (empty_space - bar_height * bars_amount) / 2 +
-      shift
+      shift + this.me.bar.displayHeight * 3 // @@ @
 
     this.last_start_search_rank = 1
     this.last_stop_search_rank = bars_amount
@@ -267,7 +294,7 @@ export default class Leaderboard extends Phaser.Scene {
       helper.setGameSize(bar, true)
       bar.y += i * bar.displayHeight
 
-      this.addAccountText(bar.y + bar.displayHeight / 2)
+     // this.addAccountText(bar.y + bar.displayHeight / 2)
       this.bars.push(bar)
     }
 
@@ -297,7 +324,8 @@ export default class Leaderboard extends Phaser.Scene {
 
   createLeaderboardTexts() {
     for (let i = 0; i < this.bars.length - 1; i++) {
-      this.addAccountText(this.bars[i].y)
+      this.texts.push(this.addAccountText(this.bars[i].y + this.bars[i].displayHeight/2))
+      
     }
   }
 
@@ -332,27 +360,35 @@ export default class Leaderboard extends Phaser.Scene {
   
 
   addAccountText(y) {
-    const account_text = {}
 
-    account_text.rank = this.add
+return {
+  rank : this.add
       .text(40, y, "", {
         ...bar_text_config,
       })
-      .setOrigin(0, 0.5)
+      .setOrigin(0, 0.5),
 
-    account_text.nickname = this.add
+    nickname : this.add
       .text(this.game.GW / 2, y, "", {
         ...bar_text_config,
       })
-      .setOrigin(0.5, 0.5)
+      .setOrigin(0.5, 0.5),
 
-    account_text.score = this.add
+    score : this.add
       .text(this.GW - 40, y, "", {
         ...bar_text_config,
       })
-      .setOrigin(1, 0.5)
+      .setOrigin(1, 0.5),
 
-    this.texts.push(account_text)
+
+      update:function({rank,nickname,score}){
+        this.rank.setText(rank)
+        this.nickname.setText(nickname)
+        this.score.setText(score)
+      }
+
+    }
+
   }
 
   addScoreBar(y) {

@@ -20,7 +20,7 @@ const levelsSchema = new mongoose.Schema({
 })
 
 levelsSchema.index({nickname:1,level:1}); // is this index working?
-
+levelsSchema.index({level:1,score:1})
 
 module.exports = {
   Accounts: mongoose.model("Accounts", accountSchema),

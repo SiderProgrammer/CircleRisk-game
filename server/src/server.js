@@ -49,6 +49,10 @@ server.post("/getTopScores", (req, res) =>
   databaseManager.getTopScores(req, res)
 )
 
+server.post("/getRankFromScore", (req, res) =>
+  databaseManager.getRankFromScore(req, res)
+)
+
 server.post("/getLevelScoresAndNicknames", (req, res) =>
   databaseManager.getLevelScoresAndNicknames(req, res)
 )

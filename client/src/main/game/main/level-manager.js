@@ -372,8 +372,9 @@ if(window.admob) admob.banner.hide()
     this.scene.events.on("shutdown", () => this.scene.scene.stop("UI"))
   }
   isNewLevelNeededScoreReached() {
+    
     return (
-      typeof this.progress.levels_scores[this.scene.level] === "undefined" &&
+     window.progress.levels_scores[this.scene.level] === -1 &&
       this.score >= this.scene.score_to_next_level
     )
   }

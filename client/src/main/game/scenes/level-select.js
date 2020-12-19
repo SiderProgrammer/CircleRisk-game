@@ -38,9 +38,12 @@ export default class levelSelect extends Phaser.Scene {
 
     this.resetPositionsToHidden()
   }
-
+  
   initPageNumber() {
-    return window.progress.levels_scores.length - 1//getProgress().levels_scores.length - 1 // 0 //  page
+    let index = window.progress.levels_scores.indexOf(-1) -1 
+    
+    if(index === -2) index = window.progress.levels_scores.length -1
+    return  index //getProgress().levels_scores.length - 1 // 0 //  page
   }
   showAllElementsInMenuContext() {
     this.level_select_elements_in_menu_context.forEach((element) =>
@@ -362,7 +365,8 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   isLevelUnlocked() {
-    return this.progress.levels_scores.length >= this.current_page_number + 1
+   
+    return window.progress.levels_scores[this.current_page_number] != -1 // this.progress.levels_scores.length >= this.current_page_number + 1
   }
   tweenPage(sign) {
     playSound(this, "change_object")
@@ -543,7 +547,8 @@ export default class levelSelect extends Phaser.Scene {
   pageClickCallback() {
     if (
       !this.canChangePage ||
-      this.current_page_number > this.progress.levels_scores.length - 1
+      !this.isLevelUnlocked()
+     
     )
       return
       this.game.audio.music.menu_theme.stop()
