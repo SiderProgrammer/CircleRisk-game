@@ -42,7 +42,7 @@ export default class Leaderboard extends Phaser.Scene {
     this.createHomeButton() // can set it to not visbile and show it later
     this.createLeaderboardButtons() // can set it to not visbile and show it later
 
-    this.previous_page_button.y = upper_strip.displayHeight + 50
+    this.previous_page_button.y = upper_strip.displayHeight + 70
     this.calculateVariablesHeightDependend() // too long func name
 
 
@@ -54,7 +54,7 @@ export default class Leaderboard extends Phaser.Scene {
      nickname:my_nickname,
      score:window.progress.levels_scores[this.level-1]
    })
-   this.add.image(this.game.GW,0,"ranking-icon").setOrigin(1,0)
+   this.add.image(this.game.GW-10,5,"ranking-icon").setOrigin(1,0)
    
 
    const line =  this.add.image(this.game.GW/2,this.line_y,"lb-strap")
@@ -87,30 +87,43 @@ bg.displayWidth = this.game.GW - 10
     this.aura.setVisible(false)
 
     this.texts.forEach((account_text, i) => {
-    
-     
+      
+     let acc = sorted_data[i]
 
-      if (!sorted_data[i]) {
-        sorted_data[i] = {
+      if (!acc) {
+        acc = {
           rank: "",
           score: "",
           nickname: "",
         }
       }else {
-        sorted_data[i].rank = this.last_start_search_rank +i;
+        acc.rank = this.last_start_search_rank +i;
       }
 
-      if (sorted_data[i].nickname === my_nickname) {
-        account_text.nickname.setColor(bar_text_config.my_nickname_color)
-        this.aura
-          .setPosition(account_text.nickname.x, account_text.nickname.y)
-          .setVisible(true)
-      } else {
-        account_text.nickname.setColor(bar_text_config.color)
+     
+    
+      if(acc.rank == "1"){
+          account_text.setTextColor("#fff600")
+          account_text.rank.setFontSize("62px")
       }
-   
-      account_text.update(sorted_data[i])
- 
+          else if(acc.rank == "2"){
+            account_text.setTextColor("#aaa9ad")
+            account_text.rank.setFontSize("62px")
+          } 
+          else if(acc.rank =="3"){
+            account_text.setTextColor("#6F0000")
+            account_text.rank.setFontSize("62px")
+           
+          } 
+          else if(account_text.rank.style.color != bar_text_config.color){
+            account_text.setTextColor(bar_text_config.color)
+            account_text.rank.setFontSize("50px")
+          } 
+            
+          
+     if(acc.nickname === my_nickname) acc.rank = "#"+ acc.rank
+      account_text.update(acc)
+
     })
   }
 
@@ -188,10 +201,11 @@ bg.displayWidth = this.game.GW - 10
     const { difficulty, name } = levelsConfiguration[this.level - 1].info
  
    // this.add.image(this.game.GW / 2, 57, "general-1", "level-select-difficulty-bar")
+   this.add.image(this.game.GW/2,54,"general-1","level-select-difficulty-bar")
     this.add
-      .text(this.game.GW / 2, 54, difficulty.toUpperCase(), { font: `75px ${main_font}` })
+      .text(this.game.GW / 2, 54, difficulty.toUpperCase(), { font: `65px ${main_font}` })
       .setOrigin(0.5)
-
+   
     this.add.image(this.game.GW / 2, y, "levels-icons", name + "_icon").setDepth(0.1)
     this.add.image(this.game.GW/2,y,"general-1","glow")
   }
@@ -199,25 +213,20 @@ bg.displayWidth = this.game.GW - 10
     this.add
       .image(this.game.GW, this.game.GH, "general-1", "lb-eyes")
       .setOrigin(1, 1)
-    this.add.image(
-      this.game.GW / 2,
-      this.game.GH / 2 - 70,
-      "general-1",
-      "lb-face"
-    )
-    this.add.image(0, 200, "general-1", "lb-bubbles").setOrigin(0, 0.5)
+ 
+    this.add.image(0, this.previous_page_button.y, "general-1", "lb-bubbles").setOrigin(0, 0.5)
   }
   calculateVariablesHeightDependend() {
     const bar_height = this.game.textures.list["general-1"].frames[
       this.lb_texture
     ].cutHeight
 
- 
+ const upperAndDownBarsDistanceFromArrows = 15;
    const space_between_myRank_and_leaderboard = bar_height + 20 ;
-  const empty_space = this.next_page_button.y - this.previous_page_button.y - this.next_page_button.displayHeight*2 
+  const empty_space = this.next_page_button.y - this.previous_page_button.y - this.next_page_button.displayHeight*2  - upperAndDownBarsDistanceFromArrows*2
  
     const bars_amount = Math.floor((empty_space - space_between_myRank_and_leaderboard)/ bar_height)
-const distance_from_arrows = (empty_space - (space_between_myRank_and_leaderboard + bars_amount*bar_height))/2
+const distance_from_arrows = (empty_space - (space_between_myRank_and_leaderboard + bars_amount*bar_height))/2 + upperAndDownBarsDistanceFromArrows
 
     this.me_y = this.previous_page_button.y + this.previous_page_button.displayHeight/2 + bar_height/2 +  distance_from_arrows
     this.first_bar_y = this.me_y + space_between_myRank_and_leaderboard + bar_height/2
@@ -311,26 +320,34 @@ return {
   rank : this.add
       .text(40, y, "", {
         ...bar_text_config,
+
       })
-      .setOrigin(0, 0.5),
+      .setOrigin(0, 0.5).setDepth(1),
 
     nickname : this.add
       .text(this.game.GW / 2, y, "", {
         ...bar_text_config,
       })
-      .setOrigin(0.5, 0.5),
+      .setOrigin(0.5, 0.5).setDepth(1),
 
     score : this.add
       .text(this.GW - 40, y, "", {
         ...bar_text_config,
       })
-      .setOrigin(1, 0.5),
+      .setOrigin(1, 0.5).setDepth(1),
 
 
       update:function({rank,nickname,score}){
         this.rank.setText(rank)
         this.nickname.setText(nickname)
         this.score.setText(score)
+      },
+
+      setTextColor:function(color){
+        this.rank.setColor(color)
+        this.nickname.setColor(color)
+        this.score.setColor(color)
+   
       }
 
     }

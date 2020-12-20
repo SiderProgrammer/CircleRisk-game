@@ -418,12 +418,9 @@ if(window.admob) admob.banner.hide()
 
     this.scene.scene.wake("lose")
     lose_scene.unactivateButtons()
-
-    this.scene.time.addEvent({
-      delay: 400, // delay to not instant miss click any button when game over
-      callback: () => lose_scene.activateButtons(),
-    })
-
+    lose_scene.animateShow().then(()=>lose_scene.activateButtons())
+  
+ 
 
     const this_level_score = this.progress.levels_scores[this.scene.level - 1]
     if (this.score > this_level_score || !this_level_score) {

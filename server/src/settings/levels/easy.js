@@ -274,7 +274,7 @@ module.exports = [
   {
     color: "green_7",
     info: {
-      score_to_next_level: 25,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
       name: "sense",
     },

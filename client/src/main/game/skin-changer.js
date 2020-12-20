@@ -96,7 +96,7 @@ export default class {
       this.scene.tweens.add({
         targets: this.sets[set],
         y: this.positions[set],
-        duration: 250,
+        duration: 350,
         ease: ease,
         onComplete: () => resolve(),
       })
