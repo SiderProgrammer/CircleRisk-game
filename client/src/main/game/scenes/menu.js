@@ -461,7 +461,8 @@ export default class menu extends Phaser.Scene {
       this.finishFetching()
       this.launchScenes()
       manageNetworkStatus(this.game)
-    } catch (e){console.log(e);
+    } catch(e){
+      console.log(e);
       setTimeout(() => {
         this.fetchFromServerAndLaunchScenes()
       }, 3000)
@@ -485,6 +486,17 @@ export default class menu extends Phaser.Scene {
   }
 
   convertData(){
+// converting setup numbers into skins names
+
+for(const part_with_s_ending in window.customize_skins_setup){
+  const part = part_with_s_ending.slice(0,-1); 
+
+window.customize_skins_setup[part_with_s_ending]
+  .forEach(skinObject=>{
+    skinObject.skin = part+"_"+skinObject.skin
+  });
+
+  }
     
     // converting skin numbers into full name strings
     Object.keys(window.progress.skins).forEach((item) => {
@@ -502,8 +514,8 @@ function convertLevelToScore(not_converted){
   if(level) score = level.score
   return score // level?.score || -1
 }
-window.progress.levels_scores = levelsConfiguration.map(not_converted_level=> not_converted_level = convertLevelToScore(not_converted_level))
-//window.progress.levels_scores = converted.filter(score=>score >= 0);
+window.progress.levels_scores = levelsConfiguration
+.map(not_converted_level=> not_converted_level = convertLevelToScore(not_converted_level))
 
   }
 

@@ -86,19 +86,21 @@ Promise.all(p).then(()=>console.log("done"))
       if (is_exsisting) {
         res.sendStatus(403)
       } else {
-        Accounts.create( 
+
+       const Promises = [] 
+
+        Promises[0] = Accounts.create( 
           {
             nickname,
             ...defaultAccountConfig,
-          },
-          () => res.sendStatus(200)
+          })
 
-        )
-
-        Levels.create({
+        Promises[1] = Levels.create({
           nickname,
           score:0,
         })
+
+        Promise.all(Promises).then(() => res.sendStatus(200))
         console.log("new account created")
       }
     })
@@ -110,12 +112,12 @@ Promise.all(p).then(()=>console.log("done"))
       (err,account_data)=>{
         console.log(nickname + "  Joined")
         res.status(200).json(account_data)
-      })
+      }).lean().select("-_id")
   }
 
   saveMoney(req, res) {
     const {money,nickname} = req.body;
-   Accounts.findOneAndUpdate({nickname},{money},()=>res.sendStatus(200))
+   Accounts.updateOne({nickname},{money},()=>res.sendStatus(200))
     
     }
   
@@ -125,13 +127,13 @@ Promise.all(p).then(()=>console.log("done"))
       const expression = {}
       expression[`skins.${skin_part}`] = skin_number
 
-      Accounts.findOneAndUpdate({nickname},{$push:expression}, () => res.sendStatus(200))
+      Accounts.updateOne({nickname},{$push:expression}, () => res.sendStatus(200))
   
     }
   
     equipSkin(req, res) {
       const {nickname,current_skins} = req.body
-      Accounts.findOneAndUpdate(
+      Accounts.updateOne(
         { nickname},
         { current_skins},
         ()=>res.sendStatus(200)
@@ -156,7 +158,7 @@ Promise.all(p).then(()=>console.log("done"))
       const update = {score:score}
   
 //console.log(score,nickname,level)
-      Levels.findOneAndUpdate(query, update, options,()=>res.sendStatus(200))
+      Levels.updateOne(query, update, options,()=>res.sendStatus(200))
  
     }
 
@@ -185,7 +187,7 @@ mongoose.connection.on("error", (error) => {
   process.exit(1)
 })
 
-mongoose.connection.on("connected", async function () {
+mongoose.connection.on("connected", function () {
   console.log("connected to mongo")
 })
 

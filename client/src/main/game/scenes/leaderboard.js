@@ -135,7 +135,7 @@ bg.displayWidth = this.game.GW - 10
           score:window.progress.levels_scores[this.level-1],
         })
 
-      }catch(e){console.log(e);
+      }catch{
         STOP_FETCHING_SCENE(this)
       }
     }

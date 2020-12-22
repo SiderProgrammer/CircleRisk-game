@@ -27,40 +27,45 @@ export default class Lose extends Phaser.Scene {
   this.buttons_lose_bg = this.add.image(this.game.GW/2,this.buttons_bg_y,"buttons-lose-bg").setAlpha(0.5)
   }
  animateShow(){
-  return new Promise((resolve) => {
+   this.are_buttons_active = false;
+  return new Promise(async (resolve) => {
 
 this.animateButtonsLoseBg("-")
   this.animateStats("show")
-   this.animateButtons()
-   .then(()=>resolve())
- 
+  await this.animateButtons()
+    resolve()
+ this.are_buttons_active = true;
   })
  
 }
 
 
 animateHide(){
-return new Promise(resolve=>{
+  this.are_buttons_active = false;
+return new Promise(async (resolve)=>{
   this.animateButtonsLoseBg("+",200)
   this.animateStats("hide")
-  this.animateButtonsHide().then(()=>resolve())
+  await this.animateButtonsHide()
+  resolve()
+  this.are_buttons_active = true;
 })
 }
 
 
 
-showStatSet(set,alpha){
+showStatSet(set,alpha,duration = 400){
 
   this.tweens.add({
     targets:this.stats[set],
-    duration:400,
+    duration:duration,
 
     alpha:alpha
   })
 }
 animateStats(command){
   let alpha = 0
-if(command === "hide") alpha = 1
+  let duration = 250;
+if(command === "hide"){ alpha = 1; duration = 150 }
 
   for(const stat_set in this.stats){
     this.stats[stat_set].forEach(stat=>stat.setAlpha(alpha))
@@ -69,27 +74,29 @@ if(command === "hide") alpha = 1
   alpha = 1;
 if(command === "hide") alpha = 0
 
-this.showStatSet("score",alpha)
+this.showStatSet("score",alpha,duration)
 
   this.time.addEvent({
     callback:()=>{
-      this.showStatSet("best",alpha)
+      this.showStatSet("best",alpha,duration)
     },
-    delay:70,
+    delay:50,
   })
 
   this.time.addEvent({
     callback:()=>{
-      this.showStatSet("perfect",alpha)
+      this.showStatSet("perfect",alpha,duration)
     },
-    delay:140,
+    delay:110,
   })
 }
 
 
-animateButtonsLoseBg(sign,duration = 550){
+animateButtonsLoseBg(sign,duration = 350){
   if(sign === "-"){
-    this.buttons_lose_bg.x += this.game.GW
+    this.buttons_lose_bg.x = this.game.GW*1.5
+  }else{
+    this.buttons_lose_bg.x = this.game.GW/2
   }
   
   this.tweens.add({
@@ -257,8 +264,9 @@ this.stats.perfect = [this.purple_strap,a,b]
       this.game.GW / 2 - shift,
       this.bottom_buttons_y,
       "customize-button",
-      () => {
+      async () => {
         if (!this.are_buttons_active) return
+        await this.animateHide()
         this.level_scene.scene.sleep()
         this.scene.sleep()
 
@@ -280,8 +288,10 @@ customizeB.displayHeight = 155;
       this.game.GW / 2 + shift,
       this.bottom_buttons_y,
       "levelSelect-button",
-      () => {
+     async () => {
         if (!this.are_buttons_active) return
+        await this.animateHide()
+
         this.level_scene.scene.stop()
         this.scene.stop()
 
@@ -295,31 +305,32 @@ customizeB.displayHeight = 155;
     this.createRestartButton()
     this.createNextLevelButton()
 
+    this.buttons_differences = {
+      difference_1 : (this.game.GH - this.restart_button.y) + this.restart_button.displayHeight/2, 
+      difference_2: (this.game.GH - customizeB.y) + customizeB.displayHeight/2,
+      difference_3:(this.game.GH - a.y) + a.displayHeight/2,
+    }
+
+    this.resetPositionsToHidden = () => {
+      a.y = this.restartAndNextButtonY -(this.restartAndNextButtonY - this.purple_strap.y) / 2 + this.buttons_differences.difference_3
+      customizeB.y = this.bottom_buttons_y  + this.buttons_differences.difference_2
+      levelSelectB.y = this.bottom_buttons_y + this.buttons_differences.difference_2 
+      this.next_level_button.y = this.restartAndNextButtonY + this.buttons_differences.difference_1
+      this.restart_button.y = this.restartAndNextButtonY + this.buttons_differences.difference_1
+      
+    }
+
     this.animateButtons = () => { 
       return new Promise((resolve) =>{
 
-     
-   
-      const difference_1 = (this.game.GH - this.restart_button.y) + this.restart_button.displayHeight/2
-this.restart_button.y += difference_1
-this.next_level_button.y += difference_1
-
-const difference_2 = (this.game.GH - customizeB.y) + customizeB.displayHeight/2
-customizeB.y += difference_2
-levelSelectB.y += difference_2
-
-const difference_3 = (this.game.GH - a.y) + a.displayHeight/2
-a.y+=difference_3;
+this.resetPositionsToHidden()
 
 strap.displayWidth = 0;
-//strap.setAlpha(0)
-
-
 
 this.tweens.add({
   targets:a,
-  duration:500,
-  y:`-=${difference_3}`,
+  duration:300,
+  y:`-=${this.buttons_differences.difference_3}`,
   ease:"Power1",
   onComplete:()=>{
     this.tweens.add({
@@ -337,8 +348,8 @@ this.time.addEvent({
   callback:()=>{
     this.tweens.add({
       targets:[this.restart_button,this.next_level_button],
-      y:`-=${difference_1}`,
-      duration:500,
+      y:`-=${this.buttons_differences.difference_1}`,
+      duration:300,
       ease:"Power1",
       
     })
@@ -347,12 +358,12 @@ this.time.addEvent({
      
 
       this.time.addEvent({
-        delay: 400,
+        delay: 200,
         callback: () => {
           this.tweens.add({
             targets:[customizeB,levelSelectB],
-            y:`-=${difference_2}`,
-            duration:500,
+            y:`-=${this.buttons_differences.difference_2}`,
+            duration:300,
             ease:"Power1",
             onComplete:()=>{
               resolve()
@@ -373,13 +384,13 @@ this.time.addEvent({
       this.tweens.add({
         targets:strap,
         displayWidth:0,
-        duration:200,
+        duration:150,
       })
       
       this.tweens.add({
         targets:[customizeB,levelSelectB,this.restart_button,this.next_level_button,a],
-        y:`+=${this.game.GH/2}`,
-        duration:400,
+        y:`+=${this.game.GH * 0.6}`,
+        duration:300,
         ease:"Sine.easeIn",
         onComplete:()=>resolve()
       })
@@ -405,8 +416,9 @@ this.time.addEvent({
       this.game.GW / 2,
       this.restartAndNextButtonY,
       "next-button",
-      () => {
+     async () => {
         if (!this.are_buttons_active) return
+        await this.animateHide()
         this.scene.stop()
 
         const this_level_configuration =
@@ -447,10 +459,13 @@ this.time.addEvent({
       "replay-button",
      async () => {
         if (!this.are_buttons_active) return
-        await this.animateHide()
+         await this.animateHide()
+         
+          this.level_scene.scene.sleep("lose")
+          this.level_scene.scene.restart()
+        
         //   this.level_scene.game.audio.sounds.restart_sound.play()
-        this.level_scene.scene.sleep("lose")
-        this.level_scene.scene.restart()
+       
       },
       "button"
     )

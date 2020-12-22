@@ -1,15 +1,6 @@
-import { getFunction, postFunction } from "../fetch-helper"
+import { getFunction, postFunction,fetchWithTimeout } from "../fetch-helper"
 import {SERVER_URL} from "../fetch-helper"
 
-export const GET_LEVEL_SCORES_AND_NICKNAMES = async (data) => {
-  const response = await postFunction(data, "getLevelScoresAndNicknames")
-  if (response.ok) return response.json()
-}
-
-export const GET_LEVEL_SCORE_BY_NICKNAME = async (data) => {
-  const response = await postFunction(data, "getLevelScoreByNickname")
-  if (response.ok) return response.json()
-}
 
 export const GET_ACCOUNT_SCORES = async (data) => {
   const response = await postFunction(data, "getAccountScores")
@@ -68,10 +59,13 @@ export const IS_ONLINE = async () => {
 
 export const IS_SERVER_ALIVE = async () => {
   try {
-    const response = await fetch(`${SERVER_URL}/isServerAlive`)
-
+    //const response = await fetch()
+    const response = await fetchWithTimeout(`${SERVER_URL}/isServerAlive`,{
+      timeout: 5000
+    })
     if (response.status === 200) return true
   } catch {
     return false
   }
 }
+

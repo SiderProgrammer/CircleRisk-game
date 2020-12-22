@@ -18,7 +18,20 @@ export const getFunction = (url) => {
     headers: headers,
   })
 }
+export async function fetchWithTimeout(resource, options) {
+  const { timeout} = options;
+  
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
 
+  const response = await fetch(resource, {
+    ...options,
+    signal: controller.signal  
+  });
+  clearTimeout(id);
+
+  return response;
+}
 export const START_SERVER_MAINTENANCE_SCENE = function(scenes){
   scenes.forEach(({ scene }) => scene.pause())
 

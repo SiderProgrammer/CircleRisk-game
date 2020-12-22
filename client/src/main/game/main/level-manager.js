@@ -30,7 +30,7 @@ export default class Manager {
     this.is_possible_miss = false
     this.current_target = this.config.starting_target
     this.rotation_speed = this.config.rotation_speed
-    this.intro_duration = 1000
+    this.intro_duration = 700
 
     this.perfect_combo = 0
     this.score = 0
@@ -232,7 +232,7 @@ if(window.admob) admob.banner.hide()
   showTargets() {
     this.scene.tweens.add({
       targets: this.target_array,
-      duration: 300,
+      duration: 400,
       alpha: 1,
     })
   }
@@ -418,7 +418,7 @@ if(window.admob) admob.banner.hide()
 
     this.scene.scene.wake("lose")
     lose_scene.unactivateButtons()
-    lose_scene.animateShow().then(()=>lose_scene.activateButtons())
+    lose_scene.animateShow()
   
  
 

@@ -142,6 +142,8 @@ export default class {
   createSkinTick(x, y) {
     return this.scene.add.image(x, y, "general-2", "tick").setAlpha(0)
   }
+
+ 
   calculatePriceBGX() {
     return (
       this.scene.game.GW - (this.scene.game.GW - this.sets.circle[3].x) / 2 - 10

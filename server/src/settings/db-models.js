@@ -1,10 +1,11 @@
 const mongoose = require("mongoose")
 
 const accountSchema = new mongoose.Schema({
-  nickname:{  // SAVE _ID AS NICKNAME
-    index:true,
-    type: String,
+  _id:{
+    alias:"nickname",
+    type:String
   },
+
   money: Number,
   skins: { circles: [Number], sticks: [Number], targets: [Number] },
   current_skins: { circles: Number, sticks: Number, targets: Number },

@@ -162,6 +162,7 @@ export default class Customize extends Phaser.Scene {
           //  this.scene.get("menu").animateShowMenu()
           this.scene.sleep()
           this.skinChangerManager.changeSkinsToEquiped()
+          this.scene.get("lose").animateShow();
         },"button"
       )
       .setOrigin(0.5, 1)
