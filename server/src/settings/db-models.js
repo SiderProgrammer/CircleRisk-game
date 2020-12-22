@@ -12,15 +12,14 @@ const accountSchema = new mongoose.Schema({
 })
 
 const levelsSchema = new mongoose.Schema({
-  // SAVE _ID AS NICKNAME
- // _id:String, // _id === nickname
+
   // maybe LEVEL NAME - BASIC AND DIFFICULTY - DIFFICULTY and create indexes on both
   nickname:{type:String},
   level:{index:true,type:String,default:"easy-basic"}, // create good indexes
   score: {index:true,type:Number},
 })
 
-levelsSchema.index({nickname:1,level:1}); // is this index working?
+levelsSchema.index({nickname:1,level:1});
 levelsSchema.index({level:1,score:1})
 
 module.exports = {

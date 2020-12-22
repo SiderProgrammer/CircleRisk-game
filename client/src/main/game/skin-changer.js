@@ -2,6 +2,7 @@ import { createButton } from "./GUI-helper"
 import { EQUIP_SKIN } from "../shortcuts/requests"
 import { saveProgress, getProgress } from "../shortcuts/save"
 import playSound from "../shortcuts/audio-player"
+import checkConnection from "../network-status"
 
 export default class {
   constructor(scene, x, y) {
@@ -39,11 +40,15 @@ export default class {
   }
 
   save() {
+
     window.progress = this.progress//saveProgress(this.progress)
-    EQUIP_SKIN({
-      current_skins: this.progress.current_skins,
-      nickname: this.progress.nickname,
-    })
+   
+      EQUIP_SKIN({
+        current_skins: this.progress.current_skins,
+        nickname: my_nickname,
+      }).catch(()=>checkConnection(this.scene))
+   
+  
   }
 
   show() {

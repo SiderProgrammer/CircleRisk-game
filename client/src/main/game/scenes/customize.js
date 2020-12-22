@@ -4,7 +4,7 @@ import { saveProgress, getProgress } from "../../shortcuts/save"
 import { SAVE_MONEY, SAVE_NEW_SKIN } from "../../shortcuts/requests"
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 import SkinChangerManager from "../skin-changer"
-
+import checkConnection from "../../network-status"
 export default class Customize extends Phaser.Scene {
   constructor() {
     super("customize")
@@ -150,7 +150,9 @@ export default class Customize extends Phaser.Scene {
         this.game.GH,
         "back-button",
         async () => {
+         
           this.skinChangerManager.save()
+        
           this.hidePurchaseOffer()
 
           await this.animateCustomizeHide()
@@ -272,7 +274,7 @@ export default class Customize extends Phaser.Scene {
     try {
       const response = await SAVE_NEW_SKIN({
         skin: [part, skin.texture.key.replace(GET_NUMBERS_REGEXP, "")],
-        nickname: this.progress.nickname,
+        nickname: my_nickname,
       })
 
       if (response.ok) {
@@ -291,12 +293,13 @@ export default class Customize extends Phaser.Scene {
 
         SAVE_MONEY({
           money: this.progress.money,
-          nickname: this.progress.nickname,
+          nickname: my_nickname,
         })
-
-        window.progress = this.progress // saveProgress(this.progress)
+       
+       
       }
     } catch {
+      checkConnection(this)
       // CREATE_FETCH_ERROR(this, this.game.GW / 2, this.game.GH / 2 - 300)
     } finally {
       STOP_FETCHING_SCENE(this)

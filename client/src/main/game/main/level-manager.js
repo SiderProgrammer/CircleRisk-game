@@ -6,6 +6,7 @@ import { getProgress, saveProgress } from "../../shortcuts/save"
 import PerfectManager from "./perfect-manager"
 import playAudio from "../../shortcuts/audio-player"
 import LevelFunctionsCaller from "./level-functions-caller"
+import checkConnection from "../../network-status"
 
 export default class Manager {
   constructor(scene, config) {
@@ -403,12 +404,14 @@ if(window.admob) admob.banner.hide()
     if (this.isNewLevelNeededScoreReached()) {
       is_any_update = true
       this.progress.levels_scores[this.scene.level] = 0
+   
       POST_LEVEL_SCORE({
+
         score: 0,
         nickname: my_nickname,
         level: Utils.convertLevelNumberToLevelName(levelsConfiguration[this.scene.level]),
-      })
-
+      }).catch(()=>checkConnection(this.scene))
+   
       lose_scene.showNextLevelButton()
       lose_scene.hideRestartButton()
     } else {
@@ -428,12 +431,13 @@ if(window.admob) admob.banner.hide()
       /// -1, array is counted from 0
       this.progress.levels_scores[this.scene.level - 1] = this.score /// -1, array is counted from 0
 
-  
+
       POST_LEVEL_SCORE({
         score: this.score,
         nickname: my_nickname,
         level: Utils.convertLevelNumberToLevelName(levelsConfiguration[this.scene.level-1]),
-      })
+      }).catch(()=>checkConnection(this.scene))
+   
 
     }
     lose_scene.updatePoints(
@@ -443,9 +447,10 @@ if(window.admob) admob.banner.hide()
     )
 
     window.progress = this.progress // saveProgress(this.progress)
-//if(this.score > 0){
-  SAVE_MONEY({ money: this.progress.money, nickname: my_nickname })
-//}
+    
+if(this.score > 0){
+   SAVE_MONEY({ money: this.progress.money, nickname: my_nickname }).catch(()=>checkConnection(this.scene))
+}
    
 
     is_any_update && this.scene.scene.get("levelSelect").updateVisiblePage()

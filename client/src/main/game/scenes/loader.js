@@ -198,10 +198,8 @@ export default class loader extends Phaser.Scene {
 
   async create() {
     this.addAudio()
-    if ((await IS_ONLINE()) && !(await IS_SERVER_ALIVE())) {
-      START_SERVER_MAINTENANCE_SCENE(this.game.scene.getScenes(true))
-    } else {
+
       this.scene.start("menu")
-    }
+    
   }
 }

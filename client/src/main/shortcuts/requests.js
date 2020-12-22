@@ -30,20 +30,20 @@ export const CREATE_ACCOUNT = (data) => {
   return postFunction(data, "createAccount")
 }
 
-export const SAVE_NEW_SKIN = (data) => {
+export const SAVE_NEW_SKIN =  (data) => {
   return postFunction(data, "saveNewSkin")
 }
 
-export const POST_LEVEL_SCORE = async (data) => {
-  await postFunction(data, "postLevelScore")
+export const POST_LEVEL_SCORE = (data) => {
+  return  postFunction(data, "postLevelScore")
 }
 
-export const SAVE_MONEY = (data) => {
-  postFunction(data, "saveMoney")
+export const SAVE_MONEY =  (data) => {
+ return  postFunction(data, "saveMoney")
 }
 
-export const EQUIP_SKIN = (data) => {
-  postFunction(data, "equipSkin")
+export const EQUIP_SKIN =  (data) => {
+ return  postFunction(data, "equipSkin")
 }
 
 export const IS_ONLINE = async () => {
@@ -59,7 +59,7 @@ export const IS_ONLINE = async () => {
 
 export const IS_SERVER_ALIVE = async () => {
   try {
-    //const response = await fetch()
+  
     const response = await fetchWithTimeout(`${SERVER_URL}/isServerAlive`,{
       timeout: 5000
     })

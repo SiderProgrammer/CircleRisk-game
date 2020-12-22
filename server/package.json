@@ -12,6 +12,7 @@
     "mongoose": "^5.7.11"
   },
   "scripts": {
+    "production":"NODE_ENV=production node src/server.js",
     "start": "node src/server.js"
   },
   "author": "sid",

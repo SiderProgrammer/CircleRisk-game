@@ -81,7 +81,7 @@ Promise.all(p).then(()=>console.log("done"))
     // use double destruction in req
     const nickname = req.body.nickname
 
-    Accounts.exists({nickname})
+    Accounts.exists({_id:nickname})
     .then((is_exsisting) => {
       if (is_exsisting) {
         res.sendStatus(403)
@@ -91,7 +91,7 @@ Promise.all(p).then(()=>console.log("done"))
 
         Promises[0] = Accounts.create( 
           {
-            nickname,
+            _id:nickname,
             ...defaultAccountConfig,
           })
 
@@ -108,16 +108,19 @@ Promise.all(p).then(()=>console.log("done"))
 
   getAccountProgress(req, res) {
     const nickname = req.body.nickname
-    Accounts.findOne({nickname},
+    Accounts.findOne({_id:nickname},
       (err,account_data)=>{
+ 
         console.log(nickname + "  Joined")
         res.status(200).json(account_data)
       }).lean().select("-_id")
+
   }
 
   saveMoney(req, res) {
     const {money,nickname} = req.body;
-   Accounts.updateOne({nickname},{money},()=>res.sendStatus(200))
+    
+   Accounts.updateOne({_id:nickname},{money},()=>res.sendStatus(200))
     
     }
   
@@ -127,14 +130,14 @@ Promise.all(p).then(()=>console.log("done"))
       const expression = {}
       expression[`skins.${skin_part}`] = skin_number
 
-      Accounts.updateOne({nickname},{$push:expression}, () => res.sendStatus(200))
+      Accounts.updateOne({_id:nickname},{$push:expression}, () => res.sendStatus(200))
   
     }
   
     equipSkin(req, res) {
       const {nickname,current_skins} = req.body
       Accounts.updateOne(
-        { nickname},
+        { _id:nickname},
         { current_skins},
         ()=>res.sendStatus(200)
       )
@@ -170,10 +173,10 @@ Promise.all(p).then(()=>console.log("done"))
       .sort({score:-1}).lean().limit(players_amount).select("score nickname -_id")
     }
 
-    async getRankFromScore(req,res){
+    getRankFromScore(req,res){
       const {level,score} =req.body
       console.time("time")
-     await Levels.countDocuments({level,score:{$gt:score}},(err,rank)=>res.json(rank+1))
+      Levels.countDocuments({level,score:{$gt:score}},(err,rank)=>res.json(rank+1))
    // await Levels.findOne({level,score:{$gte:score}},()=>{}).count()
       console.timeEnd("time")
     // res.sendStatus(200)

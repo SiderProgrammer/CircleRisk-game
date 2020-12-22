@@ -7,7 +7,7 @@ import {
 } from "../../shortcuts/requests"
 
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
-import manageNetworkStatus from "../../network-status"
+import checkConnection from "../../network-status"
 
 
 export default class menu extends Phaser.Scene {
@@ -35,7 +35,7 @@ export default class menu extends Phaser.Scene {
       this.events.on("wake", () => this.game.audio.music.menu_theme.play())
       this.events.on("sleep", () => this.game.audio.music.menu_theme.stop())
       START_FETCHING_SCENE(this)
-
+      checkConnection(this)
       this.fetchFromServerAndLaunchScenes()
     }
   }
@@ -55,6 +55,7 @@ export default class menu extends Phaser.Scene {
     this.createFlyingBubbles()
 
     this.animateShowMenu()
+    
   }
 
   update() {
@@ -453,16 +454,18 @@ export default class menu extends Phaser.Scene {
   }
 
   async fetchFromServerAndLaunchScenes() {
+    
     try {
+      
       await this.getConfigurations()
       await this.restoreProgress()
       this.convertData();
 
       this.finishFetching()
       this.launchScenes()
-      manageNetworkStatus(this.game)
-    } catch(e){
-      console.log(e);
+      
+    } catch{
+      
       setTimeout(() => {
         this.fetchFromServerAndLaunchScenes()
       }, 3000)
@@ -481,7 +484,7 @@ export default class menu extends Phaser.Scene {
  
     window.progress = await GET_ACCOUNT_PROGRESS({ nickname: my_nickname })
   window.progress.levels_scores = await GET_ACCOUNT_SCORES({nickname:my_nickname})
-  console.log(window.progress.levels_scores)
+ 
    // saveProgress(progress)
   }
 
