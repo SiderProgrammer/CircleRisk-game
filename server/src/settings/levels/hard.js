@@ -277,6 +277,7 @@ module.exports = [
     config: {
       background: "pulsate-bg",
       ...config,
+      starting_target: 6,
       rotation_speed:1.25,
       acceleration:0.03,
       blind_time:600,

@@ -50,6 +50,7 @@ module.exports = [
     config: {
       background: "pulsate-bg",
       ...config,
+     
     },
   },
 

@@ -6,7 +6,9 @@ import { getProgress } from "./main/shortcuts/save.js"
 import bindPrototypeExtendedFunctions from "./main/prototypes"
 
 bindPrototypeExtendedFunctions()
+
 window.main_font = "luckiestGuy"
+window.CLIENT_GAME_VERSION = 1;
 //localStorage.clear()
 export const startGame = () => {
   const game = new Phaser.Game(config)
@@ -16,6 +18,6 @@ export const startGame = () => {
   if (!game.device.os.desktop) game.input.mouse.enabled = false
 }
 
-window.onload = () => {
-  getProgress() === null ? accountCreator() : startGame()
-}
+window.onload = () => getProgress() === null ? accountCreator() : startGame()
+  
+

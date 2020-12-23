@@ -1,7 +1,7 @@
 import { createBackground } from "../GUI-helper"
-import { IS_SERVER_ALIVE, IS_ONLINE } from "../../shortcuts/requests"
+import { GET_GAME_VERSION } from "../../shortcuts/requests"
 
-import { START_SERVER_MAINTENANCE_SCENE } from "../../fetch-helper"
+
 
 const imgPath = "./assets/img"
 const audioPath = "./assets/audio"
@@ -11,7 +11,9 @@ export default class loader extends Phaser.Scene {
     super("loader")
     this.skins_amount = 5
   }
-
+init(){
+  this.GAME_VERSION_PROMISE =  GET_GAME_VERSION();
+}
   loadImage(name, path) {
     this.load.image(name, `${imgPath}/${path}/${name}.png`)
   }
@@ -199,7 +201,8 @@ export default class loader extends Phaser.Scene {
   async create() {
     this.addAudio()
 
-      this.scene.start("menu")
+
+      this.scene.start("menu",{GAME_VERSION_PROMISE:this.GAME_VERSION_PROMISE})
     
   }
 }

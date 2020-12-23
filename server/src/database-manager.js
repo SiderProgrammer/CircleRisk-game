@@ -21,10 +21,11 @@ class DatabaseManager {
         useUnifiedTopology: true,
         useCreateIndex:true,
         useFindAndModify:false,
-       //  poolSize: 100
+       //  poolSize: 10
         // autoIndex: false,
       },
       () => {
+
 
         //   moongose.connection.close()
         // mongoose.disconnect();

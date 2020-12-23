@@ -1,7 +1,8 @@
 import Manager from "../../main/level-manager.js"
 import PulsateFunctionsManager from "./functions"
-import NightFunctionsManager from "../night/functions"
+
 import BlindFunctionsManager from "../blind/functions"
+import ThreeStepFunctionsManager from "../3-step/functions"
 
 export default class Pulsate_Hard extends Phaser.Scene {
   constructor() {
@@ -15,6 +16,10 @@ export default class Pulsate_Hard extends Phaser.Scene {
     this.manager = new Manager(this, config.config)
     this.manager.init()
     this.pulsateFunctionsManager = new PulsateFunctionsManager(this)
+    this.manager.rotation_direction = -1
+    this.threeStepFunctionsManager= new ThreeStepFunctionsManager(this)
+    
+   
   }
 
   create() {
@@ -23,6 +28,9 @@ export default class Pulsate_Hard extends Phaser.Scene {
     this.manager.createGUI()
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    this.manager.target_array.reverse()
+    this.manager.helper.checkNewTargetsQueue()
+    //this.swapTargetToTheNearset()
     this.manager.setNewTarget()
 
     this.manager.centerTargets()
@@ -34,7 +42,7 @@ export default class Pulsate_Hard extends Phaser.Scene {
     this.manager.GUI_helper.sceneIntro(this)
 
     this.pulsateFunctionsManager.makeTargetsPulse()
-    this.nightFunctionsManager = new NightFunctionsManager(this)
+   
     this.blindFunctionsManager = new BlindFunctionsManager(this)
     this.blind = this.manager.GUI_helper.createBackground(this, "black")
     this.blind.setDepth(1).setVisible(false)
@@ -45,10 +53,11 @@ export default class Pulsate_Hard extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-  darkenTargets() {
-    this.nightFunctionsManager.darkenTargets()
-  }
+ 
   blindTheScreen() {
     this.blindFunctionsManager.blindTheScreen()
+  }
+  swapTargetToTheNearset() {
+    this.threeStepFunctionsManager.swapTargetToTheNearset()
   }
 }

@@ -1,6 +1,10 @@
 import { getFunction, postFunction,fetchWithTimeout } from "../fetch-helper"
 import {SERVER_URL} from "../fetch-helper"
 
+export const GET_GAME_VERSION = async () => {
+  const response = await getFunction("getGameVersion")
+  if (response.ok) return response.json()
+}
 
 export const GET_ACCOUNT_SCORES = async (data) => {
   const response = await postFunction(data, "getAccountScores")
@@ -45,6 +49,7 @@ export const SAVE_MONEY =  (data) => {
 export const EQUIP_SKIN =  (data) => {
  return  postFunction(data, "equipSkin")
 }
+
 
 export const IS_ONLINE = async () => {
   try {

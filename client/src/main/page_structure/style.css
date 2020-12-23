@@ -46,7 +46,7 @@ body {
 }
 
 #creating-info-div {
-  height: 40%;
+  height: 45%;
   display: flex;
   justify-content: center;
 }
@@ -59,7 +59,7 @@ body {
 }
 
 #accept-nickname {
-  margin-top: 50px;
+  margin-top: 100px;
   width: 60px;
   outline: none;
 }
@@ -72,7 +72,7 @@ body {
   position: absolute;
   left: 50%;
   transform: translate(-50%, -50%);
-  top: 15%;
+  top: 20%;
 }
 @media only screen and (pointer: none) and (pointer: coarse) {
   #first-login {

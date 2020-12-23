@@ -10,7 +10,7 @@ import Pause from "../../scenes/pause.js"
 import Lose from "../../scenes/lose.js"
 import ServerMaintenance from "../../scenes/server-maintenance.js"
 import UI from "../../scenes/UI"
-
+import UpdateGame from "../../scenes/update-game"
 export default [
   Preloader,
   Loader,
@@ -24,4 +24,5 @@ export default [
   Lose,
   ServerMaintenance,
   UI,
+  UpdateGame
 ]

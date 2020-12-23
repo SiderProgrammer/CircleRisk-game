@@ -5,8 +5,8 @@ export default class Fetching extends Phaser.Scene {
     super("fetching")
   }
   init({ x, y, shadow = false }) {
-    this.x = x
-    this.y = y
+    this.x = this.game.GW/2
+    this.y = this.game.GH/2
     this.shadow = shadow
   }
   create() {

@@ -62,9 +62,9 @@ export default () => {
 
   accept_button.onclick = async () => {
     if (!VALIDATE_OK(nickname_input.value)) return
-
+    
     info.innerHTML = "Creating account ..."
-
+    await handleError()
     try {
       const response = await CREATE_ACCOUNT({
         nickname: nickname_input.value,

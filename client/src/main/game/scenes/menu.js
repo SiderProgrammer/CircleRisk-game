@@ -6,8 +6,10 @@ import {
   GET_ACCOUNT_SCORES
 } from "../../shortcuts/requests"
 
+import convertData from "../../convertData"
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 import checkConnection from "../../network-status"
+import { START_UPDATE_GAME_SCENE } from "../../fetch-helper"
 
 
 export default class menu extends Phaser.Scene {
@@ -18,7 +20,9 @@ export default class menu extends Phaser.Scene {
     this.tween_duration = 300
   }
 
-  async init() {
+  async init({GAME_VERSION_PROMISE}) {
+   this.GAME_VERSION_PROMISE = GAME_VERSION_PROMISE
+
     this.bubbles = []
     this.elements_to_hide_to_levelselect = []
 
@@ -32,6 +36,10 @@ export default class menu extends Phaser.Scene {
 
     if (!this.is_everything_fetched) {
       this.game.audio.music.menu_theme.play()
+
+
+
+
       this.events.on("wake", () => this.game.audio.music.menu_theme.play())
       this.events.on("sleep", () => this.game.audio.music.menu_theme.stop())
       START_FETCHING_SCENE(this)
@@ -453,20 +461,29 @@ export default class menu extends Phaser.Scene {
     })
   }
 
-  async fetchFromServerAndLaunchScenes() {
-    
+  async fetchFromServerAndLaunchScenes() { 
+   let timeout;
+
     try {
-      
+
       await this.getConfigurations()
       await this.restoreProgress()
-      this.convertData();
+      convertData();
 
       this.finishFetching()
+
+      const SERVER_GAME_VERSION = await this.GAME_VERSION_PROMISE
+      if( SERVER_GAME_VERSION!== window.CLIENT_GAME_VERSION){
+        console.log(SERVER_GAME_VERSION)
+        START_UPDATE_GAME_SCENE(this)
+        clearTimeout(timeout)
+        return;
+      }
       this.launchScenes()
       
     } catch{
       
-      setTimeout(() => {
+      timeout = setTimeout(() => {
         this.fetchFromServerAndLaunchScenes()
       }, 3000)
     }
@@ -488,39 +505,7 @@ export default class menu extends Phaser.Scene {
    // saveProgress(progress)
   }
 
-  convertData(){
-// converting setup numbers into skins names
-
-for(const part_with_s_ending in window.customize_skins_setup){
-  const part = part_with_s_ending.slice(0,-1); 
-
-window.customize_skins_setup[part_with_s_ending]
-  .forEach(skinObject=>{
-    skinObject.skin = part+"_"+skinObject.skin
-  });
-
-  }
-    
-    // converting skin numbers into full name strings
-    Object.keys(window.progress.skins).forEach((item) => {
-      window.progress.skins[item].forEach((skin_number, index, array) => {
-        array[index] = item.substring(0, item.length - 1) + "_" + skin_number
-      })
-    })
-
-
-//converting map names into array in a certain order 
-function convertLevelToScore(not_converted){
-  const {difficulty,name} = not_converted.info
-  const level = window.progress.levels_scores.find(level=>level.level === `${difficulty}-${name}`)
-  let score = -1;
-  if(level) score = level.score
-  return score // level?.score || -1
-}
-window.progress.levels_scores = levelsConfiguration
-.map(not_converted_level=> not_converted_level = convertLevelToScore(not_converted_level))
-
-  }
+  
 
   finishFetching() {
     this.is_everything_fetched = true

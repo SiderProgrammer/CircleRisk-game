@@ -5,9 +5,9 @@ export default class Offline extends Phaser.Scene {
   constructor() {
     super("offline")
   }
-  init({ x, y }) {
-    this.x = x
-    this.y = y
+  init() {
+    this.x = this.game.GW/2
+    this.y = this.game.GH/2
   }
   create() {
     createBackground(this, "black-bg")

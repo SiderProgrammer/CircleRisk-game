@@ -32,21 +32,25 @@ export async function fetchWithTimeout(resource, options) {
 
   return response;
 }
-export const START_SERVER_MAINTENANCE_SCENE = function(scenes){
+
+const launchUniqueScene = function(sceneKey,scenes){
   scenes.forEach(({ scene }) => scene.pause())
 
-  scenes[0].scene.launch("serverMaintenance")
-  scenes[0].scene.bringToTop("serverMaintenance")
+  scenes[0].scene.launch(sceneKey)
+  scenes[0].scene.bringToTop(sceneKey)
+}
+
+
+export const START_SERVER_MAINTENANCE_SCENE = function(scenes){
+  launchUniqueScene("serverMaintenance",scenes)
+}
+
+export const START_UPDATE_GAME_SCENE = function(scene){
+  scene.scene.start("updateGame")
 }
 
 export const START_RECONNECTING_SCENE = function (scenes) {
-  scenes.forEach(({ scene }) => scene.pause())
-
-  scenes[0].scene.launch("offline", {
-    x: scenes[0].game.GW / 2,
-    y: scenes[0].game.GH / 2,
-  })
-  scenes[0].scene.bringToTop("offline")
+  launchUniqueScene("offline",scenes)
 }
 
 export const STOP_RECONNECTING_SCENE = function (scenes) {
@@ -62,13 +66,7 @@ export const START_FETCHING_SCENE = function (scene) {
   paused_fetching_scenes.push(scene) /// if scene start didnt complete, it is counted as not active so i have to add it manually
   scene.scene.pause() /// and pause manually
 
-  paused_fetching_scenes.forEach(({ scene }) => scene.pause())
-
-  paused_fetching_scenes[0].scene.launch("fetching", {
-    x: paused_fetching_scenes[0].game.GW / 2,
-    y: paused_fetching_scenes[0].game.GH / 2,
-  })
-  paused_fetching_scenes[0].scene.bringToTop("fetching")
+  launchUniqueScene("fetching",paused_fetching_scenes)
 }
 
 export const STOP_FETCHING_SCENE = function (scene) {
