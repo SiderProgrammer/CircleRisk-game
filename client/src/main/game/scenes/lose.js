@@ -1,5 +1,7 @@
 import { createButton } from "../GUI-helper"
 import { getProgress } from "../../shortcuts/save"
+import playAudio from "../../shortcuts/audio-player"
+
 export default class Lose extends Phaser.Scene {
   constructor() {
     super("lose")
@@ -266,19 +268,23 @@ this.stats.perfect = [this.purple_strap,a,b]
       "customize-button",
       async () => {
         if (!this.are_buttons_active) return
+        playAudio(this.level_scene,"button")
         await this.animateHide()
         this.level_scene.scene.sleep()
         this.scene.sleep()
 
-        this.level_scene.scene.wake("menu")
+        // if are not active and visbile
         this.scene.get("menu").showElementsSharedWithLevelSelect()
         this.scene.get("levelSelect").hideAllElementsInMenuContext()
-        this.level_scene.scene.wake("customize")
+        //
+    
         this.level_scene.scene
           .get("customize")
           .animateCustomizeShow("back", [this.level_scene.scene])
+          this.level_scene.scene.wake("menu")
+          this.level_scene.scene.wake("customize")
       },
-      "button"
+  
     )
 customizeB.displayWidth = 155;
 customizeB.displayHeight = 155;
@@ -290,16 +296,21 @@ customizeB.displayHeight = 155;
       "levelSelect-button",
      async () => {
         if (!this.are_buttons_active) return
+        playAudio(this.level_scene,"button")
         await this.animateHide()
 
         this.level_scene.scene.stop()
         this.scene.stop()
+        
+        //this.level_scene.scene.get("menu").hideElementsSharedWithLevelSelect()
+        this.level_scene.scene.get("levelSelect").showAllElementsInMenuContext()
+        this.level_scene.scene.get("levelSelect").animateLevelSelectShow()
 
         this.level_scene.scene.wake("menu")
         this.level_scene.scene.wake("levelSelect")
-        this.level_scene.scene.get("levelSelect").animateLevelSelectShow()
+      
       },
-      "button" //sceneTransition(this.level_scene, "levelSelect")
+  
     )
 
     this.createRestartButton()
@@ -418,7 +429,10 @@ this.time.addEvent({
       "next-button",
      async () => {
         if (!this.are_buttons_active) return
+        playAudio(this.level_scene,"next_level_sound_1")
+        playAudio(this.level_scene,"next_level_sound_2")
         await this.animateHide()
+        
         this.scene.stop()
 
         const this_level_configuration =
@@ -444,7 +458,7 @@ this.time.addEvent({
           .bringToTop("lose")
           .sleep("lose")
       },
-      "button"
+     
     )
       .setDepth(11)
       .setActive(false)
@@ -459,6 +473,7 @@ this.time.addEvent({
       "replay-button",
      async () => {
         if (!this.are_buttons_active) return
+        playAudio(this.level_scene,"button")
          await this.animateHide()
          
           this.level_scene.scene.sleep("lose")
@@ -467,7 +482,7 @@ this.time.addEvent({
         //   this.level_scene.game.audio.sounds.restart_sound.play()
        
       },
-      "button"
+    
     )
       .setDepth(11)
       .setActive(false)

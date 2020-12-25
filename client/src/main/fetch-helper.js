@@ -1,4 +1,4 @@
-export const SERVER_URL = "http://192.168.1.12:3001"
+import {SERVER_URL} from "../config"
 
 const headers = {
   "Content-Type": "application/json",

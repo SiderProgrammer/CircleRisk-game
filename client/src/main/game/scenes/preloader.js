@@ -1,3 +1,5 @@
+import {INTERSTITIAL_AD_CONFIG,BANNER_AD_CONFIG} from "../../../config"
+
 const imgPath = "./assets/img"
 
 export default class preloader extends Phaser.Scene {
@@ -23,22 +25,13 @@ export default class preloader extends Phaser.Scene {
   create() {
    if(window.admob){
 
-    const config = {
-      isTesting:true,
-      autoShow:false,
-    }
-    admob.banner.config({
-     ...config,
-      id: 'ca-app-pub-3940256099942544/6300978111',
-     })
+   
+    admob.banner.config(BANNER_AD_CONFIG)
      
      admob.banner.prepare()
 
 
-     admob.interstitial.config({
-      id: 'ca-app-pub-3940256099942544/1033173712',
-      ...config
-     })
+     admob.interstitial.config(INTERSTITIAL_AD_CONFIG)
      
      admob.interstitial.prepare()
     }

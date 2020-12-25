@@ -1,5 +1,5 @@
 import { getFunction, postFunction,fetchWithTimeout } from "../fetch-helper"
-import {SERVER_URL} from "../fetch-helper"
+import {SERVER_URL} from "../../config"
 
 export const GET_GAME_VERSION = async () => {
   const response = await getFunction("getGameVersion")

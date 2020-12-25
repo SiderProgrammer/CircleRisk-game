@@ -156,15 +156,17 @@ export default class Customize extends Phaser.Scene {
           this.hidePurchaseOffer()
 
           await this.animateCustomizeHide()
+          this.skinChangerManager.changeSkinsToEquiped()
           this.back_button.resetPosition()
           this.home_button.resetPosition()
           this.scenes_to_wake.forEach((s) => s.wake())
-          this.scene.wake("lose")
+         
+
           this.scene.sleep("menu")
-          //  this.scene.get("menu").animateShowMenu()
           this.scene.sleep()
-          this.skinChangerManager.changeSkinsToEquiped()
+          
           this.scene.get("lose").animateShow();
+          this.scene.wake("lose")
         },"button"
       )
       .setOrigin(0.5, 1)
@@ -305,7 +307,8 @@ export default class Customize extends Phaser.Scene {
        
        
       }
-    } catch {
+    } catch(e) {
+      console.log(e);
       checkConnection(this)
       // CREATE_FETCH_ERROR(this, this.game.GW / 2, this.game.GH / 2 - 300)
     } finally {

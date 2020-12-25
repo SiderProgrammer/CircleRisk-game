@@ -16,13 +16,14 @@ export default class menu extends Phaser.Scene {
   constructor() {
     super("menu")
     this.is_everything_fetched = false
-
+    this.is_hidden = false;
     this.tween_duration = 300
   }
 
   async init({GAME_VERSION_PROMISE}) {
    this.GAME_VERSION_PROMISE = GAME_VERSION_PROMISE
 
+   
     this.bubbles = []
     this.elements_to_hide_to_levelselect = []
 
@@ -37,6 +38,14 @@ export default class menu extends Phaser.Scene {
     if (!this.is_everything_fetched) {
       this.game.audio.music.menu_theme.play()
 
+      document.addEventListener("focus",()=>{
+        this.game.audio.music.menu_theme.resume()
+      });
+
+      document.addEventListener("blur",()=>{
+        this.game.audio.music.menu_theme.pause()
+      });
+      
 
       this.events.on("wake", () => this.game.audio.music.menu_theme.play())
       this.events.on("sleep", () => this.game.audio.music.menu_theme.stop())
@@ -69,6 +78,7 @@ export default class menu extends Phaser.Scene {
   }
 
   async animateShowMenu() {
+    this.is_hidden = false;
     const ease = "Sine"
 
     this.showInstagram()
@@ -79,6 +89,7 @@ export default class menu extends Phaser.Scene {
   }
 
   async animateHideMenu() {
+    this.is_hidden = true;
     const ease = "Sine.easeIn"
 
     this.hideInstagram()
@@ -111,11 +122,15 @@ export default class menu extends Phaser.Scene {
     this.play_button.y = this.hidden_positions_y.play_button
     this.logo.y = this.hidden_positions_y.logo
 
+    this.resetButtonsPositionsToHidden()
+
+    return this
+  }
+
+  resetButtonsPositionsToHidden(){
     this.customize_button.y = this.hidden_positions_y.customize_button
     this.sound_button.y = this.hidden_positions_y.sound_button
     this.music_button.y = this.hidden_positions_y.music_button
-
-    return this
   }
 
   createBackground() {
@@ -317,9 +332,10 @@ export default class menu extends Phaser.Scene {
         "customize-button",
         async () => {
           await this.animateHideMenu()
-          this.scene.wake("customize")
+          
           this.scene.get("customize").animateCustomizeShow()
-          //this.scene.launch("customize")
+          this.scene.wake("customize")
+     
         },
         "button"
       )
@@ -354,14 +370,14 @@ export default class menu extends Phaser.Scene {
 
         await this.animateHideMenu()
 
-        this.scene.wake("levelSelect")
-
         this.hideElementsSharedWithLevelSelect()
-
+        
         this.scene
           .get("levelSelect")
           .showAllElementsInMenuContext(this)
           .animateLevelSelectShow()
+          this.scene.wake("levelSelect")
+
       },
       "button"
     )
@@ -409,6 +425,11 @@ export default class menu extends Phaser.Scene {
       ease,
       duration: 300,
       y: this.game.GH - 25,
+      onComplete:()=>{
+        if(this.is_hidden){
+          this.resetButtonsPositionsToHidden()
+        }
+      }
     })
   }
 

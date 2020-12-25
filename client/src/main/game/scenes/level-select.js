@@ -715,13 +715,14 @@ if(condition_1 || condition_2 || !sign){
       }
     }
 
+
+
     page.getElementsConvertedIntoArray = function () {
       const array = [this]
 
       for (const element in this.elements) {
         array.push(this.elements[element])
       }
-
       return array
     }
 

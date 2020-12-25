@@ -9,7 +9,7 @@ const audioPath = "./assets/audio"
 export default class loader extends Phaser.Scene {
   constructor() {
     super("loader")
-    this.skins_amount = 51
+    this.skins_amount = 5
   }
 init(){
   this.GAME_VERSION_PROMISE =  GET_GAME_VERSION();
@@ -28,6 +28,7 @@ init(){
     )
   }
   backgrounds() {
+    this.loadImage("ranking-bg", "backgrounds")
     this.loadImage("menu-bg", "backgrounds")
     this.loadImage("levelSelect-bg", "backgrounds")
     this.loadImage("levelSelect-middle", "backgrounds")
@@ -161,6 +162,10 @@ init(){
     this.loadSound("tap", "sound", "mp3")
     this.loadSound("perfect_1", "sound", "ogg")
     this.loadSound("perfect_2", "sound", "ogg")
+
+    this.loadSound("next_level_sound_1", "sound", "ogg")
+    this.loadSound("next_level_sound_2", "sound", "ogg")
+
     this.loadSound("start_sound", "sound", "mp3")
     // this.loadSound("restart_sound", "sound", "ogg")
     this.loadSound("new_level_sound", "sound", "ogg")
@@ -184,17 +189,21 @@ init(){
       return (this.game.audio.sounds[name] = this.sound.add(name))
     }
     //addSound([tap,perfect_1,perfect_2]) // i could do like that but i have to set volume some sounds
-    addSound("tap")
+    addSound("tap").setVolume(0.8)
     addSound("perfect_1").setVolume(0.75)
     addSound("perfect_2").setVolume(0.75)
-    addSound("start_sound")
+    addSound("start_sound").setVolume(0.9)
     addSound("new_level_sound")
     // addSound("restart_sound")
     addSound("buy_sound")
-    addSound("die")
+    addSound("die").setVolume(0.5)
     addSound("button")
     addSound("change_object")
+
+    addSound("next_level_sound_1")
+    addSound("next_level_sound_2")
   }
+
   preload() {
     if(window.AndroidFullScreen)AndroidFullScreen.immersiveMode()
     this.createGUI()

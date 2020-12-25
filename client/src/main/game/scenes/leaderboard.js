@@ -29,7 +29,7 @@ export default class Leaderboard extends Phaser.Scene {
   }
 
   async create() {
-    helper.createBackground(this, "loading-bg") // can set it to not visbile and show it later
+    helper.createBackground(this, "ranking-bg") // can set it to not visbile and show it later
     this.createMyScoretHighLight()
     const upper_strip = this.createUpperStrip().setVisible(false)
 

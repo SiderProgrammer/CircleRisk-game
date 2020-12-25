@@ -10,8 +10,9 @@ export default async(scene) => {
 
   let is_online = true
   let paused_scenes = []
-
+let interval;
 const checkConnection = async () => {
+  console.log("check")
   if (await IS_ONLINE()) {
     if (!(await IS_SERVER_ALIVE())) {
      
@@ -19,7 +20,7 @@ const checkConnection = async () => {
     }
 
     if (!is_online) {
-      clearInterval(checkConnection);
+      clearInterval(interval);
 
       STOP_RECONNECTING_SCENE(paused_scenes)
       is_online = true
@@ -28,7 +29,7 @@ const checkConnection = async () => {
   } else {
     if (!is_online) return
 
-    setInterval(checkConnection,checkConnectionTimeInterval)
+  interval = setInterval(checkConnection,checkConnectionTimeInterval)
     paused_scenes = scene.game.scene.getScenes(true)
     
     START_RECONNECTING_SCENE(paused_scenes)
