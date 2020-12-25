@@ -232,18 +232,27 @@ export default class {
       duration: 200,
     })
   }
-
+  findIndexOfSkinInSetup(_skin,part){
+    return window.customize_skins_setup[part].findIndex(skin=>skin.skin === _skin)
+  }
   changeSkinsToEquiped() {
-    this.circle.setTexture("circle_" + this.progress.current_skins["circles"])
-    this.circle_skin_number = this.getSkinNumber(this.circle.texture.key)
+   
+    const txt = "circle_" + this.progress.current_skins["circles"]
+  
+    this.circle.setTexture(txt)
+    this.circle_skin_number = this.findIndexOfSkinInSetup(txt,"circles")
     this.updateTick(this.circle)
+  
 
-    this.stick.setTexture("stick_" + this.progress.current_skins["sticks"])
-    this.stick_skin_number = this.getSkinNumber(this.stick.texture.key)
+    const txt_2 = "stick_" + this.progress.current_skins["sticks"]
+    this.stick.setTexture(txt_2)
+    this.stick_skin_number =  this.findIndexOfSkinInSetup(txt_2,"sticks")
     this.updateTick(this.stick)
 
-    this.target.setTexture("target_" + this.progress.current_skins["targets"])
-    this.target_skin_number = this.getSkinNumber(this.target.texture.key)
+
+    const txt_3 = "target_" + this.progress.current_skins["targets"]
+    this.target.setTexture(txt_3)
+    this.target_skin_number = this.findIndexOfSkinInSetup(txt_3,"targets")
     this.updateTick(this.target)
   }
 
@@ -531,9 +540,11 @@ export default class {
     const available_part_skins = this.progress.skins[part].map(
       (skin) => this.getSkinNumber(skin) + 1
     )
+ 
 
-    if (available_part_skins.includes(skin_number + 1)) {
-      this.progress.current_skins[part] = skin_number + 1
+
+    if (available_part_skins.includes(this.getSkinNumber(first_skin) +1)) {
+      this.progress.current_skins[part] = this.getSkinNumber(first_skin) +1 ;
     }
 
     if (sprite2.key.alpha != 0) {

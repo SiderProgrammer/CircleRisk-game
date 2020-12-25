@@ -15,6 +15,9 @@ export default class levelSelect extends Phaser.Scene {
 
     if (data.page === 0) this.current_page_number = 0 // 0 is false
     this.canChangePage = false
+
+    this.are_thorns_seen = false;
+    this.are_spikes_seen = false;
   }
 
   create() {
@@ -27,11 +30,10 @@ export default class levelSelect extends Phaser.Scene {
     this.second_page = this.createPage()
     this.second_page.hide()
 
-    this.spikes = helper.createBackground(this, "spikes")
-    this.spikes.setVisible(false)
-
+    this.spikes = this.createSpikes()
+  
     this.thorns = this.createThornBorder()
-    this.hideThornBorder()
+
     this.updatePage(this.current_page)
     this.createChangePageButtons()
     this.createHomeButton()
@@ -45,6 +47,19 @@ export default class levelSelect extends Phaser.Scene {
     if(index === -2) index = window.progress.levels_scores.length -1
     return  index //getProgress().levels_scores.length - 1 // 0 //  page
   }
+
+  isEasySection(pageNumber = this.current_page_number){
+    return levelsConfiguration[pageNumber].info.difficulty === "easy"
+    }
+
+isMediumSection(pageNumber = this.current_page_number){
+return levelsConfiguration[pageNumber].info.difficulty === "medium"
+}
+
+isHardSection(pageNumber = this.current_page_number){
+  return levelsConfiguration[pageNumber].info.difficulty === "hard"
+  }
+
   showAllElementsInMenuContext() {
     this.level_select_elements_in_menu_context.forEach((element) =>
       element.setVisible(true).setActive(true)
@@ -103,6 +118,13 @@ export default class levelSelect extends Phaser.Scene {
   animateLevelSelectHide() {
     const ease = "Sine.easeIn"
 
+    if(this.isMediumSection() || this.isHardSection()){
+      this.hideThornBorder()
+    }
+    if(this.isHardSection()) {
+      this.hideSpikes()
+    }
+    
     this.animateHideChangePageButtons()
 
     return new Promise((resolve) => {
@@ -125,6 +147,13 @@ export default class levelSelect extends Phaser.Scene {
   animateLevelSelectShow() {
     const ease = "Sine.easeOut"
 
+    if(this.isMediumSection() || this.isHardSection()){
+      this.showThorns()
+    }
+    if(this.isHardSection()){
+      this.showSpikes()
+    }
+    
     this.tweens.add({
       targets: this.current_page.getElementsConvertedIntoArray(),
       y: `-=${this.game.GH}`,
@@ -177,41 +206,271 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   createThornBorder() {
+    const ease = "Power1"
+    const duration = 300
+    const shift = 50
+
     const thorns_up = this.add
-      .image(0, 0, "general-1", "thorns_up")
+      .image(0, -shift, "general-1", "thorns_up")
       .setOrigin(0, 0)
       .setFlipY(true)
       .setFlipX(true)
+    
+
+      thorns_up.animate = (showOrHide) => {
+        
+
+        let value = shift
+        if(showOrHide === "hide"){
+          value = -value;
+        }
+        
+      this.tweens.add({
+          targets:thorns_up,
+          duration,
+          y:`+=${value}`,
+          ease
+        })
+      }
+
     helper.setGameSize(thorns_up, true)
 
     const thorns_down = this.add
-      .image(0, this.game.GH, "general-1", "thorns_up")
+      .image(0, this.game.GH + shift, "general-1", "thorns_up")
       .setOrigin(0, 1)
+
+      thorns_down.animate = (showOrHide) => {
+        let value = shift
+        if(showOrHide === "hide"){
+          value = -value;
+        }
+       
+        this.tweens.add({
+          targets:thorns_down,
+          duration,
+          y:`-=${value}`,
+          ease
+        })
+      }
 
     helper.setGameSize(thorns_down, true)
 
     const thorns_left = this.add
-      .image(0, 0, "general-1", "thorns_sides")
+      .image(-shift, 0, "general-1", "thorns_sides")
       .setOrigin(0, 0)
       .setFlipY(true)
+
+      thorns_left.animate = (showOrHide) => {
+        let value = shift
+        if(showOrHide === "hide"){
+          value = -value;
+        }
+        
+
+        this.tweens.add({
+          targets:thorns_left,
+          duration,
+          x:`+=${value}`,
+          ease
+        })
+      }
 
     helper.setGameSize(thorns_left, false, true)
 
     const thorns_right = this.add
-      .image(this.game.GW, 0, "general-1", "thorns_sides")
+      .image(this.game.GW+shift, 0, "general-1", "thorns_sides")
       .setOrigin(1, 0)
       .setFlipX(true)
+
+      thorns_right.animate = (showOrHide) => {
+        let value = shift
+        if(showOrHide === "hide"){
+          value = -value;
+         
+        }
+        
+        
+        this.tweens.add({
+          targets:thorns_right,
+          duration,
+          x:`-=${value}`,
+          ease
+ 
+        })
+      }
+
+
     helper.setGameSize(thorns_right, false, true)
 
     return [thorns_up, thorns_left, thorns_right, thorns_down]
   }
 
-  hideThornBorder() {
-    this.thorns.forEach((thorn) => thorn.setVisible(false))
+createSpikes(){
+  const ease = "Power1"
+  const duration = 300
+  const shift = 100
+
+  const spikes_up = this.add
+    .image(0, -shift, "spikes-up")
+    .setOrigin(0, 0)
+ 
+
+    spikes_up.animate = (showOrHide) => {
+      
+
+      let value = shift
+      if(showOrHide === "hide"){
+        value = -value;
+      }
+      
+    this.tweens.add({
+        targets:spikes_up,
+        duration,
+        y:`+=${value}`,
+        ease
+      })
+    }
+
+  helper.setGameSize(spikes_up, true)
+
+  const spikes_down = this.add
+    .image(0, this.game.GH + shift,"spikes-down")
+    .setOrigin(0, 1)
+
+    spikes_down.animate = (showOrHide) => {
+      let value = shift
+      if(showOrHide === "hide"){
+        value = -value;
+      }
+     
+      this.tweens.add({
+        targets:spikes_down,
+        duration,
+        y:`-=${value}`,
+        ease
+      })
+    }
+
+  helper.setGameSize(spikes_down, true)
+
+  const spikes_left = this.add
+    .image(-shift, 0,"spikes-left")
+    .setOrigin(0, 0)
+  
+
+    spikes_left.animate = (showOrHide) => {
+      let value = shift
+      if(showOrHide === "hide"){
+        value = -value;
+      }
+      
+
+      this.tweens.add({
+        targets:spikes_left,
+        duration,
+        x:`+=${value}`,
+        ease
+      })
+    }
+
+  helper.setGameSize(spikes_left, false, true)
+
+  const spikes_right = this.add
+    .image(this.game.GW+shift, 0, "spikes-right")
+    .setOrigin(1, 0)
+
+
+    spikes_right.animate = (showOrHide) => {
+      let value = shift
+      if(showOrHide === "hide"){
+        value = -value;
+       
+      }
+      
+      
+      this.tweens.add({
+        targets:spikes_right,
+        duration,
+        x:`-=${value}`,
+        ease
+
+      })
+    }
+
+
+  helper.setGameSize(spikes_right, false, true)
+
+  return [spikes_up, spikes_left, spikes_right, spikes_down]
+}
+
+
+showSpikes(sign) {
+  if(this.are_spikes_seen) return
+
+   const condition_1 = 
+   this.isHardSection() && this.isMediumSection(this.current_page_number-1) && sign === "-"
+
+const condition_2 = this.current_page_number === levelsConfiguration.length -1 && sign === "+"
+
+if(condition_1 || condition_2 || !sign){
+ this.are_spikes_seen = true;
+ this.spikes.forEach((spike) => { 
+   spike.animate("show")
+ })
+}
+
+ }
+ hideSpikes(sign) {
+  if(!this.are_spikes_seen) return
+
+  const condition_1 = 
+  this.isMediumSection() &&this.isHardSection(this.current_page_number+1)  && sign === "+"
+
+
+const condition_2 = this.current_page_number === 0 && sign === "-"
+
+if(condition_1 || condition_2 || !sign){
+this.are_spikes_seen = false;
+this.spikes.forEach((spike) => {
+  spike.animate("hide")
+})
+}
+}
+
+
+
+  hideThornBorder(sign) {
+    if(!this.are_thorns_seen) return
+    const condition_1 = 
+    this.isEasySection() &&this.isMediumSection(this.current_page_number+1)  && sign === "+"
+
+
+const condition_2 = this.current_page_number === 0 && sign === "-"
+
+if(condition_1 || condition_2 || !sign){
+  this.are_thorns_seen = false;
+  this.thorns.forEach((thorn) => {
+    thorn.animate("hide")
+  })
+}
   }
 
-  showThorns() {
-    this.thorns.forEach((thorn) => thorn.setVisible(true))
+
+   showThorns(sign) {
+   if(this.are_thorns_seen) return
+
+    const condition_1 = 
+    this.isMediumSection() && this.isEasySection(this.current_page_number-1) && sign === "-"
+
+const condition_2 = this.current_page_number === levelsConfiguration.length -1 && sign === "+"
+
+if(condition_1 || condition_2 || !sign){
+  this.are_thorns_seen = true;
+  this.thorns.forEach((thorn) => { 
+    thorn.animate("show")
+  })
+}
+
   }
 
   createLevelLock(x, y) {
@@ -369,11 +628,12 @@ export default class levelSelect extends Phaser.Scene {
     return window.progress.levels_scores[this.current_page_number] != -1 // this.progress.levels_scores.length >= this.current_page_number + 1
   }
   tweenPage(sign) {
-    playSound(this, "change_object")
+    
     const ease = "Power1"
     const duration = 300
 
     if (!this.canChangePage) return
+    playSound(this, "change_object")
     this.canChangePage = false
 
     let second_page_shift = this.game.GW
@@ -403,7 +663,7 @@ export default class levelSelect extends Phaser.Scene {
 
     this.second_page.show()
 
-    this.updatePage(this.second_page)
+    this.updatePage(this.second_page,sign)
 
     this.tweens.add({
       targets: pages_elements_to_tween,
@@ -473,7 +733,7 @@ export default class levelSelect extends Phaser.Scene {
     this.updatePage(this.current_page)
   }
 
-  updatePage(page) {
+  updatePage(page,sign) {
     const { elements } = page
     for (const element in elements) {
       if (typeof elements[element].update === "function") {
@@ -507,30 +767,32 @@ export default class levelSelect extends Phaser.Scene {
       levelsConfiguration[this.current_page_number].info.difficulty
 
     if (difficulty === "hard" || difficulty === "medium") {
-      this.showThorns()
+      this.showThorns(sign)
       this.black_border.setVisible(true)
 
       difficulty === "hard"
-        ? this.showHardLevelsOrnaments(elements)
+        ? this.showHardLevelsOrnaments(elements,sign)
         : this.hideHardLevelsOrnaments(elements)
     } else {
       this.black_border.setVisible(false)
-      this.hideHardLevelsOrnaments(elements)
-      this.hideThornBorder()
+      this.hideHardLevelsOrnaments(elements,sign)
+      this.hideThornBorder(sign)
     }
   }
 
-  showHardLevelsOrnaments({ score_bar, name_bar }) {
-    this.spikes.setVisible(true)
+  showHardLevelsOrnaments({ score_bar, name_bar },sign) {
+
+    this.showSpikes(sign)
+  
     score_bar.setFrame("level-select-score-bar-hard")
     name_bar.setFrame("level-select-name-bar-hard")
 
     this.page_glow.setVisible(true)
   }
 
-  hideHardLevelsOrnaments({ score_bar, name_bar }) {
-    this.spikes.setVisible(false)
-
+  hideHardLevelsOrnaments({ score_bar, name_bar },sign) {
+   
+    this.hideSpikes(sign)
     score_bar.setFrame("level-select-score-bar")
     name_bar.setFrame("level-select-name-bar")
 
@@ -615,6 +877,7 @@ export default class levelSelect extends Phaser.Scene {
         "home-button",
         async () => {
           this.canChangePage = false
+          this.hideThornBorder()
           await this.animateLevelSelectHide()
 
           this.hideAllElementsInMenuContext()

@@ -9,7 +9,7 @@ const audioPath = "./assets/audio"
 export default class loader extends Phaser.Scene {
   constructor() {
     super("loader")
-    this.skins_amount = 5
+    this.skins_amount = 51
   }
 init(){
   this.GAME_VERSION_PROMISE =  GET_GAME_VERSION();
@@ -125,6 +125,11 @@ init(){
     this.loadImage("lb-scores-bg", "mix2")
     this.loadImage("lb-line", "mix2")
     this.loadImage("ranking-icon", "mix2")
+
+    this.loadImage("spikes-up", "mix2")
+    this.loadImage("spikes-down", "mix2")
+    this.loadImage("spikes-left", "mix2")
+    this.loadImage("spikes-right", "mix2")
   }
 
   updateBar(percentage) {

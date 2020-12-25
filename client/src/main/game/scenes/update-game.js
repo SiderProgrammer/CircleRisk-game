@@ -37,7 +37,7 @@ export default class UpdateGame extends Phaser.Scene {
 
       createButton(this,this.game.GW/2,finger.y + finger.displayHeight/2 + 50 + 20,"play-button",
       ()=>{
-        window.open("https://www.instagram.com/pip_games/", "_blank")
+        window.open("https://play.google.com/store/apps/details?id=com.pip.circlerisk", "_blank")
       })
   }
 }

@@ -38,8 +38,6 @@ export default class menu extends Phaser.Scene {
       this.game.audio.music.menu_theme.play()
 
 
-
-
       this.events.on("wake", () => this.game.audio.music.menu_theme.play())
       this.events.on("sleep", () => this.game.audio.music.menu_theme.stop())
       START_FETCHING_SCENE(this)

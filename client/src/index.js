@@ -9,7 +9,7 @@ bindPrototypeExtendedFunctions()
 
 window.main_font = "luckiestGuy"
 window.CLIENT_GAME_VERSION = 1;
-//localStorage.clear()
+localStorage.clear()
 export const startGame = () => {
   const game = new Phaser.Game(config)
   game.GW = config.width

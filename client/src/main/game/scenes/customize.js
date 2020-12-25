@@ -285,10 +285,17 @@ export default class Customize extends Phaser.Scene {
         skin.key.setAlpha(0)
 
         this.progress.skins[part].push(skin.texture.key)
+  
+
         this.progress.money -= price
         this.money_text.setText(this.progress.money)
+
+        
         this.progress.current_skins[part] =
-          this.skinChangerManager.getSkinNumber(skin.texture.key) + 1 // set new skin
+          this.skinChangerManager.getSkinNumber(skin.texture.key) + 1
+
+          this.skinChangerManager.progress = this.progress
+
         this.skinChangerManager.updateTick(skin)
 
         SAVE_MONEY({
