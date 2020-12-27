@@ -307,8 +307,8 @@ export default class Customize extends Phaser.Scene {
        
        
       }
-    } catch(e) {
-      console.log(e);
+    } catch{
+     
       checkConnection(this)
       // CREATE_FETCH_ERROR(this, this.game.GW / 2, this.game.GH / 2 - 300)
     } finally {

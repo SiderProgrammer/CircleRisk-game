@@ -501,7 +501,7 @@ export default class menu extends Phaser.Scene {
       this.launchScenes()
       
     } catch{
-      
+      if(!window.is_server_alive) return;
       timeout = setTimeout(() => {
         this.fetchFromServerAndLaunchScenes()
       }, 3000)

@@ -10,6 +10,7 @@ export default class Lose extends Phaser.Scene {
     this.progress = window.progress//getProgress()
     this.level_scene = data.scene
     this.are_buttons_active = false
+    this.scores_margin_point_x = this.game.GW/2 + 80
   }
   create() {
     this.stats = []
@@ -121,6 +122,7 @@ animateButtonsLoseBg(sign,duration = 350){
     this.score.setText(score)
     this.perfect_score.setText(perfect)
     this.best.setText(best)
+    this.score.updatePositions()
   }
 
   
@@ -132,32 +134,36 @@ animateButtonsLoseBg(sign,duration = 350){
 
     this.blue_strap.y += this.blue_strap.displayHeight / 2
 
+ 
+
   const a =  this.add
       .text(100, this.blue_strap.y + 5, "SCORE", {
-        font: "60px LuckiestGuy", /// SCORE TEXT
+        font: "70px LuckiestGuy", /// SCORE TEXT
       })
       .setOrigin(0, 0.5)
 
-    const divider = this.add
-      .text(this.game.GW - 190, this.blue_strap.y + 20, "/", {
-        font: "50px LuckiestGuy", /// DIVIDER
-      })
-      .setOrigin(0.5)
 
-    const b = this.add
+      const b = this.add
       .text(
-        divider.x - divider.displayWidth / 2,
+        this.scores_margin_point_x,
         this.blue_strap.y , /// CURRENT SCORE
         0,
         {
           font: "120px LuckiestGuy",
         }
       )
-      .setOrigin(1, 0.5)
+      .setOrigin(0, 0.5)
 
+    const divider = this.add
+      .text(b.x + b.displayWidth, this.blue_strap.y + 20, "/", {
+        font: "50px LuckiestGuy", /// DIVIDER
+      })
+      .setOrigin(0,0.5)
+
+   
    const c =  this.add
       .text(
-        divider.x + divider.displayWidth / 2,
+        divider.x + divider.displayWidth ,
         divider.y,
         this.level_scene.score_to_next_level, /// NEEDED SCORE
         {
@@ -168,6 +174,10 @@ animateButtonsLoseBg(sign,duration = 350){
 
 this.stats.score = [this.blue_strap,a,b,c,divider]
 
+b.updatePositions = () => {
+  divider.x = b.x + b.displayWidth
+  c.x = divider.x + divider.displayWidth 
+}
 
     return b
   }
@@ -178,7 +188,7 @@ this.stats.score = [this.blue_strap,a,b,c,divider]
     this.red_strap = this.add
       .image(
         0, /// RED STRAP
-        this.blue_strap.y + this.blue_strap.displayHeight,
+        this.blue_strap.y + this.blue_strap.displayHeight + 10,
         "general-1",
         "red-strap"
       )
@@ -186,20 +196,20 @@ this.stats.score = [this.blue_strap,a,b,c,divider]
 
    const a = this.add
       .text(100, this.red_strap.y, "BEST", {
-        font: "45px LuckiestGuy", /// BEST TEXT
+        font: "50px LuckiestGuy", /// BEST TEXT
       })
       .setOrigin(0, 0.5)
 
    const b=  this.add
       .text(
-        this.score.x - this.score.displayWidth / 2,
+        this.scores_margin_point_x,
         this.red_strap.y,
         this.progress.levels_scores[this.level_scene.level - 1], /// CURRENT BEST SCORE
         {
           font: "90px LuckiestGuy",
         }
       )
-      .setOrigin(0.5)
+      .setOrigin(0,0.5)
       this.stats.best = [this.red_strap,a,b]
       return  b
   }
@@ -208,7 +218,7 @@ this.stats.score = [this.blue_strap,a,b,c,divider]
     this.purple_strap = this.add /// PURPLE STRAP
       .image(
         0,
-        this.red_strap.y + this.red_strap.displayHeight + 10,
+        this.red_strap.y + this.red_strap.displayHeight + 20,
         "general-1",
         "purple-strap"
       )
@@ -216,20 +226,20 @@ this.stats.score = [this.blue_strap,a,b,c,divider]
 
   const a =   this.add /// PERFECT TEXT
       .text(100, this.purple_strap.y, "PERFECT", {
-        font: "45px LuckiestGuy",
+        font: "50px LuckiestGuy",
       })
       .setOrigin(0, 0.5)
 
     const b = this.add /// CURRENT PERFECT SCORE
       .text(
-        this.score.x - this.score.displayWidth / 2,
+        this.scores_margin_point_x,
         this.purple_strap.y,
         0,
         {
           font: "90px LuckiestGuy",
         }
       )
-      .setOrigin(0.5)
+      .setOrigin(0,0.5)
 this.stats.perfect = [this.purple_strap,a,b]
     return b
   }
@@ -435,6 +445,9 @@ this.time.addEvent({
         
         this.scene.stop()
 
+
+        this.scene.get("levelSelect").updatePageNumberAndColor(this.level_scene.level)
+        
         const this_level_configuration =
           levelsConfiguration[this.level_scene.level]
 

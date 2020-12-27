@@ -24,8 +24,7 @@ export default class UpdateGame extends Phaser.Scene {
         }
       )
       .setOrigin(0.5,0)
-      console.log(text)
-
+     
      const finger = this.add
       .sprite(this.game.GW / 2 + 100, text.y + text.displayHeight +250, "fingers", 0)
       this.tweens.add({

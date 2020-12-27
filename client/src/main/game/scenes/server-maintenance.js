@@ -14,7 +14,7 @@ export default class ServerMaintenance extends Phaser.Scene {
       .text(
         this.game.GW / 2,
         this.game.GH / 2,
-        "The game servers were down for maintenance. Everything will be back to normal soon",
+        "The game servers were down for maintenance.\n Everything will be back to normal soon.\n You may need to update your game, so check for update from time to time.",
         {
           font: `70px ${main_font}`,
           wordWrap: {

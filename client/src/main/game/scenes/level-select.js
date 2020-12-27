@@ -40,6 +40,11 @@ export default class levelSelect extends Phaser.Scene {
 
     this.resetPositionsToHidden()
   }
+  updatePageNumberAndColor(levelNumber)
+  {
+    this.current_page_number = levelNumber
+    this.updateBackgroundColor()
+  }
   
   initPageNumber() {
     let index = window.progress.levels_scores.indexOf(-1) -1 

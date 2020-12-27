@@ -24,56 +24,7 @@ class DatabaseManager {
        //  poolSize: 10
         // autoIndex: false,
       },
-      () => {
-
-
-        //   moongose.connection.close()
-        // mongoose.disconnect();
-        // // //   mongoose.connection.dropDatabase()
-
-/*
-    const p = []
-        for(let i =0,k=2;i<10000;i++,k++){
-        
-          if(k > 80){
-            k=2;
-          }
-          p.push(Levels.create({
-            level: k,
-            nickname: "a"+k,
-            rank: k,
-            score_to_update: k,
-            score: k,
-          }))
-        
-         
-        
-        }
-Promise.all(p).then(()=>console.log("done"))
-*/
-
-/*
-   
-
- for(let i =0;i<3000;i++){
-          Accounts.create({
-            nickname:"afadg"+i,
-            levels_scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            money:30300,
-          })
-          
-
-  Accounts.create({
-    nickname:"bffadg"+i,
-    levels_scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    money:30300,
-    
-  })
-}
- */   
-
-     
-      }
+      () => {}
     )
   }
   
@@ -102,7 +53,7 @@ Promise.all(p).then(()=>console.log("done"))
         })
 
         Promise.all(Promises).then(() => res.sendStatus(200))
-        console.log("new account created")
+      //  console.log("new account created")
       }
     })
   }
@@ -112,7 +63,7 @@ Promise.all(p).then(()=>console.log("done"))
     Accounts.findOne({_id:nickname},
       (err,account_data)=>{
  
-        console.log(nickname + "  Joined")
+      //   console.log(nickname + "  Joined")
         res.status(200).json(account_data)
       }).lean().select("-_id")
 
@@ -176,10 +127,10 @@ Promise.all(p).then(()=>console.log("done"))
 
     getRankFromScore(req,res){
       const {level,score} =req.body
-      console.time("time")
+    //  console.time("time")
       Levels.countDocuments({level,score:{$gt:score}},(err,rank)=>res.json(rank+1))
    // await Levels.findOne({level,score:{$gte:score}},()=>{}).count()
-      console.timeEnd("time")
+   //  console.timeEnd("time")
     // res.sendStatus(200)
   //(err,count)=>console.log(count)
     }
@@ -187,12 +138,55 @@ Promise.all(p).then(()=>console.log("done"))
 }
 
 mongoose.connection.on("error", (error) => {
-  console.log("ERROR !", error)
+   console.log("ERROR !", error)
   process.exit(1)
 })
 
 mongoose.connection.on("connected", function () {
-  console.log("connected to mongo")
+   console.log("connected to mongo")
 })
 
 module.exports = DatabaseManager
+
+
+
+/*
+    const p = []
+        for(let i =0,k=2;i<10000;i++,k++){
+        
+          if(k > 80){
+            k=2;
+          }
+          p.push(Levels.create({
+            level: k,
+            nickname: "a"+k,
+            rank: k,
+            score_to_update: k,
+            score: k,
+          }))
+        
+         
+        
+        }
+Promise.all(p).then(()=>console.log("done"))
+*/
+
+/*
+   
+
+ for(let i =0;i<3000;i++){
+          Accounts.create({
+            nickname:"afadg"+i,
+            levels_scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            money:30300,
+          })
+          
+
+  Accounts.create({
+    nickname:"bffadg"+i,
+    levels_scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    money:30300,
+    
+  })
+}
+ */   

@@ -12,10 +12,10 @@ export default async(scene) => {
   let paused_scenes = []
 let interval;
 const checkConnection = async () => {
-  console.log("check")
+ 
   if (await IS_ONLINE()) {
     if (!(await IS_SERVER_ALIVE())) {
-     
+     window.is_server_alive = false;
       START_SERVER_MAINTENANCE_SCENE(scene.game.scene.getScenes(true))
     }
 
