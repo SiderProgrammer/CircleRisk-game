@@ -7,6 +7,7 @@ import PerfectManager from "./perfect-manager"
 import playAudio from "../../shortcuts/audio-player"
 import LevelFunctionsCaller from "./level-functions-caller"
 import checkConnection from "../../network-status"
+import {ADS_COUNT_SHOW} from "../../../config"
 
 export default class Manager {
   constructor(scene, config) {
@@ -168,7 +169,7 @@ if(window.admob) admob.banner.hide()
 
       this.levelFunctionsCaller.tryCalculateCirclesPosition()
       this.current_target = this.next_target
-      this.target_array[this.current_target].setTexture(this.target_texture)
+      this.target_array[this.current_target].setFrame(this.target_texture)
 
       this.helper.randomNextTarget()
 
@@ -217,7 +218,7 @@ if(window.admob) admob.banner.hide()
   createFirstTarget() {
     this.target_array.push(
       this.scene.add
-        .image(0, this.GH / 2, this.target_texture)
+        .image(0, this.GH / 2,"targets", this.target_texture)
         .setAlpha(0)
         .setDepth(0.1)
     )
@@ -228,7 +229,7 @@ if(window.admob) admob.banner.hide()
     }
   }
   setNewTarget() {
-    this.target_array[this.next_target].setTexture(this.target_to_catch_texture)
+    this.target_array[this.next_target].setFrame(this.target_to_catch_texture)
   }
   showTargets() {
     this.scene.tweens.add({
@@ -242,6 +243,7 @@ if(window.admob) admob.banner.hide()
       .sprite(
         this.target_array[this.config.starting_target].x,
         this.target_array[this.config.starting_target].y,
+        "sticks",
         "stick_" + this.progress.current_skins["sticks"]
       )
       .setOrigin(0, 0.5)
@@ -253,6 +255,7 @@ if(window.admob) admob.banner.hide()
       .sprite(
         this.stick.x,
         this.stick.y,
+        "circles",
         "circle_" + this.progress.current_skins["circles"]
       )
       .setDepth(0.1)
@@ -263,6 +266,7 @@ if(window.admob) admob.banner.hide()
       .sprite(
         this.stick.x,
         this.stick.y - this.stick.displayWidth,
+        "circles",
         "circle_" + this.progress.current_skins["circles"]
       )
       .setDepth(0.1)
@@ -334,6 +338,7 @@ if(window.admob) admob.banner.hide()
     const target = this.scene.add.image(
       targetX,
       targetY,
+      "targets",
       "target_" + this.progress.current_skins["targets"]
     )
 
@@ -381,6 +386,8 @@ if(window.admob) admob.banner.hide()
   }
 
   gameOver() {
+   
+
     this.scene.tweens.add({
       targets: [...this.circles, this.stick],
       duration: 400,
@@ -391,8 +398,6 @@ if(window.admob) admob.banner.hide()
     this.playSound("die")
 
     const lose_scene = this.scene.scene.get("lose")
-
-
 
     this.scene.input.removeAllListeners()
     this.game_started = false
@@ -465,9 +470,16 @@ if(this.score > 0){
     })
 
     if(window.admob){
-    admob.banner.show()
-    admob.interstitial.show()
-    admob.interstitial.prepare()
+      admob.banner.show()
+
+      window.ADS_COUNT ++;
+      if(window.ADS_COUNT >= ADS_COUNT_SHOW ){
+        window.ADS_COUNT = 0
+        admob.interstitial.show()
+        admob.interstitial.prepare()
+      }
+
+   
   }
   }
 }

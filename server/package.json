@@ -11,8 +11,9 @@
     "mongoose": "^5.7.11"
   },
   "scripts": {
-    "production":"set NODE_ENV=production&& pm2 start src/server.js -i max",
-    "start": "node src/server.js"
+    "start":"set NODE_ENV=production&& node src/server.js",
+    "prd":"set NODE_ENV=production&& pm2 start src/server.js -i max",
+    "dev": "node src/server.js"
   },
   "author": "sid",
   "license": "ISC"

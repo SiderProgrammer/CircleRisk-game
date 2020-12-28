@@ -44,6 +44,7 @@ this.animateButtonsLoseBg("-")
 
 
 animateHide(){
+  if(window.admob) admob.banner.hide()
   this.are_buttons_active = false;
 return new Promise(async (resolve)=>{
   this.animateButtonsLoseBg("+",200)
@@ -255,7 +256,7 @@ this.stats.perfect = [this.purple_strap,a,b]
         if (!this.are_buttons_active) return
 
 
-
+        if(window.admob) admob.banner.hide()
         this.scene.sleep()
 
         this.scene.launch("leaderboard", {
@@ -486,6 +487,7 @@ this.time.addEvent({
       "replay-button",
      async () => {
         if (!this.are_buttons_active) return
+        
         playAudio(this.level_scene,"button")
          await this.animateHide()
          

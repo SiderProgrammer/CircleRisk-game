@@ -11,15 +11,14 @@ const nickname_input = $("#nickname-input")
 const accept_button = $("#accept-nickname")
 const info = $("#creating-info")
 
-const createAccountAndStartGame = () => {
+const createAccount = () => {
  // const removeWhiteSpaces = new RegExp("/s/g,")
 
-  saveProgress({
-    nickname: nickname_input.value//.replace(removeWhiteSpaces, ""),
-  })
+ saveProgress({
+  nickname: nickname_input.value//.replace(removeWhiteSpaces, ""),
+})
 
-  creator_div.style.display = "none"
-  startGame()
+creator_div.style.display = "none"
 }
 
 const handleError = async () => {
@@ -37,6 +36,15 @@ if(!(await IS_SERVER_ALIVE())){
 "Something went wrong. Try again later ..."
 }
 
+const handleNewUser = (start_game_after_create) => {
+if(start_game_after_create){
+  createAccount()
+  startGame()
+}else{
+  createAccount()
+}
+  
+}
 
 const VALIDATE_OK = (string) => {
   const VALIDATE_REGEXP = /^[a-z0-9wа-я]+$/i
@@ -57,7 +65,7 @@ const VALIDATE_OK = (string) => {
   return true
 }
 
-export default () => {
+export default (start_game_after_create = true) => {
   creator_div.style.display = "block"
 
   accept_button.onclick = async () => {
@@ -71,7 +79,7 @@ export default () => {
       })
 
       response.ok === true
-        ? createAccountAndStartGame()
+        ? handleNewUser(start_game_after_create)
         : (info.innerHTML = "The nickname already exists")
     } catch {
         handleError()

@@ -32,7 +32,7 @@ init(){
     this.loadImage("menu-bg", "backgrounds")
     this.loadImage("levelSelect-bg", "backgrounds")
     this.loadImage("levelSelect-middle", "backgrounds")
-    this.loadImage("customize-bg", "backgrounds")
+
     this.loadImage("black-bg", "backgrounds")
 
     this.loadImage("basic-bg", "backgrounds")
@@ -47,22 +47,22 @@ init(){
     this.loadImage("twins-bg", "backgrounds")
     this.loadImage("speed-bg", "backgrounds")
     this.loadImage("time-bg", "backgrounds")
-    this.loadImage("perfect-bg", "backgrounds")
+
     this.loadImage("many-bg", "backgrounds")
     this.loadImage("flower-bg", "backgrounds")
     this.loadImage("hell-bg", "backgrounds")
-    this.loadImage("leaderboard-bg", "backgrounds")
+
     this.loadImage("unstable-bg", "backgrounds")
     this.loadImage("pulsate-bg", "backgrounds")
     this.loadImage("blind-bg", "backgrounds")
-    this.loadImage("sense-bg", "backgrounds")
+  
     this.loadImage("tiny-bg", "backgrounds")
     this.loadImage("teleport-bg", "backgrounds")
     this.loadImage("carousel-bg", "backgrounds")
     this.loadImage("threeStep-bg", "backgrounds")
     this.loadImage("oneStep-bg", "backgrounds")
     this.loadImage("black-border", "backgrounds")
-    this.loadImage("lose-bg", "backgrounds")
+  
   }
 
   sticks(i) {
@@ -77,6 +77,11 @@ init(){
   }
 
   loadAssets() {
+    this.backgrounds()
+    this.loadAtlas("targets")
+    this.loadAtlas("circles")
+    this.loadAtlas("sticks")
+
     this.loadAtlas("levels-icons")
     this.loadAtlas("buttons")
     this.loadAtlas("general-2")
@@ -87,6 +92,14 @@ init(){
       `${imgPath}/mix/stars.json`
     )
 
+    this.load.atlas("colors", `${imgPath}/colors.png`, `${imgPath}/colors.json`)
+    this.load.atlas(
+      "particles",
+      `${imgPath}/particles.png`,
+      `${imgPath}/particles.json`
+    )
+
+
     this.load.spritesheet("fingers", `${imgPath}/mix/fingers.png`, {
       frameWidth: 240,
       frameHeight: 354,
@@ -95,31 +108,24 @@ init(){
       frameWidth: 70,
       frameHeight: 39,
     })
-    this.load.image("pentagon", `${imgPath}/pentagon.png`)
-    this.load.image("flame", `${imgPath}/flame.png`)
-    this.loadImage("lock2", "mix")
-    this.loadImage("black", "mix")
-    this.loadImage("pentagon", "mix")
-    this.loadImage("spikes", "mix")
-    this.loadImage("pause-bg","mix")
 
-    this.loadImage("buttons-lose-bg", "mix2")
-    this.loadImage("score-lose-bg","mix2")
-
-    this.load.atlas("colors", `${imgPath}/colors.png`, `${imgPath}/colors.json`)
-    this.load.atlas(
-      "particles",
-      `${imgPath}/particles.png`,
-      `${imgPath}/particles.json`
-    )
-
-    this.backgrounds()
-
+    /*
     for (let i = 1; i <= this.skins_amount; i++) {
       this.circles(i)
       this.sticks(i)
       this.targets(i)
     }
+*/
+
+    this.load.image("pentagon", `${imgPath}/pentagon.png`)
+    this.load.image("flame", `${imgPath}/flame.png`)
+    this.loadImage("lock2", "mix")
+    this.loadImage("black", "mix")
+    this.loadImage("pentagon", "mix")
+    this.loadImage("pause-bg","mix")
+
+    this.loadImage("buttons-lose-bg", "mix2")
+    this.loadImage("score-lose-bg","mix2")
 
     this.loadImage("lb-me-bar", "mix2")
     this.loadImage("lb-strap", "mix2")
@@ -127,10 +133,7 @@ init(){
     this.loadImage("lb-line", "mix2")
     this.loadImage("ranking-icon", "mix2")
 
-    this.loadImage("spikes-up", "mix2")
-    this.loadImage("spikes-down", "mix2")
-    this.loadImage("spikes-left", "mix2")
-    this.loadImage("spikes-right", "mix2")
+
   }
 
   updateBar(percentage) {

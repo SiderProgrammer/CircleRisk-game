@@ -229,13 +229,14 @@ export default class Customize extends Phaser.Scene {
   createPurchaseOffer(skin, callback) {
     this.can_change = false
     const texture = skin.texture.key
+    const frame = skin.frame.name
 
     this.hidePurchaseOffer()
 
     const y = this.getPurchaseItemsY()
 
     this.purchase_offer_elements.push(
-      this.add.image(this.game.GW / 2, y, texture)
+      this.add.image(this.game.GW / 2, y, texture, frame)
     )
 
     const close_button = helper.createButton(
@@ -275,7 +276,7 @@ export default class Customize extends Phaser.Scene {
 
     try {
       const response = await SAVE_NEW_SKIN({
-        skin: [part, skin.texture.key.replace(GET_NUMBERS_REGEXP, "")],
+        skin: [part, skin.frame.name.replace(GET_NUMBERS_REGEXP, "")],
         nickname: my_nickname,
       })
 
@@ -286,7 +287,7 @@ export default class Customize extends Phaser.Scene {
         skin.price.setAlpha(0)
         skin.key.setAlpha(0)
 
-        this.progress.skins[part].push(skin.texture.key)
+        this.progress.skins[part].push(skin.frame.name)
   
 
         this.progress.money -= price
@@ -294,7 +295,7 @@ export default class Customize extends Phaser.Scene {
 
         
         this.progress.current_skins[part] =
-          this.skinChangerManager.getSkinNumber(skin.texture.key) + 1
+          this.skinChangerManager.getSkinNumber(skin.frame.name) + 1
 
           this.skinChangerManager.progress = this.progress
 

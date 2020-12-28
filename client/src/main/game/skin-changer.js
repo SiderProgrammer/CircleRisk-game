@@ -239,32 +239,34 @@ export default class {
    
     const txt = "circle_" + this.progress.current_skins["circles"]
   
-    this.circle.setTexture(txt)
+    this.circle.setFrame(txt)
     this.circle_skin_number = this.findIndexOfSkinInSetup(txt,"circles")
     this.updateTick(this.circle)
   
 
     const txt_2 = "stick_" + this.progress.current_skins["sticks"]
-    this.stick.setTexture(txt_2)
+    this.stick.setFrame(txt_2)
     this.stick_skin_number =  this.findIndexOfSkinInSetup(txt_2,"sticks")
     this.updateTick(this.stick)
 
 
     const txt_3 = "target_" + this.progress.current_skins["targets"]
-    this.target.setTexture(txt_3)
+    this.target.setFrame(txt_3)
     this.target_skin_number = this.findIndexOfSkinInSetup(txt_3,"targets")
     this.updateTick(this.target)
   }
 
   createCircleSet(sprite) {
-    this.circle_skin_number = this.getSkinNumber(sprite)
-    const circle = this.scene.add.image(this.x, this.y, sprite).setDepth(1)
+
+    this.circle_skin_number = this.findIndexOfSkinInSetup(sprite,"circles")
+  
+    const circle = this.scene.add.image(this.x, this.y, "circles",sprite).setDepth(1)
     this.circle = circle
 
     this.positions.circle = circle.y
 
     const other_circle = this.scene.add
-      .image(circle.x, circle.y, circle.texture.key)
+      .image(circle.x, circle.y, "circles",sprite)
       .setAlpha(0)
       .setDepth(1)
 
@@ -315,16 +317,16 @@ export default class {
     )
   }
   createStickSet(sprite) {
-    this.stick_skin_number = this.getSkinNumber(sprite)
+    this.stick_skin_number = this.findIndexOfSkinInSetup(sprite,"sticks")
 
     const stick = this.scene.add
-      .image(this.x, this.circle.y + this.circle.displayHeight / 2 - 5, sprite)
+      .image(this.x, this.circle.y + this.circle.displayHeight / 2 - 5, "sticks",sprite)
       .setAngle(90)
     stick.y += stick.displayWidth / 2
     this.stick = stick
 
     const other_stick = this.scene.add
-      .image(stick.x, stick.y, stick.texture.key)
+      .image(stick.x, stick.y, "sticks",sprite)
       .setAngle(90)
 
     other_stick.y += stick.displayWidth / 2
@@ -376,11 +378,12 @@ export default class {
   }
 
   createTargetSet(sprite) {
-    this.target_skin_number = this.getSkinNumber(sprite)
+    this.target_skin_number = this.findIndexOfSkinInSetup(sprite,"targets")
 
     const target = this.scene.add.image(
       this.x,
       this.stick.y + this.stick.displayWidth / 2 + 150,
+      "targets",
       sprite
     )
     this.target = target
@@ -388,7 +391,8 @@ export default class {
     const other_target = this.scene.add.image(
       target.x,
       target.y,
-      target.texture.key
+      "targets",
+      sprite
     )
 
     this.sets.target.push(target, other_target)
@@ -534,8 +538,8 @@ export default class {
       this.hideItem(sprite1.key, sign)
     }
 
-    sprite2.setTexture(first_skin)
-    sprite1.setTexture(second_skin)
+    sprite2.setFrame(first_skin)
+    sprite1.setFrame(second_skin)
 
     const available_part_skins = this.progress.skins[part].map(
       (skin) => this.getSkinNumber(skin) + 1

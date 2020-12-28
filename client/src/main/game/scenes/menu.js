@@ -10,7 +10,7 @@ import convertData from "../../convertData"
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 import checkConnection from "../../network-status"
 import { START_UPDATE_GAME_SCENE } from "../../fetch-helper"
-
+import accountCreator from "../../account-creator"
 
 export default class menu extends Phaser.Scene {
   constructor() {
@@ -23,7 +23,7 @@ export default class menu extends Phaser.Scene {
   async init({GAME_VERSION_PROMISE}) {
    this.GAME_VERSION_PROMISE = GAME_VERSION_PROMISE
 
-   
+   this.executedAccountCreator = false;
     this.bubbles = []
     this.elements_to_hide_to_levelselect = []
 
@@ -106,6 +106,7 @@ export default class menu extends Phaser.Scene {
 
     this.scene.launch("customize")
     this.scene.sleep("customize")
+  
   }
 
   updateBubbles() {
@@ -484,23 +485,37 @@ export default class menu extends Phaser.Scene {
    let timeout;
 
     try {
+      await this.restoreProgress()
+
+      if(window.progress === null && !this.executedAccountCreator){
+        this.executedAccountCreator = true;
+
+        localStorage.clear();
+        accountCreator(false)
+        throw new Exception(); // force catch  {}
+        
+      } else if(window.progress === null){ // must be null
+        throw new Exception(); // force catch  {}
+      }
 
       await this.getConfigurations()
-      await this.restoreProgress()
+     
       convertData();
 
       this.finishFetching()
 
       const SERVER_GAME_VERSION = await this.GAME_VERSION_PROMISE
       if( SERVER_GAME_VERSION!== window.CLIENT_GAME_VERSION){
-        console.log(SERVER_GAME_VERSION)
+       
         START_UPDATE_GAME_SCENE(this)
         clearTimeout(timeout)
         return;
       }
+
       this.launchScenes()
       
     } catch{
+
       if(!window.is_server_alive) return;
       timeout = setTimeout(() => {
         this.fetchFromServerAndLaunchScenes()
@@ -519,12 +534,13 @@ export default class menu extends Phaser.Scene {
     window.my_nickname = getProgress().nickname
  
     window.progress = await GET_ACCOUNT_PROGRESS({ nickname: my_nickname })
+
+    if(!window.progress) return
+
   window.progress.levels_scores = await GET_ACCOUNT_SCORES({nickname:my_nickname})
  
-   // saveProgress(progress)
   }
 
-  
 
   finishFetching() {
     this.is_everything_fetched = true

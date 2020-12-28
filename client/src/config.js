@@ -1,5 +1,4 @@
-export const SERVER_URL = "http://192.168.1.12:3001"
-
+export const SERVER_URL = "https://circle-risk-backend.herokuapp.com"
 
 export const BANNER_AD_CONFIG = {   
     isTesting:true,
@@ -12,3 +11,5 @@ export const INTERSTITIAL_AD_CONFIG = {
     autoShow:false,
     id: 'ca-app-pub-3940256099942544/1033173712',
    }
+
+export const ADS_COUNT_SHOW = 10;

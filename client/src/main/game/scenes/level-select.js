@@ -316,7 +316,7 @@ createSpikes(){
   const shift = 100
 
   const spikes_up = this.add
-    .image(0, -shift, "spikes-up")
+    .image(0, -shift,"general-1", "spikes-up")
     .setOrigin(0, 0)
  
 
@@ -339,7 +339,7 @@ createSpikes(){
   helper.setGameSize(spikes_up, true)
 
   const spikes_down = this.add
-    .image(0, this.game.GH + shift,"spikes-down")
+    .image(0, this.game.GH + shift,"general-1","spikes-down")
     .setOrigin(0, 1)
 
     spikes_down.animate = (showOrHide) => {
@@ -359,7 +359,7 @@ createSpikes(){
   helper.setGameSize(spikes_down, true)
 
   const spikes_left = this.add
-    .image(-shift, 0,"spikes-left")
+    .image(-shift, 0,"general-1","spikes-left")
     .setOrigin(0, 0)
   
 
@@ -381,7 +381,7 @@ createSpikes(){
   helper.setGameSize(spikes_left, false, true)
 
   const spikes_right = this.add
-    .image(this.game.GW+shift, 0, "spikes-right")
+    .image(this.game.GW+shift, 0,"general-1", "spikes-right")
     .setOrigin(1, 0)
 
 
