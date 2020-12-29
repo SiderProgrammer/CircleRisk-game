@@ -85,7 +85,7 @@ module.exports = [
   {
     color: "yellow_4",
     info: {
-      score_to_next_level: 25,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
       name: "twins",
     },
@@ -106,7 +106,7 @@ module.exports = [
     config: {
       background: "tiny-bg",
       ...config,
-      rotation_speed: 1.05,
+      rotation_speed: 1,
       acceleration: 0.03,
     },
   },

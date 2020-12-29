@@ -22,13 +22,13 @@ export default class {
   }
 
   removeFakeTargetTexture(index) {
-    this.scene.manager.target_array[index].setTexture(
+    this.scene.manager.target_array[index].setFrame(
       this.scene.manager.target_texture
     )
   }
 
   setFakeTargetTexture(index) {
-    this.scene.manager.target_array[index].setTexture(
+    this.scene.manager.target_array[index].setFrame(
       this.scene.manager.target_to_catch_texture
     )
   }
@@ -38,7 +38,7 @@ export default class {
       // 50 percent
       this.scene.manager.target_array[
         this.scene.manager.next_target
-      ].setTexture(this.scene.manager.target_texture)
+      ].setFrame(this.scene.manager.target_texture)
     }
   }
 }

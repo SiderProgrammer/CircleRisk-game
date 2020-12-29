@@ -10,7 +10,7 @@ export default class {
 
   setFakeTargetToCatch(index) {
     this.scene.fake_target = this.scene.manager.target_array[index]
-    this.scene.fake_target.setTexture(
+    this.scene.fake_target.setFrame(
       this.scene.manager.target_to_catch_texture
     )
   }
@@ -35,6 +35,6 @@ export default class {
   }
 
   removeFakeTarget() {
-    this.scene.fake_target.setTexture(this.scene.manager.target_texture)
+    this.scene.fake_target.setFrame(this.scene.manager.target_texture)
   }
 }

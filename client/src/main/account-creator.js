@@ -37,6 +37,7 @@ if(!(await IS_SERVER_ALIVE())){
 }
 
 const handleNewUser = (start_game_after_create) => {
+  
 if(start_game_after_create){
   createAccount()
   startGame()
@@ -66,6 +67,7 @@ const VALIDATE_OK = (string) => {
 }
 
 export default (start_game_after_create = true) => {
+ 
   creator_div.style.display = "block"
 
   accept_button.onclick = async () => {

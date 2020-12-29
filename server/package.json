@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start":"set NODE_ENV=production&& node src/server.js",
-    "prd":"set NODE_ENV=production&& pm2 start src/server.js -i max",
+    "prod":"set NODE_ENV=production&& pm2 start src/server.js -i max",
     "dev": "node src/server.js"
   },
   "author": "sid",

@@ -36,6 +36,8 @@ export default class menu extends Phaser.Scene {
     }
 
     if (!this.is_everything_fetched) {
+ 
+
       this.game.audio.music.menu_theme.play()
 
       document.addEventListener("focus",()=>{
@@ -57,7 +59,7 @@ export default class menu extends Phaser.Scene {
 
   create() {
 
-   
+    
     this.createBackground()
     this.createDecorations()
 
@@ -70,7 +72,7 @@ export default class menu extends Phaser.Scene {
     this.createFlyingBubbles()
 
     this.animateShowMenu()
-    
+    this.add.text(5,5,"BETA",{font:"30px LuckiestGuy"}).setOrigin(0,0)
   }
 
   update() {
@@ -486,8 +488,9 @@ export default class menu extends Phaser.Scene {
 
     try {
       await this.restoreProgress()
-
-      if(window.progress === null && !this.executedAccountCreator){
+/// SPAGHETII CODE * TODO * REDESIGN THIS PART 
+      if(window.progress === null && !this.executedAccountCreator){ 
+        // if acount was removed from database and the user had account before
         this.executedAccountCreator = true;
 
         localStorage.clear();

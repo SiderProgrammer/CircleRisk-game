@@ -512,11 +512,11 @@ if(condition_1 || condition_2 || !sign){
 
     elements.current_score = this.add
       .text(
-        elements.divider.x - 13,
-        elements.divider.y - 30, /// CURRENT SCORE
+        elements.divider.x - 15,
+        elements.divider.y - 26, /// CURRENT SCORE
         score,
         {
-          font: "145px LuckiestGuy",
+          font: "125px LuckiestGuy",
         }
       )
       .setOrigin(1, 0.5)

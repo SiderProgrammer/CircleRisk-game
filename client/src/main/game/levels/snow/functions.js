@@ -45,7 +45,7 @@ export default class {
       scale: { min: 0.5, max: 1 },
 
       frame: { frames: ["snow"] },
-      alpha: 0.5,
+      
       deathZone: {
         type: "onEnter", //-50
         source: new Phaser.Geom.Rectangle(
