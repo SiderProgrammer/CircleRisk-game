@@ -1,10 +1,9 @@
 import * as helper from "../GUI-helper"
 import {
-  GET_LEVEL_SCORES_AND_NICKNAMES,
-  GET_LEVEL_SCORE_BY_NICKNAME,
   GET_TOP_SCORES,
   GET_RANK_FROM_SCORE
 } from "../../shortcuts/requests"
+
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
 import Utils from "../../utils"
 

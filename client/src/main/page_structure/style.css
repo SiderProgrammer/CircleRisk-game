@@ -28,6 +28,7 @@ body {
   height: 100%;
   position: absolute;
   z-index: -1;
+  left: 0;
 }
 #interactive-div {
   display: flex;
@@ -39,6 +40,7 @@ body {
   text-align: center;
   display: none;
   height: 100%;
+  width: 100%;
 }
 
 #nickname-input {
@@ -65,7 +67,7 @@ body {
 }
 
 #accept-nickname {
-  margin-top: 100px;
+  margin-top: 70px;
   width: 60px;
   outline: none;
 }

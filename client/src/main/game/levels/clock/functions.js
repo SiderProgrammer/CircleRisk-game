@@ -6,6 +6,7 @@ export default class {
     this.time_left_text = this.scene.add
       .text(this.scene.game.GW / 2, 170, this.scene.time_left, {
         font: "100px LuckiestGuy",
+        color:"#000000"
       })
       .setOrigin(0.5, 0.5)
   }
@@ -20,10 +21,10 @@ export default class {
   timerTick() {
 
     if (!this.scene.manager.game_started) return
-   
+   //console.log("Tick! ",this.scene.time_left)
     this.scene.time_left--
     if (this.scene.time_left === 0) {
-      
+     // console.log("TIME LEFT 0!")
       this.scene.timer.remove()
       this.scene.manager.gameOver()
     }

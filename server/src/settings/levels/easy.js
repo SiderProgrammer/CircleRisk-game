@@ -171,8 +171,8 @@ module.exports = [
     config: {
       background: "sunny-bg",
       ...config,
-      target_rotate_speed: 0.5,
-      rotation_speed: 1.05,
+      target_rotate_speed: 0.45,
+      rotation_speed: 1,
       acceleration: 0.025,
     },
   },
@@ -224,7 +224,7 @@ module.exports = [
   {
     color: "black_1",
     info: {
-      score_to_next_level: 40,
+      score_to_next_level: 30,
       tint: "0x06E0FF",
       name: "threeStep",
     },
@@ -246,7 +246,7 @@ module.exports = [
     config: {
       background: "cosmo-bg",
       ...config,
-      rotation_speed: 1.25,
+      rotation_speed: 1.15,
       acceleration: 0.05,
     },
   },
@@ -254,7 +254,7 @@ module.exports = [
   {
     color: "yellow_5",
     info: {
-      score_to_next_level: 30,
+      score_to_next_level: 25,
       tint: "0x06E0FF",
       name: "teleport",
     },
@@ -282,7 +282,7 @@ module.exports = [
     config: {
       background: "sense-bg",
       ...config,
-      rotation_speed: 1.15,
+      rotation_speed: 1,
       acceleration: 0.03,
     },
   },

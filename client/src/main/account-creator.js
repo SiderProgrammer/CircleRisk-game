@@ -25,15 +25,15 @@ const handleError = async () => {
   if (!(await IS_ONLINE())) {
     info.innerHTML =
       "Please check your internet connection and try again..."
-      return
+      return false
   }
 if(!(await IS_SERVER_ALIVE())){
   info.innerHTML =
   "The game servers were down for maintenance. Try again later ..."
-  return
+  return false
 }
- 
-"Something went wrong. Try again later ..."
+ return true; 
+//info.innerHTML = "Something went wrong. Try again later ..."
 }
 
 const handleNewUser = (start_game_after_create) => {
@@ -42,6 +42,9 @@ if(start_game_after_create){
   createAccount()
   startGame()
 }else{
+  const canvas = $("canvas")  
+  canvas.style.display = "block";
+
   createAccount()
 }
   
@@ -67,14 +70,42 @@ const VALIDATE_OK = (string) => {
 }
 
 export default (start_game_after_create = true) => {
- 
-  creator_div.style.display = "block"
+
+  const canvas = $("canvas")  
+  if(canvas)canvas.style.display = "none";
+
+ const div_to_move = $("#creating-info-div")
+const profile_guy =  $("#profile-guy");
+
+const centered_height = window.getComputedStyle(div_to_move).getPropertyValue("height")
+let to_reset = false;
+
+nickname_input.addEventListener("focus",()=>{
+  div_to_move.style.height = "80px"
+  profile_guy.style.display = "none";
+  to_reset = false;
+})
+nickname_input.addEventListener("blur",()=>{
+  to_reset = true;
+})
+
+creator_div.style.display = "block"
 
   accept_button.onclick = async () => {
+
+    if(to_reset){
+      div_to_move.style.height = centered_height
+      profile_guy.style.display = "block"
+    }
+
     if (!VALIDATE_OK(nickname_input.value)) return
     
     info.innerHTML = "Creating account ..."
-    await handleError()
+
+   const are_connections_ok =  await handleError()
+
+   if(!are_connections_ok) return;
+
     try {
       const response = await CREATE_ACCOUNT({
         nickname: nickname_input.value,

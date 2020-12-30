@@ -55,7 +55,7 @@ init(){
     this.loadImage("unstable-bg", "backgrounds")
     this.loadImage("pulsate-bg", "backgrounds")
     this.loadImage("blind-bg", "backgrounds")
-  
+    this.loadImage("sense-bg", "backgrounds")
     this.loadImage("tiny-bg", "backgrounds")
     this.loadImage("teleport-bg", "backgrounds")
     this.loadImage("carousel-bg", "backgrounds")
@@ -199,7 +199,7 @@ init(){
     addSound("new_level_sound")
     // addSound("restart_sound")
     addSound("buy_sound")
-    addSound("die").setVolume(0.5)
+    addSound("die").setVolume(0.25)
     addSound("button")
     addSound("change_object")
 
