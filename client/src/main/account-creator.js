@@ -51,8 +51,8 @@ if(start_game_after_create){
 }
 
 const VALIDATE_OK = (string) => {
-  const VALIDATE_REGEXP = /^[a-z0-9wа-я]+$/i
-  const MIN_NICKNAME_LENGTH = 1
+  const VALIDATE_REGEXP = /^[a-z0-9wа-я _]+$/i
+  const MIN_NICKNAME_LENGTH = 3
 
   let characters_test = VALIDATE_REGEXP.test(string)
 
@@ -66,6 +66,12 @@ const VALIDATE_OK = (string) => {
     return false
   }
 
+  if(string[0] === " "){
+    info.innerHTML = "Space can not be first character"
+    return false;
+  }
+
+  
   return true
 }
 
