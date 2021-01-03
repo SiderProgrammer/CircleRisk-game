@@ -31,11 +31,4 @@ export default ()=>{
     .map(not_converted_level=> not_converted_level = convertLevelToScore(not_converted_level))
     
     
-    window.progress.levels_scores = [0]
-    for(let i=0;i<70;i++){
-        window.progress.levels_scores.push(1)
-    }
-
-   
-
       }
