@@ -28,12 +28,13 @@ export default class Pulsate_Hard extends Phaser.Scene {
     this.manager.createGUI()
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    this.manager.centerTargets()
     this.manager.target_array.reverse()
     this.manager.helper.checkNewTargetsQueue()
     //this.swapTargetToTheNearset()
     this.manager.setNewTarget()
 
-    this.manager.centerTargets()
+   
     //this.manager.showTargets()
     this.manager.createStick()
     this.manager.createCircles()

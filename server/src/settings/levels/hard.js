@@ -62,7 +62,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 50,
+      score_to_next_level: 75,
       tint: "0xFFF000",
       name: "reverse",
     },
@@ -70,6 +70,9 @@ module.exports = [
       canvas_color: "00ff00",
       background: "reverse-bg",
       ...config,
+      starting_target:6,
+      rotation_speed:1.7,
+      acceleration:0.05,
     },
   },
   {
@@ -81,18 +84,24 @@ module.exports = [
     config: {
       background: "sunny-bg",
       ...config,
-      target_rotate_speed: 0.5,
+      rotation_speed:1.2,
+      target_rotate_speed: 1,
+      ball_distance:116,
     },
   },
   {
     info: {
-      score_to_next_level: 70,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
       name: "expand",
     },
     config: {
       background: "star-bg",
       ...config,
+      rotation_speed:1.6,
+      acceleration:0.06,
+      ball_distance:116,
+      
     },
   },
 
@@ -136,7 +145,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level:70,
+      score_to_next_level:85,
       tint: "0x06E0FF",
       name: "twins",
     },
@@ -254,23 +263,24 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 1,
+      score_to_next_level: 65,
       tint: "0x06E0FF",
       name: "unstable",
     },
     config: {
       background: "unstable-bg",
-
+     
       rotation_speed_change: {
         min: 0.5,
         max: 3.5,
       },
       ...config,
+      ball_distance:116,
     },
   },
   {
     info: {
-      score_to_next_level: 55, // 55
+      score_to_next_level: 75, // 55
       tint: "0x06E0FF",
       name: "pulsate",
     },
@@ -310,7 +320,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 1,
+      score_to_next_level: 25,
       tint: "0x06E0FF",
       name: "tiny",
     },
@@ -318,8 +328,8 @@ module.exports = [
       background: "tiny-bg",
       ...config,
       starting_target:6,
-      rotation_speed:1.5,
-      acceleration:0.04,
+      rotation_speed:2.6,
+      acceleration:0.02,
     },
   },
 
@@ -340,7 +350,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 45,
+      score_to_next_level: 55,
       tint: "0x06E0FF",
       name: "oneStep",
     },
