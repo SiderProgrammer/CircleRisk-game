@@ -3,7 +3,7 @@ import Manager from "../../main/level-manager.js"
 import LevelsFunctionsExtender from "../../main/level-functions-extender"
 import SunFunctionsManager from "./functions"
 import ExpandFunctionsManager from "../expand/functions"
-import TinyFunctionsManager from "../tiny/functions"
+
 
 export default class Sun_Hard extends Phaser.Scene {
   constructor() {
@@ -18,6 +18,7 @@ export default class Sun_Hard extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+
 
     this.targets_rotate_angle = 0
     this.circle_rotate_angle = 0
@@ -52,13 +53,15 @@ export default class Sun_Hard extends Phaser.Scene {
 
     this.sunFunctionsManager.calculateSpawnDistance()
 
-    this.tinyFunctionsManager = new TinyFunctionsManager(this)
-    this.tinyFunctionsManager.resizeTargets()
+
+    this.targets_rotate_speed = this.manager.config.target_rotate_speed;
+    this.targets_rotate_acceleration = this.manager.config.targets_rotate_acceleration || 0;
   }
   update() {
     if (!this.manager.game_started) return
-    this.targets_rotate_angle += this.manager.config.target_rotate_speed
-    this.circle_rotate_angle += this.manager.config.target_rotate_speed
+    this.targets_rotate_angle +=this.targets_rotate_speed;
+    this.circle_rotate_angle += this.targets_rotate_speed;
+    this.targets_rotate_speed +=this.targets_rotate_acceleration;
 
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
@@ -77,6 +80,7 @@ export default class Sun_Hard extends Phaser.Scene {
     //this.calculateTargetsFlyDirection()
     this.distance += this.fly_value
     this.center_to_circle_distance += this.fly_value
+
   }
   calculateCirclesPosition() {
     this.sunFunctionsManager.calculateCirclesPosition()

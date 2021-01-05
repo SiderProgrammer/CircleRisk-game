@@ -22,8 +22,8 @@ export default class Lose extends Phaser.Scene {
     this.emptySpace =
       this.game.GH - (this.purple_strap.y + this.purple_strap.displayHeight / 2)
 
-      this.bottom_buttons_y = this.game.GH - this.emptySpace / 2 + 130
-    this.restartAndNextButtonY = this.game.GH - this.emptySpace / 2 + 10
+      this.bottom_buttons_y = this.game.GH - 220
+    this.restartAndNextButtonY = this.game.GH - 340
     this.buttons_bg_y = this.restartAndNextButtonY + (this.bottom_buttons_y - this.restartAndNextButtonY)/2 - 15;
 
     this.createButtons()
@@ -255,6 +255,11 @@ this.stats.perfect = [this.purple_strap,a,b]
       () => {
         if (!this.are_buttons_active) return
 
+        if(!window.is_lb_button_clicked){
+          window.is_lb_button_clicked = true;
+          this.lb_button_tween.remove()
+        }
+        
 
         if(window.admob) admob.banner.hide()
         this.scene.sleep()
@@ -270,6 +275,18 @@ this.stats.perfect = [this.purple_strap,a,b]
     ).setDepth(0.1)
 
     const strap = this.add.image(a.x, a.y, "lb-strap")
+
+    if(!window.is_lb_button_clicked){
+      this.lb_button_tween =  this.tweens.add({
+        targets:a,
+        scale:1.1,
+        duration:600,
+        yoyo:true,
+        repeat:-1,
+      })
+    }
+  
+
 
     const shift = 200
     const customizeB = createButton(

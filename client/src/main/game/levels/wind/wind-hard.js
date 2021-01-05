@@ -24,6 +24,7 @@ export default class Wind_Hard extends Phaser.Scene {
     this.confusionFunctionsManager = new ConfusionFunctionsManager(this)
 
     this.fake_targets = []
+   
   }
 
   create() {

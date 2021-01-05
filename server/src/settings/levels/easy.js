@@ -27,6 +27,21 @@ module.exports = [
       targets_speed: 1,
     },
   },
+
+  {
+    color: "red_3",
+    info: {
+      score_to_next_level: 10,
+      tint: "0x06E0FF",
+      name: "threeTargets-",
+    },
+    config: {
+      background: "carousel-bg",
+      ...config,
+    
+    },
+  },
+
   {
     color: "gray_1",
     info: {

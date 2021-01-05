@@ -4,7 +4,7 @@ module.exports = [
   {
     page_color: "red",
     info: {
-      score_to_next_level: 35,
+      score_to_next_level: 25,
       tint: "0x00FF00",
       name: "basic",
     },
@@ -13,6 +13,20 @@ module.exports = [
       ...config,
       rotation_speed: 1.4,
       acceleration: 0.06,
+    },
+  },
+
+  {
+    color: "red_3",
+    info: {
+      score_to_next_level: 10,
+      tint: "0x06E0FF",
+      name: "threeTargets-",
+    },
+    config: {
+      background: "carousel-bg",
+      ...config,
+    
     },
   },
 
@@ -226,7 +240,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 55,
+      score_to_next_level: 50,
       tint: "0x06E0FF",
       name: "flower",
     },
@@ -291,7 +305,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 40,
+      score_to_next_level: 35,
       tint: "0x06E0FF",
       name: "blind",
     },
@@ -303,7 +317,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 25,
       tint: "0x06E0FF",
       name: "sense",
     },
@@ -311,6 +325,7 @@ module.exports = [
       background: "sense-bg",
       ...config,
       starting_target: 6,
+      rotation_speed:1.4,
     },
   },
 

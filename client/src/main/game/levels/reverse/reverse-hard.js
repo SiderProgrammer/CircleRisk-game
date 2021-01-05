@@ -27,8 +27,9 @@ export default class Reverse_Hard extends Phaser.Scene {
     this.manager.centerTargets()
 
     this.manager.target_array.reverse()
+    this.swapTargetToTheNearset()
     this.manager.helper.checkNewTargetsQueue()
-   // this.swapTargetToTheNearset()
+   
     this.manager.setNewTarget()
 
     this.manager.showTargets()

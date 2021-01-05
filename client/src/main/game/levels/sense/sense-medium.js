@@ -22,12 +22,13 @@ export default class Sense_Medium extends Phaser.Scene {
     this.manager.createGUI()
     this.manager.createFirstTarget()
     this.manager.createTargets()
-
+    this.manager.centerTargets()
+    
     this.manager.target_array.reverse()
     this.manager.helper.checkNewTargetsQueue()
     this.manager.setNewTarget()
 
-    this.manager.centerTargets()
+    
     this.manager.showTargets()
     this.manager.createStick()
     this.manager.createCircles()

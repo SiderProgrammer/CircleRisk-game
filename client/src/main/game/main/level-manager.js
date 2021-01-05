@@ -386,7 +386,20 @@ if(window.admob) admob.banner.hide()
   }
 
   gameOver() {
+   if(!this.game_started) return;
+
+    if(window.admob){
+      admob.banner.show()
+
+      window.ADS_COUNT ++;
+      if(window.ADS_COUNT >= ADS_COUNT_SHOW ){
+        window.ADS_COUNT = 0
+        admob.interstitial.show()
+        admob.interstitial.prepare()
+      }
+
    
+  }
 
     this.scene.tweens.add({
       targets: [...this.circles, this.stick],
@@ -469,17 +482,6 @@ if(this.score > 0){
       alpha: 1,
     })
 
-    if(window.admob){
-      admob.banner.show()
-
-      window.ADS_COUNT ++;
-      if(window.ADS_COUNT >= ADS_COUNT_SHOW ){
-        window.ADS_COUNT = 0
-        admob.interstitial.show()
-        admob.interstitial.prepare()
-      }
-
-   
-  }
+  
   }
 }

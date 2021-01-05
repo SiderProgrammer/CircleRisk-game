@@ -2,7 +2,11 @@ export default class {
   constructor(scene) {
     this.scene = scene
     this.targets_speed = scene.targets_speed
-    this.speed_up_value = 0.02
+    this.speed_up_value =  0.03
+
+if(this.scene.manager.config.targets_acceleration)  this.speed_up_value = this.scene.manager.config.targets_acceleration
+console.log(this.speed_up_value)
+
   }
   isBouncingWallX(target) {
     return (

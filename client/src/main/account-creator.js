@@ -97,32 +97,52 @@ nickname_input.addEventListener("blur",()=>{
 
 creator_div.style.display = "block"
 
+let is_button_clicked = false;
+
   accept_button.onclick = async () => {
+  if(is_button_clicked) return
+
+  is_button_clicked = true;
 
     if(to_reset){
       div_to_move.style.height = centered_height
       profile_guy.style.display = "block"
     }
 
-    if (!VALIDATE_OK(nickname_input.value)) return
+    if (!VALIDATE_OK(nickname_input.value)){
+      is_button_clicked = false;
+      return
+    } 
     
     info.innerHTML = "Creating account ..."
 
    const are_connections_ok =  await handleError()
 
-   if(!are_connections_ok) return;
+   if(!are_connections_ok){
+    is_button_clicked = false;
+    return;
+   } 
 
     try {
       const response = await CREATE_ACCOUNT({
         nickname: nickname_input.value,
       })
 
+
       response.ok === true
         ? handleNewUser(start_game_after_create)
         : (info.innerHTML = "The nickname already exists")
+
+     
     } catch {
-        handleError()
       
+        handleError()
+   
     }
+    finally{
+      is_button_clicked = false;
+    }
+  
+    
   }
 }
