@@ -3,246 +3,190 @@ const mongoose = require("mongoose")
 const srvConfig = require("./settings/db-config")
 const { Accounts, Levels } = require("./settings/db-models")
 
-const customizeSkinsSetup = require("./settings/customize-skins-setup")
-const levelsConfig = require("./settings/levels/levels-config")
+const defaultAccountConfig = require("./settings/account-default-db")
 
 const DATABASE_URL = `mongodb+srv://${srvConfig.USERNAME}:${srvConfig.PASSWORD}@${srvConfig.HOST}/${srvConfig.DB}?retryWrites=true&w=majority`
 
 class DatabaseManager {
   constructor() {
-    this.levels_amount = 4 //levelsConfig.length;
-
-    this.leaderboards_refresh_time = 1000 * 60 * 1
   }
   connectDatabase() {
+
+
     mongoose.connect(
       DATABASE_URL,
 
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useCreateIndex:true,
+        useFindAndModify:false,
+       //  poolSize: 10
+        // autoIndex: false,
       },
-      () => {
-        // console.log(`Server started on port ${port}`);
-        //   moongose.connection.close()
-        // mongoose.disconnect();
-        // mongoose.connection.dropDatabase()
-
-        setInterval(() => {
-          for (let i = 1; i <= this.levels_amount; i++) {
-            // score is updated 24/7 but ranks only 1 minute interval  ** TODO REPAIR IT
-            this.updateRanksAndScores(i) /// make interval to update ranks from time to time
-          }
-        }, this.leaderboards_refresh_time)
-      }
+      () => {}
     )
   }
-  getConfigurations(res) {
-    res.send({ skins_setup: customizeSkinsSetup, levels_config: levelsConfig })
-  }
-
-  updateRanksAndScores(level) {
-    Levels.find({ level: level }).then((docs) => {
-      if (!docs) return
-
-      docs // is it good idea to modify param?
-        .sort((a, b) => a.score_to_update - b.score_to_update)
-        .reverse()
-
-      docs.forEach((level, i) => {
-        Levels.updateOne(
-          { _id: level._id },
-          { $set: { rank: i + 1, score: level.score_to_update } },
-          { multi: true }
-        ).exec()
-      })
-    })
-    /*
-    // maybe fetch all levels in one request
-      .sort({ score: -1 })
-      .then((docs) => { // with then 
-        docs.forEach((doc, i) => {
-          Levels.updateOne(
-            { _id: doc._id },
-            { $set: { rank: i + 1} },
-            { multi: true }
-          ).exec()
-        })
-      })
-
-*/
-    /*
-      .exec((err, docs) => { // with exec
-        docs.forEach((doc, i) => {
-          Levels.updateOne(
-            { _id: doc._id },
-            { $set: { rank: i + 1 } },
-            { multi: true }
-          ).exec()
-        })
-      })
-      */
-  }
+  
 
   createAccount(req, res) {
     // use double destruction in req
     const nickname = req.body.nickname
 
-    Accounts.exists({ nickname: nickname }).then((is_exsisting) => {
+    Accounts.exists({_id:nickname})
+    .then((is_exsisting) => {
       if (is_exsisting) {
-        // check if nickname already exsists
         res.sendStatus(403)
       } else {
-        Accounts.create(
+
+       const Promises = [] 
+
+        Promises[0] = Accounts.create( 
           {
-            nickname: nickname,
-            levels_scores: [
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-              0,
-            ],
-            money: 5550,
-            skins: { circles: [1], sticks: [1], targets: [1] },
-            current_skins: { circles: 1, sticks: 1, targets: 1 },
-          },
-          () => res.sendStatus(200)
-        )
-        console.log("account created")
+            _id:nickname,
+            ...defaultAccountConfig,
+          })
+
+        Promises[1] = Levels.create({
+          nickname,
+          score:0,
+        })
+
+        Promise.all(Promises).then(() => res.sendStatus(200))
+      //  console.log("new account created")
       }
     })
   }
 
   getAccountProgress(req, res) {
-    Accounts.findOne({ nickname: req.body.nickname }).then((progress) => {
-      console.log(progress)
-      res.status(200).json(progress)
-    })
-  }
+    const nickname = req.body.nickname
+    Accounts.findOne({_id:nickname},
+      (err,account_data)=>{
+ 
+      //   console.log(nickname + "  Joined")
+        res.status(200).json(account_data)
+      }).lean().select("-_id")
 
-  getLevelScoreByNickname(req, res) {
-    const { level, nickname } = req.body
-    Levels.findOne({ nickname: nickname, level: level }).then((level) => {
-      res.status(200).json(level)
-    })
-  }
-
-  getLevelScoresAndNicknames(req, res) {
-    const { start_search_rank, stop_search_rank, level } = req.body
-
-    Levels.find({ level: level })
-      .where("rank")
-      .gt(start_search_rank - 1)
-      .lt(stop_search_rank + 1)
-
-      .then((levels) => {
-        const sorted_levels = levels.sort((a, b) => a.rank - b.rank)
-        res.status(200).json(sorted_levels)
-      })
-  }
-
-  postLevelScore(req, res) {
-    // can use nested destructing ~ {body:{score,nickname,level}}
-    const { score, nickname, level } = req.body
-
-    const query = { nickname: nickname, level: level + 1 }
-
-    const update = {
-      score_to_update: score,
-    }
-
-    const options = {
-      upsert: true,
-      new: true,
-      setDefaultsOnInsert: true,
-      useFindAndModify: false,
-    }
-
-    /// if not found - create
-    // maybe use await
-    Levels.findOneAndUpdate(query, update, options).exec()
-
-    // saving in account progress
-    Accounts.findOne({ nickname: nickname }, (err, account) => {
-      account.levels_scores[level] = score
-      account.markModified("levels_scores")
-      account.save() // update
-    })
-
-    res.sendStatus(200)
   }
 
   saveMoney(req, res) {
-    const options = {
-      upsert: true,
-      new: true, // remove unnecessary options
-      setDefaultsOnInsert: true,
-      useFindAndModify: false,
+    const {money,nickname} = req.body;
+    
+   Accounts.updateOne({_id:nickname},{money},()=>res.sendStatus(200))
+    
     }
-    Accounts.findOneAndUpdate(
-      { nickname: req.body.nickname },
-      { money: req.body.money },
-      options,
-      () => {
-        res.sendStatus(200)
-      }
-    )
-  }
+  
+    saveNewSkin(req, res) {
+      const nickname = req.body.nickname
+      const [skin_part,skin_number] = [req.body.skin[0],req.body.skin[1]]
+      const expression = {}
+      expression[`skins.${skin_part}`] = skin_number
 
-  saveNewSkin(req, res) {
-    Accounts.findOne({ nickname: req.body.nickname }, (err, account) => {
-      const part = req.body.skin[0]
-      const skin_number = req.body.skin[1]
-      account.skins[part].push(skin_number)
-      account.markModified("skins")
-      account.save()
-      res.sendStatus(200)
-    })
-  }
-
-  equipSkin(req, res) {
-    const options = {
-      upsert: true,
-      new: true, // remove unnecessary options
-      setDefaultsOnInsert: true,
-      useFindAndModify: false,
+      Accounts.updateOne({_id:nickname},{$push:expression}, () => res.sendStatus(200))
+  
+    }
+  
+    equipSkin(req, res) {
+      const {nickname,current_skins} = req.body
+      Accounts.updateOne(
+        { _id:nickname},
+        { current_skins},
+        ()=>res.sendStatus(200)
+      )
+       
     }
 
-    Accounts.findOneAndUpdate(
-      { nickname: req.body.nickname },
-      { current_skins: req.body.current_skins },
-      options,
-      (err, callback) => {
-        res.sendStatus(200)
-      }
-    )
-  }
+    getAccountScores(req,res){
+      const {level,nickname} = req.body
+      const query = {nickname}
+
+      if(level) query.level = level
+//if level omitted, each level is found and returned
+    
+      Levels.find(query,(err,c)=>res.json(c)).lean().select("level score -_id")
+    }
+    postLevelScore(req, res) {
+
+      const { score, nickname, level } = req.body
+      const query = {nickname, level}
+      const options = { upsert: true}
+      const update = {score:score}
+  
+//console.log(score,nickname,level)
+      Levels.updateOne(query, update, options,()=>res.sendStatus(200))
+ 
+    }
+
+    getTopScores(req,res){
+      const {level,players_amount} =req.body
+
+      Levels.find({level},
+        (err,players)=>res.json(players))
+      .sort({score:-1}).lean().limit(players_amount).select("score nickname -_id")
+    }
+
+    getRankFromScore(req,res){
+      const {level,score} =req.body
+    //  console.time("time")
+      Levels.countDocuments({level,score:{$gt:score}},(err,rank)=>res.json(rank+1))
+   // await Levels.findOne({level,score:{$gte:score}},()=>{}).count()
+   //  console.timeEnd("time")
+    // res.sendStatus(200)
+  //(err,count)=>console.log(count)
+    }
+ 
 }
 
 mongoose.connection.on("error", (error) => {
-  console.log("ERROR !", error)
+   console.log("ERROR !", error)
   process.exit(1)
 })
 
-mongoose.connection.on("connected", async function () {
-  console.log("connected to mongo")
+mongoose.connection.on("connected", function () {
+   console.log("connected to mongo")
 })
 
 module.exports = DatabaseManager
+
+
+
+/*
+    const p = []
+        for(let i =0,k=2;i<10000;i++,k++){
+        
+          if(k > 80){
+            k=2;
+          }
+          p.push(Levels.create({
+            level: k,
+            nickname: "a"+k,
+            rank: k,
+            score_to_update: k,
+            score: k,
+          }))
+        
+         
+        
+        }
+Promise.all(p).then(()=>console.log("done"))
+*/
+
+/*
+   
+
+ for(let i =0;i<3000;i++){
+          Accounts.create({
+            nickname:"afadg"+i,
+            levels_scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            money:30300,
+          })
+          
+
+  Accounts.create({
+    nickname:"bffadg"+i,
+    levels_scores:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    money:30300,
+    
+  })
+}
+ */   

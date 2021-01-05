@@ -3,368 +3,550 @@ import { saveProgress, getProgress } from "../../shortcuts/save"
 import {
   GET_ACCOUNT_PROGRESS,
   GET_CONFIGURATIONS,
+  GET_ACCOUNT_SCORES
 } from "../../shortcuts/requests"
+
+import convertData from "../../convertData"
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
+import checkConnection from "../../network-status"
+import { START_UPDATE_GAME_SCENE } from "../../fetch-helper"
+import accountCreator from "../../account-creator"
 
 export default class menu extends Phaser.Scene {
   constructor() {
     super("menu")
     this.is_everything_fetched = false
-
+    this.is_hidden = false;
     this.tween_duration = 300
   }
 
-  init() {
+  async init({GAME_VERSION_PROMISE}) {
+   this.GAME_VERSION_PROMISE = GAME_VERSION_PROMISE
+
+   this.executedAccountCreator = false;
+    this.bubbles = []
+    this.elements_to_hide_to_levelselect = []
+
+    this.hidden_positions_y = {
+      logo: 0,
+      play_button: 0,
+      customize_button: 0,
+      music_button: 0,
+      sound_button: 0,
+    }
+
     if (!this.is_everything_fetched) {
+ 
+
+      this.game.audio.music.menu_theme.play()
+
+      document.addEventListener("focus",()=>{
+        this.game.audio.music.menu_theme.resume()
+      });
+
+      document.addEventListener("blur",()=>{
+        this.game.audio.music.menu_theme.pause()
+      });
+      
+
+      this.events.on("wake", () => this.game.audio.music.menu_theme.play())
+      this.events.on("sleep", () => this.game.audio.music.menu_theme.stop())
       START_FETCHING_SCENE(this)
-      this.fetchFromServer()
+      checkConnection(this)
+      this.fetchFromServerAndLaunchScenes()
     }
   }
 
   create() {
-    helper.createBackground(this, "menu-bg")
 
-    this.createPlayButtonSet()
-    this.createCustomizeButtonSet()
+    
+    this.createBackground()
+    this.createDecorations()
 
-    this.showButtons()
-    this.showLogos()
+    this.createInstagram()
+    this.createPlayButton()
+    this.createCustomizeButton()
+    this.createMuteButton()
+    this.createMusicButton()
 
-    helper.sceneIntro(this)
+    this.createFlyingBubbles()
+
+    this.animateShowMenu()
+    this.add.text(5,5,"BETA",{font:"30px LuckiestGuy"}).setOrigin(0,0)
   }
 
-  showLogos() {
-    helper
-      .createButton(this, 20, 20, "geometrytrinity", () =>
-        window.open(
-          "https://play.google.com/store/apps/details?id=com.pip.geometrytrinity",
-          "_blank"
-        )
-      )
-      .setOrigin(0)
+  update() {
+    this.updateBubbles()
+  }
 
-    helper
-      .createButton(this, this.game.GW - 20, 20, "instagram", () => {
-        window.open("https://www.instagram.com/pip_games/", "_blank")
-      })
+  async animateShowMenu() {
+    this.is_hidden = false;
+    const ease = "Sine"
+
+    this.showInstagram()
+    this.showLogo(ease)
+
+    await this.showPlayButton(ease)
+    this.showBottomButtons(ease)
+  }
+
+  async animateHideMenu() {
+    this.is_hidden = true;
+    const ease = "Sine.easeIn"
+
+    this.hideInstagram()
+    await this.hideButtonsAndLogo(ease)
+    this.resetPositionsToHidden()
+    //   return new Promise((resolve) => resolve())
+  }
+
+  launchScenes() {
+    this.scene.launch("levelSelect")
+    this.scene.get("levelSelect").createLevelSelectElementsInMenuContext(this)
+
+    this.scene.sleep("levelSelect")
+
+    this.scene.launch("customize")
+    this.scene.sleep("customize")
+  
+  }
+
+  updateBubbles() {
+    this.bubbles.forEach((bubble) => {
+      bubble.y -= bubble.speedY
+      bubble.x += bubble.speedX
+    })
+  }
+
+  resetPositionsToHidden() {
+    for (const element in this.hidden_positions_y) {
+      eval(`this.${[element]}.y = ${this.hidden_positions_y[element]}`)
+    }
+    this.play_button.y = this.hidden_positions_y.play_button
+    this.logo.y = this.hidden_positions_y.logo
+
+    this.resetButtonsPositionsToHidden()
+
+    return this
+  }
+
+  resetButtonsPositionsToHidden(){
+    this.customize_button.y = this.hidden_positions_y.customize_button
+    this.sound_button.y = this.hidden_positions_y.sound_button
+    this.music_button.y = this.hidden_positions_y.music_button
+  }
+
+  createBackground() {
+    this.background = helper.createBackground(this, "menu-bg")
+    this.elements_to_hide_to_levelselect.push(this.background)
+  }
+
+  createDecorations() {
+    this.elements_to_hide_to_levelselect.push(
+      this.add.image(
+        this.game.GW / 2,
+        this.game.GH / 2,
+        "general-2",
+        "bubbles-menu"
+      )
+    )
+
+    this.elements_to_hide_to_levelselect.push(
+      helper.setGameSize(
+        this.add
+          .image(this.game.GW / 2, this.game.GH, "general-2", "menu-2")
+          .setOrigin(0.5, 1),
+        true
+      )
+    )
+
+    this.elements_to_hide_to_levelselect.push(
+      helper.setGameSize(
+        this.add
+          .image(this.game.GW / 2, this.game.GH, "general-2", "menu-1")
+          .setOrigin(0.5, 1),
+        true
+      )
+    )
+
+    this.logo = this.add
+      .image(this.game.GW / 2, this.game.GH, "general-2", "circlerisk")
+      .setOrigin(0.5, 0)
+    this.hidden_positions_y.logo = this.logo.y
+  }
+
+  createMuteButton() {
+    const mute = () => {
+      this.sound_button.setFrame("unmute-button")
+      Object.values(this.game.audio.sounds).forEach((sound) =>
+        sound.setMute(true)
+      )
+    }
+
+    const unmute = () => {
+      this.sound_button.setFrame("mute-button")
+      Object.values(this.game.audio.sounds).forEach((sound) =>
+        sound.setMute(false)
+      )
+    }
+
+    this.sound_button = helper
+      .createButton(
+        this,
+        this.game.GW - 25,
+        this.game.GH,
+        "mute-button",
+
+        () => {
+          this.sound_button.frame.name === "mute-button" ? mute() : unmute()
+        },
+        "button"
+      )
+
+      .setOrigin(1, 1)
+
+    this.sound_button.y += this.sound_button.displayHeight
+    this.hidden_positions_y.sound_button = this.sound_button.y
+  }
+
+  createMusicButton() {
+    const mute = () => {
+      this.music_button.setFrame("music-unmute-button")
+      Object.values(this.game.audio.music).forEach((music) =>
+        music.setMute(true)
+      )
+    }
+
+    const unmute = () => {
+      this.music_button.setFrame("music-mute-button")
+      Object.values(this.game.audio.music).forEach((music) =>
+        music.setMute(false)
+      )
+    }
+
+    this.music_button = helper
+      .createButton(
+        this,
+        this.game.GW / 2,
+        this.game.GH,
+        "music-mute-button",
+
+        () => {
+          this.music_button.frame.name === "music-mute-button"
+            ? mute()
+            : unmute()
+        },
+        "button"
+      )
+
+      .setOrigin(0.5, 1)
+
+    this.music_button.y += this.music_button.displayHeight
+    this.hidden_positions_y.music_button = this.music_button.y
+  }
+
+  createBubble(x, y) {
+    const bubble = this.add.image(x, y, "general-2", "bubble")
+    this.bubbles.push(bubble)
+
+    bubble.fly_direction = 1
+
+    bubble.speedY = Phaser.Math.FloatBetween(0.3, 0.8)
+    bubble.speedX = Phaser.Math.FloatBetween(0.1, 0.3)
+
+    if (Phaser.Math.Between(0, 1)) bubble.fly_direction = -1
+
+    this.time.addEvent({
+      delay: Phaser.Math.Between(1500, 3000),
+      loop: true,
+      callback: () => {
+        bubble.speedX *= -1
+      },
+    })
+
+    this.time.addEvent({
+      delay: Phaser.Math.Between(5000, 30000),
+      callback: () => {
+        this.tweens.add({
+          targets: bubble,
+          alpha: 0,
+          duration: 1500,
+          onComplete: () => {
+            this.bubbles.splice(
+              this.bubbles.findIndex((bubble) => !bubble.active),
+              1
+            )
+            bubble.destroy()
+          },
+        })
+      },
+    })
+
+    bubble.setAlpha(0).setScale(Phaser.Math.Between(3, 10) / 10)
+
+    this.tweens.add({ targets: bubble, alpha: 0.6, duration: 300 })
+
+    return bubble
+  }
+
+  createFlyingBubbles() {
+    for (let i = 0; i < 15; i++) {
+      this.createBubble(
+        Phaser.Math.Between(0, this.game.GW),
+        Phaser.Math.Between(this.game.GH / 2 - 200, this.game.GH - 100)
+      )
+    }
+
+    this.time.addEvent({
+      delay: 1000,
+      loop: true,
+      callbackScope: this,
+
+      callback: () => {
+        this.createBubble(
+          Phaser.Math.Between(0, this.game.GW),
+          Phaser.Math.Between(this.game.GH - 50, this.game.GH - 150)
+        )
+      },
+    })
+  }
+
+  createInstagram() {
+    this.instagram_button = helper
+      .createButton(
+        this,
+        this.game.GW - 20,
+        20,
+        "instagram",
+        () => {
+          window.open("https://www.instagram.com/pip_games/", "_blank")
+        },
+        "button"
+      )
       .setOrigin(1, 0)
   }
 
-  hideButtons() {
-    return new Promise((resolve) => {
-      this.customizeButtonTween(85)
-      setTimeout(() => {
-        this.playButtonTween(-87).then(() => resolve())
-      }, this.tween_duration / 2)
-    })
-  }
-
-  showButtons() {
-    this.playButtonTween("-=55")
-    setTimeout(() => this.customizeButtonTween(-40), this.tween_duration / 2)
-  }
-
-  customizeButtonTween(angle) {
-    return new Promise((resolve) => {
-      this.tweens.add({
-        targets: this.customize_stick,
-        angle: angle,
-        duration: this.tween_duration,
-        onUpdate: () => {
-          const angle = Phaser.Math.DegToRad(this.customize_stick.angle)
-
-          const x =
-            this.customize_stick.x +
-            (this.customize_stick.displayWidth +
-              this.customize_button.displayWidth / 2 -
-              10) *
-              Math.cos(angle)
-
-          const y =
-            this.customize_stick.y -
-            (this.customize_button.displayWidth / 2 +
-              this.customize_stick.displayWidth -
-              10) *
-              -Math.sin(angle)
-
-          this.customize_button.x = x
-          this.customize_button.y = y
-        },
-        onComplete: () => resolve(),
-      })
-    })
-  }
-
-  playButtonTween(angle) {
-    return new Promise((resolve) => {
-      this.tweens.add({
-        targets: this.play_stick,
-        angle: angle,
-        duration: this.tween_duration,
-        onUpdate: () => {
-          const angle = Phaser.Math.DegToRad(this.play_stick.angle)
-
-          const x =
-            this.play_stick.x -
-            (this.play_stick.displayWidth +
-              this.play_button.displayWidth / 2 +
-              0) *
-              Math.cos(angle)
-
-          const y =
-            this.play_stick.y -
-            (this.play_button.displayWidth / 2 +
-              this.play_stick.displayWidth -
-              0) *
-              Math.sin(angle)
-
-          this.play_button.x = x
-          this.play_button.y = y
-        },
-        onComplete: () => resolve(),
-      })
-    })
-  }
-
-  createStick(x, y, origin, target, sprite) {
-    const stick = this.add.image(x, y, sprite)
-
-    stick.setOrigin(origin.x, origin.y)
-
-    stick.displayWidth =
-      Phaser.Math.Distance.Between(stick.x, stick.y, target.x, target.y) -
-      target.displayWidth / 2
-
-    return stick
-  }
-
-  createCustomizeButtonSet() {
+  createCustomizeButton() {
     this.customize_button = helper
-      .createButton(this, 0, this.game.GH - 250, "customize-button-big", () => {
-        this.hideButtons().then(() => helper.sceneTransition(this, "customize"))
-      })
-      .setDepth(1)
-
-    this.customize_button.x -= this.customize_button.displayWidth / 2
-
-    this.customize_stick = this.createStick(
-      0,
-      this.game.GH - 50,
-      { x: 0, y: 0.5 },
-      this.customize_button,
-      "menu-stick-blue"
-    )
-    this.customize_stick.x -= this.customize_stick.displayHeight / 2
-    const angle_between = Phaser.Math.Angle.BetweenPoints(
-      this.customize_button,
-      this.customize_stick
-    )
-    this.customize_stick.setAngle(Phaser.Math.RadToDeg(angle_between) + 180)
-  }
-
-  createPlayButtonSet() {
-    this.play_button = helper
       .createButton(
         this,
-        this.game.GW,
-        this.game.GH - 430,
-        "play-button-big",
-        () => {
-          this.hideButtons().then(() =>
-            helper.sceneTransition(this, "levelSelect")
-          )
-        }
+        25,
+        this.game.GH,
+        "customize-button",
+        async () => {
+          await this.animateHideMenu()
+          
+          this.scene.get("customize").animateCustomizeShow()
+          this.scene.wake("customize")
+     
+        },
+        "button"
       )
-      .setDepth(1)
-    this.play_button.x += this.play_button.displayWidth / 2
 
-    this.play_stick = this.createStick(
-      this.game.GW + 20,
-      this.game.GH - 120,
-      { x: 1, y: 0.5 },
-      this.play_button,
-      "menu-stick-yellow"
-    )
+      .setOrigin(0, 1)
 
-    const angle_between = Phaser.Math.Angle.BetweenPoints(
-      this.play_button,
-      this.play_stick
-    )
-    this.play_stick.setAngle(Phaser.Math.RadToDeg(angle_between))
-    this.play_button.setAngle(Phaser.Math.RadToDeg(angle_between))
+    this.customize_button.y += this.customize_button.displayHeight
+    this.hidden_positions_y.customize_button = this.customize_button.y
   }
 
-  async fetchFromServer() {
+  hideElementsSharedWithLevelSelect() {
+    this.elements_to_hide_to_levelselect.forEach((element) =>
+      element.setActive(false).setVisible(false)
+    )
+  }
+
+  showElementsSharedWithLevelSelect() {
+    this.elements_to_hide_to_levelselect.forEach((element) =>
+      element.setActive(true).setVisible(true)
+    )
+  }
+  createPlayButton() {
+    this.play_button = helper.createButton(
+      this,
+      this.game.GW / 2,
+      this.game.GH,
+      "play-button-big",
+
+      async () => {
+        if (!this.can_play) return
+        this.can_play = false
+
+        await this.animateHideMenu()
+
+        this.hideElementsSharedWithLevelSelect()
+        
+        this.scene
+          .get("levelSelect")
+          .showAllElementsInMenuContext(this)
+          .animateLevelSelectShow()
+          this.scene.wake("levelSelect")
+
+      },
+      "button"
+    )
+
+    this.play_button.y += this.play_button.displayHeight
+    this.hidden_positions_y.play_button = this.play_button.y
+  }
+
+  showInstagram() {
+    this.instagram_button.setAlpha(0)
+    this.tweens.add({
+      targets: this.instagram_button,
+      alpha: 1,
+      duration: 250,
+    })
+  }
+
+  showLogo(ease) {
+    this.tweens.add({
+      targets: this.logo,
+      y: 70,
+      duration: 400,
+      ease,
+    })
+  }
+
+  showPlayButton(ease) {
+    return new Promise((resolve) => {
+      this.tweens.add({
+        targets: this.play_button,
+        y: this.game.GH / 2 + 35,
+        duration: 400,
+        ease,
+        onComplete: () => {
+          resolve()
+          this.can_play = true
+        },
+      })
+    })
+  }
+
+  animateBottomButton(button, ease) {
+    this.tweens.add({
+      targets: button,
+      ease,
+      duration: 300,
+      y: this.game.GH - 25,
+      onComplete:()=>{
+        if(this.is_hidden){
+          this.resetButtonsPositionsToHidden()
+        }
+      }
+    })
+  }
+
+  showBottomButtons(ease) {
+    if (!this.can_play) return
+
+    this.animateBottomButton(this.customize_button, ease)
+
+    this.time.addEvent({
+      delay: 50,
+      callback: () => {
+        this.animateBottomButton(this.music_button, ease)
+      },
+    })
+
+    this.time.addEvent({
+      delay: 100,
+      callback: () => {
+        this.animateBottomButton(this.sound_button, ease)
+      },
+    })
+  }
+
+  hideInstagram() {
+    this.tweens.add({
+      targets: this.instagram_button,
+      alpha: 0,
+      duration: 200,
+    })
+  }
+
+  hideButtonsAndLogo(ease) {
+    return new Promise((resolve) => {
+      this.tweens.add({
+        targets: [
+          this.customize_button,
+          this.sound_button,
+          this.play_button,
+          this.music_button,
+          this.logo,
+        ],
+        ease: ease,
+        y: `+=${this.game.GH}`,
+        duration: 200,
+
+        onComplete: () => resolve(),
+      })
+    })
+  }
+
+  async fetchFromServerAndLaunchScenes() { 
+   let timeout;
+
     try {
-      await this.getConfigurations()
       await this.restoreProgress()
+/// SPAGHETII CODE * TODO * REDESIGN THIS PART 
+      if(window.progress === null && !this.executedAccountCreator){ 
+        // if acount was removed from database and the user had account before
+        this.executedAccountCreator = true;
+
+        localStorage.clear();
+        accountCreator(false)
+        throw new Exception(); // force catch  {}
+        
+      } else if(window.progress === null){ // must be null
+        throw new Exception(); // force catch  {}
+      }
+
+      await this.getConfigurations()
+     
+      convertData();
+
       this.finishFetching()
-    } catch {
-      // if something went wrong, try to fetch again
-      setTimeout(() => {
-        this.fetchFromServer()
+
+      const SERVER_GAME_VERSION = await this.GAME_VERSION_PROMISE
+      if( SERVER_GAME_VERSION!== window.CLIENT_GAME_VERSION){
+       
+        START_UPDATE_GAME_SCENE(this)
+        clearTimeout(timeout)
+        return;
+      }
+
+      this.launchScenes()
+      
+    } catch{
+
+      if(!window.is_server_alive) return;
+      timeout = setTimeout(() => {
+        this.fetchFromServerAndLaunchScenes()
       }, 3000)
     }
   }
+
+  async getConfigurations() {
+    const response = await GET_CONFIGURATIONS()
+    // WINDOW ASSIGNED VARIABLES LIKE NICKNAME CAN BE EASY HACKED  !!!
+    window.customize_skins_setup = response.skins_setup
+    window.levelsConfiguration = response.levels_config
+  }
+
+  async restoreProgress() {
+    window.my_nickname = getProgress().nickname
+ 
+    window.progress = await GET_ACCOUNT_PROGRESS({ nickname: my_nickname })
+
+    if(!window.progress) return
+
+  window.progress.levels_scores = await GET_ACCOUNT_SCORES({nickname:my_nickname})
+ 
+  }
+
 
   finishFetching() {
     this.is_everything_fetched = true
     STOP_FETCHING_SCENE(this)
   }
-
-  async getConfigurations() {
-    const response = await GET_CONFIGURATIONS()
-    window.customize_skins_setup = response.skins_setup
-
-    // assign to window because the level select scene can be started by many scenes,
-    //not like customize scene which is started only from menu
-    // WINDOW ASSIGNED VARIABLES LIKE NICKNAME CAN BE EASY HACKED  !!!
-    window.levelsConfiguration = response.levels_config
-  }
-
-  async restoreProgress() {
-    const local_progress = getProgress()
-    window.my_nickname = local_progress.nickname
-
-    const progress = await GET_ACCOUNT_PROGRESS({ nickname: my_nickname })
-
-    // converting skin numbers into full name strings
-    Object.keys(progress.skins).forEach((item) => {
-      progress.skins[item].forEach((skin_number, index, array) => {
-        array[index] = item.substring(0, item.length - 1) + "_" + skin_number
-      })
-    })
-
-    saveProgress(progress)
-  }
 }
-
-/*
-import helper from "../helper";
-
-export default class menu extends Phaser.Scene {
-  constructor() {
-    super("menu");
-  }
-  init() {
-    this.tween_duration = 800;
-  }
-  create() {
-    helper.createBackground(this, "menu-bg");
-
-    this.createPlayButtonSet();
-    this.createCustomizeButtonSet();
-
-    this.showButtons();
-  }
-
-  showButtons() {
-    this.showPlayButton().then(() => this.showCustomizeButton());
-  }
-
-  showPlayButton() {
-    return new Promise((resolve, reject) => {
-      this.tweens.add({
-        targets: this.play_stick,
-        angle: +75,
-        duration: this.tween_duration,
-        ease: "Bounce.easeOut",
-        onUpdate: () => {
-          const angle = Phaser.Math.DegToRad(this.play_stick.angle);
-
-          const x =
-            this.play_stick.x -
-            (this.play_button.displayWidth / 2 - this.play_stick.displayWidth) *
-              -Math.cos(angle);
-
-          const y =
-            this.play_stick.y +
-            (this.play_button.displayWidth / 2 + this.play_stick.displayWidth) *
-              -Math.sin(angle);
-
-          this.play_button.x = x;
-          this.play_button.y = y;
-          // this.play_button.setPosition(x, y);
-        },
-        onComplete: () => resolve(),
-      });
-    });
-  }
-
-  showCustomizeButton() {
-    return new Promise((resolve, reject) => {
-      this.tweens.add({
-        targets: this.customize_stick,
-        angle: -50,
-        duration: this.tween_duration,
-        ease: "Bounce.easeOut",
-        onUpdate: () => {
-          const angle = Phaser.Math.DegToRad(this.customize_stick.angle);
-
-          const x =
-            this.customize_stick.x +
-            (this.customize_button.displayWidth / 2 +
-              this.customize_stick.displayWidth) *
-              Math.cos(angle);
-
-          const y =
-            this.customize_stick.y +
-            (this.customize_button.displayWidth / 2 +
-              this.customize_stick.displayWidth) *
-              Math.sin(angle);
-
-          this.customize_button.setPosition(x, y);
-        },
-        onComplete: () => resolve(),
-      });
-    });
-  }
-
-  createStick(x, y, origin, target) {
-    const stick = this.add.image(x, y, "stick_1");
-
-    stick.setOrigin(origin.x, origin.y);
-
-    stick.displayWidth =
-      Phaser.Math.Distance.Between(stick.x, stick.y, target.x, target.y) -
-      target.displayWidth / 2;
-
-    return stick;
-  }
-
-  createCustomizeButtonSet() {
-    this.customize_button = helper.createButton(
-      this,
-      this.game.GW / 2 + 100,
-      this.game.GH,
-      "customize-button",
-      () => this.scene.start("customize")
-    );
-
-    this.customize_stick = this.createStick(
-      0,
-      this.game.GH,
-      { x: 0, y: 0.5 },
-      this.customize_button
-    );
-  }
-
-  createPlayButtonSet() {
-    this.play_button = helper.createButton(
-      this,
-      this.game.GW / 2 - 200,
-      this.game.GH,
-      "play-button",
-      () => this.scene.start("levelSelect")
-    );
-
-    this.play_stick = this.createStick(
-      this.game.GW,
-      this.game.GH,
-      { x: 1, y: 0.5 },
-      this.play_button
-    );
-  }
-}
-
-*/

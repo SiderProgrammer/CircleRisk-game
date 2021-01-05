@@ -6,26 +6,36 @@ export default class Pause extends Phaser.Scene {
   }
   init({ scene }) {
     createBackground(this, "black-bg")
+
+    this.add.image(this.game.GW/2,this.game.GH/2+50,"pause-bg")
     createButton(
       this,
       this.game.GW / 2,
-      this.game.GH / 2,
-      "play-button",
+      this.game.GH / 2 - 50,
+      "play-button-small",
       () => {
-        scene.scene.stop("pause")
+        this.scene.stop()
         scene.scene.resume()
-      }
+      },
+      "button"
     )
 
     createButton(
       this,
       this.game.GW / 2 - 150,
       this.game.GH / 2 + 150,
-      "home-button",
+      "home-button-big",
       () => {
-        scene.scene.stop("pause")
-        scene.scene.start("menu")
-      }
+        scene.scene.stop()
+        this.scene.stop()
+
+        this.scene.get("levelSelect").hideAllElementsInMenuContext()
+        this.scene.stop("lose")
+        scene.scene.wake("menu")
+        this.scene.get("menu").showElementsSharedWithLevelSelect()
+        this.scene.get("menu").animateShowMenu()
+      },
+      "button"
     )
 
     createButton(
@@ -34,10 +44,19 @@ export default class Pause extends Phaser.Scene {
       this.game.GH / 2 + 150,
       "levelSelect-button",
       () => {
-        scene.scene.stop("pause")
+        scene.scene.stop()
+        this.scene.stop()
+        this.scene.stop("lose")
+        scene.scene.wake("menu")
 
-        scene.scene.start("levelSelect", { page: scene.scene.scene.level - 1 })
-      }
+        scene.scene.wake("levelSelect")
+
+        this.scene
+          .get("levelSelect")
+
+          .animateLevelSelectShow()
+      },
+      "button"
     )
   }
 }

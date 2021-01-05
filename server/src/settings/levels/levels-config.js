@@ -14,6 +14,8 @@ function mergeLevelsConfigurations() {
       merged[merged.length] = medium_levels_config.find(
         (level) => level.info.name === merged[i].info.name
       )
+      merged[merged.length - 1].color = merged[i].color
+      merged[merged.length - 1].config.background = merged[i].config.background
     }
   }
 
@@ -22,11 +24,14 @@ function mergeLevelsConfigurations() {
       merged[merged.length] = hard_levels_config.find(
         (level) => level.info.name === merged[i].info.name
       )
+      merged[merged.length - 1].color = merged[i].color
+      merged[merged.length - 1].config.background = merged[i].config.background
     }
   }
 
   mergeEasyWithMedium()
   mergeEasyMediumWithHard()
+
 
   return merged
 }

@@ -6,13 +6,15 @@ export const setGameSize = function (obj, scaleW = false, scaleH = false) {
   if (scaleH) {
     obj.displayHeight = obj.scene.game.GH
   }
+  return obj
 }
 
-export const createBackground = function (scene, sprite) {
+export const createBackground = function (scene, sprite, frame) {
   const background = scene.add.image(
     scene.game.GW / 2,
     scene.game.GH / 2,
-    sprite
+    sprite,
+    frame
   )
 
   setGameSize(background, true, true)
@@ -34,23 +36,26 @@ export const sceneIntro = function (scene) {
   }
 
   scene.tweens.add({
-    targets: createBackground(scene, "black-bg"),
+    targets: createBackground(scene, "black-bg").setDepth(1),
     alpha: 0,
     duration: duration,
     // could pass intro duration as param but i did bad and i would had to change it in each leavl
   })
 }
 
-export const createButton = function (scene, x, y, sprite, func) {
+export const createButton = function (scene, x, y, sprite, func, sound) {
   const button = scene.add
-    .image(x, y, sprite)
+    .image(x, y, "buttons", sprite)
     .setInteractive()
-    .on("pointerup", () => func())
+    .on("pointerup", () => {
+      sound && scene.game.audio.sounds[sound].play()
+      func()
+    })
   return button
 }
 
 export const createFetchingAnimation = function (scene, x, y) {
-  const image = scene.add.image(x, y, "loading").setDepth(1000)
+  const image = scene.add.image(x, y, "general-1", "loading").setDepth(1000)
 
   const tween = scene.tweens.add({
     targets: image,

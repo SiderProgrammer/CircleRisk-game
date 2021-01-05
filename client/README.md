@@ -1,18 +1,4 @@
-# phaser-3-webpack-cordova
-A template boilerplate for making phaser 3 projects (could be other projects) and build them for android and ios (or browser) using Webpack and Cordova.
 
-![banner](banner.png)
-
-## Requirements
-- [Node.js](https://nodejs.org/en/)
-- [Cordova](https://cordova.apache.org/) (can be installed with `npm install -g cordova`)
-- Optional, but recommended - [Yarn](https://yarnpkg.com/en/docs/install#mac-stable)
-
-## Getting Started
-Installation steps to set this template up and running.
-
-### Install
-#### Clone repo (and specify folder name)
 ```
 git clone https://github.com/PeeJeeDR/phaser-3-webpack-cordova.git PROJECT_NAME
 ```

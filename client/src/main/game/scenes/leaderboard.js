@@ -1,9 +1,11 @@
 import * as helper from "../GUI-helper"
 import {
-  GET_LEVEL_SCORES_AND_NICKNAMES,
-  GET_LEVEL_SCORE_BY_NICKNAME,
+  GET_TOP_SCORES,
+  GET_RANK_FROM_SCORE
 } from "../../shortcuts/requests"
+
 import { START_FETCHING_SCENE, STOP_FETCHING_SCENE } from "../../fetch-helper"
+import Utils from "../../utils"
 
 const bar_text_config = {
   font: `50px LuckiestGuy`,
@@ -17,81 +19,219 @@ export default class Leaderboard extends Phaser.Scene {
   }
   init(data) {
     this.level = data.level
+    this.launcher = data.launcher
 
     this.GW = this.game.GW
     this.bars = []
     this.texts = []
+    this.lb_texture = "lb-white-bar"
   }
 
   async create() {
-    helper.createBackground(this, "leaderboard-bg") // can set it to not visbile and show it later
+    helper.createBackground(this, "ranking-bg") // can set it to not visbile and show it later
     this.createMyScoretHighLight()
-    this.createUpperStrip()
-
-    this.createHomeButton() // can set it to not visbile and show it later
-    this.createLeaderboardButtons() // can set it to not visbile and show it later
-    this.calculateVariablesHeightDependend() // too long func name
+    const upper_strip = this.createUpperStrip().setVisible(false)
 
     START_FETCHING_SCENE(this)
+ 
+    
+    this.data = await this.getTopScoresData()
+    const my_rank = await this.getMyRank()
+ 
+    this.createHomeButton() // can set it to not visbile and show it later
+    this.createLeaderboardButtons() // can set it to not visbile and show it later
 
-    const data = await this.getUsers(
-      this.last_start_search_rank,
-      this.last_stop_search_rank
-    )
+    this.previous_page_button.y = upper_strip.displayHeight + 70
+    this.calculateVariablesHeightDependend() // too long func name
+
+
+   this.me = this.addAccountText(this.me_y);
+    this.me.bar = this.addScoreBar(this.me_y).setTexture("lb-me-bar");
+
+   this.me.update({
+     rank:my_rank,
+     nickname:my_nickname,
+     score:window.progress.levels_scores[this.level-1]
+   })
+   this.add.image(this.game.GW-10,5,"ranking-icon").setOrigin(1,0)
+   
+
+   const line =  this.add.image(this.game.GW/2,this.line_y,"lb-strap")
+   helper.setGameSize(line,true);
+   line.displayHeight = 20
+const bg = this.add.image(this.game.GW/2,this.score_bg_y ,"lb-scores-bg")
+bg.displayHeight = this.score_bg_height;
+bg.displayWidth = this.game.GW - 10
 
     this.createLeaderboardBars()
     this.createLeaderboardTexts()
-    this.updateTexts(data)
+    this.updateTexts(this.chunkScores())
     this.createOrnaments()
-    this.createLevelInfo()
+
+    this.createLevelInfo(this.previous_page_button.y)
+   
+
 
     STOP_FETCHING_SCENE(this)
   }
+  chunkScores(){
+   
+    const copy = [...this.data];
+    
+    return copy.splice(this.last_start_search_rank-1,this.leaderboard_shift_value)
+  }
+  
+  updateTexts(_sorted_data) {
+    const sorted_data = [..._sorted_data]
+    this.aura.setVisible(false)
+
+    this.texts.forEach((account_text, i) => {
+      
+     let acc = sorted_data[i]
+
+      if (!acc) {
+        acc = {
+          rank: "",
+          score: "",
+          nickname: "",
+        }
+      }else {
+        acc.rank = this.last_start_search_rank +i;
+      }
+
+     
+    
+      if(acc.rank == "1"){
+          account_text.setTextColor("#fff600")
+          account_text.rank.setFontSize("62px")
+      }
+          else if(acc.rank == "2"){
+            account_text.setTextColor("#aaa9ad")
+            account_text.rank.setFontSize("62px")
+          } 
+          else if(acc.rank =="3"){
+            account_text.setTextColor("#6F0000")
+            account_text.rank.setFontSize("62px")
+           
+          } 
+          else if(account_text.rank.style.color != bar_text_config.color){
+            account_text.setTextColor(bar_text_config.color)
+            account_text.rank.setFontSize("50px")
+          } 
+            
+          
+     if(acc.nickname === my_nickname) acc.rank = "#"+ acc.rank
+      account_text.update(acc)
+
+    })
+  }
+
+    async getMyRank(){
+      try{
+        
+        return await GET_RANK_FROM_SCORE({
+          level:Utils.convertLevelNumberToLevelName(levelsConfiguration[this.level-1]),
+          score:window.progress.levels_scores[this.level-1],
+        })
+
+      }catch{
+        STOP_FETCHING_SCENE(this)
+      }
+    }
+  async getTopScoresData() {
+   
+    try {
+     
+      return await GET_TOP_SCORES({
+        level: Utils.convertLevelNumberToLevelName(levelsConfiguration[this.level-1]),
+        players_amount:10,
+      })
+    } catch {
+      STOP_FETCHING_SCENE(this)
+    }
+  }
+
+  async getUsersAndUpdateTexts(sign) {
+   // START_FETCHING_SCENE(this)
+
+    let shift = this.leaderboard_shift_value
+ 
+    if (sign === "-") {
+      shift = -shift
+    }
+
+ if(this.last_start_search_rank + shift < 1) return
+
+    this.last_start_search_rank += shift
+    this.last_stop_search_rank += shift
+    
+   
+    const data = this.chunkScores()
+  
+    if (data.length > 0) {
+      // if exists next leaderboard page
+      this.updateTexts(data)
+    } else {
+      // back to previous page if next not exists
+      this.last_start_search_rank -= shift
+      this.last_stop_search_rank -= shift
+    }
+    
+   // this.last_start_search_rank += shift
+   // await this.searchRanksUpdateLastSearchAndUpdateTexts(shift) // to long function name
+   // STOP_FETCHING_SCENE(this)
+  }
+
+
+
   createMyScoretHighLight() {
-    this.aura = this.add.image(0, 0, "lb-aura").setVisible(false)
+    this.aura = this.add.image(0, 0, "general-1", "lb-aura").setVisible(false)
     helper.setGameSize(this.aura, true)
   }
 
   createUpperStrip() {
     const strip = this.add
-      .image(this.game.GW / 2, 0, "lb-strip")
+      .image(this.game.GW / 2, 0, "general-1", "lb-strip")
       .setOrigin(0.5, 0)
     helper.setGameSize(strip, true)
+    return strip
   }
-  createLevelInfo() {
+  createLevelInfo(y) {
     const { difficulty, name } = levelsConfiguration[this.level - 1].info
-
+ 
+   // this.add.image(this.game.GW / 2, 57, "general-1", "level-select-difficulty-bar")
+   this.add.image(this.game.GW/2,54,"general-1","level-select-difficulty-bar")
     this.add
-      .text(this.game.GW / 2, 80, difficulty, { font: `50px ${main_font}` })
+      .text(this.game.GW / 2, 54, difficulty.toUpperCase(), { font: `65px ${main_font}` })
       .setOrigin(0.5)
-    this.add.image(this.game.GW / 2, 200, name + "_icon")
+   
+    this.add.image(this.game.GW / 2, y, "levels-icons", name + "_icon").setDepth(0.1)
+    this.add.image(this.game.GW/2,y,"general-1","glow")
   }
   createOrnaments() {
-    this.add.image(this.game.GW, this.game.GH, "lb-eyes").setOrigin(1, 1)
-    this.add.image(this.game.GW / 2 - 20, this.game.GH / 2, "lb-face")
-    this.add.image(0, 200, "lb-bubbles").setOrigin(0, 0.5)
+    this.add
+      .image(this.game.GW, this.game.GH, "general-1", "lb-eyes")
+      .setOrigin(1, 1)
+ 
+    this.add.image(0, this.previous_page_button.y, "general-1", "lb-bubbles").setOrigin(0, 0.5)
   }
   calculateVariablesHeightDependend() {
-    const bar_height = this.game.textures.list["white-strap"].frames.__BASE
-      .cutHeight
+    const bar_height = this.game.textures.list["general-1"].frames[
+      this.lb_texture
+    ].cutHeight
 
-    const shift = 160
+ const upperAndDownBarsDistanceFromArrows = 15;
+   const space_between_myRank_and_leaderboard = bar_height + 20 ;
+  const empty_space = this.next_page_button.y - this.previous_page_button.y - this.next_page_button.displayHeight*2  - upperAndDownBarsDistanceFromArrows*2
+ 
+    const bars_amount = Math.floor((empty_space - space_between_myRank_and_leaderboard)/ bar_height)
+const distance_from_arrows = (empty_space - (space_between_myRank_and_leaderboard + bars_amount*bar_height))/2 + upperAndDownBarsDistanceFromArrows
 
-    const empty_space =
-      this.game.GH -
-      this.previous_page_button.displayHeight -
-      this.next_page_button.displayHeight -
-      shift
-
-    const bars_amount = Math.floor(empty_space / bar_height)
-
-    this.first_bar_y =
-      (this.previous_page_button.displayHeight +
-        this.next_page_button.displayHeight) /
-        2 +
-      (empty_space - bar_height * bars_amount) / 2 +
-      shift
-
+    this.me_y = this.previous_page_button.y + this.previous_page_button.displayHeight/2 + bar_height/2 +  distance_from_arrows
+    this.first_bar_y = this.me_y + space_between_myRank_and_leaderboard + bar_height/2
+  this.line_y = this.me_y + (this.first_bar_y - this.me_y)/2
+  this.score_bg_y  = this.first_bar_y + (bars_amount*bar_height)/2  - bar_height/2
+  this.score_bg_height = bar_height * bars_amount + 30 
     this.last_start_search_rank = 1
     this.last_stop_search_rank = bars_amount
     this.leaderboard_shift_value = bars_amount
@@ -102,26 +242,35 @@ export default class Leaderboard extends Phaser.Scene {
     const y = 50
 
     helper
-      .createButton(this, x, y, "arrow-button-brown", () => {
-        this.scene.start("levelSelect", { page: this.level - 1 })
-      })
+      .createButton(
+        this,
+        x,
+        y,
+        "arrow-button-brown",
+        () => {
+          this.launcher.wake()
+          this.scene.stop()
+        },
+        "button"
+      )
       .setAngle(270)
       .setDepth(1)
-    this.add.image(x + 10, y, "glow")
+    
   }
 
   createLeaderboardButtons() {
     this.previous_page_button = helper
-      .createButton(this, this.GW - 70, 50, "arrow-button-brown", () =>
-        this.getUsersAndUpdateTexts("-")
+      .createButton(
+        this,
+        this.GW - 70,
+        50,
+        "arrow-button-brown",
+        () => this.getUsersAndUpdateTexts("-"),
+        "button"
       )
       .setDepth(1)
 
-    this.add.image(
-      this.previous_page_button.x,
-      this.previous_page_button.y + 10,
-      "glow"
-    )
+
 
     this.next_page_button = helper
       .createButton(
@@ -129,183 +278,84 @@ export default class Leaderboard extends Phaser.Scene {
         this.GW - 70,
         this.game.GH - 50,
         "arrow-button-brown",
-        () => this.getUsersAndUpdateTexts("+")
+        () => this.getUsersAndUpdateTexts("+"),
+        "button"
       )
       .setFlipY(true)
       .setDepth(1)
 
-    this.add.image(
-      this.next_page_button.x,
-      this.next_page_button.y - 10,
-      "glow"
-    )
+  
 
-    const me = helper.createButton(
-      this,
-      this.GW / 2,
-      this.game.GH - 50,
-      "circle-button-brown",
-      () => this.searchMeAndUpdateTexts()
-    )
-    this.add.image(me.x, me.y, "glow")
+
   }
 
   createLeaderboardBars() {
     for (let i = 0; i < this.leaderboard_shift_value; i++) {
-      const bar = this.addScoreBar(this.first_bar_y).setOrigin(0.5, 0)
-      helper.setGameSize(bar, true)
+      const bar = this.addScoreBar(this.first_bar_y)
+     
       bar.y += i * bar.displayHeight
 
-      this.addAccountText(bar.y + bar.displayHeight / 2)
+     // this.addAccountText(bar.y + bar.displayHeight / 2)
       this.bars.push(bar)
     }
 
     for (let i = 1; i <= this.bars.length - 1; i += 2) {
       this.bars[i].setVisible(false)
     }
-    /*
-    const makeScoreBar = () => {
-      const bar = this.addScoreBar(this.game.GH / 2)
-      helper.setGameSize(bar, true)
-      this.bars.push(bar)
-      return bar
-    }
-
-    makeScoreBar()
-
-    for (let i = 1; i <= 3; i++) {
-      for (let j = -1; j <= 1; j += 2) {
-        const bar = makeScoreBar()
-        bar.y += i * bar.displayHeight * j
-      }
-    }
-
-    this.bars.sort((a, b) => a.y - b.y)
-    */
+   
   }
 
   createLeaderboardTexts() {
-    for (let i = 0; i < this.bars.length - 1; i++) {
-      this.addAccountText(this.bars[i].y)
+    for (let i = 0; i < this.bars.length; i++) {
+      this.texts.push(this.addAccountText(this.bars[i].y))
+      
     }
   }
 
-  async searchMeAndUpdateTexts() {
-    START_FETCHING_SCENE(this)
-
-    try {
-      const { rank } = await GET_LEVEL_SCORE_BY_NICKNAME({
-        level: this.level,
-        nickname: my_nickname,
-      })
-
-      let position_in_leaderboard = rank % this.leaderboard_shift_value
-
-      if (position_in_leaderboard === 0) {
-        // if mod === 0 the nickname should be placed in position which is mod value
-        position_in_leaderboard = this.leaderboard_shift_value
-      }
-      this.last_start_search_rank = rank - position_in_leaderboard + 1
-      this.last_stop_search_rank =
-        rank + this.leaderboard_shift_value - position_in_leaderboard
-
-      await this.searchRanksUpdateLastSearchAndUpdateTexts(0)
-    } catch {
-    } finally {
-      STOP_FETCHING_SCENE(this)
-    }
-  }
-
-  async getUsers(start, stop) {
-    this.last_start_search_rank = start
-    this.last_stop_search_rank = stop
-
-    return await GET_LEVEL_SCORES_AND_NICKNAMES({
-      level: this.level,
-      start_search_rank: start,
-      stop_search_rank: stop,
-    })
-  }
-
-  async getUsersAndUpdateTexts(sign) {
-    START_FETCHING_SCENE(this)
-    let shift = this.leaderboard_shift_value
-
-    if (sign === "-") {
-      shift = -shift
-    }
-    await this.searchRanksUpdateLastSearchAndUpdateTexts(shift) // to long function name
-    STOP_FETCHING_SCENE(this)
-  }
-
-  async searchRanksUpdateLastSearchAndUpdateTexts(shift) {
-    const data = await this.getUsers(
-      this.last_start_search_rank + shift,
-      this.last_stop_search_rank + shift
-    )
-
-    if (data.length > 0) {
-      // if exists next leaderboard page
-      this.updateTexts(data) // TODO !
-    } else {
-      // back to previous page if next not exists
-      this.last_start_search_rank -= shift
-      this.last_stop_search_rank -= shift
-    }
-  }
-
-  updateTexts(sorted_data) {
-    this.aura.setVisible(false)
-
-    this.texts.forEach((account_text, i) => {
-      if (!sorted_data[i]) {
-        sorted_data[i] = {
-          rank: "",
-          score: "",
-          nickname: "",
-        }
-      }
-
-      if (sorted_data[i].nickname === my_nickname) {
-        account_text.nickname.setColor(bar_text_config.my_nickname_color)
-        this.aura
-          .setPosition(account_text.nickname.x, account_text.nickname.y)
-          .setVisible(true)
-      } else {
-        account_text.nickname.setColor(bar_text_config.color)
-      }
-
-      account_text.rank.setText(sorted_data[i].rank)
-      account_text.nickname.setText(sorted_data[i].nickname)
-      account_text.score.setText(sorted_data[i].score)
-    })
-  }
 
   addAccountText(y) {
-    const account_text = {}
 
-    account_text.rank = this.add
+return {
+  rank : this.add
       .text(40, y, "", {
         ...bar_text_config,
-      })
-      .setOrigin(0, 0.5)
 
-    account_text.nickname = this.add
+      })
+      .setOrigin(0, 0.5).setDepth(1),
+
+    nickname : this.add
       .text(this.game.GW / 2, y, "", {
         ...bar_text_config,
       })
-      .setOrigin(0.5, 0.5)
+      .setOrigin(0.5, 0.5).setDepth(1),
 
-    account_text.score = this.add
+    score : this.add
       .text(this.GW - 40, y, "", {
         ...bar_text_config,
       })
-      .setOrigin(1, 0.5)
+      .setOrigin(1, 0.5).setDepth(1),
 
-    this.texts.push(account_text)
+
+      update:function({rank,nickname,score}){
+        this.rank.setText(rank)
+        this.nickname.setText(nickname)
+        this.score.setText(score)
+      },
+
+      setTextColor:function(color){
+        this.rank.setColor(color)
+        this.nickname.setColor(color)
+        this.score.setColor(color)
+   
+      }
+
+    }
+
   }
 
   addScoreBar(y) {
-    return this.add.image(this.GW / 2, y, "white-strap")
+    const bar = this.add.image(this.GW / 2, y, "general-1", this.lb_texture)
+    helper.setGameSize(bar, true).displayWidth -=30
+    return bar
   }
 }

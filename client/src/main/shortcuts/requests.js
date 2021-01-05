@@ -1,12 +1,13 @@
-import { getFunction, postFunction } from "../fetch-helper"
+import { getFunction, postFunction,fetchWithTimeout } from "../fetch-helper"
+import {SERVER_URL} from "../../config"
 
-export const GET_LEVEL_SCORES_AND_NICKNAMES = async (data) => {
-  const response = await postFunction(data, "getLevelScoresAndNicknames")
+export const GET_GAME_VERSION = async () => {
+  const response = await getFunction("getGameVersion")
   if (response.ok) return response.json()
 }
 
-export const GET_LEVEL_SCORE_BY_NICKNAME = async (data) => {
-  const response = await postFunction(data, "getLevelScoreByNickname")
+export const GET_ACCOUNT_SCORES = async (data) => {
+  const response = await postFunction(data, "getAccountScores")
   if (response.ok) return response.json()
 }
 
@@ -20,37 +21,56 @@ export const GET_CONFIGURATIONS = async () => {
   if (response.ok) return response.json()
 }
 
+export const GET_TOP_SCORES = async (data) => {
+  const response = await postFunction(data,"getTopScores")
+  if (response.ok) return response.json()
+}
+export const GET_RANK_FROM_SCORE = async (data) => {
+  const response = await postFunction(data,"getRankFromScore")
+  if (response.ok) return response.json()
+}
+
 export const CREATE_ACCOUNT = (data) => {
   return postFunction(data, "createAccount")
 }
 
-export const SAVE_NEW_SKIN = (data) => {
+export const SAVE_NEW_SKIN =  (data) => {
   return postFunction(data, "saveNewSkin")
 }
 
-export const POST_LEVEL_SCORE = async (data) => {
-  await postFunction(data, "postLevelScore")
+export const POST_LEVEL_SCORE = (data) => {
+  return  postFunction(data, "postLevelScore")
 }
 
-export const SAVE_MONEY = (data) => {
-  postFunction(data, "saveMoney")
+export const SAVE_MONEY =  (data) => {
+ return  postFunction(data, "saveMoney")
 }
 
-export const EQUIP_SKIN = (data) => {
-  postFunction(data, "equipSkin")
+export const EQUIP_SKIN =  (data) => {
+ return  postFunction(data, "equipSkin")
 }
 
-export const IS_ONLINE = () => {
-  return fetch("http://192.168.1.12:3001", {
-    // change to https://google.com
-    mode: "no-cors",
-  })
-    .then((response) => {
-      if (response.status != 200) {
-        return true
-      }
+
+export const IS_ONLINE = async () => {
+  try {
+    // it works only if the server is alive
+    const response = await fetch("https://www.google.com", { mode: "no-cors" })
+
+    if (response) return true
+  } catch {
+    return false
+  }
+}
+
+export const IS_SERVER_ALIVE = async () => {
+  try {
+  
+    const response = await fetchWithTimeout(`${SERVER_URL}/isServerAlive`,{
+      timeout: 5000
     })
-    .catch(() => {
-      return false
-    })
+    if (response.status === 200) return true
+  } catch {
+    return false
+  }
 }
+

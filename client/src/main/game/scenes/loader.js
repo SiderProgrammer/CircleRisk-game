@@ -1,20 +1,38 @@
+import { createBackground } from "../GUI-helper"
+import { GET_GAME_VERSION } from "../../shortcuts/requests"
+
+
+
 const imgPath = "./assets/img"
+const audioPath = "./assets/audio"
 
 export default class loader extends Phaser.Scene {
   constructor() {
     super("loader")
-    this.skins_amount = 3
+    this.skins_amount = 5
   }
-
+init(){
+  this.GAME_VERSION_PROMISE =  GET_GAME_VERSION();
+}
   loadImage(name, path) {
     this.load.image(name, `${imgPath}/${path}/${name}.png`)
   }
-
+  loadSound(name, path, extension) {
+    this.load.audio(name, `${audioPath}/${path}/${name}.${extension}`)
+  }
+  loadAtlas(name) {
+    this.load.atlas(
+      `${name}`,
+      `${imgPath}/${name}.png`,
+      `${imgPath}/${name}.json`
+    )
+  }
   backgrounds() {
+    this.loadImage("ranking-bg", "backgrounds")
     this.loadImage("menu-bg", "backgrounds")
     this.loadImage("levelSelect-bg", "backgrounds")
     this.loadImage("levelSelect-middle", "backgrounds")
-    this.loadImage("customize-bg", "backgrounds")
+
     this.loadImage("black-bg", "backgrounds")
 
     this.loadImage("basic-bg", "backgrounds")
@@ -29,31 +47,24 @@ export default class loader extends Phaser.Scene {
     this.loadImage("twins-bg", "backgrounds")
     this.loadImage("speed-bg", "backgrounds")
     this.loadImage("time-bg", "backgrounds")
-    this.loadImage("perfect-bg", "backgrounds")
+
     this.loadImage("many-bg", "backgrounds")
     this.loadImage("flower-bg", "backgrounds")
     this.loadImage("hell-bg", "backgrounds")
-    this.loadImage("leaderboard-bg", "backgrounds")
-  }
-  buttons() {
-    this.loadImage("pause-button", "buttons")
-    this.loadImage("play-button", "buttons")
 
-    this.loadImage("customize-button-big", "buttons")
-    this.loadImage("play-button-big", "buttons")
-
-    this.loadImage("arrow-button-blue", "buttons")
-    this.loadImage("customize-button", "buttons")
-    this.loadImage("home-button", "buttons")
-    this.loadImage("arrow-button", "buttons")
-    this.loadImage("levelSelect-button", "buttons")
-    this.loadImage("replay-button", "buttons")
-    this.loadImage("close-button", "buttons")
-    this.loadImage("next-button", "buttons")
-    this.loadImage("tick-button", "buttons")
-    this.loadImage("arrow-button-brown", "buttons")
-    this.loadImage("circle-button-brown", "buttons")
+    this.loadImage("unstable-bg", "backgrounds")
+    this.loadImage("pulsate-bg", "backgrounds")
+    this.loadImage("blind-bg", "backgrounds")
+    this.loadImage("sense-bg", "backgrounds")
+    this.loadImage("tiny-bg", "backgrounds")
+    this.loadImage("teleport-bg", "backgrounds")
+    this.loadImage("carousel-bg", "backgrounds")
+    this.loadImage("threeStep-bg", "backgrounds")
+    this.loadImage("oneStep-bg", "backgrounds")
+    this.loadImage("black-border", "backgrounds")
+  
   }
+
   sticks(i) {
     this.loadImage("stick_" + i, "sticks")
   }
@@ -64,90 +75,151 @@ export default class loader extends Phaser.Scene {
     this.loadImage("target_" + i, "targets")
     this.loadImage("targetToCatch_" + i, "targets")
   }
-  mix() {
-    this.loadImage("top-bar", "mix")
-    this.loadImage("shop-top-bar", "mix")
-    this.loadImage("instagram", "mix")
-    this.loadImage("geometrytrinity", "mix")
-    this.loadImage("coin", "mix")
-    this.loadImage("lock", "mix")
-    this.loadImage("level-locked", "mix")
-    this.loadImage("blue-strap", "mix")
-    this.loadImage("red-strap", "mix")
-    this.loadImage("purple-strap", "mix")
-    this.loadImage("blue-square", "mix")
-    this.loadImage("white-strap", "mix")
-    this.loadImage("perfect", "mix")
-    this.loadImage("star", "mix")
-    this.loadImage("ranking-icon", "mix")
-    this.loadImage("loading", "mix")
-    this.loadImage("glow", "mix")
 
-    this.loadImage("lb-eyes", "mix")
-    this.loadImage("lb-bubbles", "mix")
-    this.loadImage("lb-face", "mix")
-    this.loadImage("lb-aura", "mix")
-    this.loadImage("lb-strip", "mix")
+  loadAssets() {
+    this.backgrounds()
+    this.loadAtlas("targets")
+    this.loadAtlas("circles")
+    this.loadAtlas("sticks")
 
-    this.loadImage("level-select-difficulty-bar", "mix")
-    this.loadImage("level-select-score-bar", "mix")
-    this.loadImage("level-select-name-bar", "mix")
-
-    this.loadImage("black", "mix")
-    this.loadImage("red", "mix")
-
-    this.loadImage("thorns_up", "mix")
-    this.loadImage("thorns_sides", "mix")
-
-    this.loadImage("no_internet", "mix")
+    this.loadAtlas("levels-icons")
+    this.loadAtlas("buttons")
+    this.loadAtlas("general-2")
 
     this.load.atlas(
       "stars",
       `${imgPath}/mix/stars.png`,
       `${imgPath}/mix/stars.json`
     )
-  }
-  levelsIcons() {
-    this.loadImage("basic_icon", "levelsIcons")
-    this.loadImage("wind_icon", "levelsIcons")
-    this.loadImage("night_icon", "levelsIcons")
-    this.loadImage("snow_icon", "levelsIcons")
-    this.loadImage("reverse_icon", "levelsIcons")
-    this.loadImage("sun_icon", "levelsIcons")
-    this.loadImage("clock_icon", "levelsIcons")
-    this.loadImage("earthquake_icon", "levelsIcons")
-    this.loadImage("twins_icon", "levelsIcons")
-    this.loadImage("speed_icon", "levelsIcons")
-    this.loadImage("perfect_icon", "levelsIcons")
-    this.loadImage("invisible_icon", "levelsIcons")
-    this.loadImage("expanding_icon", "levelsIcons")
-    this.loadImage("many_icon", "levelsIcons")
-    this.loadImage("flower_icon", "levelsIcons")
-    this.loadImage("hell_icon", "levelsIcons")
-  }
-
-  preload() {
-    this.load.spritesheet("fingers", `${imgPath}/mix/fingers.png`, {
-      frameWidth: 239,
-      frameHeight: 354,
-    })
 
     this.load.atlas("colors", `${imgPath}/colors.png`, `${imgPath}/colors.json`)
+    this.load.atlas(
+      "particles",
+      `${imgPath}/particles.png`,
+      `${imgPath}/particles.json`
+    )
 
-    this.backgrounds()
-    this.buttons()
-    this.mix()
-    this.levelsIcons()
 
+    this.load.spritesheet("fingers", `${imgPath}/mix/fingers.png`, {
+      frameWidth: 240,
+      frameHeight: 354,
+    })
+    this.load.spritesheet("bird", `${imgPath}/bird.png`, {
+      frameWidth: 70,
+      frameHeight: 39,
+    })
+
+    /*
     for (let i = 1; i <= this.skins_amount; i++) {
       this.circles(i)
       this.sticks(i)
       this.targets(i)
     }
-    this.loadImage("menu-stick-blue", "sticks")
-    this.loadImage("menu-stick-yellow", "sticks")
+*/
+
+    this.load.image("pentagon", `${imgPath}/pentagon.png`)
+    this.load.image("flame", `${imgPath}/flame.png`)
+    this.loadImage("lock2", "mix")
+    this.loadImage("black", "mix")
+    this.loadImage("pentagon", "mix")
+    this.loadImage("pause-bg","mix")
+
+    this.loadImage("buttons-lose-bg", "mix2")
+    this.loadImage("score-lose-bg","mix2")
+
+    this.loadImage("lb-me-bar", "mix2")
+    this.loadImage("lb-strap", "mix2")
+    this.loadImage("lb-scores-bg", "mix2")
+    this.loadImage("lb-line", "mix2")
+    this.loadImage("ranking-icon", "mix2")
+
+
   }
-  create() {
-    this.scene.start("menu")
+
+  updateBar(percentage) {
+    this.scene.loading_bar.displayWidth = percentage * this.scene.game.GW
+  }
+  createGUI() {
+    createBackground(this, "loading-bg")
+
+    this.loading_bar = this.add
+      .image(this.game.GW / 2, this.game.GH - 20, "general-1", "loading-bar")
+      .setOrigin(0.5, 1)
+    this.add.image(this.game.GW / 2, 60, "general-1", "pipcompany")
+    this.add.image(
+      this.game.GW / 2,
+      this.game.GH * 0.3,
+      "general-1",
+      "gentelman"
+    )
+    this.add
+      .image(
+        this.game.GW + 200,
+        this.game.GH + 90,
+        "general-1",
+        "loading-circle-arm"
+      )
+      .setOrigin(1, 1)
+  }
+  loadAudio() {
+    this.loadSound("tap", "sound", "mp3")
+    this.loadSound("perfect_1", "sound", "ogg")
+    this.loadSound("perfect_2", "sound", "ogg")
+
+    this.loadSound("next_level_sound_1", "sound", "ogg")
+    this.loadSound("next_level_sound_2", "sound", "ogg")
+
+    this.loadSound("start_sound", "sound", "mp3")
+    // this.loadSound("restart_sound", "sound", "ogg")
+    this.loadSound("new_level_sound", "sound", "ogg")
+    this.loadSound("buy_sound", "sound", "ogg")
+    this.loadSound("menu_theme", "music", "ogg")
+    this.loadSound("button", "sound", "ogg")
+    this.loadSound("change_object", "sound", "ogg")
+    this.loadSound("die", "sound", "mp3")
+  }
+
+  addAudio() {
+    this.game.audio = { sounds: {}, music: {} }
+
+    const addMusic = (name) => {
+      return (this.game.audio.music[name] = this.sound.add(name))
+    }
+
+    addMusic("menu_theme").setLoop(true)
+
+    const addSound = (name) => {
+      return (this.game.audio.sounds[name] = this.sound.add(name))
+    }
+    //addSound([tap,perfect_1,perfect_2]) // i could do like that but i have to set volume some sounds
+    addSound("tap").setVolume(0.8)
+    addSound("perfect_1").setVolume(0.75)
+    addSound("perfect_2").setVolume(0.75)
+    addSound("start_sound").setVolume(0.9)
+    addSound("new_level_sound")
+    // addSound("restart_sound")
+    addSound("buy_sound")
+    addSound("die").setVolume(0.25)
+    addSound("button")
+    addSound("change_object")
+
+    addSound("next_level_sound_1")
+    addSound("next_level_sound_2")
+  }
+
+  preload() {
+    if(window.AndroidFullScreen)AndroidFullScreen.immersiveMode()
+    this.createGUI()
+    this.load.on("progress", this.updateBar)
+    this.loadAudio()
+    this.loadAssets()
+  }
+
+  async create() {
+    this.addAudio()
+
+
+      this.scene.start("menu",{GAME_VERSION_PROMISE:this.GAME_VERSION_PROMISE})
+    
   }
 }

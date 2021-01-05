@@ -1,189 +1,158 @@
+const config = require("./constants")
+
 module.exports = [
   {
     page_color: "red",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 35,
       tint: "0x00FF00",
       name: "basic",
-      
     },
     config: {
       background: "basic-bg",
-      rotation_speed: 1,
-      acceleration: 0.01,
-      targets_amount: 8,
-      ball_distance: 175,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
+      rotation_speed: 1.4,
+      acceleration: 0.06,
     },
   },
 
-  
   {
     info: {
       score_to_next_level: 30,
-      tint: "0xFF00FF",
-      name: "night",
-      
+      tint: "0xFF6E00",
+      name: "wind",
     },
     config: {
-      background: "night-bg",
-      rotation_speed: 1,
-      acceleration: 0.03,
-      targets_amount: 8,
-      ball_distance: 130,
-      additional_angle: 22.5,
-      starting_target: 1,
-    },
-  },
-
-  {
-    info: {
-      score_to_next_level: 40,
-      tint: "0xF0F0F0",
-      name: "snow",
-      
-    },
-    config: {
-      background: "snow-bg",
-      rotation_speed: 1,
-      acceleration: 0.04,
-      targets_amount: 8,
-      ball_distance: 100,
-      additional_angle: 22.5,
-      starting_target: 1,
-    },
-  },
-  {
-    info: {
-      score_to_next_level: 50,
-      tint: "0xFFF000",
-      name: "reverse",
-      
-    },
-    config: {
-      background: "reverse-bg",
-      rotation_speed: 1,
+      background: "autumn-bg",
+      ...config,
+      targets_speed: 0.9,
+      rotation_speed: 1.4,
       acceleration: 0.05,
-      targets_amount: 8,
-      ball_distance: 130,
-      additional_angle: 22.5,
-      starting_target: 6,
     },
   },
   {
     info: {
       score_to_next_level: 20,
-      tint: "0xFF6E00",
-      name: "wind",
-      
+      tint: "0xFF00FF",
+      name: "night",
     },
     config: {
-      background: "autumn-bg",
-      rotation_speed: 1,
-      acceleration: 0.02,
-      targets_amount: 8,
-      ball_distance: 110,
-      additional_angle: 22.5,
-      starting_target: 1,
-      targets_speed: 0.3,
+      background: "night-bg",
+      ...config,
+      target_rotate_speed: 1,
+      rotation_speed: 1.3,
+      acceleration: 0.04,
+    },
+  },
+
+  {
+    info: {
+      score_to_next_level: 25,
+      tint: "0xF0F0F0",
+      name: "snow",
+    },
+    config: {
+      rotation_speed_change: {
+        min: 0.5,
+        max: 3,
+      },
+      background: "snow-bg",
+      ...config,
+    },
+  },
+  {
+    info: {
+      score_to_next_level: 25,
+      tint: "0xFFF000",
+      name: "reverse",
+    },
+    config: {
+      canvas_color: "00ff00",
+      background: "reverse-bg",
+      ...config,
+      starting_target: 6,
+      rotation_speed: 1.4,
+      acceleration: 0.06,
+    },
+  },
+  {
+    info: {
+      score_to_next_level: 20,
+      tint: "0x0000FF",
+      name: "sun",
+    },
+    config: {
+      background: "sunny-bg",
+      ...config,
+      target_rotate_speed: 1,
+      rotation_speed: 1.1,
+      acceleration: 0.03,
+    },
+  },
+  {
+    info: {
+      score_to_next_level: 35,
+      tint: "0x06E0FF",
+      name: "expand",
+    },
+    config: {
+      background: "star-bg",
+      ...config,
+      ball_distance: 116,
+      rotation_speed: 1.2,
+      acceleration: 0.03,
     },
   },
 
   {
     info: {
       score_to_next_level: 60,
-      tint: "0x0000FF",
-      name: "sun",
-      
-    },
-    config: {
-      background: "sunny-bg",
-      rotation_speed: 0.2,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 130,
-      additional_angle: 22.5,
-      starting_target: 1,
-      target_rotate_speed: 0.5,
-    },
-  },
-  {
-    info: {
-      score_to_next_level: 70,
-      tint: "0x06E0FF",
-      name: "expanding",
-      
-    },
-    config: {
-      background: "star-bg",
-      rotation_speed: 1,
-      acceleration: 0.07,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
-    },
-  },
-
-  {
-    info: {
-      score_to_next_level: 80,
       tint: "0x06E0FF",
       name: "earthquake",
-      
     },
     config: {
+      canvas_color: "add8e6",
       background: "earthquake-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
+      rotation_speed: 1.2,
+      acceleration: 0.03,
+      // time_left: 10, //in seconds
     },
   },
   {
     info: {
-      score_to_next_level: 90,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
       name: "twins",
-      
     },
     config: {
       background: "twins-bg",
-      rotation_speed: 1,
+      ...config,
+      starting_target: 6,
+      rotation_speed: 1.4,
       acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
     },
   },
   {
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 18,
       tint: "0x06E0FF",
       name: "clock",
-      
     },
     config: {
       background: "time-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
-      time_left: 10, //in seconds
+      ...config,
+      time_left: 15, //in seconds
+      rotation_speed: 1.1,
+      acceleration: 0.03,
     },
   },
+  /*
   {
     info: {
       score_to_next_level: 100,
       tint: "0x06E0FF",
       name: "perfect",
-      
     },
     config: {
       background: "perfect-bg",
@@ -195,206 +164,207 @@ module.exports = [
       starting_target: 1,
     },
   },
+  */
   {
     info: {
-      score_to_next_level: 110,
+      score_to_next_level: 30,
       tint: "0x06E0FF",
-      name: "invisible",
-      
+      name: "carousel",
+    },
+    config: {
+      background: "carousel-bg",
+      ...config,
+      targets_speed: 2,
+      rotation_speed: 1.4,
+      acceleration: 0.06,
+    },
+  },
+  {
+    info: {
+      score_to_next_level: 60,
+      tint: "0x06E0FF",
+      name: "chameleon",
     },
     config: {
       background: "cosmo-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
+      teleport_value: {
+        min: -1,
+        max: -2,
+      },
+      rotation_speed: 1.25,
+      acceleration: 0.04,
     },
   },
 
   {
     info: {
-      score_to_next_level: 130,
+      score_to_next_level: 35,
       tint: "0x06E0FF",
-      name: "many",
-      
+      name: "confusion",
     },
     config: {
       background: "many-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
+      rotation_speed: 1.15,
     },
   },
 
   {
     info: {
-      score_to_next_level: 140,
+      score_to_next_level: 45,
       tint: "0x06E0FF",
       name: "speed",
-      
     },
     config: {
       background: "speed-bg",
-      rotation_speed: 3,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 90,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
+      rotation_speed: 5,
+      acceleration: 0.04,
     },
   },
 
   {
     info: {
-      score_to_next_level: 150,
+      score_to_next_level: 55,
       tint: "0x06E0FF",
       name: "flower",
-      
     },
     config: {
       background: "flower-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 110,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
+      ball_distance: 116,
+      rotation_speed: 1.2,
+      acceleration: 0.05,
     },
   },
   {
     info: {
-      score_to_next_level: 160,
+      score_to_next_level: 25,
       tint: "0x06E0FF",
       name: "teleport",
-      
     },
     config: {
       background: "teleport-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
       teleport_value: {
         min: -1,
         max: -3,
       },
+      rotation_speed: 1.3,
+      acceleration: 0.04,
+      targets_amount: 10,
+      additional_angle: 0,
+      starting_target: 2,
     },
   },
 
   {
     info: {
-      score_to_next_level: 170,
+      score_to_next_level: 30,
       tint: "0x06E0FF",
-      name: "suprise",
-      
+      name: "unstable",
     },
     config: {
-      background: "teleport-bg",
-      rotation_speed: 1,
+      background: "unstable-bg",
+
       rotation_speed_change: {
-        min: 0.5,
-        max: 3.5,
+        min: 1,
+        max: 3.75,
       },
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
+      ball_distance: 116,
     },
   },
   {
     info: {
-      score_to_next_level: 180,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
-      name: "pulsating",
-      
+      name: "pulsate",
     },
     config: {
-      background: "teleport-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      background: "pulsate-bg",
+      ...config,
+      rotation_speed: 1.3,
+      acceleration: 0.035,
     },
   },
   {
     info: {
-      score_to_next_level: 190,
+      score_to_next_level: 40,
       tint: "0x06E0FF",
       name: "blind",
-      
     },
     config: {
-      background: "teleport-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      background: "blind-bg",
+      ...config,
     },
   },
 
   {
     info: {
-      score_to_next_level: 200,
+      score_to_next_level: 10,
       tint: "0x06E0FF",
       name: "sense",
-      
     },
     config: {
-      background: "teleport-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      background: "sense-bg",
+      ...config,
+      starting_target: 6,
     },
   },
 
   {
     info: {
-      score_to_next_level: 210,
+      score_to_next_level: 15,
       tint: "0x06E0FF",
       name: "tiny",
-      
     },
     config: {
-      background: "teleport-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      background: "tiny-bg",
+      ...config,
+      rotation_speed: 2.2,
+      acceleration: 0.02,
     },
   },
 
   {
     info: {
-      score_to_next_level: 220,
+      score_to_next_level: 40,
       tint: "0x06E0FF",
       name: "hell",
-      
     },
     config: {
       background: "hell-bg",
-      rotation_speed: 1,
-      acceleration: 0.06,
-      targets_amount: 8,
-      ball_distance: 135,
-      additional_angle: 22.5,
-      starting_target: 1,
+      ...config,
+      time_left: 10,
+    },
+  },
+  {
+    info: {
+      score_to_next_level: 35,
+      tint: "0x06E0FF",
+      name: "oneStep",
+    },
+    config: {
+      canvas_color: "add8e6",
+      background: "oneStep-bg",
+      ...config,
+      rotation_speed: 1.1,
+      acceleration: 0.15,
+    },
+  },
+
+  {
+    info: {
+      score_to_next_level: 55,
+      tint: "0x06E0FF",
+      name: "threeStep",
+    },
+    config: {
+      background: "threeStep-bg",
+      ...config,
+      rotation_speed: 2,
     },
   },
 ]

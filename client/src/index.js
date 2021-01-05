@@ -1,11 +1,16 @@
 import Phaser from "./main/lib/phaser-full"
 
-import manageOnlineStatus from "./main/online-status"
 import config from "./main/game/core/game-config"
 import accountCreator from "./main/account-creator"
 import { getProgress } from "./main/shortcuts/save.js"
+import bindPrototypeExtendedFunctions from "./main/prototypes"
 
+bindPrototypeExtendedFunctions()
 window.main_font = "luckiestGuy"
+
+window.CLIENT_GAME_VERSION = 1;
+window.ADS_COUNT = 0;
+window.is_server_alive = true;
 //localStorage.clear()
 export const startGame = () => {
   const game = new Phaser.Game(config)
@@ -13,9 +18,8 @@ export const startGame = () => {
   game.GH = config.height
 
   if (!game.device.os.desktop) game.input.mouse.enabled = false
-  manageOnlineStatus()
 }
 
-window.onload = () => {
-  getProgress() === null ? accountCreator() : startGame()
-}
+window.onload = () => getProgress() === null ? accountCreator() : startGame()
+  
+
