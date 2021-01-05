@@ -28,19 +28,7 @@ module.exports = [
     },
   },
 
-  {
-    color: "red_3",
-    info: {
-      score_to_next_level: 10,
-      tint: "0x06E0FF",
-      name: "threeTargets-",
-    },
-    config: {
-      background: "carousel-bg",
-      ...config,
-    
-    },
-  },
+  
 
   {
     color: "gray_1",
@@ -97,6 +85,25 @@ module.exports = [
       acceleration: 0.04,
     },
   },
+
+  {
+    color: "white_1",
+    info: {
+      score_to_next_level: 80,
+      tint: "0x06E0FF",
+      name: "threeTargets-",
+    },
+    config: {
+      background: "carousel-bg",
+      ...config,
+    targets_amount:3,
+    ball_distance:450,
+    starting_target:0,
+  additional_angle:30,
+  rotation_speed:1.2
+    },
+  },
+
   {
     color: "yellow_4",
     info: {

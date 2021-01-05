@@ -784,8 +784,43 @@ if(condition_1 || condition_2 || !sign){
       this.hideHardLevelsOrnaments(elements,sign)
       this.hideThornBorder(sign)
     }
+
+    if(this.isMysteryLevel(this.current_page_number)){
+      this.updatePageToMystery(elements)
+    }else if(this.levelEarlierWasMystery(sign)){
+      this.updatePageToNormal()
+    }
   }
 
+  updatePageToMystery(elements){
+    elements.ranking_button.setVisible(false);
+    
+    elements.name.setText("?")
+    elements.icon.setFrame("mystery-icon")
+    this.home_button.setFrame("home-button-big-mystery") // should be without big
+    this.arrows.forEach(arrow=>arrow.setFrame("arrow-button-mystery"))
+     this.updateBackgroundColor()
+  }
+updatePageToNormal(){
+  this.home_button.setFrame("home-button") // should be without big
+  this.arrows.forEach(arrow=>arrow.setFrame("arrow-button"))
+}
+  levelEarlierWasMystery(sign){
+    
+    let page_num_before = this.current_page_number
+    if(sign === "-"){
+      page_num_before--
+    }
+    else {
+      page_num_before++ 
+    }
+    if(page_num_before === -1 || page_num_before === levelsConfiguration.length) return false
+
+return this.isMysteryLevel(page_num_before)
+  }
+  isMysteryLevel(page_number){
+  return  levelsConfiguration[page_number].info.name.slice(-1) === "-"
+  }
   showHardLevelsOrnaments({ score_bar, name_bar },sign) {
 
     this.showSpikes(sign)
@@ -833,12 +868,20 @@ if(condition_1 || condition_2 || !sign){
       score_to_next_level: level_object.info.score_to_next_level,
     })
 
+    
     const started_scene = this.scene.get(level_to_start)
     started_scene.is_first_try = true
+
     started_scene.scene
-      .launch("lose", { scene: started_scene })
+      .launch("lose", {
+         scene: started_scene
+
+        })
+
       .bringToTop("lose")
       .sleep("lose")
+
+
 
     this.scene.sleep("menu")
     this.scene.sleep()

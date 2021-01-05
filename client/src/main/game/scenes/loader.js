@@ -119,6 +119,7 @@ init(){
 
     this.load.image("pentagon", `${imgPath}/pentagon.png`)
     this.load.image("flame", `${imgPath}/flame.png`)
+
     this.loadImage("lock2", "mix")
     this.loadImage("black", "mix")
     this.loadImage("pentagon", "mix")
@@ -126,13 +127,11 @@ init(){
 
     this.loadImage("buttons-lose-bg", "mix2")
     this.loadImage("score-lose-bg","mix2")
-
     this.loadImage("lb-me-bar", "mix2")
     this.loadImage("lb-strap", "mix2")
     this.loadImage("lb-scores-bg", "mix2")
     this.loadImage("lb-line", "mix2")
     this.loadImage("ranking-icon", "mix2")
-
 
   }
 

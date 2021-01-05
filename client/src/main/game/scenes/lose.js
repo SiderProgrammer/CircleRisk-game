@@ -276,6 +276,12 @@ this.stats.perfect = [this.purple_strap,a,b]
 
     const strap = this.add.image(a.x, a.y, "lb-strap")
 
+this.hideLBbutton = () => {
+  a.setVisbile(false)
+  strap.setVisible(false)
+}
+
+
     if(!window.is_lb_button_clicked){
       this.lb_button_tween =  this.tweens.add({
         targets:a,
@@ -435,6 +441,10 @@ this.time.addEvent({
       })
     })
     }
+  }
+
+  h(){
+    this.hideLBbutton()
   }
   showNextLevelButton() {
     this.next_level_button.setVisible(true).setActive(true)

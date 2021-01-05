@@ -23,6 +23,7 @@ import Hell_Easy from "../../levels/hell/hell-easy"
 import Carousel_Easy from "../../levels/carousel/carousel-easy"
 import OneStep_Easy from "../../levels/1-step/1-step-easy"
 import ThreeStep_Easy from "../../levels/3-step/3-step-easy"
+import ThreeTargets_Easy from "../../levels/threeTargets/threeTargets-easy"
 
 export default [
   Basic_Easy,
@@ -50,4 +51,5 @@ export default [
   Carousel_Easy,
   OneStep_Easy,
   ThreeStep_Easy,
+  ThreeTargets_Easy
 ]
