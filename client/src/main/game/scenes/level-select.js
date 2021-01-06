@@ -33,10 +33,10 @@ export default class levelSelect extends Phaser.Scene {
     this.spikes = this.createSpikes()
   
     this.thorns = this.createThornBorder()
-
-    this.updatePage(this.current_page)
-    this.createChangePageButtons()
+   this.createChangePageButtons()
     this.createHomeButton()
+    this.updatePage(this.current_page)
+ 
 
     this.resetPositionsToHidden()
   }
@@ -47,9 +47,12 @@ export default class levelSelect extends Phaser.Scene {
   }
   
   initPageNumber() {
-    let index = window.progress.levels_scores.indexOf(-1) -1 
+    let index = window.progress.levels_scores.indexOf(-1) -1 // if all levels unlocked
     
-    if(index === -2) index = window.progress.levels_scores.length -1
+    if(index === -2) index = window.progress.levels_scores.length -1// if all levels unlocked
+
+    let check_if_new_levels_update = window.progress.levels_scores.indexOf(0)
+    if(check_if_new_levels_update !== -1) index = check_if_new_levels_update
     return  index //getProgress().levels_scores.length - 1 // 0 //  page
   }
 
@@ -800,10 +803,13 @@ if(condition_1 || condition_2 || !sign){
     this.home_button.setFrame("home-button-big-mystery") // should be without big
     this.arrows.forEach(arrow=>arrow.setFrame("arrow-button-mystery"))
      this.updateBackgroundColor()
+
+     this.scene.get("menu").setBubblesDarkMode()
   }
 updatePageToNormal(){
   this.home_button.setFrame("home-button") // should be without big
   this.arrows.forEach(arrow=>arrow.setFrame("arrow-button"))
+    this.scene.get("menu").setBubblesWhiteMode()
 }
   levelEarlierWasMystery(sign){
     

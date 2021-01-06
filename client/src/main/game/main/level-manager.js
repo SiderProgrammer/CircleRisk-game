@@ -384,7 +384,9 @@ if(window.admob) admob.banner.hide()
       this.score >= this.scene.score_to_next_level
     )
   }
-
+isMysteryLevel(){
+  return this.scene.scene.key.split("_")[0].slice(-1) === "-"
+}
   gameOver() {
    if(!this.game_started) return;
 
@@ -415,7 +417,7 @@ if(window.admob) admob.banner.hide()
     this.scene.input.removeAllListeners()
     this.game_started = false
 
-    this.progress.money += this.score // earned money
+   
 
     let is_any_update = false
 
@@ -464,12 +466,14 @@ if(window.admob) admob.banner.hide()
       this.progress.levels_scores[this.scene.level - 1]
     )
 
-    window.progress = this.progress // saveProgress(this.progress)
+   
     
-if(this.score > 0){
+if(this.score > 0 && !this.isMysteryLevel()){
+   this.progress.money += this.score // earned money
    SAVE_MONEY({ money: this.progress.money, nickname: my_nickname }).catch(()=>checkConnection(this.scene))
 }
    
+ window.progress = this.progress // saveProgress(this.progress)
 
     is_any_update && this.scene.scene.get("levelSelect").updateVisiblePage()
 

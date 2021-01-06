@@ -34,7 +34,7 @@ init(){
     this.loadImage("levelSelect-middle", "backgrounds")
 
     this.loadImage("black-bg", "backgrounds")
-
+ this.loadImage("gray_1", "backgrounds")
     this.loadImage("basic-bg", "backgrounds")
     this.loadImage("autumn-bg", "backgrounds")
     this.loadImage("sunny-bg", "backgrounds")

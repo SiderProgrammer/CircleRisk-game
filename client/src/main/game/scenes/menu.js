@@ -110,6 +110,15 @@ export default class menu extends Phaser.Scene {
     this.scene.sleep("customize")
   
   }
+setBubblesDarkMode(){
+  this.bubbles.forEach(bubble=>bubble.setFrame("dark-bubble"))
+  this.bubbles_mode = "dark"
+}
+
+setBubblesWhiteMode(){
+    this.bubbles.forEach(bubble=>bubble.setFrame("bubble"))
+  this.bubbles_mode = "white"
+}
 
   updateBubbles() {
     this.bubbles.forEach((bubble) => {
@@ -247,6 +256,8 @@ export default class menu extends Phaser.Scene {
 
   createBubble(x, y) {
     const bubble = this.add.image(x, y, "general-2", "bubble")
+    if(this.bubbles_mode === "dark") bubble.setFrame("dark-bubble")
+
     this.bubbles.push(bubble)
 
     bubble.fly_direction = 1
@@ -535,7 +546,7 @@ export default class menu extends Phaser.Scene {
 
   async restoreProgress() {
     window.my_nickname = getProgress().nickname
- 
+  
     window.progress = await GET_ACCOUNT_PROGRESS({ nickname: my_nickname })
 
     if(!window.progress) return

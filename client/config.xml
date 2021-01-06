@@ -17,6 +17,10 @@
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="cordova-plugin-fullscreen" />
 
+    <plugin name="cordova-admob-sdk" spec="./plugins/cordova-admob-sdk">
+    <variable name="PLAY_SERVICES_VERSION" value = "11.0.4"/>
+    </plugin>
+
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />

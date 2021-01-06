@@ -8,7 +8,6 @@ import bindPrototypeExtendedFunctions from "./main/prototypes"
 bindPrototypeExtendedFunctions()
 window.main_font = "luckiestGuy"
 
-window.CLIENT_GAME_VERSION = 1;
 window.ADS_COUNT = 0;
 window.is_server_alive = true;
 window.is_lb_button_clicked = false;

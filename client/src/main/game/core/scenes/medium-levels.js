@@ -22,6 +22,8 @@ import Carousel_Medium from "../../levels/carousel/carousel-medium"
 import Hell_Medium from "../../levels/hell/hell-medium"
 import OneStep_Medium from "../../levels/1-step/1-step-medium"
 import ThreeStep_Medium from "../../levels/3-step/3-step-medium"
+import ThreeTargets_Medium from "../../levels/threeTargets/threeTargets-medium"
+import Point_Medium from "../../levels/point/point-medium"
 
 export default [
   Wind_Medium,
@@ -48,4 +50,6 @@ export default [
   Hell_Medium,
   OneStep_Medium,
   ThreeStep_Medium,
+  ThreeTargets_Medium,
+  Point_Medium
 ]

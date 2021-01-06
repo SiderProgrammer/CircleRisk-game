@@ -11,6 +11,7 @@ export default class Lose extends Phaser.Scene {
     this.level_scene = data.scene
     this.are_buttons_active = false
     this.scores_margin_point_x = this.game.GW/2 + 80
+
   }
   create() {
     this.stats = []
@@ -245,6 +246,10 @@ this.stats.perfect = [this.purple_strap,a,b]
     return b
   }
 
+isMysteryLevel(){
+  return this.level_scene.scene.key.split("_")[0].slice(-1) === "-"
+}
+
   createButtons() {
     const a = createButton(
       this,
@@ -276,16 +281,16 @@ this.stats.perfect = [this.purple_strap,a,b]
 
     const strap = this.add.image(a.x, a.y, "lb-strap")
 
-this.hideLBbutton = () => {
-  a.setVisbile(false)
+if(this.isMysteryLevel()){
+ a.setVisible(false)
   strap.setVisible(false)
 }
-
+ 
 
     if(!window.is_lb_button_clicked){
       this.lb_button_tween =  this.tweens.add({
         targets:a,
-        scale:1.1,
+        scale:1.15,
         duration:600,
         yoyo:true,
         repeat:-1,

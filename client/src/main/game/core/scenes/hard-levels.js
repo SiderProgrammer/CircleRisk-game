@@ -22,6 +22,8 @@ import Hell_Hard from "../../levels/hell/hell-hard"
 import Carousel_Hard from "../../levels/carousel/carousel-hard"
 import OneStep_Hard from "../../levels/1-step/1-step-hard"
 import ThreeStep_Hard from "../../levels/3-step/3-step-hard"
+import ThreeTargets_Hard from "../../levels/threeTargets/threeTargets-hard"
+import Point_Hard from "../../levels/point/point-hard"
 /*
 import Perfect_Hard from "../../levels/perfect/perfect-hard"
 */
@@ -51,6 +53,8 @@ export default [
   Carousel_Hard,
   OneStep_Hard,
   ThreeStep_Hard,
+  ThreeTargets_Hard,
+  Point_Hard
   /*
   Perfect_Hard,
   */

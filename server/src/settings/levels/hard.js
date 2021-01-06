@@ -16,19 +16,7 @@ module.exports = [
     },
   },
 
-  {
-    color: "red_3",
-    info: {
-      score_to_next_level: 10,
-      tint: "0x06E0FF",
-      name: "threeTargets-",
-    },
-    config: {
-      background: "carousel-bg",
-      ...config,
-    
-    },
-  },
+  
 
   {
     info: {
@@ -117,6 +105,38 @@ module.exports = [
       acceleration:0.06,
       ball_distance:116,
       
+    },
+  },
+  {
+    color: "white_1",
+    info: {
+      score_to_next_level: 999,
+
+      name: "point-",
+    },
+    config: {
+      background: "gray_1",
+      ...config,
+       targets_amount:1,
+      starting_target:0
+    },
+  },
+  {
+    color: "white_1",
+    info: {
+      score_to_next_level: 40,
+      tint: "0x06E0FF",
+      name: "threeTargets-",
+    },
+    config: {
+      background: "gray_1",
+      ...config,
+    targets_amount:3,
+    ball_distance:350,
+    starting_target:0,
+    acceleration:0.1,
+  additional_angle:30,
+  rotation_speed:1.5
     },
   },
 
@@ -253,10 +273,11 @@ module.exports = [
     config: {
       background: "flower-bg",
       ...config,
-      rotation_speed_change: {
-        min: 0.5,
-        max: 3.5,
-      },
+    rotation_speed:1,
+       target_rotate_speed: -1,
+ targets_rotate_acceleration:-0.1,
+ball_distance:116,
+
     },
   },
   {
@@ -310,7 +331,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 1,
+      score_to_next_level: 35,
       tint: "0x06E0FF",
       name: "blind",
     },

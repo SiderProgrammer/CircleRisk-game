@@ -14,6 +14,8 @@ module.exports = [
     },
   },
 
+  
+
   {
     color: "red_3",
     info: {
@@ -89,12 +91,12 @@ module.exports = [
   {
     color: "white_1",
     info: {
-      score_to_next_level: 80,
+      score_to_next_level: 60,
       tint: "0x06E0FF",
       name: "threeTargets-",
     },
     config: {
-      background: "carousel-bg",
+      background: "gray_1",
       ...config,
     targets_amount:3,
     ball_distance:450,
@@ -121,7 +123,7 @@ module.exports = [
   {
     color: "yellow_3",
     info: {
-      score_to_next_level: 25,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
       name: "tiny",
     },
@@ -180,6 +182,21 @@ module.exports = [
       ball_distance: 116,
       rotation_speed: 1.15,
       acceleration: 0.035,
+    },
+  },
+
+   {
+    color: "white_1",
+    info: {
+      score_to_next_level: 300,
+
+      name: "point-",
+    },
+    config: {
+      background: "gray_1",
+      ...config,
+      targets_amount:1,
+      starting_target:0
     },
   },
 

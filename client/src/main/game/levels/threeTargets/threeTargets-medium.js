@@ -1,9 +1,9 @@
 import Manager from "../../main/level-manager.js"
 import OneStepFunctionsManager from "../1-step/functions"
 
-export default class ThreeTargets_Easy extends Phaser.Scene {
+export default class ThreeTargets_Medium extends Phaser.Scene {
   constructor() {
-    super("ThreeTargets-_Easy")
+    super("ThreeTargets-_Medium")
   }
 
   init(config) {

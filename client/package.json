@@ -50,7 +50,10 @@
       "cordova-plugin-admob-free": {
         "ADMOB_APP_ID": "ca-app-pub-9411864465298475~4765400469"
       },
-      "cordova-plugin-androidx": {}
+      "cordova-plugin-androidx": {},
+      "cordova-admob-sdk": {
+        "PLAY_SERVICES_VERSION": "17.5.0"
+      }
     },
     "platforms": [
       "android",

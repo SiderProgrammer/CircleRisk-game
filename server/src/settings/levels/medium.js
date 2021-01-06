@@ -17,19 +17,36 @@ module.exports = [
   },
 
   {
-    color: "red_3",
+    color: "white_1",
     info: {
-      score_to_next_level: 10,
+      score_to_next_level: 100,
       tint: "0x06E0FF",
       name: "threeTargets-",
     },
     config: {
-      background: "carousel-bg",
+      background: "gray_1",
       ...config,
-    
+    targets_amount:3,
+    ball_distance:450,
+    starting_target:0,
+  additional_angle:30,
+  rotation_speed:1.2
     },
   },
+  {
+    color: "white_1",
+    info: {
+      score_to_next_level: 600,
 
+      name: "point-",
+    },
+    config: {
+      background: "gray_1",
+      ...config,
+       targets_amount:1,
+      starting_target:0
+    },
+  },
   {
     info: {
       score_to_next_level: 30,

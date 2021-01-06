@@ -1,9 +1,8 @@
 import Manager from "../../main/level-manager.js"
-import OneStepFunctionsManager from "../1-step/functions"
-
-export default class ThreeTargets_Easy extends Phaser.Scene {
+import PointFunctionsManager from "./functions"
+export default class Point_Easy extends Phaser.Scene {
   constructor() {
-    super("ThreeTargets-_Easy")
+    super("Point-_Easy")
   }
 
   init(config) {
@@ -12,24 +11,22 @@ export default class ThreeTargets_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.oneStepFunctionsManager = new OneStepFunctionsManager(this)
-  
+this.pointFunctionsManager = new PointFunctionsManager(this)
   }
 
   create() {
     this.manager.create()
 
     this.manager.createGUI()
-    
+  
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.swapTargetToTheNearset()
     this.manager.setNewTarget()
-
-    this.manager.centerTargets()
+this.swapTargetToTheNearset()
+    this.manager.target_array[0].setPosition(this.game.GW/2,this.game.GH/2)
     this.manager.showTargets()
     this.manager.createStick()
-    this.manager.stick.setVisible(false)
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
@@ -42,7 +39,7 @@ export default class ThreeTargets_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-  swapTargetToTheNearset(){
-    this.oneStepFunctionsManager.swapTargetToTheNearset()
-}
+   swapTargetToTheNearset(){
+       this.pointFunctionsManager.swapTargetToTheNearset()
+   }
 }
