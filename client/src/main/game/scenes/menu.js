@@ -54,6 +54,8 @@ export default class menu extends Phaser.Scene {
       START_FETCHING_SCENE(this)
       checkConnection(this)
       this.fetchFromServerAndLaunchScenes()
+     
+
     }
   }
 
@@ -73,6 +75,8 @@ export default class menu extends Phaser.Scene {
 
     this.animateShowMenu()
     this.add.text(5,5,"BETA",{font:"30px LuckiestGuy"}).setOrigin(0,0)
+  
+    
   }
 
   update() {
@@ -80,6 +84,7 @@ export default class menu extends Phaser.Scene {
   }
 
   async animateShowMenu() {
+    this.setAnimatedObjectsActive()
     this.is_hidden = false;
     const ease = "Sine"
 
@@ -88,6 +93,7 @@ export default class menu extends Phaser.Scene {
 
     await this.showPlayButton(ease)
     this.showBottomButtons(ease)
+   
   }
 
   async animateHideMenu() {
@@ -97,18 +103,46 @@ export default class menu extends Phaser.Scene {
     this.hideInstagram()
     await this.hideButtonsAndLogo(ease)
     this.resetPositionsToHidden()
+    this.setAnimatedObjectUnactive()
     //   return new Promise((resolve) => resolve())
   }
+setAnimatedObjectUnactive(){
+  [this.instagram_button,
+    this.customize_button,
+          this.sound_button,
+          this.play_button,
+          this.music_button,
+          this.logo,
+  ]
+  .forEach(o=>o.setVisible(false).setActive(false))
+
+}
+
+setAnimatedObjectsActive(){
+  [this.instagram_button,
+    this.customize_button,
+          this.sound_button,
+          this.play_button,
+          this.music_button,
+          this.logo,
+  ]
+  .forEach(o=>o.setVisible(true).setActive(true))
+
+}
 
   launchScenes() {
-    this.scene.launch("levelSelect")
-    this.scene.get("levelSelect").createLevelSelectElementsInMenuContext(this)
-
-    this.scene.sleep("levelSelect")
-
-    this.scene.launch("customize")
-    this.scene.sleep("customize")
+    return new Promise(resolve=>{
+      this.scene.launch("levelSelect")
+      this.scene.get("levelSelect").createLevelSelectElementsInMenuContext(this)
   
+      this.scene.sleep("levelSelect")
+  
+      this.scene.launch("customize")
+      this.scene.sleep("customize")
+      setTimeout(resolve,2000); // timeout to fully launch game
+ 
+    })
+   
   }
 setBubblesDarkMode(){
   this.bubbles.forEach(bubble=>bubble.setFrame("dark-bubble"))
@@ -516,17 +550,19 @@ setBubblesWhiteMode(){
      
       convertData();
 
+      await this.launchScenes()
+
       this.finishFetching()
 
       const SERVER_GAME_VERSION = await this.GAME_VERSION_PROMISE
-      if( SERVER_GAME_VERSION!== window.CLIENT_GAME_VERSION){
+      if( window.CLIENT_GAME_VERSION < SERVER_GAME_VERSION){
        
         START_UPDATE_GAME_SCENE(this)
         clearTimeout(timeout)
         return;
       }
 
-      this.launchScenes()
+      
       
     } catch{
 
@@ -559,5 +595,6 @@ setBubblesWhiteMode(){
   finishFetching() {
     this.is_everything_fetched = true
     STOP_FETCHING_SCENE(this)
+    this.setBubblesWhiteMode()
   }
 }

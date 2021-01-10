@@ -15,7 +15,7 @@ const DatabaseManager = require("./database-manager")
 
 const port = process.env.PORT || 3001
 const host = "0.0.0.0"
-
+const GAME_VERSION = 3;
 
   const server = express()
   server.use(compression())
@@ -26,7 +26,7 @@ const host = "0.0.0.0"
 
   const databaseManager = new DatabaseManager()
   
-  const GAME_VERSION = 1;
+
   server.get("/getGameVersion",(req,res)=> res.json(GAME_VERSION));
   server.get("/isServerAlive", (req, res) => res.sendStatus(200));
   

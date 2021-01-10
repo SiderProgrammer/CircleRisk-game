@@ -32,7 +32,7 @@ export default class Manager {
     this.is_possible_miss = false
     this.current_target = this.config.starting_target
     this.rotation_speed = this.config.rotation_speed
-    this.intro_duration = 700
+    this.intro_duration = 500
 
     this.perfect_combo = 0
     this.score = 0
@@ -47,6 +47,12 @@ export default class Manager {
 
 if(window.admob) admob.banner.hide()
 
+this.lose_bg = helper
+.createBackground(this.scene, "black-bg")
+.setAlpha(0)
+.setActive(false)
+.setVisible(false)
+.setDepth(2)
 
     this.scene.cameras.main.setBackgroundColor(
       this.config.canvas_color || 0x000000
@@ -234,7 +240,7 @@ if(window.admob) admob.banner.hide()
   showTargets() {
     this.scene.tweens.add({
       targets: this.target_array,
-      duration: 400,
+      duration: 500,
       alpha: 1,
     })
   }
@@ -433,10 +439,12 @@ isMysteryLevel(){
       }).catch(()=>checkConnection(this.scene))
    
       lose_scene.showNextLevelButton()
+      lose_scene.showSmallRestartButton()
       lose_scene.hideRestartButton()
     } else {
       lose_scene.showRestartButton()
       lose_scene.hideNextLevelButton()
+      lose_scene.hideSmallRestartButton()
     }
 
     this.scene.scene.wake("lose")
@@ -477,11 +485,10 @@ if(this.score > 0 && !this.isMysteryLevel()){
 
     is_any_update && this.scene.scene.get("levelSelect").updateVisiblePage()
 
+    this.lose_bg.setVisible(true).setActive(true);
+
     this.scene.tweens.add({
-      targets: helper
-        .createBackground(this.scene, "black-bg")
-        .setAlpha(0)
-        .setDepth(2),
+      targets:this.lose_bg,
       duration: 400,
       alpha: 1,
     })

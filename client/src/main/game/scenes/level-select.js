@@ -21,9 +21,9 @@ export default class levelSelect extends Phaser.Scene {
   }
 
   create() {
-    this.black_border = this.createBlackBorder().setVisible(false)
+    this.black_border = this.createBlackBorder().setVisible(false).setActive(false)
 
-    this.page_glow = this.createPageGlow().setVisible(false)
+    this.page_glow = this.createPageGlow().setVisible(false).setActive(false)
 
     this.current_page = this.createPage()
 
@@ -145,6 +145,7 @@ isHardSection(pageNumber = this.current_page_number){
         duration: 250,
         ease: ease,
         onComplete: () => {
+          this.scene.get("menu").setBubblesWhiteMode()
           this.home_button.resetPosition()
           resolve()
         },
@@ -424,6 +425,7 @@ if(condition_1 || condition_2 || !sign){
  this.are_spikes_seen = true;
  this.spikes.forEach((spike) => { 
    spike.animate("show")
+   spike.setVisible(true).setActive(true)
  })
 }
 
@@ -441,6 +443,7 @@ if(condition_1 || condition_2 || !sign){
 this.are_spikes_seen = false;
 this.spikes.forEach((spike) => {
   spike.animate("hide")
+  spike.setVisible(false).setActive(false)
 })
 }
 }
@@ -549,11 +552,20 @@ if(condition_1 || condition_2 || !sign){
   }
 
   createPageIcon(x, y) {
-    const icon =
+    let icon =
       levelsConfiguration[this.current_page_number].info.name + "_icon"
+     
+    if(this.isMysteryLevel(this.current_page_number))  icon = "mystery-icon"
+     
     const image = this.add.image(x, y - 130, "levels-icons", icon).setDepth(1)
-    image.update = function (page_number) {
-      this.setFrame(levelsConfiguration[page_number].info.name + "_icon")
+
+    image.update = (page_number)=> {
+      let icon =
+      levelsConfiguration[page_number].info.name + "_icon"
+     
+    if(this.isMysteryLevel(page_number))  icon = "mystery-icon"
+     
+      image.setFrame(icon)
     }
     return { icon: image }
   }
@@ -710,16 +722,16 @@ if(condition_1 || condition_2 || !sign){
     }
 
     page.show = function () {
-      this.setVisible(true)
+      this.setVisible(true).setActive(true)
       for (const element in this.elements) {
-        this.elements[element].setVisible(true)
+        this.elements[element].setVisible(true).setActive(true)
       }
     }
 
     page.hide = function () {
-      this.setVisible(false)
+      this.setVisible(false).setActive(false)
       for (const element in this.elements) {
-        this.elements[element].setVisible(false)
+        this.elements[element].setVisible(false).setActive(false)
       }
     }
 
@@ -737,9 +749,9 @@ if(condition_1 || condition_2 || !sign){
     return page
   }
 
-  updateVisiblePage() {
+  updateVisiblePage(sign= "") {
     this.progress.levels_scores = window.progress.levels_scores //getProgress().levels_scores
-    this.updatePage(this.current_page)
+    this.updatePage(this.current_page,sign)
   }
 
   updatePage(page,sign) {
@@ -757,35 +769,48 @@ if(condition_1 || condition_2 || !sign){
         elements.current_score,
         elements.score_to_reach,
         elements.ranking_button,
-      ].forEach((e) => e.setVisible(true))
+      ].forEach((e) => e.setVisible(true).setActive(true))
 
-      elements.lock.setVisible(false)
-    } else {
+      elements.lock.setVisible(false).setActive(false)
+    } else if(elements.current_score.visible){
       ;[
         elements.score_bar,
         elements.divider,
         elements.current_score,
         elements.score_to_reach,
         elements.ranking_button,
-      ].forEach((e) => e.setVisible(false))
+      ].forEach((e) => e.setVisible(false).setActive(false))
 
-      elements.lock.setVisible(true)
+      elements.lock.setVisible(true).setActive(true)
     }
 
     const difficulty =
       levelsConfiguration[this.current_page_number].info.difficulty
 
     if (difficulty === "hard" || difficulty === "medium") {
-      this.showThorns(sign)
-      this.black_border.setVisible(true)
 
-      difficulty === "hard"
-        ? this.showHardLevelsOrnaments(elements,sign)
-        : this.hideHardLevelsOrnaments(elements)
+     
+     
+        this.showThorns(sign)
+        this.black_border.setVisible(true).setActive(true)
+      
+    
+      if(difficulty ==="hard"){
+       
+        this.showHardLevelsOrnaments(elements,sign)     
+      }else {
+    
+        this.hideHardLevelsOrnaments(elements)
+      }
+
     } else {
-      this.black_border.setVisible(false)
-      this.hideHardLevelsOrnaments(elements,sign)
-      this.hideThornBorder(sign)
+   
+
+        this.black_border.setVisible(false).setActive(false)
+        this.hideHardLevelsOrnaments(elements,sign)
+        this.hideThornBorder(sign)
+    
+     
     }
 
     if(this.isMysteryLevel(this.current_page_number)){
@@ -796,10 +821,10 @@ if(condition_1 || condition_2 || !sign){
   }
 
   updatePageToMystery(elements){
-    elements.ranking_button.setVisible(false);
+    //elements.ranking_button.setVisible(false).setActive(false);
     
     elements.name.setText("?")
-    elements.icon.setFrame("mystery-icon")
+    //elements.icon.setFrame("mystery-icon")
     this.home_button.setFrame("home-button-big-mystery") // should be without big
     this.arrows.forEach(arrow=>arrow.setFrame("arrow-button-mystery"))
      this.updateBackgroundColor()
@@ -834,7 +859,7 @@ return this.isMysteryLevel(page_num_before)
     score_bar.setFrame("level-select-score-bar-hard")
     name_bar.setFrame("level-select-name-bar-hard")
 
-    this.page_glow.setVisible(true)
+    this.page_glow.setVisible(true).setActive(true)
   }
 
   hideHardLevelsOrnaments({ score_bar, name_bar },sign) {
@@ -843,7 +868,7 @@ return this.isMysteryLevel(page_num_before)
     score_bar.setFrame("level-select-score-bar")
     name_bar.setFrame("level-select-name-bar")
 
-    this.page_glow.setVisible(false)
+    this.page_glow.setVisible(false).setActive(false)
     // this.black_border.setVisible(false)
   }
 
@@ -931,6 +956,7 @@ return this.isMysteryLevel(page_num_before)
         this.game.GH,
         "home-button",
         async () => {
+          if(!this.canChangePage) return 
           this.canChangePage = false
           this.hideThornBorder()
           await this.animateLevelSelectHide()

@@ -23,8 +23,8 @@ export default class Lose extends Phaser.Scene {
     this.emptySpace =
       this.game.GH - (this.purple_strap.y + this.purple_strap.displayHeight / 2)
 
-      this.bottom_buttons_y = this.game.GH - 220
-    this.restartAndNextButtonY = this.game.GH - 340
+      this.bottom_buttons_y = this.game.GH - 255
+    this.restartAndNextButtonY = this.game.GH - 355
     this.buttons_bg_y = this.restartAndNextButtonY + (this.bottom_buttons_y - this.restartAndNextButtonY)/2 - 15;
 
     this.createButtons()
@@ -280,12 +280,12 @@ isMysteryLevel(){
     ).setDepth(0.1)
 
     const strap = this.add.image(a.x, a.y, "lb-strap")
-
+/*
 if(this.isMysteryLevel()){
  a.setVisible(false)
   strap.setVisible(false)
 }
- 
+ */
 
     if(!window.is_lb_button_clicked){
       this.lb_button_tween =  this.tweens.add({
@@ -353,12 +353,14 @@ customizeB.displayHeight = 155;
     )
 
     this.createRestartButton()
+    this.createRestartButtonSmall()
     this.createNextLevelButton()
 
     this.buttons_differences = {
       difference_1 : (this.game.GH - this.restart_button.y) + this.restart_button.displayHeight/2, 
       difference_2: (this.game.GH - customizeB.y) + customizeB.displayHeight/2,
       difference_3:(this.game.GH - a.y) + a.displayHeight/2,
+      
     }
 
     this.resetPositionsToHidden = () => {
@@ -367,7 +369,7 @@ customizeB.displayHeight = 155;
       levelSelectB.y = this.bottom_buttons_y + this.buttons_differences.difference_2 
       this.next_level_button.y = this.restartAndNextButtonY + this.buttons_differences.difference_1
       this.restart_button.y = this.restartAndNextButtonY + this.buttons_differences.difference_1
-      
+      this.restart_button_small.y = this.restartAndNextButtonY + this.buttons_differences.difference_1 + this.restart_button.displayHeight/2 - 22 
     }
 
     this.animateButtons = () => { 
@@ -419,6 +421,17 @@ this.time.addEvent({
               resolve()
             }
           })
+
+          this.tweens.add({
+            targets:this.restart_button_small,
+            y:`-=${this.buttons_differences.difference_1}`,
+            duration:300,
+            ease:"Power1",
+            onComplete:()=>{
+              resolve()
+            }
+          })
+          
         },
       })
 
@@ -438,7 +451,7 @@ this.time.addEvent({
       })
       
       this.tweens.add({
-        targets:[customizeB,levelSelectB,this.restart_button,this.next_level_button,a],
+        targets:[customizeB,levelSelectB,this.restart_button,this.next_level_button,a,this.restart_button_small],
         y:`+=${this.game.GH * 0.6}`,
         duration:300,
         ease:"Sine.easeIn",
@@ -449,7 +462,7 @@ this.time.addEvent({
   }
 
   h(){
-    this.hideLBbutton()
+    this.hideLBbutton() // REMOVE IT
   }
   showNextLevelButton() {
     this.next_level_button.setVisible(true).setActive(true)
@@ -457,9 +470,15 @@ this.time.addEvent({
   showRestartButton() {
     this.restart_button.setVisible(true).setActive(true)
   }
+  showSmallRestartButton() {
+    this.restart_button_small.setVisible(true).setActive(true)
+  }
 
   hideRestartButton() {
     this.restart_button.setVisible(false).setActive(false)
+  }
+  hideSmallRestartButton() {
+    this.restart_button_small.setVisible(false).setActive(false)
   }
   hideNextLevelButton() {
     this.next_level_button.setVisible(false).setActive(false)
@@ -478,9 +497,9 @@ this.time.addEvent({
         
         this.scene.stop()
 
-
+       
         this.scene.get("levelSelect").updatePageNumberAndColor(this.level_scene.level)
-        
+        this.scene.get("levelSelect").updateVisiblePage("-")
         const this_level_configuration =
           levelsConfiguration[this.level_scene.level]
 
@@ -510,31 +529,45 @@ this.time.addEvent({
       .setActive(false)
       .setVisible(false)
   }
-
+async restartButtonCallback(){
+  if (!this.are_buttons_active) return
+        
+  playAudio(this.level_scene,"button")
+   await this.animateHide()
+   
+    this.level_scene.scene.sleep("lose")
+    this.level_scene.scene.restart()
+  
+  //   this.level_scene.game.audio.sounds.restart_sound.play()
+ 
+}
   createRestartButton() {
     this.restart_button = createButton(
       this,
       this.game.GW / 2,
       this.restartAndNextButtonY,
       "replay-button",
-     async () => {
-        if (!this.are_buttons_active) return
-        
-        playAudio(this.level_scene,"button")
-         await this.animateHide()
-         
-          this.level_scene.scene.sleep("lose")
-          this.level_scene.scene.restart()
-        
-        //   this.level_scene.game.audio.sounds.restart_sound.play()
-       
-      },
+     () => this.restartButtonCallback(),
     
     )
       .setDepth(11)
       .setActive(false)
       .setVisible(false)
   }
-
+  createRestartButtonSmall() {
+    this.restart_button_small = createButton(
+      this,
+      this.game.GW / 2,
+      this.restartAndNextButtonY + this.restart_button.displayHeight/2 ,
+      "replay-button",
+      () => this.restartButtonCallback(),
+    
+    )
+      .setDepth(11)
+      .setActive(false)
+      .setVisible(false)
+      .setOrigin(0.5,0)
+      .setScale(0.4)
+  }
   
 }

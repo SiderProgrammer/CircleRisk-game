@@ -18,6 +18,7 @@ export default class Leaderboard extends Phaser.Scene {
     super("leaderboard")
   }
   init(data) {
+    
     this.level = data.level
     this.launcher = data.launcher
 
@@ -196,6 +197,9 @@ bg.displayWidth = this.game.GW - 10
     helper.setGameSize(strip, true)
     return strip
   }
+  isMysteryLevel(page_number){
+    return levelsConfiguration[page_number].info.name.slice(-1) === "-"
+  }
   createLevelInfo(y) {
     const { difficulty, name } = levelsConfiguration[this.level - 1].info
  
@@ -205,7 +209,13 @@ bg.displayWidth = this.game.GW - 10
       .text(this.game.GW / 2, 54, difficulty.toUpperCase(), { font: `65px ${main_font}` })
       .setOrigin(0.5)
    
-    this.add.image(this.game.GW / 2, y, "levels-icons", name + "_icon").setDepth(0.1)
+      let icon = name + "_icon"
+    
+    if(this.isMysteryLevel(this.level - 1))  icon = "mystery-icon"
+
+     console.log(this.isMysteryLevel(this.level - 1))
+    console.log(icon)
+    this.add.image(this.game.GW / 2, y, "levels-icons", icon).setDepth(0.1)
     this.add.image(this.game.GW/2,y,"general-1","glow")
   }
   createOrnaments() {

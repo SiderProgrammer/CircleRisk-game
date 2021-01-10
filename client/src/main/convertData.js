@@ -31,17 +31,23 @@ export default ()=>{
     .map(not_converted_level=> not_converted_level = convertLevelToScore(not_converted_level))
 
    window.progress.levels_scores.forEach((score,i,arr)=>{
-     if(score === -1 && arr[i+1] != -1 ){
+     if(score === -1 && arr[i+1] != -1 && i !== arr.length-1){
        window.progress.levels_scores[i] = 0;
      }
    })
 
-
-    /*
-    window.progress.levels_scores = [0]
-    for(let i=0;i<70;i++){
+   window.progress.levels_scores = [1]
+  
+    
+    window.progress.levels_scores = [1,1,1,1,1,1,1]
+    for(let i=0;i<80;i++){
       window.progress.levels_scores.push(-1) 
-       }
-  */
+    }
+  
+       window.progress.levels_scores.forEach((score,i,arr)=>{
+        if(score === -1 && arr[i+1] != -1 && i !== arr.length-1){
+          window.progress.levels_scores[i] = 0;
+        }
+      })
   
       }

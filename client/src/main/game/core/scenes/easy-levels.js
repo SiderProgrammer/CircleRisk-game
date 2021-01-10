@@ -25,6 +25,8 @@ import OneStep_Easy from "../../levels/1-step/1-step-easy"
 import ThreeStep_Easy from "../../levels/3-step/3-step-easy"
 import ThreeTargets_Easy from "../../levels/threeTargets/threeTargets-easy"
 import Point_Easy from "../../levels/point/point-easy"
+import Instant_Easy from "../../levels/instant/instant-easy"
+
 export default [
   Basic_Easy,
   Wind_Easy,
@@ -52,5 +54,6 @@ export default [
   OneStep_Easy,
   ThreeStep_Easy,
   ThreeTargets_Easy,
-  Point_Easy
+  Point_Easy,
+  Instant_Easy
 ]

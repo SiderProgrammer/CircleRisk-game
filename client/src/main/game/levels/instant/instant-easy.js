@@ -1,8 +1,8 @@
 import Manager from "../../main/level-manager.js"
-import PointFunctionsManager from "./functions"
-export default class Point_Easy extends Phaser.Scene {
+
+export default class Instant_Easy extends Phaser.Scene {
   constructor() {
-    super("Point-_Easy")
+    super("Instant-_Easy")
   }
 
   init(config) {
@@ -11,7 +11,7 @@ export default class Point_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-this.pointFunctionsManager = new PointFunctionsManager(this)
+   
   }
 
   create() {
@@ -23,14 +23,16 @@ this.pointFunctionsManager = new PointFunctionsManager(this)
     this.manager.createTargets()
     this.swapTargetToTheNearset()
     this.manager.setNewTarget()
-this.swapTargetToTheNearset()
-    this.manager.target_array[0].setPosition(this.game.GW/2,this.game.GH/2)
+
+    this.manager.centerTargets()
     this.manager.showTargets()
     this.manager.createStick()
     this.manager.createCircles()
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+    this.manager.rotation_angle = 180
+    this.manager.updateCircleStickAngle()
    
   }
   update() {
@@ -39,8 +41,7 @@ this.swapTargetToTheNearset()
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
-   swapTargetToTheNearset(){
-       this.pointFunctionsManager.swapTargetToTheNearset()
-     
-   }
+  swapTargetToTheNearset(){
+    this.manager.next_target  = this.manager.current_target+1;
+}
 }

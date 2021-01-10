@@ -30,7 +30,7 @@ module.exports = [
     },
   },
 
-  
+
 
   {
     color: "gray_1",
@@ -72,26 +72,11 @@ module.exports = [
       acceleration: 0.12,
     },
   },
-  {
-    color: "orange_1",
-    info: {
-      score_to_next_level: 25,
-
-      name: "wind",
-    },
-    config: {
-      background: "autumn-bg",
-      ...config,
-      targets_speed: 1.6,
-
-      acceleration: 0.04,
-    },
-  },
 
   {
     color: "white_1",
     info: {
-      score_to_next_level: 60,
+      score_to_next_level: 50,
       tint: "0x06E0FF",
       name: "threeTargets-",
     },
@@ -106,6 +91,23 @@ module.exports = [
     },
   },
 
+
+  {
+    color: "orange_1",
+    info: {
+      score_to_next_level: 25,
+
+      name: "wind",
+    },
+    config: {
+      background: "autumn-bg",
+      ...config,
+      targets_speed: 1.5,
+      acceleration:0.025
+    },
+  },
+
+  
   {
     color: "yellow_4",
     info: {
@@ -116,7 +118,7 @@ module.exports = [
     config: {
       background: "twins-bg",
       ...config,
-      rotation_speed: 1.25,
+      rotation_speed: 1.15,
     },
   },
 
@@ -255,8 +257,7 @@ module.exports = [
     config: {
       background: "snow-bg",
       ...config,
-      rotation_speed: 1.1,
-      acceleration: 0.03,
+      rotation_speed: 1,
     },
   },
 
@@ -323,6 +324,25 @@ module.exports = [
       ...config,
       rotation_speed: 1,
       acceleration: 0.03,
+    },
+  },
+
+  {
+    color: "white_1",
+    info: {
+      score_to_next_level: 10,
+      tint: "0x06E0FF",
+      name: "instant-",
+    },
+    config: {
+      background: "gray_1",
+      ...config,
+      targets_amount:2,
+      targets_speed: 3,
+      starting_target:0,
+      additional_angle:0,
+      rotation_speed:8,
+      ball_distance:300,
     },
   },
 

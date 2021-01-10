@@ -34,11 +34,12 @@ export const sceneIntro = function (scene) {
   if (scene.manager) {
     duration = scene.manager.intro_duration
   }
-
+const bg = createBackground(scene, "black-bg").setDepth(1)
   scene.tweens.add({
-    targets: createBackground(scene, "black-bg").setDepth(1),
+    targets: bg,
     alpha: 0,
     duration: duration,
+    onComplete:()=>bg.destroy()
     // could pass intro duration as param but i did bad and i would had to change it in each leavl
   })
 }

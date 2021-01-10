@@ -33,6 +33,7 @@ module.exports = [
   rotation_speed:1.2
     },
   },
+  
   {
     color: "white_1",
     info: {
@@ -47,6 +48,7 @@ module.exports = [
       starting_target:0
     },
   },
+  
   {
     info: {
       score_to_next_level: 30,
@@ -210,6 +212,25 @@ module.exports = [
       acceleration: 0.06,
     },
   },
+  
+  {
+    color: "white_1",
+    info: {
+      score_to_next_level: 10,
+      tint: "0x06E0FF",
+      name: "instant-",
+    },
+    config: {
+      background: "gray_1",
+      ...config,
+      targets_amount:2,
+      targets_speed: 3,
+      starting_target:0,
+      additional_angle:0,
+      rotation_speed:8,
+      ball_distance:300,
+    },
+  },
   {
     info: {
       score_to_next_level: 60,
@@ -257,7 +278,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 50,
+      score_to_next_level: 45,
       tint: "0x06E0FF",
       name: "flower",
     },
