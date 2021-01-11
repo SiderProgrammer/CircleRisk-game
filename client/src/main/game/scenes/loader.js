@@ -120,6 +120,16 @@ init(){
     this.load.image("pentagon", `${imgPath}/pentagon.png`)
     this.load.image("flame", `${imgPath}/flame.png`)
 
+
+    this.load.image("podium", `${imgPath}/podium.png`)
+    this.load.image("podium-glow", `${imgPath}/podium-glow.png`)
+    this.load.image("crown-mini", `${imgPath}/crown-mini.png`)
+    this.load.image("podium-aura", `${imgPath}/podium-aura.png`)
+    this.load.image("1-st", `${imgPath}/1-st.png`)
+    this.load.image("2-nd", `${imgPath}/2-nd.png`)
+    this.load.image("3-rd", `${imgPath}/3-rd.png`)
+
+
     this.loadImage("lock2", "mix")
     this.loadImage("black", "mix")
     this.loadImage("pentagon", "mix")
