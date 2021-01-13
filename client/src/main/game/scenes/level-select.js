@@ -649,10 +649,20 @@ if(condition_1 || condition_2 || !sign){
   }
   tweenPage(sign) {
     
-    const ease = "Power1"
-    const duration = 300
+ /*
+    if(!this.canChangePage && this.page_tween.isActive){
+        const duration = 50;
+        this.page_tween.destroy()
+    }
+*/
 
-    if (!this.canChangePage) return
+    if (!this.canChangePage){
+      
+     // if(this.page_tween) this.page_tween.setTimeScale(10)
+      return
+    }
+      
+    
     playSound(this, "change_object")
     this.canChangePage = false
 
@@ -685,7 +695,22 @@ if(condition_1 || condition_2 || !sign){
 
     this.updatePage(this.second_page,sign)
 
-    this.tweens.add({
+/*
+    if(!this.canChangePage && this.page_tween.isActive){
+      const duration = 50;
+      this.page_tween.destroy()
+  }
+*/
+    this.page_tween = this.startPageTween(pages_elements_to_tween,sign,second_page_shift)
+ 
+  }
+
+
+  startPageTween(pages_elements_to_tween,sign,second_page_shift){
+    const ease = "Power1"
+    const duration = 300
+
+   return this.tweens.add({
       targets: pages_elements_to_tween,
       x: `${sign}=${Math.abs(second_page_shift)}`,
       duration: duration,

@@ -29,38 +29,19 @@ export default class Leaderboard extends Phaser.Scene {
   }
 
   async create() {
-    helper.createBackground(this, "ranking-bg") // can set it to not visbile and show it later
+    helper.createBackground(this, "ranking-bg") 
    
-    const upper_strip = this.createUpperStrip().setVisible(false)
-
     START_FETCHING_SCENE(this)
  
     
     this.data = await this.getTopScoresData()
     const my_rank = await this.getMyRank()
-/*    
-    this.data[0].nickname = "BRAHA55559"
-    this.data[1].nickname = "jo3"
-    this.data[2].nickname = "krakra37"
-*/
-  
+
 const top_three = [...this.data]
 top_three.length = 3;
 
 
-    const aura = this.add.image(this.game.GW/2,upper_strip.y + upper_strip.displayHeight + 170,"podium-aura")
-    this.tweens.add({
-      targets:aura,
-      duration:9000,
-      repeat:-1,
-      angle:360,
-    })
-
-
-    this.add.image(this.game.GW/2,upper_strip.y + upper_strip.displayHeight + 230,"podium-glow")
-
-    this.podium = this.add.image(this.game.GW/2,upper_strip.y + upper_strip.displayHeight + 150,"podium")
-    .setOrigin(0.5,0)
+    this.createPodiumSet()
 
     this.createPodiumNicknames(top_three)
 
@@ -84,6 +65,7 @@ this.createHomeButton()
    this.createScoresBackground()
     this.createLeaderboardBars()
     this.createLeaderboardTexts()
+    this.createMedals()
     this.updateTexts(this.chunkScores())
     this.createLeaderboardButtons() 
     
@@ -93,8 +75,25 @@ this.createHomeButton()
    
     STOP_FETCHING_SCENE(this)
   }
+
+  createPodiumSet(){
+    const upper_strip = this.createUpperStrip().setVisible(false)
+    const aura = this.add.image(this.game.GW/2,upper_strip.y + upper_strip.displayHeight + 170,"podium-aura")
+    this.tweens.add({
+      targets:aura,
+      duration:11000,
+      repeat:-1,
+      angle:360,
+    })
+
+
+    this.add.image(this.game.GW/2,upper_strip.y + upper_strip.displayHeight + 230,"podium-glow")
+
+    this.podium = this.add.image(this.game.GW/2,upper_strip.y + upper_strip.displayHeight + 150,"podium")
+    .setOrigin(0.5,0)
+  }
   createPodiumNicknames(players){
-    this.add.image(this.game.GW/2,this.podium.y - 120,"crown-mini")
+    this.add.image(this.game.GW/2,this.podium.y - 105,"crown-mini")
   this.createPodiumPlayer(players[0].nickname,this.game.GW/2,this.podium.y - 60).setFontSize("60px")
   this.createPodiumPlayer(players[1].nickname,this.game.GW/2 - 110,this.podium.y - 5).setOrigin(1,0.5)
   this.createPodiumPlayer(players[2].nickname,this.game.GW/2 +110 ,this.podium.y + 25).setOrigin(0,0.5)
@@ -130,7 +129,7 @@ return bg
   
   updateTexts(_sorted_data) {
     const sorted_data = [..._sorted_data]
-   
+    const visible_ranks = []
 
     this.texts.forEach((account_text, i) => {
       
@@ -147,29 +146,45 @@ return bg
       }
 
     
-    /*
-      if(acc.rank == "1"){
-         
+    for(let i=1;i<=5;++i){
+      if(acc.rank == i){
+        visible_ranks.push(i)
       }
-          else if(acc.rank == "2"){
-       
-          } 
-          else if(acc.rank =="3"){
-        
-           
-          } 
-          else if(account_text.rank.style.color != bar_text_config.color){
-            account_text.setTextColor(bar_text_config.color)
-            account_text.rank.setFontSize("50px")
-          } 
-      */
-          
+    }
+
+  
      if(acc.nickname === my_nickname) acc.rank = "#"+ acc.rank
       account_text.update(acc)
 
     })
-  }
 
+    for(let i=1;i<=5;++i){
+      if(visible_ranks.includes(i)){
+        this.medalManager.showMedal(i-1)
+      }else{
+        this.medalManager.hideMedal(i-1)
+      }
+    }
+  
+  }
+createMedals(){
+  this.medalManager = {
+    medals:[]
+  }
+// CREATE FUNCTION TO NOT DUPILACTE CODE
+  this.medalManager.medals[0] = this.add.image(this.texts[0].rank.x+50,this.texts[0].rank.y+7,"1-st")
+  this.medalManager.medals[1] = this.add.image(this.texts[1].rank.x+50,this.texts[1].rank.y+7,"2-nd")
+  this.medalManager.medals[2] = this.add.image(this.texts[2].rank.x+50,this.texts[2].rank.y+7,"3-rd")
+  this.medalManager.medals[3] = this.add.image(this.texts[3].rank.x+50,this.texts[3].rank.y+7,"4-th")
+  this.medalManager.medals[4] = this.add.image(this.texts[4].rank.x+50,this.texts[4].rank.y+7,"5-th")
+//
+  this.medalManager.showMedal = function(i){
+    this.medals[i].setVisible(true)
+  }
+  this.medalManager.hideMedal = function(i){
+    this.medals[i].setVisible(false)
+  }
+}
     async getMyRank(){
       try{
         

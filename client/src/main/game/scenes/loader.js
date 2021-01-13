@@ -128,7 +128,8 @@ init(){
     this.load.image("1-st", `${imgPath}/1-st.png`)
     this.load.image("2-nd", `${imgPath}/2-nd.png`)
     this.load.image("3-rd", `${imgPath}/3-rd.png`)
-
+    this.load.image("4-th", `${imgPath}/4-th.png`)
+    this.load.image("5-th", `${imgPath}/5-th.png`)
 
     this.loadImage("lock2", "mix")
     this.loadImage("black", "mix")
@@ -161,6 +162,7 @@ init(){
       "general-1",
       "gentelman"
     )
+    
     this.add
       .image(
         this.game.GW + 200,

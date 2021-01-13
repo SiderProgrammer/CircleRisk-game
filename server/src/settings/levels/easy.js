@@ -62,7 +62,7 @@ module.exports = [
   {
     color: "purple_5",
     info: {
-      score_to_next_level: 20,
+      score_to_next_level: 25,
       tint: "0x06E0FF",
       name: "oneStep",
     },
@@ -87,7 +87,7 @@ module.exports = [
     ball_distance:450,
     starting_target:0,
   additional_angle:30,
-  rotation_speed:1.2
+  rotation_speed:1.1
     },
   },
 
@@ -132,7 +132,7 @@ module.exports = [
     config: {
       background: "tiny-bg",
       ...config,
-      rotation_speed: 1,
+      rotation_speed: 1.15,
       acceleration: 0.03,
     },
   },
@@ -148,8 +148,8 @@ module.exports = [
       background: "unstable-bg",
 
       rotation_speed_change: {
-        min: 0.7,
-        max: 2.5,
+        min: 1,
+        max: 2.1,
       },
       ...config,
     },
@@ -242,7 +242,7 @@ module.exports = [
       background: "flower-bg",
       ...config,
       ball_distance: 116,
-      rotation_speed: 1.2,
+      rotation_speed: 1.4,
       acceleration: 0.05,
     },
   },
@@ -264,7 +264,7 @@ module.exports = [
   {
     color: "black_1",
     info: {
-      score_to_next_level: 30,
+      score_to_next_level: 35,
       tint: "0x06E0FF",
       name: "threeStep",
     },

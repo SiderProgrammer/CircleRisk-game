@@ -72,9 +72,10 @@ module.exports = [
     config: {
       background: "night-bg",
       ...config,
-      target_rotate_speed: 1,
-      rotation_speed: 1.3,
-      acceleration: 0.04,
+      target_rotate_speed: 0.5,
+      rotation_speed: 1.1,
+      acceleration: 0.02,
+      targets_rotate_acceleration:0.01,
     },
   },
 
@@ -209,7 +210,7 @@ module.exports = [
       ...config,
       targets_speed: 2,
       rotation_speed: 1.4,
-      acceleration: 0.06,
+      acceleration: 0.04,
     },
   },
   

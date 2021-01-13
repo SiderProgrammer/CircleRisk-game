@@ -9,20 +9,28 @@ plugin.xml / gradle-wrapper.properties / config.xml / projectBuilder.js / projec
 
   ! UPDATE INFO !
 - redesigned leaderboard
+- many levels balanced
 - bugs fixes
 - added small restart button in lose menu when new level is unlocked
 - added leaderboards in special levels
 - added one special level
+- added short tutorial in first level
 
  @@@@@@@@@@@@@@@@@@@@@ REMEMBER ABOUT CHANGING VERSIONS WHEN UPDATING TO GOOGLE PLAY STORE @@@@@@@@@@@@
  * PINGING SEVER (HEROKU SLEEPS AFTER 30 MINUTES)
 
- @ OZNACZYC MEDIUM I HARD JAKO HYBRDY
  @ DOKONCZYC MAPE 2 KULKI
- @ SZYBSZE PRZEWIJANIE LVLI LEVEL SELECT
- @ POWIADOMIENIE O OCENIENIU GRY W SKLEPIE PLAY NA MAPIE TWINS
  @ WIECEJ EFEKTOW SPECJALNYCH
- 
+ @ SZYBSZE PRZEWIJANIE LVLI LEVEL SELECT
+ @ OZNACZYC MEDIUM I HARD JAKO HYBRDY
+ @ POWIADOMIENIE O OCENIENIU GRY W SKLEPIE PLAY NA MAPIE TWINS
+
+ @ unlock polish special letters
+ @ dymek za kulkiem
+ @ kilka patykow na raz
+ @ reverse tryb, zawracanie podczas GRY
+ @ za kazdym kliknieciem coraz mniejsze targety tryb
+
 * PROMOTION (SHAKES / CS SPRAY / INSTAGRAM SPAM BOT / FB / TWITCH)
 
 * MAYBE MOVE LEVELS CONFIG TO CLIENT SIDE

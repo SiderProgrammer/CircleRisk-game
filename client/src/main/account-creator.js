@@ -15,7 +15,8 @@ const createAccount = () => {
  // const removeWhiteSpaces = new RegExp("/s/g,")
 
  saveProgress({
-  nickname: nickname_input.value//.replace(removeWhiteSpaces, ""),
+  nickname: nickname_input.value,//.replace(removeWhiteSpaces, ""),
+  is_first_game:true,
 })
 
 creator_div.style.display = "none"
@@ -52,6 +53,7 @@ if(start_game_after_create){
 
 const VALIDATE_OK = (string) => {
   const VALIDATE_REGEXP = /^[a-z0-9wа-я _]+$/i
+  //const VALIDATE_REGEXP = /^[a-ząćęłńóśźż0-9wа-я _]+$/i
   const MIN_NICKNAME_LENGTH = 3
 
   let characters_test = VALIDATE_REGEXP.test(string)

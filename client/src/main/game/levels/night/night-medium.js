@@ -47,12 +47,16 @@ export default class Night_Medium extends Phaser.Scene {
     this.distance = (pos.x - pos.minX) / 2
 
     this.sunFunctionsManager.calculateSpawnDistance()
+    this.targets_rotate_speed = this.manager.config.target_rotate_speed;
+    this.targets_rotate_acceleration = this.manager.config.targets_rotate_acceleration || 0;
+ 
   }
   update() {
     if (!this.manager.game_started) return
 
-    this.targets_rotate_angle += this.manager.config.target_rotate_speed
-    this.circle_rotate_angle += this.manager.config.target_rotate_speed
+    this.targets_rotate_angle += this.targets_rotate_speed
+    this.circle_rotate_angle += this.targets_rotate_speed
+    this.targets_rotate_speed +=this.targets_rotate_acceleration;
 
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
