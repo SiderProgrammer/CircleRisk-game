@@ -29,6 +29,7 @@ export default class Night_Medium extends Phaser.Scene {
     this.manager.create()
 
     this.manager.createGUI()
+    this.nightFunctionsManager.createStars()
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()

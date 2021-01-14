@@ -1,5 +1,6 @@
 plugin.xml / gradle-wrapper.properties / config.xml / projectBuilder.js / project.properties
 
+- COMPRESS IMAGES !!!
 - ZMIENIC WERSJE KLIENTA GRY / SERVERA PO ZAAKCEPTOWANIU AKTUALIZACJI
 - USUNAC RANKINGI DODANE PRZY BALANSOWANIU LEVELI
 - PODMIANA WERSJI W CONFIG XML
@@ -7,29 +8,48 @@ plugin.xml / gradle-wrapper.properties / config.xml / projectBuilder.js / projec
 - ZMIENIC URL SERVERA W KLIENCIE GRY
 - CHANGE TEST ADS
 
+
   ! UPDATE INFO !
 - redesigned leaderboard
-- many levels balanced
+- many levels balanced 
+- added some special effects in few maps
 - bugs fixes
 - added small restart button in lose menu when new level is unlocked
 - added leaderboards in special levels
-- added one special level
 - added short tutorial in first level
+- free basic skins graphics changed a little
+- a few more improvements
+
+- NEXT BIG UPDATE SOON (
+  - easier to navigate through the level selection section
+  - achivements
+  - new skins
+  - new levels
+  - many other 
+)
 
  @@@@@@@@@@@@@@@@@@@@@ REMEMBER ABOUT CHANGING VERSIONS WHEN UPDATING TO GOOGLE PLAY STORE @@@@@@@@@@@@
  * PINGING SEVER (HEROKU SLEEPS AFTER 30 MINUTES)
 
+- ZJEBANA IKONA TWINS
+
+ @ NAPISY MOTYWUJACE
+  @ZIMOWA I NIGHT NIE WIEDZA O CO CHODZI
  @ DOKONCZYC MAPE 2 KULKI
  @ WIECEJ EFEKTOW SPECJALNYCH
- @ SZYBSZE PRZEWIJANIE LVLI LEVEL SELECT
  @ OZNACZYC MEDIUM I HARD JAKO HYBRDY
- @ POWIADOMIENIE O OCENIENIU GRY W SKLEPIE PLAY NA MAPIE TWINS
+@ OPTIMISE LEVEL START
 
  @ unlock polish special letters
  @ dymek za kulkiem
  @ kilka patykow na raz
  @ reverse tryb, zawracanie podczas GRY
  @ za kazdym kliknieciem coraz mniejsze targety tryb
+@ WYGENEROWAC WSZYSTKIE NICKI W WEJSCIU W TABLICE WYNIKOW A POTEM TYLKO ZNIKAC I POJAWIAC NAPISY
+@ ZAMIAST HASZTAGU W RANKINGU ZROBIC TEKST NA ZLOTO
+@ ZROBIC ZATWIERDZANIE WYBIERANEGO SKINA
+@ ZMIENIC TAPUJACY PALEC
+@ ZROBIC PALEC POKAZAUJACY ZE KROPKLI W LEVEL SELECT DA SIE KLIKAC
 
 * PROMOTION (SHAKES / CS SPRAY / INSTAGRAM SPAM BOT / FB / TWITCH)
 

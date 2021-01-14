@@ -35,6 +35,7 @@ export default class Leaderboard extends Phaser.Scene {
  
     
     this.data = await this.getTopScoresData()
+
     const my_rank = await this.getMyRank()
 
 const top_three = [...this.data]
@@ -152,8 +153,21 @@ return bg
       }
     }
 
-  
-     if(acc.nickname === my_nickname) acc.rank = "#"+ acc.rank
+ 
+     if(acc.nickname === my_nickname){
+      
+
+
+       if(acc.rank <=5){
+        this.medalManager.fitMedalPositionToMyRank(acc.rank-1)
+       }else{
+        this.medalManager.resetMedalsPosition()
+       }
+
+       acc.rank = "#"+ acc.rank
+      
+     } 
+
       account_text.update(acc)
 
     })
@@ -171,18 +185,34 @@ createMedals(){
   this.medalManager = {
     medals:[]
   }
-// CREATE FUNCTION TO NOT DUPILACTE CODE
-  this.medalManager.medals[0] = this.add.image(this.texts[0].rank.x+50,this.texts[0].rank.y+7,"1-st")
-  this.medalManager.medals[1] = this.add.image(this.texts[1].rank.x+50,this.texts[1].rank.y+7,"2-nd")
-  this.medalManager.medals[2] = this.add.image(this.texts[2].rank.x+50,this.texts[2].rank.y+7,"3-rd")
-  this.medalManager.medals[3] = this.add.image(this.texts[3].rank.x+50,this.texts[3].rank.y+7,"4-th")
-  this.medalManager.medals[4] = this.add.image(this.texts[4].rank.x+50,this.texts[4].rank.y+7,"5-th")
-//
+
+  const medal_x = this.texts[0].rank.x+50
+  const medalPositionFollowedByMyRank = this.texts[0].rank.x+80;
+
+const images = ["1-st","2-nd","3-rd","4-th","5-th"]
+for(let i=0;i<5;++i){
+  this.medalManager.medals[i] = this.add.image(medal_x,this.texts[i].rank.y+7,images[i]);
+}
+ 
+
+
+
   this.medalManager.showMedal = function(i){
     this.medals[i].setVisible(true)
   }
   this.medalManager.hideMedal = function(i){
     this.medals[i].setVisible(false)
+  }
+
+  this.medalManager.fitMedalPositionToMyRank = function(i){
+    console.log(i)
+    this.medals[i].x  = medalPositionFollowedByMyRank;
+    
+  }
+
+  this.medalManager.resetMedalsPosition = function(){
+  
+    this.medals.forEach(medal=>medal.x = medal_x)
   }
 }
     async getMyRank(){

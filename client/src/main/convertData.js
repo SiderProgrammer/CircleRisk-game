@@ -36,10 +36,9 @@ export default ()=>{
      }
    })
 
-   window.progress.levels_scores = [1]
-  
-    
-    window.progress.levels_scores = [1]
+
+    /*
+    window.progress.levels_scores = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
     for(let i=0;i<80;i++){
       window.progress.levels_scores.push(-1) 
     }
@@ -49,5 +48,5 @@ export default ()=>{
           window.progress.levels_scores[i] = 0;
         }
       })
-  
+  */
       }

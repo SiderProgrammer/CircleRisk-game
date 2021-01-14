@@ -1,5 +1,6 @@
 import Manager from "../../main/level-manager.js"
 import WindFunctionsManager from "./functions"
+import {saveProgress,getProgress} from "../../../shortcuts/save"
 
 export default class Wind_Easy extends Phaser.Scene {
   constructor() {
@@ -19,6 +20,7 @@ export default class Wind_Easy extends Phaser.Scene {
     }
 
     this.windFunctionsManager = new WindFunctionsManager(this)
+    this.rated_the_game = getProgress().rated_the_game 
   }
 
   create() {
@@ -39,13 +41,35 @@ export default class Wind_Easy extends Phaser.Scene {
 
     this.manager.GUI_helper.sceneIntro(this)
     this.windFunctionsManager.extractBouncingTargets()
+    
   }
   update() {
+    if(this.manager.is_new_level_unlocked &&!this.rated_the_game){
+      this.rated_the_game = true;
+this.time.addEvent({
+  delay:100,
+  callback:()=>{
+    this.scene.pause()
+    const progress = getProgress()
+
+    progress.rated_the_game = true;
+
+    saveProgress(progress)
+
+    this.scene.launch("rate",{scene:this})
+    this.scene.bringToTop("rate")
+  }
+})
+      
+    }
+
     if (!this.manager.game_started) return
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
 
     this.windFunctionsManager.moveTargetsAndBounceOffWalls()
+
+  
   }
 }

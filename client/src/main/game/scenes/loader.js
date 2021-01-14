@@ -131,10 +131,14 @@ init(){
     this.load.image("4-th", `${imgPath}/4-th.png`)
     this.load.image("5-th", `${imgPath}/5-th.png`)
 
+    this.loadImage("rate-picture","mix")
     this.loadImage("lock2", "mix")
     this.loadImage("black", "mix")
     this.loadImage("pentagon", "mix")
     this.loadImage("pause-bg","mix")
+    this.loadImage("star","mix")
+    this.loadImage("comet","mix")
+    this.loadImage("white-circle","mix")
 
     this.loadImage("buttons-lose-bg", "mix2")
     this.loadImage("score-lose-bg","mix2")

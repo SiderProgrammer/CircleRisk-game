@@ -396,6 +396,8 @@ isMysteryLevel(){
   gameOver() {
    if(!this.game_started) return;
 
+ 
+
     if(window.admob){
       admob.banner.show()
 
@@ -428,6 +430,7 @@ isMysteryLevel(){
     let is_any_update = false
 
     if (this.isNewLevelNeededScoreReached()) {
+      this.is_new_level_unlocked = true;
       is_any_update = true
       this.progress.levels_scores[this.scene.level] = 0
    

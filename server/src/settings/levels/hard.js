@@ -107,7 +107,7 @@ module.exports = [
       
     },
   },
-  
+  /*
   {
     color: "white_1",
     info: {
@@ -126,6 +126,7 @@ module.exports = [
       ball_distance:300,
     },
   },
+  */
   {
     color: "white_1",
     info: {

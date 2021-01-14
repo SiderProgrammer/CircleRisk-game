@@ -62,7 +62,7 @@ module.exports = [
   {
     color: "purple_5",
     info: {
-      score_to_next_level: 25,
+      score_to_next_level: 30,
       tint: "0x06E0FF",
       name: "oneStep",
     },
@@ -76,7 +76,7 @@ module.exports = [
   {
     color: "white_1",
     info: {
-      score_to_next_level: 50,
+      score_to_next_level: 45,
       tint: "0x06E0FF",
       name: "threeTargets-",
     },
@@ -326,7 +326,7 @@ module.exports = [
       acceleration: 0.03,
     },
   },
-
+/*
   {
     color: "white_1",
     info: {
@@ -338,14 +338,13 @@ module.exports = [
       background: "gray_1",
       ...config,
       targets_amount:2,
-      targets_speed: 3,
       starting_target:0,
       additional_angle:0,
-      rotation_speed:8,
+      rotation_speed:6,
       ball_distance:300,
     },
   },
-
+*/
   {
     color: "pink_2",
     info: {

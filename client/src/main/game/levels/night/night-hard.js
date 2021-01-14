@@ -35,6 +35,7 @@ export default class Night_Hard extends Phaser.Scene {
     this.manager.create()
 
     this.manager.createGUI()
+    this.nightFunctionsManager.createStars()
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.swapTargetToTheNearset()

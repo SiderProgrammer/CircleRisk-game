@@ -1,4 +1,5 @@
 import Manager from "../../main/level-manager.js"
+import OneStepFunctionsManager from "../1-step/functions"
 
 export default class Instant_Easy extends Phaser.Scene {
   constructor() {
@@ -11,7 +12,7 @@ export default class Instant_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-   
+   this.oneStepFunctionsManager = new OneStepFunctionsManager(this)
   }
 
   create() {
@@ -42,6 +43,6 @@ export default class Instant_Easy extends Phaser.Scene {
     this.manager.checkIfMissedTarget()
   }
   swapTargetToTheNearset(){
-    this.manager.next_target  = this.manager.current_target+1;
+    this.oneStepFunctionsManager.swapTargetToTheNearset()
 }
 }

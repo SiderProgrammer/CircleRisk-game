@@ -60,22 +60,22 @@ module.exports = [
       ...config,
       targets_speed: 0.9,
       rotation_speed: 1.4,
-      acceleration: 0.05,
+      acceleration: 0.04,
     },
   },
   {
     info: {
-      score_to_next_level: 20,
+      score_to_next_level: 30,
       tint: "0xFF00FF",
       name: "night",
     },
     config: {
       background: "night-bg",
       ...config,
-      target_rotate_speed: 0.5,
-      rotation_speed: 1.1,
-      acceleration: 0.02,
-      targets_rotate_acceleration:0.01,
+      target_rotate_speed: 0.3,
+      rotation_speed: 0.75,
+
+      targets_rotate_acceleration:0.001,
     },
   },
 
@@ -164,7 +164,7 @@ module.exports = [
       ...config,
       starting_target: 6,
       rotation_speed: 1.4,
-      acceleration: 0.06,
+      acceleration: 0.04,
     },
   },
   {
@@ -209,11 +209,11 @@ module.exports = [
       background: "carousel-bg",
       ...config,
       targets_speed: 2,
-      rotation_speed: 1.4,
-      acceleration: 0.04,
+      rotation_speed: 1.3,
+      acceleration: 0.03,
     },
   },
-  
+  /*
   {
     color: "white_1",
     info: {
@@ -232,6 +232,7 @@ module.exports = [
       ball_distance:300,
     },
   },
+  */
   {
     info: {
       score_to_next_level: 60,

@@ -18,6 +18,8 @@ export default class levelSelect extends Phaser.Scene {
 
     this.are_thorns_seen = false;
     this.are_spikes_seen = false;
+    this.first_medium_level_page_number = levelsConfiguration.findIndex(el=>el.info.difficulty === "medium")
+    this.first_hard_level_page_number = levelsConfiguration.findIndex(el=>el.info.difficulty === "hard")
   }
 
   create() {
@@ -35,6 +37,7 @@ export default class levelSelect extends Phaser.Scene {
     this.thorns = this.createThornBorder()
    this.createChangePageButtons()
     this.createHomeButton()
+    //this.createLevelsDifficultyButtons()
     this.updatePage(this.current_page)
  
 
@@ -647,21 +650,94 @@ if(condition_1 || condition_2 || !sign){
    
     return window.progress.levels_scores[this.current_page_number] != -1 // this.progress.levels_scores.length >= this.current_page_number + 1
   }
-  tweenPage(sign) {
+
+  createLevelsDifficultyButtons(){
+   
+let buttons = {}
+
+const iterateEach = () => {
+
+}
+
+const manageVisibility = (current) => {
+  for(const b in buttons){
+      buttons[b].setAlpha(0.3)
+  }
+current.setAlpha(1)
+}
+
+    const y = this.game.GH - 65;
+
+   const easy =  helper.createButton(this,50,y,"white-circle",()=>{
+    if(this.current_page_number === 0 || !this.canChangePage) return
+
+      manageVisibility(buttons.easy)
+      this.tweenPage("+",this.current_page_number)
+    }).setAlpha(0.3)
+
     
- /*
-    if(!this.canChangePage && this.page_tween.isActive){
-        const duration = 50;
-        this.page_tween.destroy()
-    }
+    const medium_x = this.home_button.x -(this.home_button.x - easy.x)/2
+
+    const medium = helper.createButton(this,medium_x,y,"white-circle",()=>{
+if(!this.canChangePage) return
+
+manageVisibility(buttons.medium)
+
+      if(this.current_page_number < this.first_medium_level_page_number){
+        this.tweenPage("-",this.first_medium_level_page_number-this.current_page_number)
+      }else if(this.current_page_number > this.first_medium_level_page_number){
+        this.tweenPage("+",this.current_page_number - this.first_medium_level_page_number)
+      } // else do nothing
+     
+    }).setAlpha(0.3)
+
+ //// right side
+ const unavailable =   helper.createButton(this,this.game.GW-60,y,"white-circle",()=>{
+      //this.tweenPage("-",this.current_page_number)
+      const text = this.add.text(this.game.GW/2,this.game.GH + 50,"Difficulty coming soon",{
+        font:"40px LuckiestGuy"
+      }).setOrigin(0.5)
+
+      this.tweens.add({
+        targets:text,
+        y:"-=230",
+        duration:1500,
+        alpha:0,
+        onComplete:()=>text.destroy()
+        
+      })
+    }).setAlpha(0.3)
+
+    const hard_x = this.home_button.x  + (unavailable.x  - this.home_button.x)/2
+
+    const hard =  helper.createButton(this,hard_x,y,"white-circle",()=>{
+
+      if(!this.canChangePage) return
+      
+      if(this.current_page_number < this.first_hard_level_page_number){
+        this.tweenPage("-",this.first_hard_level_page_number-this.current_page_number)
+      }else if(this.current_page_number > this.first_hard_level_page_number){
+        this.tweenPage("+",this.current_page_number - this.first_hard_level_page_number)
+      } // else do nothing
+    }).setAlpha(0.3)
+   
+  buttons = {easy,medium,hard,unavailable}
+  /*
+  this.home_button.y += 100
+  const hidden_y = this.home_button.y
+  this.home_button.resetPosition = function () {
+    this.y = hidden_y
+  }
 */
 
-    if (!this.canChangePage){
-      
-     // if(this.page_tween) this.page_tween.setTimeScale(10)
-      return
-    }
-      
+  }
+
+  tweenPage(sign,pages_amount = 1) {
+    
+
+    if (!this.canChangePage)  return
+ 
+    
     
     playSound(this, "change_object")
     this.canChangePage = false
@@ -671,13 +747,14 @@ if(condition_1 || condition_2 || !sign){
     if (sign === "+") {
       second_page_shift = -second_page_shift
       //going left
-      this.current_page_number--
+      this.current_page_number-=pages_amount
+    
       if (this.current_page_number == -1)
         this.current_page_number = this.pages_amount - 1
     } else {
       //  second_page_shift = this.game.GW
       //going right
-      this.current_page_number++
+      this.current_page_number+=pages_amount
       if (this.current_page_number == this.pages_amount)
         this.current_page_number = 0
     }
@@ -695,13 +772,7 @@ if(condition_1 || condition_2 || !sign){
 
     this.updatePage(this.second_page,sign)
 
-/*
-    if(!this.canChangePage && this.page_tween.isActive){
-      const duration = 50;
-      this.page_tween.destroy()
-  }
-*/
-    this.page_tween = this.startPageTween(pages_elements_to_tween,sign,second_page_shift)
+    this.startPageTween(pages_elements_to_tween,sign,second_page_shift)
  
   }
 

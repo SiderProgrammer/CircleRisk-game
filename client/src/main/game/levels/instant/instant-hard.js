@@ -1,9 +1,9 @@
 import Manager from "../../main/level-manager.js"
-import PulsateFunctionsManager from "./functions"
+import OneStepFunctionsManager from "../1-step/functions"
 
-export default class Pulsate_Easy extends Phaser.Scene {
+export default class Instant_Hard extends Phaser.Scene {
   constructor() {
-    super("Pulsate_Easy")
+    super("Instant-_Hard")
   }
 
   init(config) {
@@ -12,16 +12,17 @@ export default class Pulsate_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
-    this.pulsateFunctionsManager = new PulsateFunctionsManager(this)
+   this.oneStepFunctionsManager = new OneStepFunctionsManager(this)
   }
 
   create() {
     this.manager.create()
 
     this.manager.createGUI()
-    this.pulsateFunctionsManager.createComets()
+  
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    this.swapTargetToTheNearset()
     this.manager.setNewTarget()
 
     this.manager.centerTargets()
@@ -31,8 +32,9 @@ export default class Pulsate_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-
-    this.pulsateFunctionsManager.makeTargetsPulse()
+    this.manager.rotation_angle = 180
+    this.manager.updateCircleStickAngle()
+   
   }
   update() {
     if (!this.manager.game_started) return
@@ -40,4 +42,7 @@ export default class Pulsate_Easy extends Phaser.Scene {
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
   }
+  swapTargetToTheNearset(){
+    this.oneStepFunctionsManager.swapTargetToTheNearset()
+}
 }

@@ -17,6 +17,7 @@ const createAccount = () => {
  saveProgress({
   nickname: nickname_input.value,//.replace(removeWhiteSpaces, ""),
   is_first_game:true,
+  rated_the_game:false,
 })
 
 creator_div.style.display = "none"

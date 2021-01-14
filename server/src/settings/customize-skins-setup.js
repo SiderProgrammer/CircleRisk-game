@@ -9,7 +9,7 @@ module.exports = {
 
 
     { skin: "14", cost:150 },
-    { skin: "150", cost:150 },
+    { skin: "15", cost:150 },
     { skin: "30", cost:150 },
     { skin: "18", cost:150 },
     { skin: "44", cost:150 },
@@ -115,7 +115,7 @@ module.exports = {
 
 
     { skin: "14", cost:150 },
-    { skin: "150", cost:150 },
+    { skin: "15", cost:150 },
     { skin: "30", cost:150 },
     { skin: "18", cost:150 },
     { skin: "44", cost:150 },

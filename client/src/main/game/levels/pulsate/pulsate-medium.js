@@ -21,6 +21,7 @@ export default class Pulsate_Medium extends Phaser.Scene {
     this.manager.create()
 
     this.manager.createGUI()
+    this.pulsateFunctionsManager.createComets()
     this.manager.createFirstTarget()
     this.manager.createTargets()
     this.manager.setNewTarget()
