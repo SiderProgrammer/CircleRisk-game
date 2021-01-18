@@ -15,6 +15,7 @@ hooks
 
 # Build
 www
+src/config.js
 
 # Logs
 *.log
