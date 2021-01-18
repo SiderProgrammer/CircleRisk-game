@@ -1,6 +1,6 @@
 # CircleRisk
 
-Circle Risk android game source code :)
+Circle Risk android game source code (my best project right now but still bad for me)
 
 Link to the Google Play Store : https://play.google.com/store/apps/details?id=com.pip.circlerisk
 Graphics were made by my brother.
