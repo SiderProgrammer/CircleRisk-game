@@ -1,4 +1,4 @@
-export const SERVER_URL = "https://circle-risk-backend.herokuapp.com"  // "http://192.168.1.12:3001"   // 
+export const SERVER_URL = "http://192.168.1.12:3001"  // "https://circle-risk-backend.herokuapp.com"  //   // 
 window.CLIENT_GAME_VERSION = 4;
 
 export const BANNER_AD_CONFIG = {   

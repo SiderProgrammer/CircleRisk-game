@@ -15,7 +15,7 @@ const DatabaseManager = require("./database-manager")
 
 const port = process.env.PORT || 3001
 const host = "0.0.0.0"
-const GAME_VERSION = 3;
+const GAME_VERSION = 4;
 
   const server = express()
   server.use(compression())

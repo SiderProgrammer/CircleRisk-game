@@ -76,7 +76,7 @@ module.exports = [
   {
     color: "white_1",
     info: {
-      score_to_next_level: 45,
+      score_to_next_level: 50,
       tint: "0x06E0FF",
       name: "threeTargets-",
     },
@@ -118,7 +118,7 @@ module.exports = [
     config: {
       background: "twins-bg",
       ...config,
-      rotation_speed: 1.15,
+      rotation_speed: 1.12,
     },
   },
 
@@ -132,7 +132,7 @@ module.exports = [
     config: {
       background: "tiny-bg",
       ...config,
-      rotation_speed: 1.15,
+      rotation_speed: 1.20,
       acceleration: 0.03,
     },
   },
@@ -166,7 +166,7 @@ module.exports = [
       background: "reverse-bg",
       ...config,
       starting_target: 6,
-      rotation_speed: 1.1,
+      rotation_speed: 1.15,
       acceleration: 0.035,
     },
   },
@@ -174,7 +174,7 @@ module.exports = [
   {
     color: "green_6",
     info: {
-      score_to_next_level: 25,
+      score_to_next_level: 30,
       tint: "0x06E0FF",
       name: "expand",
     },
@@ -250,7 +250,7 @@ module.exports = [
   {
     color: "blue_10",
     info: {
-      score_to_next_level: 25,
+      score_to_next_level: 20,
       tint: "0xF0F0F0",
       name: "snow",
     },
@@ -258,6 +258,7 @@ module.exports = [
       background: "snow-bg",
       ...config,
       rotation_speed: 1,
+
     },
   },
 
@@ -286,7 +287,7 @@ module.exports = [
     config: {
       background: "cosmo-bg",
       ...config,
-      rotation_speed: 1.15,
+      rotation_speed: 1.2,
       acceleration: 0.05,
     },
   },

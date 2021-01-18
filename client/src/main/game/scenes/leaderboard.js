@@ -10,7 +10,6 @@ import Utils from "../../utils"
 const bar_text_config = {
   font: `40px LuckiestGuy`,
   color: "#fff",
-  my_nickname_color: "0xff00ff",
 }
 
 export default class Leaderboard extends Phaser.Scene {
@@ -35,7 +34,7 @@ export default class Leaderboard extends Phaser.Scene {
  
     
     this.data = await this.getTopScoresData()
-
+   // this.data[0].nickname = "@! Admin- :)"
     const my_rank = await this.getMyRank()
 
 const top_three = [...this.data]
@@ -95,9 +94,10 @@ this.createHomeButton()
   }
   createPodiumNicknames(players){
     this.add.image(this.game.GW/2,this.podium.y - 105,"crown-mini")
-  this.createPodiumPlayer(players[0].nickname,this.game.GW/2,this.podium.y - 60).setFontSize("60px")
-  this.createPodiumPlayer(players[1].nickname,this.game.GW/2 - 110,this.podium.y - 5).setOrigin(1,0.5)
-  this.createPodiumPlayer(players[2].nickname,this.game.GW/2 +110 ,this.podium.y + 25).setOrigin(0,0.5)
+
+  if(players[0]) this.createPodiumPlayer(players[0].nickname,this.game.GW/2,this.podium.y - 60).setFontSize("60px")
+  if(players[1]) this.createPodiumPlayer(players[1].nickname,this.game.GW/2 - 110,this.podium.y - 5).setOrigin(1,0.5)
+  if(players[2]) this.createPodiumPlayer(players[2].nickname,this.game.GW/2 +110 ,this.podium.y + 25).setOrigin(0,0.5)
 
   }
 createPodiumPlayer(player,x,y){
@@ -167,7 +167,14 @@ return bg
        acc.rank = "#"+ acc.rank
       
      } 
-
+/*
+     if(acc.nickname.indexOf("Admin")){
+       // set text red color
+       account_text.nickname.setColor("#ff0000")
+     }else{
+      account_text.nickname.setColor("#ffffff")
+     }
+*/
       account_text.update(acc)
 
     })
@@ -194,9 +201,6 @@ for(let i=0;i<5;++i){
   this.medalManager.medals[i] = this.add.image(medal_x,this.texts[i].rank.y+7,images[i]);
 }
  
-
-
-
   this.medalManager.showMedal = function(i){
     this.medals[i].setVisible(true)
   }
@@ -205,7 +209,6 @@ for(let i=0;i<5;++i){
   }
 
   this.medalManager.fitMedalPositionToMyRank = function(i){
-    console.log(i)
     this.medals[i].x  = medalPositionFollowedByMyRank;
     
   }

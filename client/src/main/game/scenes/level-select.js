@@ -37,7 +37,7 @@ export default class levelSelect extends Phaser.Scene {
     this.thorns = this.createThornBorder()
    this.createChangePageButtons()
     this.createHomeButton()
-    //this.createLevelsDifficultyButtons()
+   this.difficulty_buttons = this.createLevelsDifficultyButtons()
     this.updatePage(this.current_page)
  
 
@@ -143,6 +143,7 @@ isHardSection(pageNumber = this.current_page_number){
         targets: [
           ...this.current_page.getElementsConvertedIntoArray(),
           this.home_button,
+          ...this.difficulty_buttons.getButtons(),
         ],
         y: `+=${this.game.GH}`,
         duration: 250,
@@ -150,6 +151,7 @@ isHardSection(pageNumber = this.current_page_number){
         onComplete: () => {
           this.scene.get("menu").setBubblesWhiteMode()
           this.home_button.resetPosition()
+          this.difficulty_buttons.resetPositionsToHidden()
           resolve()
         },
       })
@@ -173,11 +175,14 @@ isHardSection(pageNumber = this.current_page_number){
       ease: ease,
       onComplete: () => {
         this.animateHomeButtonShow(ease)
+        this.difficulty_buttons.show(ease)
       },
     })
 
     this.animateShowChangePageButtons()
   }
+
+
 
   resetPositionsToHidden() {
     // if I  use hide animation when starting level I could not hide
@@ -393,20 +398,23 @@ createSpikes(){
 
 
     spikes_right.animate = (showOrHide) => {
-      let value = shift
-      if(showOrHide === "hide"){
-        value = -value;
-       
-      }
+     
+        let value = shift
+        if(showOrHide === "hide"){
+          value = -value;
+         
+        }
+        
+        
+        this.tweens.add({
+          targets:spikes_right,
+          duration,
+          x:`-=${value}`,
+          ease,
+    
+        })
       
-      
-      this.tweens.add({
-        targets:spikes_right,
-        duration,
-        x:`-=${value}`,
-        ease
-
-      })
+    
     }
 
 
@@ -428,12 +436,12 @@ if(condition_1 || condition_2 || !sign){
  this.are_spikes_seen = true;
  this.spikes.forEach((spike) => { 
    spike.animate("show")
-   spike.setVisible(true).setActive(true)
+   //spike.setVisible(true).setActive(true)
  })
 }
 
  }
- hideSpikes(sign) {
+ hideSpikes(sign,exec = false) {
   if(!this.are_spikes_seen) return
 
   const condition_1 = 
@@ -442,18 +450,18 @@ if(condition_1 || condition_2 || !sign){
 
 const condition_2 = this.current_page_number === 0 && sign === "-"
 
-if(condition_1 || condition_2 || !sign){
+if(condition_1 || condition_2 || !sign || exec){
 this.are_spikes_seen = false;
-this.spikes.forEach((spike) => {
+this.spikes.forEach(async (spike) => {
   spike.animate("hide")
-  spike.setVisible(false).setActive(false)
+  //spike.setVisible(false).setActive(false)
 })
 }
 }
 
 
 
-  hideThornBorder(sign) {
+  hideThornBorder(sign,exec ) {
     if(!this.are_thorns_seen) return
     const condition_1 = 
     this.isEasySection() &&this.isMediumSection(this.current_page_number+1)  && sign === "+"
@@ -461,7 +469,7 @@ this.spikes.forEach((spike) => {
 
 const condition_2 = this.current_page_number === 0 && sign === "-"
 
-if(condition_1 || condition_2 || !sign){
+if(condition_1 || condition_2 || !sign || exec){
   this.are_thorns_seen = false;
   this.thorns.forEach((thorn) => {
     thorn.animate("hide")
@@ -654,25 +662,53 @@ if(condition_1 || condition_2 || !sign){
   createLevelsDifficultyButtons(){
    
 let buttons = {}
+const y = this.game.GH - 65;
+const hidden_y = this.game.GH + 50
 
-const iterateEach = () => {
-
-}
-
-const manageVisibility = (current) => {
-  for(const b in buttons){
-      buttons[b].setAlpha(0.3)
+buttons.getButtons = () => {
+  return Object.values(buttons.buttons)
   }
-current.setAlpha(1)
+
+buttons.setUnvisible = () => {
+   
+  buttons.getButtons().forEach(b=>b.setAlpha(0.3))
+ }
+
+ buttons.setVisible = (button) => {
+   button.setAlpha(1)
+ }
+
+ const animateShow = (targets,delay,ease) => {
+  this.time.addEvent({
+    callback:()=>{
+      this.tweens.add({
+        targets:targets,
+        duration:200,
+        ease,
+        y
+      })
+    },
+    delay,
+  })
+ }
+
+buttons.show = (ease) => {
+ animateShow([buttons.buttons.medium,buttons.buttons.hard],50,ease)
+ animateShow([buttons.buttons.easy,buttons.buttons.unavailable],100,ease)
 }
 
-    const y = this.game.GH - 65;
+buttons.resetPositionsToHidden = () => {
+  buttons.getButtons().forEach(b=>b.y = hidden_y)
+}
+    
 
-   const easy =  helper.createButton(this,50,y,"white-circle",()=>{
+   const easy =  helper.createButton(this,110,y,"white-circle",()=>{
     if(this.current_page_number === 0 || !this.canChangePage) return
+   //buttons.setUnvisible()
+   // buttons.setVisible(buttons.easy)
 
-      manageVisibility(buttons.easy)
-      this.tweenPage("+",this.current_page_number)
+    
+      this.tweenPage("+",this.current_page_number,true)
     }).setAlpha(0.3)
 
     
@@ -681,21 +717,22 @@ current.setAlpha(1)
     const medium = helper.createButton(this,medium_x,y,"white-circle",()=>{
 if(!this.canChangePage) return
 
-manageVisibility(buttons.medium)
+//buttons.setUnvisible()
+//buttons.setVisible(buttons.medium)
 
       if(this.current_page_number < this.first_medium_level_page_number){
-        this.tweenPage("-",this.first_medium_level_page_number-this.current_page_number)
+        this.tweenPage("-",this.first_medium_level_page_number-this.current_page_number,true)
       }else if(this.current_page_number > this.first_medium_level_page_number){
-        this.tweenPage("+",this.current_page_number - this.first_medium_level_page_number)
+        this.tweenPage("+",this.current_page_number - this.first_medium_level_page_number,true)
       } // else do nothing
      
     }).setAlpha(0.3)
 
  //// right side
- const unavailable =   helper.createButton(this,this.game.GW-60,y,"white-circle",()=>{
+ const unavailable =   helper.createButton(this,this.game.GW-110,y,"white-circle",()=>{
       //this.tweenPage("-",this.current_page_number)
       const text = this.add.text(this.game.GW/2,this.game.GH + 50,"Difficulty coming soon",{
-        font:"40px LuckiestGuy"
+        font:"60px LuckiestGuy"
       }).setOrigin(0.5)
 
       this.tweens.add({
@@ -714,14 +751,20 @@ manageVisibility(buttons.medium)
 
       if(!this.canChangePage) return
       
+    //  buttons.setUnvisible()
+     // buttons.setVisible(buttons.hard)
+
       if(this.current_page_number < this.first_hard_level_page_number){
-        this.tweenPage("-",this.first_hard_level_page_number-this.current_page_number)
+        this.tweenPage("-",this.first_hard_level_page_number-this.current_page_number,true)
       }else if(this.current_page_number > this.first_hard_level_page_number){
-        this.tweenPage("+",this.current_page_number - this.first_hard_level_page_number)
+        this.tweenPage("+",this.current_page_number - this.first_hard_level_page_number,true)
       } // else do nothing
     }).setAlpha(0.3)
    
-  buttons = {easy,medium,hard,unavailable}
+  buttons = {...buttons,buttons:{easy,medium,hard,unavailable}}
+buttons.resetPositionsToHidden()
+
+  
   /*
   this.home_button.y += 100
   const hidden_y = this.home_button.y
@@ -729,10 +772,10 @@ manageVisibility(buttons.medium)
     this.y = hidden_y
   }
 */
-
+return buttons
   }
 
-  tweenPage(sign,pages_amount = 1) {
+  tweenPage(sign,pages_amount = 1,exec) {
     
 
     if (!this.canChangePage)  return
@@ -770,7 +813,7 @@ manageVisibility(buttons.medium)
 
     this.second_page.show()
 
-    this.updatePage(this.second_page,sign)
+    this.updatePage(this.second_page,sign,exec)
 
     this.startPageTween(pages_elements_to_tween,sign,second_page_shift)
  
@@ -850,7 +893,7 @@ manageVisibility(buttons.medium)
     this.updatePage(this.current_page,sign)
   }
 
-  updatePage(page,sign) {
+  updatePage(page,sign,exec = false) {
     const { elements } = page
     for (const element in elements) {
       if (typeof elements[element].update === "function") {
@@ -896,15 +939,15 @@ manageVisibility(buttons.medium)
         this.showHardLevelsOrnaments(elements,sign)     
       }else {
     
-        this.hideHardLevelsOrnaments(elements)
+        this.hideHardLevelsOrnaments(elements,sign,exec)
       }
 
     } else {
    
 
         this.black_border.setVisible(false).setActive(false)
-        this.hideHardLevelsOrnaments(elements,sign)
-        this.hideThornBorder(sign)
+        this.hideHardLevelsOrnaments(elements,sign,exec)
+        this.hideThornBorder(sign,exec)
     
      
     }
@@ -914,7 +957,17 @@ manageVisibility(buttons.medium)
     }else if(this.levelEarlierWasMystery(sign)){
       this.updatePageToNormal()
     }
+
+ 
+    
+  this.difficulty_buttons.setUnvisible()
+
+    
+    if(this.isMediumSection()) this.difficulty_buttons.buttons.medium.setAlpha(1)
+    else if(this.isHardSection()) this.difficulty_buttons.buttons.hard.setAlpha(1)
+    else this.difficulty_buttons.buttons.easy.setAlpha(1)
   }
+
 
   updatePageToMystery(elements){
     //elements.ranking_button.setVisible(false).setActive(false);
