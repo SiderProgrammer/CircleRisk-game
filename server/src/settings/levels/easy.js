@@ -349,7 +349,7 @@ module.exports = [
   {
     color: "pink_2",
     info: {
-      score_to_next_level: 13,
+      score_to_next_level: 15,
       tint: "0x06E0FF",
       name: "clock",
     },
@@ -370,7 +370,7 @@ module.exports = [
     config: {
       background: "speed-bg",
       ...config,
-      rotation_speed: 2.3,
+      rotation_speed: 2.2,
       acceleration: 0.02,
     },
   },
@@ -378,7 +378,7 @@ module.exports = [
   {
     color: "gray_2",
     info: {
-      score_to_next_level: 25,
+      score_to_next_level: 30,
       tint: "0x06E0FF",
       name: "confusion",
     },
@@ -409,12 +409,13 @@ module.exports = [
   {
     color: "red_2",
     info: {
-      score_to_next_level: 15,
+      score_to_next_level: 20,
       tint: "0x06E0FF",
       name: "hell",
     },
     config: {
       background: "hell-bg",
+      rotation_speed:1.05,
       ...config,
     },
 

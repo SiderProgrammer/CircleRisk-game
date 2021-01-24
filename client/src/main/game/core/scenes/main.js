@@ -12,6 +12,8 @@ import ServerMaintenance from "../../scenes/server-maintenance.js"
 import UI from "../../scenes/UI"
 import UpdateGame from "../../scenes/update-game"
 import Rate from "../../scenes/rate"
+import Profile from "../../scenes/profile"
+
 export default [
   Preloader,
   Loader,
@@ -26,5 +28,6 @@ export default [
   ServerMaintenance,
   UI,
   UpdateGame,
-  Rate
+  Rate,
+  Profile
 ]

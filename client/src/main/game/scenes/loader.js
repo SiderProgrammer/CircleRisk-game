@@ -81,7 +81,7 @@ init(){
     this.loadAtlas("targets")
     this.loadAtlas("circles")
     this.loadAtlas("sticks")
-
+    this.loadAtlas("profile")
     this.loadAtlas("levels-icons")
     this.loadAtlas("buttons")
     this.loadAtlas("general-2")
@@ -120,7 +120,7 @@ init(){
     this.load.image("pentagon", `${imgPath}/pentagon.png`)
     this.load.image("flame", `${imgPath}/flame.png`)
 
-
+    this.load.image("tap", `${imgPath}/tap.png`)
     this.load.image("podium", `${imgPath}/podium.png`)
     this.load.image("podium-glow", `${imgPath}/podium-glow.png`)
     this.load.image("crown-mini", `${imgPath}/crown-mini.png`)

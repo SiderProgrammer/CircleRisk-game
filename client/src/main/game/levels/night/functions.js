@@ -1,6 +1,7 @@
 export default class {
   constructor(scene) {
     this.scene = scene
+    this.alpha_state = 1;
   }
   darkenTargets() {
     this.scene.manager.target_array[
@@ -10,9 +11,8 @@ export default class {
       target.setAlpha(Phaser.Math.Between(15, 50) / 100)
     })
 
-    this.scene.manager.target_array[this.scene.manager.next_target].setVisible(
-      false
-    )
+    this.scene.manager.target_array[this.scene.manager.next_target].setAlpha(this.alpha_state)
+    this.alpha_state -=0.3;
   }
 
   createStars(){

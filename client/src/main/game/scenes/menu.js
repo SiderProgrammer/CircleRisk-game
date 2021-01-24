@@ -31,7 +31,7 @@ export default class menu extends Phaser.Scene {
       logo: 0,
       play_button: 0,
       customize_button: 0,
-      music_button: 0,
+      middle_button: 0,
       sound_button: 0,
     }
 
@@ -69,7 +69,10 @@ export default class menu extends Phaser.Scene {
     this.createPlayButton()
     this.createCustomizeButton()
     this.createMuteButton()
-    this.createMusicButton()
+//    this.createMusicButton()
+    this.createMiddleButton()
+    this.createProfileButton()
+    this.createAchievementsButton()
 
     this.createFlyingBubbles()
 
@@ -111,7 +114,7 @@ setAnimatedObjectUnactive(){
     this.customize_button,
           this.sound_button,
           this.play_button,
-          this.music_button,
+          this.middle_button,
           this.logo,
   ]
   .forEach(o=>o.setVisible(false).setActive(false))
@@ -123,7 +126,7 @@ setAnimatedObjectsActive(){
     this.customize_button,
           this.sound_button,
           this.play_button,
-          this.music_button,
+          this.middle_button,
           this.logo,
   ]
   .forEach(o=>o.setVisible(true).setActive(true))
@@ -139,6 +142,9 @@ setAnimatedObjectsActive(){
   
       this.scene.launch("customize")
       this.scene.sleep("customize")
+
+      this.scene.launch("profile")
+      this.scene.sleep("profile")
       setTimeout(resolve,2000); // timeout to fully launch game
  
     })
@@ -176,7 +182,7 @@ setBubblesWhiteMode(){
   resetButtonsPositionsToHidden(){
     this.customize_button.y = this.hidden_positions_y.customize_button
     this.sound_button.y = this.hidden_positions_y.sound_button
-    this.music_button.y = this.hidden_positions_y.music_button
+    this.middle_button.y = this.hidden_positions_y.middle_button
   }
 
   createBackground() {
@@ -286,6 +292,132 @@ setBubblesWhiteMode(){
 
     this.music_button.y += this.music_button.displayHeight
     this.hidden_positions_y.music_button = this.music_button.y
+  }
+
+  createMiddleButton(){
+  
+    this.middle_button = helper
+      .createButton(
+        this,
+        this.game.GW / 2,
+        this.game.GH,
+        "profile-button",
+
+        () => {
+          if(this.profile_button.alpha === 0){
+            this.showMiddleSlidingButton({
+              button:this.profile_button,
+              ease:"Power1",
+              duration:350,
+              side:"left",
+            })
+
+            this.showMiddleSlidingButton({
+              button:this.achievements_button,
+              ease:"Power1",
+              duration:350,
+              side:"right",
+            })
+
+            this.middle_button.setAlpha(0.5)
+          }else{
+              this.hideMiddleSlidingButton({
+              button:this.profile_button,
+              ease:"Power1",
+              duration:350,
+              side:"left",
+            })
+            
+            this.hideMiddleSlidingButton({
+              button:this.achievements_button,
+              ease:"Power1",
+              duration:350,
+              side:"right",
+            })
+
+            this.middle_button.setAlpha(1)
+          }
+          
+        },
+        "button"
+      )
+
+      .setOrigin(0.5, 1)
+
+    this.middle_button.y += this.middle_button.displayHeight
+    this.hidden_positions_y.middle_button = this.middle_button.y
+  }
+
+
+  showMiddleSlidingButton(config){
+    let x_sign,y_sign = ""
+if(config.side === "left"){
+  x_sign = "-";
+  y_sign = "-";
+}else{
+  x_sign = "+"
+  y_sign = "-"
+}
+
+    const button = config.button
+    button.x = this.middle_button.x
+    button.y = this.middle_button.y
+    button.setAlpha(0);
+    button.setScale(0);
+
+    this.tweens.add({
+      targets:button,
+      alpha:1,
+      scale:1,
+      x:`${x_sign}=90`,
+      y:`${y_sign}=200`,
+      duration:config.duration,
+      ease:config.ease,
+    })
+  }
+
+  
+  hideMiddleSlidingButton(config){
+    let x_sign,y_sign = ""
+    if(config.side === "left"){
+      x_sign = "+";
+      y_sign = "+";
+    }else{
+      x_sign = "-"
+      y_sign = "+"
+    }
+
+    this.tweens.add({
+      targets:config.button,
+      alpha:0,
+      scale:0,
+      x:`${x_sign}=90`,
+      y:`${y_sign}=200`,
+      duration:config.duration,
+      ease:config.ease,
+    })
+  }
+
+  createProfileButton(){
+    this.profile_button = helper.createButton(
+      this,
+      0,0,"profile-button",async ()=>{
+        await this.animateHideMenu()
+          
+        this.scene.get("profile").animateProfileShow()
+        this.scene.wake("profile")
+
+      },"button"
+    ).setAlpha(0)
+  }
+  createAchievementsButton(){
+    this.achievements_button = helper.createButton(
+      this,
+      0,0,"medal-button",async ()=>{
+
+
+      },"button"
+    ).setAlpha(0)
   }
 
   createBubble(x, y) {
@@ -489,7 +621,7 @@ setBubblesWhiteMode(){
     this.time.addEvent({
       delay: 50,
       callback: () => {
-        this.animateBottomButton(this.music_button, ease)
+        this.animateBottomButton(this.middle_button, ease)
       },
     })
 
@@ -516,7 +648,7 @@ setBubblesWhiteMode(){
           this.customize_button,
           this.sound_button,
           this.play_button,
-          this.music_button,
+          this.middle_button,
           this.logo,
         ],
         ease: ease,

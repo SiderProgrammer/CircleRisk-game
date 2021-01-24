@@ -20,6 +20,7 @@ export default class levelSelect extends Phaser.Scene {
     this.are_spikes_seen = false;
     this.first_medium_level_page_number = levelsConfiguration.findIndex(el=>el.info.difficulty === "medium")
     this.first_hard_level_page_number = levelsConfiguration.findIndex(el=>el.info.difficulty === "hard")
+    this.is_mystery = false;
   }
 
   create() {
@@ -168,6 +169,7 @@ isHardSection(pageNumber = this.current_page_number){
       this.showSpikes()
     }
     
+    this.difficulty_buttons.resetPositionsToHidden()
     this.tweens.add({
       targets: this.current_page.getElementsConvertedIntoArray(),
       y: `-=${this.game.GH}`,
@@ -478,7 +480,7 @@ if(condition_1 || condition_2 || !sign || exec){
   }
 
 
-   showThorns(sign) {
+   showThorns(sign,exec) {
    if(this.are_thorns_seen) return
 
     const condition_1 = 
@@ -486,7 +488,7 @@ if(condition_1 || condition_2 || !sign || exec){
 
 const condition_2 = this.current_page_number === levelsConfiguration.length -1 && sign === "+"
 
-if(condition_1 || condition_2 || !sign){
+if(condition_1 || condition_2 || !sign || exec){
   this.are_thorns_seen = true;
   this.thorns.forEach((thorn) => { 
     thorn.animate("show")
@@ -930,7 +932,7 @@ return buttons
 
      
      
-        this.showThorns(sign)
+        this.showThorns(sign,exec)
         this.black_border.setVisible(true).setActive(true)
       
     
@@ -954,8 +956,12 @@ return buttons
 
     if(this.isMysteryLevel(this.current_page_number)){
       this.updatePageToMystery(elements)
-    }else if(this.levelEarlierWasMystery(sign)){
+      this.is_mystery = true;
+
+    }else if(this.is_mystery){
+     
       this.updatePageToNormal()
+      this.is_mystery = false;
     }
 
  
@@ -1011,9 +1017,9 @@ return this.isMysteryLevel(page_num_before)
     this.page_glow.setVisible(true).setActive(true)
   }
 
-  hideHardLevelsOrnaments({ score_bar, name_bar },sign) {
+  hideHardLevelsOrnaments({ score_bar, name_bar },sign,exec) {
    
-    this.hideSpikes(sign)
+    this.hideSpikes(sign,exec)
     score_bar.setFrame("level-select-score-bar")
     name_bar.setFrame("level-select-name-bar")
 

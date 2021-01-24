@@ -20,7 +20,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 50,
+      score_to_next_level: 999,//50,
       tint: "0xFF6E00",
       name: "wind",
     },

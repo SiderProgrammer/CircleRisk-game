@@ -78,21 +78,19 @@ this.lose_bg = helper
   }
   createTappingAnimation() {
     this.scene.is_first_try = false
-    this.scene.anims.create({
-      key: "tap",
-      frames: this.scene.anims.generateFrameNumbers("fingers", {
-        start: 0,
-        end: 1,
-      }),
-      repeat: -1,
-      frameRate: 2,
-      yoyo: true,
-    })
-
+  
     this.finger = this.scene.add
-      .sprite(this.GW / 2, this.GH - 150, "fingers", 0)
+      .sprite(this.GW / 2, this.GH - 150, "tap")
       .setDepth(1).setScale(0.7)
-      .play("tap")
+
+      this.scene.tweens.add({
+        targets:this.finger,
+        duration:500,
+        scale:0.9,
+        yoyo:true,
+        repeat:-1,
+      })
+      
   }
   showNewLevelUnlockedAlert() {
     const lock = this.scene.add.sprite(
@@ -483,8 +481,12 @@ if(this.score > 0 && !this.isMysteryLevel()){
    this.progress.money += this.score // earned money
    SAVE_MONEY({ money: this.progress.money, nickname: my_nickname }).catch(()=>checkConnection(this.scene))
 }
-   
+  
+this.progress.deaths ++
+
  window.progress = this.progress // saveProgress(this.progress)
+
+
 
     is_any_update && this.scene.scene.get("levelSelect").updateVisiblePage()
 
