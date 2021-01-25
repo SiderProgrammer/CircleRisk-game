@@ -1,15 +1,51 @@
 //import {createButton} from "../GUI-helper"
+import {getProgress} from "../../shortcuts/save"
 import HomeButton from "../down-home-button"
 
 export default class Profile extends Phaser.Scene {
     constructor(){
         super("profile")
-    }
 
+        this.stats = this.getStats()
+        this.ranks = this.getRanks()
+    }
+    getStats(){
+      return  getProgress().stats || {};
+    }
+    getRanks(){
+        return  [
+            "NOOB",
+            "BEGINNER",
+            "LITTLE BOY",
+            "AVERAGE",
+            "DEXTEROUS",
+            "VETERAN",
+            //"BOT"
+            // "CLICK MASTER",
+
+            "LEGEND",
+            "CRAZY FINGER",
+            "TAP EXPERT",
+            "MAGIC FINGER",
+            "TAP KING",         
+            "BOSS",
+            "MOTHER FUCK**",
+            "SUPER HUMAN",
+            "TAP MASTER",
+            "THE GOD",
+            "CHAMPION",
+            "INHUMANLY FAST",
+            "SUPER EXTRA FAST",
+            "INHUMANLY MEGA FAST",
+            "INHUMAN",
+            "???"
+        ]
+    }
+    
     create(){
         this.profile_guy = this.createProfileGuy(this.game.GW-50,50)
 
-        this.createNickname({
+        this.nickname = this.createNickname({
             x:(this.game.GW - this.profile_guy.displayWidth-50)/2,
             y:this.profile_guy.y + this.profile_guy.displayHeight/2,
             font:"70px LuckiestGuy"
@@ -22,22 +58,22 @@ export default class Profile extends Phaser.Scene {
             first_row_y: this.profile_guy.y + this.profile_guy.displayHeight + 100
         })
 
-        this.createStatsNumbers({
+        this.stats_numbers = this.createStatsNumbers({
             left_x:this.stats_buttons.wins.x + this.stats_buttons.wins.displayWidth/2 + 20,
             right_x:this.stats_buttons.deaths.x + this.stats_buttons.deaths.displayWidth/2 + 20,
             font:"50px LuckiestGuy"
         })
 
-      this.total =  this.createTotal({
+        this.total =  this.createTotal({
             x:this.game.GW/2,
             y:this.stats_buttons.achievements.y + 200,
             font:"60px LuckiestGuy",
             space:60,
         });
 
-        this.createStatus({
+        this.status = this.createStatus({
             x:this.game.GW/2,
-            y:this.total.y + 150,
+            y:this.total.text_value.y + 150,
             font:"60px LuckiestGuy",
             space:60,
         })
@@ -100,7 +136,21 @@ export default class Profile extends Phaser.Scene {
             perfect_rate:this.add.text(right_x,this.stats_buttons.perfect_rate.y,perfect_rate,{font}).setOrigin(0,0.5)
         }
     }
+    updateStatsText(){
+        const stats = this.getStatsNumbers()
 
+        for(const stat in stats){
+            this.stats_numbers[stat].setText(stats[stat]);
+        }
+        
+    }
+    updateTotalText(){
+        this.total.text_value.setText(this.calculateTotal());
+    }
+
+    updateStatusText(){
+        this.status.text_value.setText(this.getStatus())
+    }
     getStatsNumbers(){
         return {
             wins:this.getWinsNumber(),
@@ -121,40 +171,54 @@ getWinsNumber(){
 }
 
 getDeathsNumber(){
-    return progress.deaths || 0 
+    return this.stats.deaths || 0 
 }
 
 getHitsNumber(){
-    return progress.hits || 0
+    return this.stats.hits || 0
 }
 getPerfectsNumber(){
-    return progress.perfects || 0 
+    return this.stats.perfects || 0 
 }
 
 getAchievementsNumber(){
-    return progress.achievements || 0
+    return this.stats.achievements || 0
 }
 calculatePerfectRate(){
-    return Number((this.getPerfectsNumber / this.getHitsNumber()  * 100 ).toFixed(2)) + "%" 
+    return Number((this.getPerfectsNumber() / this.getHitsNumber()  * 100 ).toFixed(2)) + "%" 
 }
 
 createTotal(config){
     const {x,y,font,space} = config
-    this.add.text(x,y,"Total",{font}).setOrigin(0.5);
-   return this.add.text(x,y+space,this.calculateTotal(),{font}).setOrigin(0.5);
+    const total =  this.add.text(x,y,"Total",{font}).setOrigin(0.5);
+          total.text_value = this.add.text(x,y+space,this.calculateTotal(),{font}).setOrigin(0.5);
+
+   return total
 }
 calculateTotal(){
-    return 0;
+    const scores_to_sum_up = [...progress.levels_scores].filter(n=>n!=-1)
+
+    const levels_score = scores_to_sum_up.reduce((acc,number)=>{return acc+number})
+    const perfects_score = this.getPerfectsNumber() / 30 
+    const hits_score = this.getHitsNumber() / 50
+    const achievements_score = this.getAchievementsNumber()
+    const deaths_score = this.getDeathsNumber() / 25
+
+    return Math.floor(levels_score + perfects_score + hits_score + achievements_score + deaths_score) 
 }
 
 createStatus(config){
     const {x,y,font,space} = config
-    this.add.text(x,y,"Status",{font}).setOrigin(0.5);
-   return this.add.text(x,y+space,this.getStatus(),{font}).setOrigin(0.5);
+    const status = this.add.text(x,y,"Status",{font}).setOrigin(0.5);
+          status.text_value = this.add.text(x,y+space,this.getStatus(),{font}).setOrigin(0.5);
+
+   return status
 }
 getStatus(){
-    return "NOOB"
+    const status_index = Math.floor(this.calculateTotal() / 20);
+    return this.ranks[status_index] 
 }
+
 
 createHomeButton() {
   return new HomeButton({
@@ -163,23 +227,80 @@ createHomeButton() {
 
         func:async ()=>{
           await this.animateProfileHide()
-
-          this.home_button.resetPosition()
           this.scene.get("menu").animateShowMenu()
           this.scene.sleep()
         }
      })
   }
 
+
+  
+  setAnimatedObjectsVisibility(visible){
+    this.nickname.setAlpha(visible)
+    this.profile_guy.setAlpha(visible)
+
+  this.iterateObjectSetAlpha(this.stats_buttons,visible);
+  this.iterateObjectSetAlpha(this.stats_numbers,visible);
+
+  this.total.setAlpha(visible)
+  this.total.text_value.setAlpha(visible)
+  this.status.setAlpha(visible)
+  this.status.text_value.setAlpha(visible)
+  }
+
+  iterateObjectSetAlpha(object,visible){
+    for(const o in object){
+        object[o].setAlpha(visible)
+    }
+  }
+
+  async animateVisibility(duration,visibility){
+      this.tweenObjectAlpha(this.nickname,duration,visibility)
+      this.tweenObjectAlpha(this.profile_guy,duration,visibility)
+      this.tweenObjectAlpha(Object.values(this.stats_buttons),duration,visibility)
+      this.tweenObjectAlpha(Object.values(this.stats_numbers),duration,visibility)
+
+      this.tweenObjectAlpha(this.total,duration,visibility)
+      this.tweenObjectAlpha(this.total.text_value,duration,visibility)
+
+      this.tweenObjectAlpha(this.status,duration,visibility)
+      this.tweenObjectAlpha(this.status.text_value,duration,visibility)
+
+      return new Promise(resolve=>{
+        this.time.addEvent({callback:resolve(),delay:duration})
+      })
+      
+  }
+
+  tweenObjectAlpha(targets,duration,alpha){
+      this.tweens.add({
+          targets,
+          duration,
+          alpha
+      })
+  }
+
   async animateProfileShow(){
-    await this.home_button.animateShow();
+    this.stats = this.getStats()
+    this.updateStatsText()
+    this.updateTotalText() // todo 
+    this.updateStatusText() // todo
+
+      const duration = 400;
+
+      this.setAnimatedObjectsVisibility(0);
+      await this.animateVisibility(duration,1)
+      await this.home_button.animateShow();
+    
   }
 
   async animateProfileHide(){
-    await this.home_button.animateHide();
-    this.home_button.resetPosition()
-    this.scene.get("menu").animateShowMenu()
-    this.scene.sleep()
+      const duration = 200;
+
+     this.animateVisibility(duration,0)
+     await this.home_button.animateHide();
+     this.home_button.resetPosition()
+
   }
 
   

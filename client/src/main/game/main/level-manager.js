@@ -13,6 +13,8 @@ export default class Manager {
   constructor(scene, config) {
     this.scene = scene
     this.progress = window.progress// getProgress()
+    this.localProgress = getProgress()
+    this.localProgress.stats = this.localProgress.stats || this.getDefaultStats()
     this.config = config
   }
 
@@ -142,11 +144,14 @@ this.lose_bg = helper
 
     if (this.hasHitTarget(distance_from_target)) {
       this.levelFunctionsCaller.tryShake()
-
+      this.localProgress.stats.hits ++;
+    
       if (distance_from_target < 5) {
         this.score += 2
         this.perfect++
         this.perfect_combo++
+        this.localProgress.stats.perfects++;
+
         this.perfectManager.showPerfectText()
         this.perfectManager.showPerfectEffect()
         this.perfect_combo >= 3
@@ -391,6 +396,15 @@ this.lose_bg = helper
 isMysteryLevel(){
   return this.scene.scene.key.split("_")[0].slice(-1) === "-"
 }
+
+getDefaultStats(){
+  return {
+    deaths:0,
+    hits:0,
+    perfects:0,
+    achievements:0
+  }
+}
   gameOver() {
    if(!this.game_started) return;
 
@@ -482,11 +496,12 @@ if(this.score > 0 && !this.isMysteryLevel()){
    SAVE_MONEY({ money: this.progress.money, nickname: my_nickname }).catch(()=>checkConnection(this.scene))
 }
   
-this.progress.deaths ++
+this.localProgress.stats.deaths ++;
 
- window.progress = this.progress // saveProgress(this.progress)
+saveProgress(this.localProgress)
 
 
+ window.progress = this.progress 
 
     is_any_update && this.scene.scene.get("levelSelect").updateVisiblePage()
 

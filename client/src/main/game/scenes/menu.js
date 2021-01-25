@@ -348,7 +348,13 @@ setBubblesWhiteMode(){
     this.hidden_positions_y.middle_button = this.middle_button.y
   }
 
+resetMiddleHiddenButton(button){
+  button.x = this.middle_button.x
+  button.y = this.middle_button.y
+  button.setAlpha(0);
+  button.setScale(0);
 
+}
   showMiddleSlidingButton(config){
     let x_sign,y_sign = ""
 if(config.side === "left"){
@@ -360,10 +366,8 @@ if(config.side === "left"){
 }
 
     const button = config.button
-    button.x = this.middle_button.x
-    button.y = this.middle_button.y
-    button.setAlpha(0);
-    button.setScale(0);
+
+    this.resetMiddleHiddenButton(button);
 
     this.tweens.add({
       targets:button,
@@ -404,8 +408,9 @@ if(config.side === "left"){
       0,0,"profile-button",async ()=>{
         await this.animateHideMenu()
           
-        this.scene.get("profile").animateProfileShow()
         this.scene.wake("profile")
+        await this.scene.get("profile").animateProfileShow()
+        
 
       },"button"
     ).setAlpha(0)
@@ -649,13 +654,21 @@ if(config.side === "left"){
           this.sound_button,
           this.play_button,
           this.middle_button,
+          this.achievements_button,
+          this.profile_button,
           this.logo,
         ],
         ease: ease,
         y: `+=${this.game.GH}`,
         duration: 200,
 
-        onComplete: () => resolve(),
+        onComplete: () =>{
+          this.resetMiddleHiddenButton(this.achievements_button);
+          this.resetMiddleHiddenButton(this.profile_button);
+          this.middle_button.setAlpha(1);
+
+          resolve()
+        } ,
       })
     })
   }

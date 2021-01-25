@@ -37,9 +37,14 @@ export default ()=>{
    })
 
 /*
-    window.progress.levels_scores = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    window.progress.levels_scores = []
 
-    for(let i=0;i<80;i++){
+    for(let i=0;i<54;i++){
+      window.progress.levels_scores.push(0) 
+    }
+  
+
+    for(let i=0;i<100;i++){
       window.progress.levels_scores.push(-1) 
     }
   
