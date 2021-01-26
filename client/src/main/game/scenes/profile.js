@@ -12,38 +12,10 @@ export default class Profile extends Phaser.Scene {
     getStats(){
       return  getProgress().stats || {};
     }
-    getRanks(){
-        return  [
-            "NOOB",
-            "BEGINNER",
-            "LITTLE BOY",
-            "AVERAGE",
-            "DEXTEROUS",
-            "VETERAN",
-            //"BOT"
-            // "CLICK MASTER",
-
-            "LEGEND",
-            "CRAZY FINGER",
-            "TAP EXPERT",
-            "MAGIC FINGER",
-            "TAP KING",         
-            "BOSS",
-            "MOTHER FUCK**",
-            "SUPER HUMAN",
-            "TAP MASTER",
-            "THE GOD",
-            "CHAMPION",
-            "INHUMANLY FAST",
-            "SUPER EXTRA FAST",
-            "INHUMANLY MEGA FAST",
-            "INHUMAN",
-            "???"
-        ]
-    }
+ 
     
     create(){
-        this.profile_guy = this.createProfileGuy(this.game.GW-50,50)
+        this.profile_guy = this.createProfileGuy(this.game.GW-20,20)
 
         this.nickname = this.createNickname({
             x:(this.game.GW - this.profile_guy.displayWidth-50)/2,
@@ -51,10 +23,18 @@ export default class Profile extends Phaser.Scene {
             font:"70px LuckiestGuy"
         })
 
+        this.undernickname = this.add.image(0,this.nickname.y + 70,"profile","undernickname-line").setOrigin(0,0.5)
+
+        this.nick = this.createNick({
+            x:this.nickname.x,
+            y:this.nickname.y - 60,
+            font:"35px LuckiestGuy"
+        })
+
        this.stats_buttons = this.createStatsButtons({
             left_x:100,
             right_x:this.game.GW/2 + 100,
-            space_y:170,
+            space_y:150,
             first_row_y: this.profile_guy.y + this.profile_guy.displayHeight + 100
         })
 
@@ -64,21 +44,35 @@ export default class Profile extends Phaser.Scene {
             font:"50px LuckiestGuy"
         })
 
+      
+
+   //     const busy = 400
+     //   const empty = this.game.GH - this.stats_buttons.achievements.y - this.home_button.displayHeight
+
         this.total =  this.createTotal({
             x:this.game.GW/2,
-            y:this.stats_buttons.achievements.y + 200,
+            y:this.stats_buttons.achievements.y + 170,
             font:"60px LuckiestGuy",
-            space:60,
+            total_value_font:"90px Arial",
+            space:95,
         });
+
+
+        this.add.image(this.game.GW,this.total.text_value.y - 150,"profile","total-line").setOrigin(1,0.5)
+        this.add.image(0,this.total.text_value.y + 60,"profile","total-line").setOrigin(0,0.5).setFlipX(true)
+    
 
         this.status = this.createStatus({
             x:this.game.GW/2,
             y:this.total.text_value.y + 150,
             font:"60px LuckiestGuy",
-            space:60,
+            status_value_font:"75px Arial",
+            space:85,
         })
 
+        this.add.image(this.status.x,this.status.text_value.y,"profile","status-strap").setScale(1,0.9)
         this.home_button = this.createHomeButton()
+       
     }
     createButton(x,y,sprite,func){
         return this.add.image(x,y,"profile",sprite,()=>func())
@@ -90,6 +84,11 @@ export default class Profile extends Phaser.Scene {
         const {x,y,font} = config;
         return this.add.text(x,y,my_nickname,{font}).setOrigin(0.5,0.5)
     }
+    createNick(config){
+        const {x,y,font} = config;
+        return this.add.text(x,y,"NICK",{font}).setOrigin(0.5,0.5)
+    }
+
     createStatsButtons(config){
         const {left_x,right_x,first_row_y,space_y} = config
         return {
@@ -189,14 +188,14 @@ calculatePerfectRate(){
 }
 
 createTotal(config){
-    const {x,y,font,space} = config
+    const {x,y,font,space,total_value_font} = config
     const total =  this.add.text(x,y,"Total",{font}).setOrigin(0.5);
-          total.text_value = this.add.text(x,y+space,this.calculateTotal(),{font}).setOrigin(0.5);
+          total.text_value = this.add.text(x,y+space,this.calculateTotal(),{font:total_value_font}).setOrigin(0.5);
 
    return total
 }
 calculateTotal(){
-    const scores_to_sum_up = [...progress.levels_scores].filter(n=>n!=-1)
+    const scores_to_sum_up = [...progress.levels_scores].filter(n=>n!=-1) // only leave unlocked levels scores
 
     const levels_score = scores_to_sum_up.reduce((acc,number)=>{return acc+number})
     const perfects_score = this.getPerfectsNumber() / 30 
@@ -208,15 +207,25 @@ calculateTotal(){
 }
 
 createStatus(config){
-    const {x,y,font,space} = config
+    const {x,y,font,space,status_value_font} = config
     const status = this.add.text(x,y,"Status",{font}).setOrigin(0.5);
-          status.text_value = this.add.text(x,y+space,this.getStatus(),{font}).setOrigin(0.5);
+          status.text_value = this.add.text(x,y+space,this.getStatus(),{font:status_value_font}).setOrigin(0.5);
 
    return status
 }
 getStatus(){
-    const status_index = Math.floor(this.calculateTotal() / 20);
-    return this.ranks[status_index] 
+    const total = this.calculateTotal()
+    const first_status_total = 30;
+    
+    let needed_total = first_status_total/1.5;
+    let status_index = 0;
+
+    while((total / (needed_total * 1.5)) > 1){
+        needed_total *=1.5;
+        status_index++;
+    }
+
+    return this.ranks[status_index] || this.ranks[this.ranks.length-1] 
 }
 
 
@@ -238,6 +247,7 @@ createHomeButton() {
   setAnimatedObjectsVisibility(visible){
     this.nickname.setAlpha(visible)
     this.profile_guy.setAlpha(visible)
+    this.undernickname.setAlpha(visible)
 
   this.iterateObjectSetAlpha(this.stats_buttons,visible);
   this.iterateObjectSetAlpha(this.stats_numbers,visible);
@@ -257,6 +267,7 @@ createHomeButton() {
   async animateVisibility(duration,visibility){
       this.tweenObjectAlpha(this.nickname,duration,visibility)
       this.tweenObjectAlpha(this.profile_guy,duration,visibility)
+      this.tweenObjectAlpha(this.undernickname,duration,visibility)
       this.tweenObjectAlpha(Object.values(this.stats_buttons),duration,visibility)
       this.tweenObjectAlpha(Object.values(this.stats_numbers),duration,visibility)
 
@@ -303,6 +314,30 @@ createHomeButton() {
 
   }
 
-  
+  getRanks(){
+    return  [
+        "NOOB",
+        "BEGINNER",
+        "LITTLE BOY",
+        "AVERAGE",
+        "DEXTEROUS",
+        "MAGIC FINGER",
+        "VETERAN",
+        "CRAZY FINGER",
+        "TAP EXPERT",
+        "TAP KING",  
+        "MOTHER FUCK**",
+        "SUPER HUMAN",
+        "INHUMANLY FAST",
+        "INHUMANLY MEGA FAST",
+        "CHAMPION",
+        "CLICK MASTER",
+        "SUPER EXTRA FAST",
+        "BOSS",
+        "LEGEND",
+        "THE GOD",
+        "???"   
+    ]
+}
 }
 

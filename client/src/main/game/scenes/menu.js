@@ -69,10 +69,11 @@ export default class menu extends Phaser.Scene {
     this.createPlayButton()
     this.createCustomizeButton()
     this.createMuteButton()
-//    this.createMusicButton()
+    this.createMusicButton()
     this.createMiddleButton()
     this.createProfileButton()
     this.createAchievementsButton()
+    this.createGearButton()
 
     this.createFlyingBubbles()
 
@@ -107,12 +108,14 @@ export default class menu extends Phaser.Scene {
     await this.hideButtonsAndLogo(ease)
     this.resetPositionsToHidden()
     this.setAnimatedObjectUnactive()
+    this.resetGearHiddenButton(this.sound_button)
+    this.resetGearHiddenButton(this.music_button)
     //   return new Promise((resolve) => resolve())
   }
 setAnimatedObjectUnactive(){
   [this.instagram_button,
     this.customize_button,
-          this.sound_button,
+    this.gear_button,
           this.play_button,
           this.middle_button,
           this.logo,
@@ -124,7 +127,7 @@ setAnimatedObjectUnactive(){
 setAnimatedObjectsActive(){
   [this.instagram_button,
     this.customize_button,
-          this.sound_button,
+    this.gear_button,
           this.play_button,
           this.middle_button,
           this.logo,
@@ -181,7 +184,8 @@ setBubblesWhiteMode(){
 
   resetButtonsPositionsToHidden(){
     this.customize_button.y = this.hidden_positions_y.customize_button
-    this.sound_button.y = this.hidden_positions_y.sound_button
+    this.gear_button.y = this.hidden_positions_y.gear_button
+
     this.middle_button.y = this.hidden_positions_y.middle_button
   }
 
@@ -242,8 +246,8 @@ setBubblesWhiteMode(){
     this.sound_button = helper
       .createButton(
         this,
-        this.game.GW - 25,
-        this.game.GH,
+        0,
+        0,
         "mute-button",
 
         () => {
@@ -252,10 +256,9 @@ setBubblesWhiteMode(){
         "button"
       )
 
-      .setOrigin(1, 1)
+     .setAlpha(0)
 
-    this.sound_button.y += this.sound_button.displayHeight
-    this.hidden_positions_y.sound_button = this.sound_button.y
+
   }
 
   createMusicButton() {
@@ -276,8 +279,8 @@ setBubblesWhiteMode(){
     this.music_button = helper
       .createButton(
         this,
-        this.game.GW / 2,
-        this.game.GH,
+       0,
+       0,
         "music-mute-button",
 
         () => {
@@ -288,10 +291,8 @@ setBubblesWhiteMode(){
         "button"
       )
 
-      .setOrigin(0.5, 1)
+      .setAlpha(0)
 
-    this.music_button.y += this.music_button.displayHeight
-    this.hidden_positions_y.music_button = this.music_button.y
   }
 
   createMiddleButton(){
@@ -346,6 +347,123 @@ setBubblesWhiteMode(){
 
     this.middle_button.y += this.middle_button.displayHeight
     this.hidden_positions_y.middle_button = this.middle_button.y
+  }
+
+showGearSlidingButton(config){
+  const {button,ease,duration,shift_y,sign,callback} = config;
+
+
+  this.resetGearHiddenButton(button);
+
+  this.tweens.add({
+    targets:button,
+    ease,
+    duration,
+   
+    y:`${sign}=${shift_y}`,
+    alpha:1,
+    scale:1,
+onComplete:callback
+  })
+
+}
+
+hideGearSlidingButton(config){
+  const {button,ease,duration,shift_y,sign,callback} = config;
+
+  this.tweens.add({
+    targets:button,
+    ease,
+    duration,
+    y:`${sign}=${shift_y}`,
+    alpha:0,
+    scale:0,
+onComplete:callback
+  })
+
+}
+  createGearButton(){
+    let can_click = true;
+    this.gear_button = helper
+    .createButton(
+      this,
+      this.game.GW - 25,
+      this.game.GH,
+      "gear-button",
+
+      () => {
+        if(!can_click) return
+        can_click = false;
+
+        if(this.sound_button.alpha === 0){
+          this.showGearSlidingButton({
+            button:this.music_button,
+            ease:"Power1",
+            duration:350,
+            shift_y:"410",
+            sign:"-"
+          })
+
+          this.time.addEvent({
+            callback:()=>{
+              this.showGearSlidingButton({
+                button:this.sound_button,
+                ease:"Power1",
+                duration:350,
+                shift_y:"240",
+                sign:"-",
+                callback:function(){can_click = true}
+              })
+    
+            },
+            delay:100
+          })
+      
+          this.gear_button.setAlpha(0.5)
+        }else{
+
+          this.hideGearSlidingButton({
+            button:this.sound_button,
+            ease:"Power1",
+            duration:350,
+            shift_y:"240",
+            sign:"+"
+          })
+
+          this.time.addEvent({
+            callback:()=>{
+            this.hideGearSlidingButton({
+              button:this.music_button,
+              ease:"Power1",
+              duration:350,
+              shift_y:"410",
+              sign:"+",
+              callback:function(){can_click = true}
+            })
+          },
+          delay:100
+        })
+
+            this.gear_button.setAlpha(1)  
+        
+      }
+      },
+      "button"
+    )
+
+    .setOrigin(1, 1)
+
+  this.gear_button.y += this.gear_button.displayHeight
+  this.hidden_positions_y.gear_button = this.gear_button.y
+  }
+
+  resetGearHiddenButton(button){
+    
+    button.x = this.gear_button.x - this.gear_button.displayWidth/2
+    button.y = this.gear_button.y
+    button.setAlpha(0);
+    button.setScale(0);
+  
   }
 
 resetMiddleHiddenButton(button){
@@ -633,7 +751,7 @@ if(config.side === "left"){
     this.time.addEvent({
       delay: 100,
       callback: () => {
-        this.animateBottomButton(this.sound_button, ease)
+        this.animateBottomButton(this.gear_button, ease)
       },
     })
   }
@@ -652,20 +770,24 @@ if(config.side === "left"){
         targets: [
           this.customize_button,
           this.sound_button,
+          this.gear_button,
           this.play_button,
           this.middle_button,
           this.achievements_button,
           this.profile_button,
           this.logo,
+          this.music_button,
+          this.sound_button
         ],
         ease: ease,
         y: `+=${this.game.GH}`,
         duration: 200,
 
         onComplete: () =>{
-          this.resetMiddleHiddenButton(this.achievements_button);
-          this.resetMiddleHiddenButton(this.profile_button);
+          //this.resetMiddleHiddenButton(this.achievements_button);
+         // this.resetMiddleHiddenButton(this.profile_button);
           this.middle_button.setAlpha(1);
+          this.gear_button.setAlpha(1)
 
           resolve()
         } ,
