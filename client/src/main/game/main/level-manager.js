@@ -498,8 +498,9 @@ if(this.score > 0 && !this.isMysteryLevel()){
   
 this.localProgress.stats.deaths ++;
 
-saveProgress(this.localProgress)
-
+if(!this.scene.not_count_stats){
+  saveProgress(this.localProgress)
+}
 
  window.progress = this.progress 
 

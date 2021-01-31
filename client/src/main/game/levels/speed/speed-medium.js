@@ -1,5 +1,6 @@
 import Manager from "../../main/level-manager.js"
 import OneStepFunctionsManager from "../1-step/functions"
+import SpeedFunctionsManager from "./functions.js"
 
 export default class Speed_Medium extends Phaser.Scene {
   constructor() {
@@ -13,6 +14,8 @@ export default class Speed_Medium extends Phaser.Scene {
     this.manager = new Manager(this, config.config)
     this.manager.init()
     this.oneStepFunctionsManager = new OneStepFunctionsManager(this)
+   
+    this.speedFunctionsManager = new SpeedFunctionsManager(this)
   }
 
   create() {
@@ -31,6 +34,14 @@ export default class Speed_Medium extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+
+ this.lightning = this.add.image(this.game.GW/2,this.game.GH/2,"light").setAlpha(0)
+  
+    
+    this.time.addEvent({
+      delay:2000,
+      callback:()=>this.speedFunctionsManager.showLightning(),
+    })
   }
   update() {
     if (!this.manager.game_started) return

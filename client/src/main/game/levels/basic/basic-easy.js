@@ -58,10 +58,8 @@ export default class Basic_Easy extends Phaser.Scene {
       this.input.on("pointerdown",()=>{
         if(has_tapped) return;
         
-        const progress = getProgress()
-        progress.is_first_game = false;
-        saveProgress(progress)
-
+        this.manager.localProgress.is_first_game = false;
+  
         this.manager.finger.destroy()
         this.manager.rotation_speed = rot_speed;
         has_tapped = true;

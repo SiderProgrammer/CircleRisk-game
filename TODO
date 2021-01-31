@@ -6,12 +6,14 @@ plugin.xml / gradle-wrapper.properties / config.xml / projectBuilder.js / projec
 - PODMIANA WERSJI W CONFIG XML
 - USUNAC DODAWANIE WSZYSTKICH LEVELI W KLIENCIE GRY
 - ZMIENIC URL SERVERA W KLIENCIE GRY
-- OPTIMAZE IMAGES
+
 
   ! UPDATE INFO !
 - dodano profil z ogólnymi statystykami i podsumowaniem umiejętności
 - dodano przyciski do sprawniejszego poruszania sie po sekcji wyboru poziomów
 - naprawiono bląd z nie działającym rankingem w sekcji hard
+- poprawiono balans poziomow
+- dodano efekty specjalne do kilku poziomow
 - zmieniono grafike palca
 - inne poprawki
 
@@ -19,12 +21,11 @@ plugin.xml / gradle-wrapper.properties / config.xml / projectBuilder.js / projec
  @@@@@@@@@@@@@@@@@@@@@ REMEMBER ABOUT CHANGING VERSIONS WHEN UPDATING TO GOOGLE PLAY STORE @@@@@@@@@@@@
  * PINGING SEVER (HEROKU SLEEPS AFTER 30 MINUTES)
 
+@ new status info
  @ NAPISY MOTYWUJACE
-  @ZIMOWA  NIE WIEDZA O CO CHODZI
+ @ ZIMOWA  NIE WIEDZA O CO CHODZI
  @ DOKONCZYC MAPE 2 KULKI
- @ WIECEJ EFEKTOW SPECJALNYCH
  @ OZNACZYC MEDIUM I HARD JAKO HYBRDY
-@ LEVEL JEDNA KULKA - NIE NALICZAC STATYSTYK
 
  @ unlock polish special letters
  @ dymek za kulkiem
@@ -42,8 +43,6 @@ plugin.xml / gradle-wrapper.properties / config.xml / projectBuilder.js / projec
 * MAYBE MORE ACCOUNTS IN LEADERBOARD
 * PORUSZANIE COINSOW W SKLEPIE
 * RANKING INTERNET CHECK
-* REPAIR SPECIAL EFFECTS (ANGLE BUG)
-* EFFECT COS W LEWO NA JEDNEJ MAPIE
 * SERVER / MONGOOSE LISTENERS (ON("ERROR") etc)
 * PROMOWANIE GEOMETRY TRINITY WEWNATRZ CIRCLE RISK
 
@@ -53,10 +52,7 @@ plugin.xml / gradle-wrapper.properties / config.xml / projectBuilder.js / projec
 * MAKE DATABASE BACKUPS
  @RECONNECTING NA WEJSCIU POTEM SIE BUGUJE JAK NET Z POWROTEM WLACZE
  @GRA DZWIEK PRZY ZMINIMALIZOWANEJ GRZE
- @CZARNE KROPKI W SKLEPIE NA MYSTERY LVLU
  @CLOCK LEVEL REPAIR
- @ ZIMOWA POSLIZG
- @ MOZE COFNAC WERSJE SDK REKLAMY
  @ MAPA 4 KULKI
  @ OPTIMISE LEVEL select
 

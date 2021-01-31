@@ -39,12 +39,20 @@ export default class Clock_Hard extends Phaser.Scene {
 
     this.manager.GUI_helper.sceneIntro(this)
     this.senseFunctionsManager = new SenseFunctionsManager(this)
+    this.clock = this.add.image(this.game.GW/2,450,"clock").setAlpha(0.2)
+
+    this.time.addEvent({
+      delay: 1000, // ms
+      callback: () => this.clock.angle += 5,
+      repeat: -1,
+    })
   }
   update() {
     if (!this.manager.game_started) return
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
+   // this.clock.angle +=0.2
   }
 
   hideSetForAWhile() {

@@ -62,7 +62,7 @@ init(){
     this.loadImage("threeStep-bg", "backgrounds")
     this.loadImage("oneStep-bg", "backgrounds")
     this.loadImage("black-border", "backgrounds")
-  
+    this.loadImage("green-bg", "backgrounds")
   }
 
   sticks(i) {
@@ -85,7 +85,8 @@ init(){
     this.loadAtlas("levels-icons")
     this.loadAtlas("buttons")
     this.loadAtlas("general-2")
-
+    this.loadAtlas("sweets")
+    this.loadAtlas("general-3")
     this.load.atlas(
       "stars",
       `${imgPath}/mix/stars.png`,
@@ -100,10 +101,7 @@ init(){
     )
 
 
-    this.load.spritesheet("fingers", `${imgPath}/mix/fingers.png`, {
-      frameWidth: 240,
-      frameHeight: 354,
-    })
+   
     this.load.spritesheet("bird", `${imgPath}/bird.png`, {
       frameWidth: 70,
       frameHeight: 39,
@@ -125,11 +123,7 @@ init(){
     this.load.image("podium-glow", `${imgPath}/podium-glow.png`)
     this.load.image("crown-mini", `${imgPath}/crown-mini.png`)
     this.load.image("podium-aura", `${imgPath}/podium-aura.png`)
-    this.load.image("1-st", `${imgPath}/1-st.png`)
-    this.load.image("2-nd", `${imgPath}/2-nd.png`)
-    this.load.image("3-rd", `${imgPath}/3-rd.png`)
-    this.load.image("4-th", `${imgPath}/4-th.png`)
-    this.load.image("5-th", `${imgPath}/5-th.png`)
+  
 
     this.loadImage("rate-picture","mix")
     this.loadImage("lock2", "mix")
@@ -139,14 +133,15 @@ init(){
     this.loadImage("star","mix")
     this.loadImage("comet","mix")
     this.loadImage("white-circle","mix")
+    this.loadImage("reverse-arrows","mix")
+    this.loadImage("clock","mix")
+    this.loadImage("cockroach","mix")
+    this.loadImage("light","mix")
+    this.loadImage("cross","mix")
 
     this.loadImage("buttons-lose-bg", "mix2")
     this.loadImage("score-lose-bg","mix2")
-    this.loadImage("lb-me-bar", "mix2")
-    this.loadImage("lb-strap", "mix2")
-    this.loadImage("lb-scores-bg", "mix2")
-    this.loadImage("lb-line", "mix2")
-    this.loadImage("ranking-icon", "mix2")
+
 
   }
 

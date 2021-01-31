@@ -46,4 +46,58 @@ export default class {
       this.scene.manager.helper.findTargetIndexByPosition({ x: pos.x })
     )
   }
+
+  createSweetsEffect(){
+    const props = {
+      frame: {
+        frames: ["sweet_1", "sweet_2", "sweet_3", "sweet_4"],
+        cycle: false,
+      },
+      alpha:0.5,
+      speedY: { min: -100, max: -250 },
+      gravityY: 450,
+      quantity: -1,
+       reserve: 7,
+     lifespan:5000,
+    }
+
+    const emitter = this.scene.add.particles("sweets").createEmitter({
+    ...props,
+     speedX: { min: 200, max: 300 },
+    })
+
+    const emitter_right = this.scene.add.particles("sweets").createEmitter({
+     ...props,
+     speedX: { min: -200, max: -300 },
+    })
+
+const throwSweets = () => {
+  if(Phaser.Math.Between(0,1)){
+    emitter.explode(
+      Phaser.Math.Between(1,4),
+      -50,
+      Phaser.Math.Between(50,this.scene.game.GH/2)
+    )
+  }else{
+    emitter_right.explode(
+      Phaser.Math.Between(1,4),
+    this.scene.game.GW+50,
+    Phaser.Math.Between(50,this.scene.game.GH/2))
+  }
+}
+
+this.scene.time.addEvent({
+  delay:4000,
+  callback:()=>{
+    throwSweets()    
+    
+    if(Phaser.Math.Between(0,1)){
+      throwSweets()
+    }
+  },
+
+  repeat:-1,
+})
+    
+  }
 }

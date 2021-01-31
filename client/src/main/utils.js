@@ -3,5 +3,6 @@ export default {
         const {difficulty,name} = level.info
         return `${difficulty}-${name}`
     }
+
     
 }

@@ -1,7 +1,7 @@
 import Manager from "../../main/level-manager.js"
 import TinyFunctionsManager from "../tiny/functions"
 import NightFunctionsManager from "../night/functions"
-
+import SpeedFunctionsManager from "./functions.js"
 export default class Speed_Hard extends Phaser.Scene {
   constructor() {
     super("Speed_Hard")
@@ -13,6 +13,7 @@ export default class Speed_Hard extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+    this.speedFunctionsManager = new SpeedFunctionsManager(this)
   }
 
   create() {
@@ -35,6 +36,13 @@ export default class Speed_Hard extends Phaser.Scene {
     this.tinyFunctionsManager.resizeTargets()
     this.nightFunctionsManager = new NightFunctionsManager(this)
     this.nightFunctionsManager.darkenTargets()
+    this.lightning = this.add.image(this.game.GW/2,this.game.GH/2,"light").setAlpha(0)
+  
+    
+    this.time.addEvent({
+      delay:2000,
+      callback:()=>this.speedFunctionsManager.showLightning(),
+    })
   }
   update() {
     if (!this.manager.game_started) return

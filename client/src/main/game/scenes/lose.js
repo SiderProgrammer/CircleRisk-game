@@ -279,7 +279,7 @@ isMysteryLevel(){
       "button"
     ).setDepth(0.1)
 
-    const strap = this.add.image(a.x, a.y, "lb-strap")
+    const strap = this.add.image(a.x, a.y, "general-3","lb-strap")
 /*
 if(this.isMysteryLevel()){
  a.setVisible(false)

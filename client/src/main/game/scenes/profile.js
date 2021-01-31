@@ -1,4 +1,4 @@
-//import {createButton} from "../GUI-helper"
+import {createBackground} from "../GUI-helper"
 import {getProgress} from "../../shortcuts/save"
 import HomeButton from "../down-home-button"
 
@@ -8,6 +8,7 @@ export default class Profile extends Phaser.Scene {
 
         this.stats = this.getStats()
         this.ranks = this.getRanks()
+        this.descriptions = this.getDescriptions()
     }
     getStats(){
       return  getProgress().stats || {};
@@ -72,10 +73,44 @@ export default class Profile extends Phaser.Scene {
 
         this.add.image(this.status.x,this.status.text_value.y,"profile","status-strap").setScale(1,0.9)
         this.home_button = this.createHomeButton()
-       
+
+        this.shadow = createBackground(this,"black-bg").setVisible(false)
+        this.shadow.text = this.add.text(this.game.GW/2,this.game.GH/2,"",{
+        font:"70px LuckiestGuy",
+        align:"center",
+        wordWrap: {
+            width: this.game.GW * 0.8,
+          },
+        }).setVisible(false).setOrigin(0.5)
+
+        this.shadow.icon = this.add.image(this.game.GW/2,150,"profile").setVisible(false)
+        
+        this.bindListener()
+        
     }
-    createButton(x,y,sprite,func){
-        return this.add.image(x,y,"profile",sprite,()=>func())
+    bindListener(){
+        this.input.on("pointerdown",()=>{
+            if(this.shadow.visible){
+                this.shadow.setVisible(false)
+                this.shadow.text.setVisible(false)
+                this.shadow.icon.setVisible(false)
+            }
+        })
+    }
+    createButton(x,y,sprite,text){
+        
+        return this.add.image(x,y,"profile",sprite).setInteractive()
+        .on("pointerup",()=>{
+               
+                this.shadow.setVisible(true)
+                this.shadow.text.setVisible(true)
+                this.shadow.text.setText(text)
+                this.shadow.icon.setVisible(true).setFrame(sprite)
+                this.shadow.icon.setPosition(
+                    this.game.GW/2,
+                    this.shadow.text.y - this.shadow.text.displayHeight/2 - 50
+                    )
+        })
     }
     createProfileGuy(x,y){
         return this.add.image(x,y,"profile").setOrigin(1,0)
@@ -102,24 +137,24 @@ export default class Profile extends Phaser.Scene {
     }
   
     createWinsButton(x,y){
-        return this.createButton(x,y,"wins-icon",()=>{})
+        return this.createButton(x,y,"wins-icon",this.descriptions.wins)
     }
     createDeathsButton(x,y){
-        return this.createButton(x,y,"deaths-icon",()=>{})
+        return this.createButton(x,y,"deaths-icon",this.descriptions.deaths)
     }
 
     createHitsButton(x,y){
-        return this.createButton(x,y,"hit-icon",()=>{})
+        return this.createButton(x,y,"hit-icon",this.descriptions.hits)
     }
     createPerfectsButton(x,y){
-        return this.createButton(x,y,"perfect-icon",()=>{})
+        return this.createButton(x,y,"perfect-icon",this.descriptions.perfects)
     }
 
     createAchievementsButton(x,y){
-        return this.createButton(x,y,"achievements-icon",()=>{})
+        return this.createButton(x,y,"achievements-icon",this.descriptions.achievements)
     }
     createPerfectRateButton(x,y){
-        return this.createButton(x,y,"perfect-rate-icon",()=>{})
+        return this.createButton(x,y,"perfect-rate-icon",this.descriptions.perfect_rate)
     }
 
     createStatsNumbers(config){
@@ -195,7 +230,16 @@ createTotal(config){
    return total
 }
 calculateTotal(){
-    const scores_to_sum_up = [...progress.levels_scores].filter(n=>n!=-1) // only leave unlocked levels scores
+    /*
+    levelsConfiguration.reduce(function(a, e, i) {
+        if (e.info.name === 'point-')
+            a.push(i);
+        return a;
+    }, []);
+*/
+
+// only leave unlocked levels scores and do not count level with one target
+    const scores_to_sum_up = [...progress.levels_scores].filter(n=>n!=-1 && n < 300) 
 
     const levels_score = scores_to_sum_up.reduce((acc,number)=>{return acc+number})
     const perfects_score = this.getPerfectsNumber() / 30 
@@ -265,18 +309,20 @@ createHomeButton() {
   }
 
   async animateVisibility(duration,visibility){
-      this.tweenObjectAlpha(this.nickname,duration,visibility)
-      this.tweenObjectAlpha(this.profile_guy,duration,visibility)
-      this.tweenObjectAlpha(this.undernickname,duration,visibility)
-      this.tweenObjectAlpha(Object.values(this.stats_buttons),duration,visibility)
-      this.tweenObjectAlpha(Object.values(this.stats_numbers),duration,visibility)
+      this.tweenObjectAlpha([
+        this.nick,
+        this.nickname,
+        this.profile_guy,
+        this.undernickname,
+        ...Object.values(this.stats_buttons),
+        ...Object.values(this.stats_numbers),
+        this.total,
+        this.total.text_value,
+        this.status,
+        this.status.text_value
 
-      this.tweenObjectAlpha(this.total,duration,visibility)
-      this.tweenObjectAlpha(this.total.text_value,duration,visibility)
-
-      this.tweenObjectAlpha(this.status,duration,visibility)
-      this.tweenObjectAlpha(this.status.text_value,duration,visibility)
-
+      ],duration,visibility)
+      
       return new Promise(resolve=>{
         this.time.addEvent({callback:resolve(),delay:duration})
       })
@@ -313,6 +359,16 @@ createHomeButton() {
      this.home_button.resetPosition()
 
   }
+  getDescriptions(){
+    return {
+        wins:"Whole game complete percentage",
+        hits:"Sum of all catches",
+        achievements:"Sum of all achievements",
+        deaths:"Sum of all loses",
+        perfects:"Sum of all perfects",
+        perfect_rate:"Percentage of perfect to hit ratio"
+    }
+}
 
   getRanks(){
     return  [
@@ -339,5 +395,7 @@ createHomeButton() {
         "???"   
     ]
 }
+
+
 }
 

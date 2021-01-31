@@ -33,6 +33,10 @@ export default class Blind_Easy extends Phaser.Scene {
     this.blindFunctionsManager = new BlindFunctionsManager(this)
     this.blind = this.manager.GUI_helper.createBackground(this, "black")
     this.blind.setDepth(1).setVisible(false)
+
+    const x = Phaser.Math.Between(100,this.game.GW-100)
+    this.cross_1 = this.add.image(x,this.game.GH,"cross").setOrigin(0.5,1)
+    
   }
   update() {
     if (!this.manager.game_started) return

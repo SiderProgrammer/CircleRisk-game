@@ -138,7 +138,7 @@ module.exports = [
   },
 
   {
-    color: "brown_4",
+    color: "grey_10",
     info: {
       score_to_next_level: 30,
       tint: "0x06E0FF",
@@ -179,7 +179,7 @@ module.exports = [
       name: "expand",
     },
     config: {
-      background: "star-bg",
+      background: "green-bg",
       ...config,
       ball_distance: 116,
       rotation_speed: 1.15,

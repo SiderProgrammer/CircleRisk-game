@@ -20,7 +20,7 @@ export default class Wind_Easy extends Phaser.Scene {
     }
 
     this.windFunctionsManager = new WindFunctionsManager(this)
-    this.rated_the_game = getProgress().rated_the_game 
+    this.rated_the_game = false
   }
 
   create() {
@@ -50,12 +50,7 @@ this.time.addEvent({
   delay:100,
   callback:()=>{
     this.scene.pause()
-    const progress = getProgress()
-
-    progress.rated_the_game = true;
-
-    saveProgress(progress)
-
+ 
     this.scene.launch("rate",{scene:this})
     this.scene.bringToTop("rate")
   }

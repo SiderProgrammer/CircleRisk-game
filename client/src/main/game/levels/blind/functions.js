@@ -6,7 +6,8 @@ export default class {
     if (!this.scene.manager.game_started) return
 
     this.scene.blind.setVisible(true)
-
+    this.changeCrossesPosition()
+    
     this.scene.time.addEvent({
       delay: this.scene.manager.config.blind_time || 800,
       callback: () => {
@@ -16,7 +17,13 @@ export default class {
           callback: this.blindTheScreen,
           callbackScope: this,
         })
+        
       },
     })
+  }
+
+  changeCrossesPosition(){
+    const x = Phaser.Math.Between(100,this.scene.game.GW-100)
+    this.scene.cross_1.x = x;
   }
 }

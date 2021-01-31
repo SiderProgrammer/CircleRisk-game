@@ -46,7 +46,7 @@ top_three.length = 3;
     this.createPodiumNicknames(top_three)
 
    this.me = this.addAccountText(this.game.GH-70);
-    this.me.bar = this.addScoreBar(this.game.GH-70).setTexture("lb-me-bar");
+    this.me.bar = this.addScoreBar(this.game.GH-70).setTexture("general-3").setFrame("lb-me-bar");
 
    this.me.update({
      rank:my_rank,
@@ -109,13 +109,13 @@ createPodiumPlayer(player,x,y){
 }
 
 createScoresBackground(){
-  const bg = this.add.image(this.game.GW/2,this.score_bg_y ,"lb-scores-bg")
+  const bg = this.add.image(this.game.GW/2,this.score_bg_y ,"general-3","lb-scores-bg")
    bg.displayHeight = this.score_bg_height;
    bg.displayWidth = this.game.GW - 15
 return bg
 }
   createGoldLine(y){
-    const line =  this.add.image(this.game.GW/2,y,"lb-strap")
+    const line =  this.add.image(this.game.GW/2,y,"general-3","lb-strap")
     helper.setGameSize(line,true);
     line.displayHeight = 20
     line.y = y ;
@@ -198,7 +198,7 @@ createMedals(){
 
 const images = ["1-st","2-nd","3-rd","4-th","5-th"]
 for(let i=0;i<5;++i){
-  this.medalManager.medals[i] = this.add.image(medal_x,this.texts[i].rank.y+7,images[i]);
+  this.medalManager.medals[i] = this.add.image(medal_x,this.texts[i].rank.y+7,"general-3",images[i]);
 }
  
   this.medalManager.showMedal = function(i){

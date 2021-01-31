@@ -20,7 +20,7 @@ module.exports = [
 
   {
     info: {
-      score_to_next_level: 999,//50,
+      score_to_next_level: 50,//50,
       tint: "0xFF6E00",
       name: "wind",
     },
@@ -34,7 +34,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 55,
+      score_to_next_level: 60,
       tint: "0xFF00FF",
       name: "night",
     },
@@ -79,7 +79,7 @@ module.exports = [
   },
   {
     info: {
-      score_to_next_level: 25,
+      score_to_next_level: 30,
       tint: "0x0000FF",
       name: "sun",
     },
@@ -145,7 +145,7 @@ module.exports = [
   {
     color: "white_1",
     info: {
-      score_to_next_level: 40,
+      score_to_next_level: 50,
       tint: "0x06E0FF",
       name: "threeTargets-",
     },
@@ -320,7 +320,7 @@ ball_distance:116,
 
   {
     info: {
-      score_to_next_level: 65,
+      score_to_next_level: 55,
       tint: "0x06E0FF",
       name: "unstable",
     },
@@ -328,8 +328,8 @@ ball_distance:116,
       background: "unstable-bg",
      
       rotation_speed_change: {
-        min: 0.5,
-        max: 3.5,
+        min: 1,
+        max: 3.2,
       },
       ...config,
       ball_distance:116,
@@ -352,7 +352,7 @@ ball_distance:116,
   },
   {
     info: {
-      score_to_next_level: 35,
+      score_to_next_level: 45, // 45,
       tint: "0x06E0FF",
       name: "blind",
     },

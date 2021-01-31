@@ -37,6 +37,13 @@ export default class Clock_Medium extends Phaser.Scene {
     this.clockFunctionsManager.setTimer()
 
     this.manager.GUI_helper.sceneIntro(this)
+    this.clock = this.add.image(this.game.GW/2,450,"clock").setAlpha(0.2)
+
+    this.time.addEvent({
+      delay: 1000, // ms
+      callback: () => this.clock.angle += 5,
+      repeat: -1,
+    })
   }
   update() {
     if (!this.manager.game_started) return

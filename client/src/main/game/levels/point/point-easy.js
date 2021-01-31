@@ -8,8 +8,9 @@ export default class Point_Easy extends Phaser.Scene {
   init(config) {
     this.level = config.level
     this.score_to_next_level = config.score_to_next_level
-
+    this.not_count_stats = true;
     this.manager = new Manager(this, config.config)
+    
     this.manager.init()
 this.pointFunctionsManager = new PointFunctionsManager(this)
   }

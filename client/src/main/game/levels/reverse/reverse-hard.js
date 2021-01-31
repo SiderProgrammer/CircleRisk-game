@@ -38,12 +38,15 @@ export default class Reverse_Hard extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+    this.manager.GUI_helper.sceneIntro(this)
+    this.arrows = this.add.image(this.game.GW/2,this.game.GH/2,"reverse-arrows")
   }
   update() {
     if (!this.manager.game_started) return
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
+    this.arrows.angle -=0.25;
   }
   shake() {
     this.earthquakeFunctionsManager.shake()

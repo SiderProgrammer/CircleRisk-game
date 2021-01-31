@@ -43,21 +43,7 @@ export default class Carousel_Hard extends Phaser.Scene {
     this.twinsFunctionsManager.setFakeTargetToCatch(fake_target_index)
 
  this.carouselFunctionsManager.extractBouncingTargets();
-    /*
-    this.anims.create({
-      key: "boost",
-      frames: this.anims.generateFrameNumbers("boost", {
-        start: 0,
-        end: 3,
-      }),
-      repeat: 3,
-      frameRate: 2,
-    })
-
-    this.boost = this.add
-      .sprite(this.game.GW / 2, this.game.GH / 2 - 200, "boost")
-      .setVisible(false)
-      */
+ this.carouselFunctionsManager.createSweetsEffect()
   }
   update() {
     if (!this.manager.game_started) return

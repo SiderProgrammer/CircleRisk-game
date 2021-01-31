@@ -537,7 +537,18 @@ if(config.side === "left"){
     this.achievements_button = helper.createButton(
       this,
       0,0,"medal-button",async ()=>{
-
+        const text = this.add.text(this.achievements_button.x,this.achievements_button.y,"Achievements coming soon",{
+          font:"50px LuckiestGuy"
+        }).setOrigin(0.5)
+  
+        this.tweens.add({
+          targets:text,
+          y:"-=230",
+          duration:1500,
+          alpha:0,
+          onComplete:()=>text.destroy()
+          
+        })
 
       },"button"
     ).setAlpha(0)
