@@ -1,4 +1,5 @@
 import Manager from "../../main/level-manager.js"
+import FlowerFunctionsManager from "./functions"
 
 export default class Flower_Easy extends Phaser.Scene {
   constructor() {
@@ -11,6 +12,7 @@ export default class Flower_Easy extends Phaser.Scene {
 
     this.manager = new Manager(this, config.config)
     this.manager.init()
+    this.flowersFunctionsManager = new FlowerFunctionsManager(this)
   }
 
   create() {
@@ -29,7 +31,18 @@ export default class Flower_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+
+    this.flowers = [
+      this.flowersFunctionsManager.createFlower("flower_1"),
+      this.flowersFunctionsManager.createFlower("flower_2"),
+      this.flowersFunctionsManager.createFlower("flower_3"),
+      this.flowersFunctionsManager.createFlower("flower_1"),
+      this.flowersFunctionsManager.createFlower("flower_2"),
+      this.flowersFunctionsManager.createFlower("flower_3"),
+    ]
+    this.flowersFunctionsManager.flowersEffect()
   }
+ 
   update() {
     if (!this.manager.game_started) return
     this.manager.updateRotationAngle()

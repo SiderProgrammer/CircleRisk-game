@@ -145,7 +145,7 @@ module.exports = [
       name: "earthquake",
     },
     config: {
-      canvas_color: "add8e6",
+      canvas_color:"0xA52A2A",
       background: "earthquake-bg",
       ...config,
       rotation_speed: 1.2,
@@ -216,7 +216,7 @@ module.exports = [
   /*
   {
     color: "white_1",
-    info: {
+    info: {ea
       score_to_next_level: 10,
       tint: "0x06E0FF",
       name: "instant-",

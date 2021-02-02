@@ -32,8 +32,10 @@ export default class OneStep_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
-   
+    this.foot = this.add.image(50,50,"foot")
+    this.oneStepFunctionsManager.hideFoot()
   }
+ 
   update() {
     if (!this.manager.game_started) return
     this.manager.updateRotationAngle()

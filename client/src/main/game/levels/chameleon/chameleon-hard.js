@@ -37,6 +37,13 @@ export default class Chameleon_Hard extends Phaser.Scene {
     this.teleportFunctionsManager = new TeleportFunctionsManager(this)
     this.carouselFunctionsManager = new CarouselFunctionsManager(this)
     this.carouselFunctionsManager.extractBouncingTargets();
+
+    this.cockroach=  this.add.image(-100,Phaser.Math.Between(0,this.game.GH),"cockroach").setAlpha(0.8)
+    this.time.addEvent({
+      callback:()=>this.chameleonFunctionsManager.startMoveCockroach(),
+      delay:4000,
+    })
+    
   }
   update() {
     if (!this.manager.game_started) return

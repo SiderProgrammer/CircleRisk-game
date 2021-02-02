@@ -34,6 +34,8 @@ export default class OneStep_Medium extends Phaser.Scene {
 
     this.manager.GUI_helper.sceneIntro(this)
     this.earthquakeFunctionsManager = new EarthquakeFunctionsManager(this)
+    this.foot = this.add.image(50,50,"foot")
+    this.oneStepFunctionsManager.hideFoot()
   }
   update() {
     if (!this.manager.game_started) return

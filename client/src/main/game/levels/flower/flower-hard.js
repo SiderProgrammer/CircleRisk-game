@@ -2,6 +2,7 @@ import Manager from "../../main/level-manager.js"
 import OneStepFunctionsManager from "../1-step/functions"
 import SunFunctionsManager from "../sun/functions"
 import LevelsFunctionsExtender from "../../main/level-functions-extender"
+import FlowerFunctionsManager from "./functions"
 
 export default class Flower_Hard extends Phaser.Scene {
   constructor() {
@@ -21,7 +22,7 @@ export default class Flower_Hard extends Phaser.Scene {
     this.circle_rotate_angle = 0
     this.center_to_circle_distance = 0
 
-
+    this.flowersFunctionsManager = new FlowerFunctionsManager(this)
      this.sunFunctionsManager = new SunFunctionsManager(this)
   }
 
@@ -54,6 +55,15 @@ export default class Flower_Hard extends Phaser.Scene {
     this.distance = (pos.x - pos.minX) / 2
 
     this.sunFunctionsManager.calculateSpawnDistance()
+    this.flowers = [
+      this.flowersFunctionsManager.createFlower("flower_1"),
+      this.flowersFunctionsManager.createFlower("flower_2"),
+      this.flowersFunctionsManager.createFlower("flower_3"),
+      this.flowersFunctionsManager.createFlower("flower_1"),
+      this.flowersFunctionsManager.createFlower("flower_2"),
+      this.flowersFunctionsManager.createFlower("flower_3"),
+    ]
+    this.flowersFunctionsManager.flowersEffect()
   }
   update() {
     if (!this.manager.game_started) return

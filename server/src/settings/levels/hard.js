@@ -168,7 +168,7 @@ module.exports = [
       name: "earthquake",
     },
     config: {
-      canvas_color: "add8e6",
+      canvas_color:"0xA52A2A",
       background: "earthquake-bg",
       ...config,
       time_left: 10, //in seconds

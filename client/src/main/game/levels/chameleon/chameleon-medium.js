@@ -33,6 +33,13 @@ export default class Chameleon_Medium extends Phaser.Scene {
 
     this.chameleonFunctionsManager = new ChameleonFunctionsManager(this)
     this.teleportFunctionsManager = new TeleportFunctionsManager(this)
+
+    this.cockroach=  this.add.image(-100,Phaser.Math.Between(0,this.game.GH),"cockroach").setAlpha(0.8)
+    this.time.addEvent({
+      callback:()=>this.chameleonFunctionsManager.startMoveCockroach(),
+      delay:4000,
+    })
+    
   }
   update() {
     if (!this.manager.game_started) return

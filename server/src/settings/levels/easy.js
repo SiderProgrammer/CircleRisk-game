@@ -398,7 +398,7 @@ module.exports = [
       name: "earthquake",
     },
     config: {
-      canvas_color:"0xadd8e6",
+      canvas_color:"0xA52A2A",
       background: "earthquake-bg",
       ...config,
       rotation_speed: 1.25,

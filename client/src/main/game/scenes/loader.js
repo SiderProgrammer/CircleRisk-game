@@ -87,6 +87,8 @@ init(){
     this.loadAtlas("general-2")
     this.loadAtlas("sweets")
     this.loadAtlas("general-3")
+    this.loadAtlas("flowers")
+
     this.load.atlas(
       "stars",
       `${imgPath}/mix/stars.png`,
@@ -138,6 +140,7 @@ init(){
     this.loadImage("cockroach","mix")
     this.loadImage("light","mix")
     this.loadImage("cross","mix")
+    this.loadImage("foot","mix")
 
     this.loadImage("buttons-lose-bg", "mix2")
     this.loadImage("score-lose-bg","mix2")

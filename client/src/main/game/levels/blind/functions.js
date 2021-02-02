@@ -6,7 +6,7 @@ export default class {
     if (!this.scene.manager.game_started) return
 
     this.scene.blind.setVisible(true)
-    this.changeCrossesPosition()
+    if(this.scene.cross_1)this.changeCrossesPosition()
     
     this.scene.time.addEvent({
       delay: this.scene.manager.config.blind_time || 800,

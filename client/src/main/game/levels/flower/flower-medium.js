@@ -1,6 +1,7 @@
 import Manager from "../../main/level-manager.js"
 import SnowFunctionsManager from "../snow/functions"
-
+import FlowerFunctionsManager from "./functions"
+   
 export default class Flower_Medium extends Phaser.Scene {
   constructor() {
     super("Flower_Medium")
@@ -13,6 +14,7 @@ export default class Flower_Medium extends Phaser.Scene {
     this.manager = new Manager(this, config.config)
     this.manager.init()
     this.snowFunctionsManager = new SnowFunctionsManager(this)
+    this.flowersFunctionsManager = new FlowerFunctionsManager(this)
   }
 
   create() {
@@ -30,6 +32,15 @@ export default class Flower_Medium extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
+    this.flowers = [
+      this.flowersFunctionsManager.createFlower("flower_1"),
+      this.flowersFunctionsManager.createFlower("flower_2"),
+      this.flowersFunctionsManager.createFlower("flower_3"),
+      this.flowersFunctionsManager.createFlower("flower_1"),
+      this.flowersFunctionsManager.createFlower("flower_2"),
+      this.flowersFunctionsManager.createFlower("flower_3"),
+    ]
+    this.flowersFunctionsManager.flowersEffect()
   }
   update() {
     if (!this.manager.game_started) return

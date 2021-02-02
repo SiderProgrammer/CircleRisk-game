@@ -93,7 +93,7 @@ this.createHomeButton()
     .setOrigin(0.5,0)
   }
   createPodiumNicknames(players){
-    this.add.image(this.game.GW/2,this.podium.y - 105,"crown-mini")
+    this.add.image(this.game.GW/2,this.podium.y - 105,"general-3","crown-mini")
 
   if(players[0]) this.createPodiumPlayer(players[0].nickname,this.game.GW/2,this.podium.y - 60).setFontSize("60px")
   if(players[1]) this.createPodiumPlayer(players[1].nickname,this.game.GW/2 - 110,this.podium.y - 5).setOrigin(1,0.5)
@@ -194,7 +194,7 @@ createMedals(){
   }
 
   const medal_x = this.texts[0].rank.x+50
-  const medalPositionFollowedByMyRank = this.texts[0].rank.x+80;
+  const medalPositionFollowedByMyRank = this.texts[0].rank.x+90;
 
 const images = ["1-st","2-nd","3-rd","4-th","5-th"]
 for(let i=0;i<5;++i){

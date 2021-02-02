@@ -37,6 +37,8 @@ export default class OneStep_Hard extends Phaser.Scene {
     this.hellFunctionsManager = new HellFunctionsManager(this)
 
     this.snowFunctionsManager = new SnowFunctionsManager(this)
+    this.foot = this.add.image(50,50,"foot")
+    this.oneStepFunctionsManager.hideFoot()
   }
   update() {
     if (!this.manager.game_started) return
