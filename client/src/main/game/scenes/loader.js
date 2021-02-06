@@ -178,6 +178,7 @@ init(){
     this.loadSound("tap", "sound", "mp3")
     this.loadSound("perfect_1", "sound", "ogg")
     this.loadSound("perfect_2", "sound", "ogg")
+    this.loadSound("perfect_3", "sound", "ogg")
 
     this.loadSound("next_level_sound_1", "sound", "ogg")
     this.loadSound("next_level_sound_2", "sound", "ogg")
@@ -190,6 +191,7 @@ init(){
     this.loadSound("button", "sound", "ogg")
     this.loadSound("change_object", "sound", "ogg")
     this.loadSound("die", "sound", "mp3")
+    
   }
 
   addAudio() {
@@ -208,6 +210,8 @@ init(){
     addSound("tap").setVolume(0.8)
     addSound("perfect_1").setVolume(0.75)
     addSound("perfect_2").setVolume(0.75)
+    addSound("perfect_3").setVolume(0.75)
+
     addSound("start_sound").setVolume(0.9)
     addSound("new_level_sound")
     // addSound("restart_sound")

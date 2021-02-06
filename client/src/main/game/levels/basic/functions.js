@@ -12,7 +12,7 @@ export default class {
       scale: { min: 0.3, max: 0.5 },
 
       frame: { frames: ["cube_1", "cube_2", "cube_3", "cube_4"] },
-      alpha: 0.3,
+      alpha: 0.5,
       deathZone: {
         type: "onEnter",
         source: new Phaser.Geom.Rectangle(0, -50, this.scene.game.GW, 50),

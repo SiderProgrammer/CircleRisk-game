@@ -35,14 +35,27 @@ export default class Instant_Easy extends Phaser.Scene {
     this.manager.rotation_angle = 180
     this.manager.updateCircleStickAngle()
    
+    this.rotated_angle = 180
+    this.manager.stick.setVisible(false)
   }
   update() {
     if (!this.manager.game_started) return
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
-    this.manager.checkIfMissedTarget()
+
+    if(this.checkIfRequiredAngleIsReached()){
+      this.manager.checkIfMissedTarget()
+    }
+    
   }
   swapTargetToTheNearset(){
+    this.rotated_angle = 1;
     this.oneStepFunctionsManager.swapTargetToTheNearset()
+}
+checkIfRequiredAngleIsReached(){
+  
+
+    return Math.abs(this.rotated_angle) > 180
+     
 }
 }

@@ -259,7 +259,7 @@ createStatus(config){
 }
 getStatus(){
     const total = this.calculateTotal()
-    const first_status_total = 30;
+    const first_status_total = 40;
     
     let needed_total = first_status_total/1.5;
     let status_index = 0;

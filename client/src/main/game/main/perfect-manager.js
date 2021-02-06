@@ -27,6 +27,19 @@ export default class PerfectManager {
       this.scene.circles[this.scene.current_circle].y
     )
   }
+  handlePerfectCombo(combo){
+    if(combo >= 3){
+      if(combo >=5){
+        this.perfect_text.setFrame("excellent")
+        return this.scene.playSound("perfect_3")
+      }
+      this.perfect_text.setFrame("awesome")
+     return this.scene.playSound("perfect_2")
+    }
+     
+     this.scene.playSound("perfect_1")
+     this.perfect_text.setFrame("perfect")
+  }
   createPerfectEmitter() {
     this.stars_emtiter = this.scene.scene.add
       .particles("stars")

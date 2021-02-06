@@ -121,7 +121,9 @@ this.lose_bg = helper
     const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
 
     if (!this.hasHitTarget(distance_from_target) && this.is_possible_miss) {
+   
       this.gameOver()
+      
     }
 
     if (distance_from_target < 10) {
@@ -154,9 +156,8 @@ this.lose_bg = helper
 
         this.perfectManager.showPerfectText()
         this.perfectManager.showPerfectEffect()
-        this.perfect_combo >= 3
-          ? this.playSound("perfect_2")
-          : this.playSound("perfect_1")
+        this.perfectManager.handlePerfectCombo(this.perfect_combo)
+       
       } else {
         this.score++
         this.perfect_combo = 0
@@ -217,7 +218,10 @@ this.lose_bg = helper
 
       this.levelFunctionsCaller.tryHideTargets()
     } else {
-      this.gameOver()
+  
+        this.gameOver()
+      
+      
     }
   }
   createGUI() {
@@ -300,10 +304,12 @@ this.lose_bg = helper
   }
 
   updateRotationAngle() {
-    this.rotation_angle =
-      (this.rotation_angle +
-        this.rotation_speed * (2 - 1) * this.rotation_direction) %
-      360
+    const plus = (this.rotation_speed * (2 - 1) * this.rotation_direction) % 360
+  
+    this.rotation_angle +=plus
+
+    if(this.scene.rotated_angle) this.scene.rotated_angle +=plus;
+        
   }
   updateCircleStickAngle() {
     ///circles

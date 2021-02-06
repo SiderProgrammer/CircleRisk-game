@@ -74,20 +74,20 @@ export default class {
 const throwSweets = () => {
   if(Phaser.Math.Between(0,1)){
     emitter.explode(
-      Phaser.Math.Between(1,2),
-      -50,
-      Phaser.Math.Between(50,this.scene.game.GH/2)
+      1,
+      -100,
+      Phaser.Math.Between(0,this.scene.game.GH/2)
     )
   }else{
     emitter_right.explode(
-      Phaser.Math.Between(1,2),
-    this.scene.game.GW+50,
-    Phaser.Math.Between(50,this.scene.game.GH/2))
+      1,
+    this.scene.game.GW+100,
+    Phaser.Math.Between(0,this.scene.game.GH/2))
   }
 }
 
 this.scene.time.addEvent({
-  delay:3500,
+  delay:2500,
   callback:()=>{
     throwSweets()    
     
