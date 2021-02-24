@@ -213,10 +213,10 @@ module.exports = [
       acceleration: 0.03,
     },
   },
-  /*
+  
   {
     color: "white_1",
-    info: {ea
+    info: {
       score_to_next_level: 10,
       tint: "0x06E0FF",
       name: "instant-",
@@ -232,7 +232,7 @@ module.exports = [
       ball_distance:300,
     },
   },
-  */
+  
   {
     info: {
       score_to_next_level: 60,

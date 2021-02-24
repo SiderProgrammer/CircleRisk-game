@@ -7,6 +7,10 @@ module.exports = {
     { skin: "5", cost: 0 },
     { skin: "6", cost: 0 },
 
+    { skin: "52", cost: 0 },
+    { skin: "53", cost: 0 },
+    { skin: "54", cost: 0 },
+    { skin: "55", cost: 0 },
 
     { skin: "14", cost:150 },
     { skin: "15", cost:150 },
@@ -68,6 +72,10 @@ module.exports = {
     { skin: "5", cost: 0 },
     { skin: "6", cost: 0 },
 
+    { skin: "52", cost: 0 },
+    { skin: "53", cost: 0 },
+    { skin: "54", cost: 0 },
+    { skin: "55", cost: 0 },
 
     { skin: "12", cost: 150 },
     { skin: "9", cost: 150},
@@ -113,6 +121,10 @@ module.exports = {
     { skin: "5", cost: 0 },
     { skin: "6", cost: 0 },
 
+    { skin: "52", cost: 0 },
+    { skin: "53", cost: 0 },
+    { skin: "54", cost: 0 },
+    { skin: "55", cost: 0 },
 
     { skin: "14", cost:150 },
     { skin: "15", cost:150 },

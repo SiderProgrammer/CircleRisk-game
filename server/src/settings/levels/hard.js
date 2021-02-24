@@ -107,7 +107,7 @@ module.exports = [
       
     },
   },
-  /*
+  
   {
     color: "white_1",
     info: {
@@ -126,7 +126,7 @@ module.exports = [
       ball_distance:300,
     },
   },
-  */
+  
   {
     color: "white_1",
     info: {
@@ -347,7 +347,7 @@ ball_distance:116,
       starting_target: 6,
       rotation_speed:1.25,
       acceleration:0.03,
-      blind_time:600,
+      blind_time:1200,
     },
   },
   {

@@ -30,7 +30,23 @@ module.exports = [
     },
   },
 
-
+{
+    color: "white_1",
+    info: {
+      score_to_next_level: 10,
+      tint: "0x06E0FF",
+      name: "instant-",
+    },
+    config: {
+      background: "gray_1",
+      ...config,
+      targets_amount:2,
+      starting_target:0,
+      additional_angle:0,
+      rotation_speed:6,
+      ball_distance:300,
+    },
+  },
 
   {
     color: "gray_1",
@@ -327,25 +343,9 @@ module.exports = [
       acceleration: 0.03,
     },
   },
-/*
-  {
-    color: "white_1",
-    info: {
-      score_to_next_level: 10,
-      tint: "0x06E0FF",
-      name: "instant-",
-    },
-    config: {
-      background: "gray_1",
-      ...config,
-      targets_amount:2,
-      starting_target:0,
-      additional_angle:0,
-      rotation_speed:6,
-      ball_distance:300,
-    },
-  },
-*/
+
+  
+
   {
     color: "pink_2",
     info: {
