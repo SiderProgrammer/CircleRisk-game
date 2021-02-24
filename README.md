@@ -7,7 +7,7 @@ Graphics were made by my brother.
 Client is written in Phaser 3.
 Database is handled with MongoDB, Mongoose.
 Server is hosted on Heroku
-There is also AdMob intergration.
+The game has also AdMob intergration.
 
 I learned a lot from developing this game.
 
