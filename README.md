@@ -2,7 +2,7 @@
 
 Circle Risk android game source code (my best project right now but still bad for me)
 
-Link to the Google Play Store : https://play.google.com/store/apps/details?id=com.pip.circlerisk
+Link to the Google Play Store : https://m.apkpure.com/pl/circle-risk-challenge-your-reflex/com.pip.circlerisk
 Graphics were made by my brother.
 Client is written in Phaser 3.
 Database is handled with MongoDB, Mongoose.
