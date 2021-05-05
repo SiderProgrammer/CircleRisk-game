@@ -21,4 +21,3 @@ There is a lot of spaghetti code.
 I see many other mistakes that could be corrected like : code repetition, bad functions names and so on.
 Many features could be implemented easier, shorter, cleaner.
 
-How do I rate my code? - Medium level 
