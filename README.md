@@ -3,9 +3,10 @@
 Circle Risk android game source code (my best project right now but still bad for me)
 
 Technology stack:
--mongodb (with mongoose)
--express.js
 -phaser 3
+-express.js
+-mongodb (with mongoose)
+
 
 Link to the Google Play Store : https://m.apkpure.com/pl/circle-risk-challenge-your-reflex/com.pip.circlerisk
 Graphics were made by my brother.
