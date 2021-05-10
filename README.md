@@ -3,7 +3,7 @@
 Circle Risk android game source code (my best project right now but still bad for me)
 
 Technology stack:
--mongoose (mongodb ODB library)
+-mongodb (with mongoose)
 -express.js
 -phaser 3
 
