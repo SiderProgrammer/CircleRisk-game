@@ -1,6 +1,6 @@
 import Manager from "../../main/level-manager.js"
 import BasicFunctionsManager from "./functions"
-import {saveProgress,getProgress} from "../../../shortcuts/save"
+import { saveProgress, getProgress } from "../../../shortcuts/save"
 export default class Basic_Easy extends Phaser.Scene {
   constructor() {
     super("Basic_Easy")
@@ -14,7 +14,7 @@ export default class Basic_Easy extends Phaser.Scene {
     this.manager.init()
     this.basicFunctionsManager = new BasicFunctionsManager(this)
     this.is_first_game = getProgress().is_first_game
-    this.has_tapped = false;
+    this.has_tapped = false
   }
 
   create() {
@@ -33,38 +33,37 @@ export default class Basic_Easy extends Phaser.Scene {
     this.manager.bindInputEvents()
 
     this.manager.GUI_helper.sceneIntro(this)
- 
   }
-  isInTarget(){
-    const distance_from_target = this.manager.helper.calculateRotatingCircleDistanceToTarget()
-    if(distance_from_target < 5) return true
-        
-      
+  isInTarget() {
+    const distance_from_target =
+      this.manager.helper.calculateRotatingCircleDistanceToTarget()
+    if (distance_from_target < 5) return true
   }
-  update() {
+  update(timestamp, delta) {
+    this.delta = delta
+
     if (!this.manager.game_started) return
     this.manager.updateRotationAngle()
     this.manager.updateCircleStickAngle()
     this.manager.checkIfMissedTarget()
 
-    if(this.is_first_game &&  this.isInTarget() && this.manager.score === 0 ){
+    if (this.is_first_game && this.isInTarget() && this.manager.score === 0) {
       this.is_first_game = false
-  
-      const rot_speed = this.manager.rotation_speed;
-      this.manager.rotation_speed = 0;
-      this.manager.createTappingAnimation()
-      let has_tapped = false;
 
-      this.input.on("pointerdown",()=>{
-        if(has_tapped) return;
-        
-        this.manager.localProgress.is_first_game = false;
-  
+      const rot_speed = this.manager.rotation_speed
+      this.manager.rotation_speed = 0
+      this.manager.createTappingAnimation()
+      let has_tapped = false
+
+      this.input.on("pointerdown", () => {
+        if (has_tapped) return
+
+        this.manager.localProgress.is_first_game = false
+
         this.manager.finger.destroy()
-        this.manager.rotation_speed = rot_speed;
-        has_tapped = true;
+        this.manager.rotation_speed = rot_speed
+        has_tapped = true
       })
     }
- 
   }
 }

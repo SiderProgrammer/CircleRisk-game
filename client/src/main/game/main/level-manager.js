@@ -7,33 +7,59 @@ import PerfectManager from "./perfect-manager"
 import playAudio from "../../shortcuts/audio-player"
 import LevelFunctionsCaller from "./level-functions-caller"
 import checkConnection from "../../network-status"
-import {ADS_COUNT_SHOW} from "../../../config"
+import { ADS_COUNT_SHOW } from "../../../config"
 
 export default class Manager {
   constructor(scene, config) {
     this.scene = scene
-    this.progress = window.progress// getProgress()
+    this.progress = window.progress // getProgress()
     this.localProgress = getProgress()
-    this.localProgress.stats = this.localProgress.stats || this.getDefaultStats()
+    this.localProgress.stats =
+      this.localProgress.stats || this.getDefaultStats()
     this.config = config
   }
 
   init() {
+    this.socket = io("http://192.168.1.19:3001")
+    this.socket.on("connect", () => {
+      this.socket.emit("ready")
+
+      this.socket.on("opponentTap", (data) =>
+        this.changeOpponentDirection(data)
+      )
+
+      this.socket.on("opponentDied", () => this.gameOver())
+
+      this.socket.on("start", (data) => {
+        this.target_count = 0
+        // this.next_target = data.targetsIndexes[0]
+        // this.opponent_next_target = data.targetsIndexes[0]
+
+        this.targetsIndexes = data.targetsIndexes
+        console.log(this.targetsIndexes)
+        this.game_started = true
+      })
+    })
+
     this.GUI_helper = helper
 
     this.GW = this.scene.game.GW
     this.GH = this.scene.game.GH
     this.target_array = []
     this.circles = []
+    this.opponent_circles = []
     this.circle_distance_to_circle = null
     this.current_circle = 1
+    this.opponent_current_circle = 1
     this.rotation_angle = 270
+    this.opponent_rotation_angle = 270
     this.rotation_direction = 1
     this.angle_between = 360 / this.config.targets_amount
     this.game_started = false
     this.is_possible_miss = false
     this.current_target = this.config.starting_target
     this.rotation_speed = this.config.rotation_speed
+    this.opponent_rotation_speed = this.config.rotation_speed
     this.intro_duration = 500
 
     this.perfect_combo = 0
@@ -46,15 +72,14 @@ export default class Manager {
   }
 
   create() {
+    if (window.admob) admob.banner.hide()
 
-if(window.admob) admob.banner.hide()
-
-this.lose_bg = helper
-.createBackground(this.scene, "black-bg")
-.setAlpha(0)
-.setActive(false)
-.setVisible(false)
-.setDepth(2)
+    this.lose_bg = helper
+      .createBackground(this.scene, "black-bg")
+      .setAlpha(0)
+      .setActive(false)
+      .setVisible(false)
+      .setDepth(2)
 
     this.scene.cameras.main.setBackgroundColor(
       this.config.canvas_color || 0x000000
@@ -67,7 +92,9 @@ this.lose_bg = helper
     this.perfectManager.createPerfectText()
 
     this.helper = new LevelHelper(this)
-    this.helper.randomNextTarget()
+    // this.helper.randomNextTarget()
+    this.next_target = 2
+    this.opponent_next_target = 2
 
     this.scene.is_first_try && this.createTappingAnimation()
     /*
@@ -78,35 +105,31 @@ this.lose_bg = helper
       .setDepth(100)
       */
   }
+
   createTappingAnimation() {
     this.scene.is_first_try = false
-  
+
     this.finger = this.scene.add
       .sprite(this.GW / 2, this.GH - 150, "tap")
-      .setDepth(1).setScale(0.7)
+      .setDepth(1)
+      .setScale(0.7)
 
-      this.scene.tweens.add({
-        targets:this.finger,
-        duration:500,
-        scale:0.9,
-        yoyo:true,
-        repeat:-1,
-      })
-      
+    this.scene.tweens.add({
+      targets: this.finger,
+      duration: 500,
+      scale: 0.9,
+      yoyo: true,
+      repeat: -1,
+    })
   }
   showNewLevelUnlockedAlert() {
-    const lock = this.scene.add.sprite(
-      this.GW / 2,
-      0,
-      "general-1",
-      "locked"
-    )
+    const lock = this.scene.add.sprite(this.GW / 2, 0, "general-1", "locked")
 
     this.scene.tweens.add({
       targets: lock,
       y: "+=150",
       duration: 1000,
-      ease:"Power1",
+      ease: "Power1",
       onComplete: () => {
         lock.setFrame("unlocked")
         this.scene.tweens.add({
@@ -118,12 +141,12 @@ this.lose_bg = helper
     })
   }
   checkIfMissedTarget() {
-    const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
+    const distance_from_target =
+      this.helper.calculateRotatingCircleDistanceToTarget()
 
     if (!this.hasHitTarget(distance_from_target) && this.is_possible_miss) {
-   
-      this.gameOver()
-      
+      //  this.gameOver()
+      //this.socket.emit("die")
     }
 
     if (distance_from_target < 10) {
@@ -137,27 +160,48 @@ this.lose_bg = helper
   playSound(sound) {
     playAudio(this.scene, sound)
   }
+  changeOpponentDirection(data) {
+    console.log(data)
+    this.opponent_circle_distance_to_circle = data.circleDistanceToCircle
+    this.opponent_stick.displayWidth = data.stickWidth
+
+    this.opponent_stick.displayWidth =
+      this.opponent_circle_distance_to_circle + 10
+
+    this.opponent_next_target = data.nextTarget
+    this.opponent_rotation_speed = data.rotationSpeed
+
+    this.opponent_current_circle = 1 - this.opponent_current_circle
+
+    this.opponent_rotation_angle = Phaser.Math.RadToDeg(
+      Phaser.Math.Angle.BetweenPoints(
+        this.opponent_circles[1 - this.opponent_current_circle],
+        this.opponent_circles[this.opponent_current_circle]
+      )
+    )
+  }
+
   changeBall() {
     this.levelFunctionsCaller.tryChangeRotationSpeed()
 
     this.rotation_speed += this.config.acceleration
 
-    const distance_from_target = this.helper.calculateRotatingCircleDistanceToTarget()
+    const distance_from_target =
+      this.helper.calculateRotatingCircleDistanceToTarget()
 
     if (this.hasHitTarget(distance_from_target)) {
       this.levelFunctionsCaller.tryShake()
-      this.localProgress.stats.hits ++;
-    
+      this.localProgress.stats.hits++
+
       if (distance_from_target < 5) {
         this.score += 2
         this.perfect++
         this.perfect_combo++
-        this.localProgress.stats.perfects++;
+        this.localProgress.stats.perfects++
 
         this.perfectManager.showPerfectText()
         this.perfectManager.showPerfectEffect()
         this.perfectManager.handlePerfectCombo(this.perfect_combo)
-       
       } else {
         this.score++
         this.perfect_combo = 0
@@ -170,7 +214,6 @@ this.lose_bg = helper
         this.level_unlock_alert_shown = true
         this.showNewLevelUnlockedAlert()
         this.playSound("new_level_sound")
-       
       }
       this.UI.updateScoreText()
       // this.perfectManager.updateScoreText()
@@ -181,11 +224,13 @@ this.lose_bg = helper
       this.current_target = this.next_target
       this.target_array[this.current_target].setFrame(this.target_texture)
 
-      this.helper.randomNextTarget()
+      // this.helper.randomNextTarget()
+      this.next_target = this.targetsIndexes[this.target_count]
+      this.target_count++
 
       this.levelFunctionsCaller.trySwapFunctionsToTheNearset()
 
-      this.helper.checkNewTargetsQueue()
+      //this.helper.checkNewTargetsQueue()
 
       this.levelFunctionsCaller.tryHandleFakeTargetToCatch()
 
@@ -212,17 +257,32 @@ this.lose_bg = helper
 
       this.helper.extendStick()
 
+      // opponent extend stick
+
+      this.opponent_circle_distance_to_circle = // it is needed to rotate other circle
+        Phaser.Math.Distance.BetweenPoints(
+          this.opponent_circles[1 - this.opponent_current_circle],
+          this.target_array[this.opponent_next_target]
+        ) - this.opponent_circles[1 - this.opponent_current_circle].displayWidth
+
+      this.opponent_stick.displayWidth =
+        this.opponent_circle_distance_to_circle + 10
+
       this.levelFunctionsCaller.tryDarkenTargets()
 
       this.levelFunctionsCaller.tryHideSetForAWhile()
 
       this.levelFunctionsCaller.tryHideTargets()
     } else {
-  
-        this.gameOver()
-      
-      
+      this.socket.emit("die")
+      this.gameOver()
     }
+    this.socket.emit("tap", {
+      stickWidth: this.stick.displayWidth,
+      circleDistanceToCircle: this.circle_distance_to_circle,
+      nextTarget: this.next_target,
+      rotationSpeed: this.rotation_speed,
+    })
   }
   createGUI() {
     helper.createBackground(this.scene, this.config.background)
@@ -231,7 +291,7 @@ this.lose_bg = helper
   createFirstTarget() {
     this.target_array.push(
       this.scene.add
-        .image(0, this.GH / 2,"targets", this.target_texture)
+        .image(0, this.GH / 2, "targets", this.target_texture)
         .setAlpha(0)
         .setDepth(0.1)
     )
@@ -262,6 +322,18 @@ this.lose_bg = helper
       .setOrigin(0, 0.5)
       .setAngle(this.rotation_angle)
       .setDepth(0.1)
+
+    this.opponent_stick = this.scene.add
+      .sprite(
+        this.target_array[this.config.starting_target].x,
+        this.target_array[this.config.starting_target].y,
+        "sticks",
+        "stick_" + this.progress.current_skins["sticks"]
+      )
+      .setOrigin(0, 0.5)
+      .setAngle(this.opponent_rotation_angle)
+      .setDepth(0.1)
+      .setAlpha(0.3)
   }
   createCircles() {
     this.circles[0] = this.scene.add
@@ -284,36 +356,45 @@ this.lose_bg = helper
       )
       .setDepth(0.1)
 
-    this.updateCircleStickAngle() /// move this function to create function in every level
+    //////// opponent
+
+    this.opponent_circles[0] = this.scene.add
+      .sprite(
+        this.opponent_stick.x,
+        this.opponent_stick.y,
+        "circles",
+        "circle_" + this.progress.current_skins["circles"]
+      )
+      .setDepth(0.1)
+      .setAlpha(0.3)
+
+    // opponent extend stick
+
+    this.opponent_circle_distance_to_circle = // it is needed to rotate other circle
+      Phaser.Math.Distance.BetweenPoints(
+        this.opponent_circles[1 - this.opponent_current_circle],
+        this.target_array[this.opponent_next_target]
+      ) - this.opponent_circles[1 - this.opponent_current_circle].displayWidth
+
+    this.opponent_stick.displayWidth =
+      this.opponent_circle_distance_to_circle + 10
+
+    this.opponent_circles[this.opponent_current_circle] = this.scene.add
+      .sprite(
+        this.opponent_stick.x,
+        this.opponent_stick.y - this.opponent_stick.displayWidth,
+        "circles",
+        "circle_" + this.progress.current_skins["circles"]
+      )
+      .setDepth(0.1)
+      .setAlpha(0.3)
+    //////
+    this.updateCircleStickAngle()
   }
-  bindInputEvents() {
-    this.scene.input.on("pointerdown", ({ x, y }) => {
-      // this.fps_text.setText(this.scene.game.loop.actualFps)
 
-      if (Phaser.Geom.Rectangle.Contains(this.UI.getPauseButtonBounds(), x, y))
-        return
-      if (!this.game_started) {
-        if (this.finger) this.finger.destroy()
-        this.game_started = true
-
-        this.levelFunctionsCaller.tryBlindTheScreen()
-      } else this.changeBall()
-    })
-
-    this.perfectManager.createPerfectEmitter() // it should be in each level at the end of create function
-  }
-
-  updateRotationAngle() {
-    const plus = (this.rotation_speed * (2 - 1) * this.rotation_direction) % 360
-  
-    this.rotation_angle +=plus
-
-    if(this.scene.rotated_angle) this.scene.rotated_angle +=plus;
-        
-  }
   updateCircleStickAngle() {
     ///circles
-    //console.log(this.stick.displayWidth)
+
     const static_distance =
       (this.circle_distance_to_circle || this.stick.displayWidth) +
       this.circles[1 - this.current_circle].displayWidth
@@ -336,6 +417,80 @@ this.lose_bg = helper
     /// stick
     this.stick.setAngle(this.rotation_angle)
     this.helper.centerStick()
+
+    ///// opponent
+
+    const opponent_static_distance =
+      (this.opponent_circle_distance_to_circle ||
+        this.opponent_stick.displayWidth) +
+      this.opponent_circles[1 - this.opponent_current_circle].displayWidth
+
+    const opponent_radians_angle = Phaser.Math.DegToRad(
+      this.opponent_rotation_angle - 90
+    )
+
+    const opponent_current_circle_x =
+      this.opponent_circles[1 - this.opponent_current_circle].x -
+      opponent_static_distance * Math.sin(opponent_radians_angle)
+
+    const opponent_current_circle_y =
+      this.opponent_circles[1 - this.opponent_current_circle].y +
+      opponent_static_distance * Math.cos(opponent_radians_angle)
+
+    this.opponent_circles[this.opponent_current_circle].setPosition(
+      opponent_current_circle_x,
+      opponent_current_circle_y
+    )
+
+    this.opponent_stick.setAngle(this.opponent_rotation_angle)
+    //////// center opponent stick - centerStick()
+    const opponent_radians_angleS = Phaser.Math.DegToRad(
+      this.opponent_rotation_angle + 90
+    )
+    const width =
+      this.opponent_circles[1 - this.opponent_current_circle].displayWidth / 2
+
+    this.opponent_stick.setPosition(
+      this.opponent_circles[1 - this.opponent_current_circle].x +
+        width * Math.sin(opponent_radians_angleS),
+      this.opponent_circles[1 - this.opponent_current_circle].y -
+        width * Math.cos(opponent_radians_angleS)
+    )
+  }
+
+  bindInputEvents() {
+    this.scene.input.on("pointerdown", ({ x, y }) => {
+      // this.fps_text.setText(this.scene.game.loop.actualFps)
+
+      if (Phaser.Geom.Rectangle.Contains(this.UI.getPauseButtonBounds(), x, y))
+        return
+      if (!this.game_started) {
+        if (this.finger) this.finger.destroy()
+        this.game_started = true
+
+        this.levelFunctionsCaller.tryBlindTheScreen()
+      } else this.changeBall()
+    })
+
+    this.perfectManager.createPerfectEmitter() // it should be in each level at the end of create function
+  }
+
+  updateRotationAngle() {
+    const plus =
+      (((this.rotation_speed * this.scene.delta) / 16) *
+        (2 - 1) *
+        this.rotation_direction) %
+      360
+
+    this.rotation_angle += plus
+
+    const opponent_plus =
+      (((this.opponent_rotation_speed * this.scene.delta) / 16) *
+        (2 - 1) *
+        this.rotation_direction) %
+      360
+    this.opponent_rotation_angle += opponent_plus
+    if (this.scene.rotated_angle) this.scene.rotated_angle += plus
   }
 
   addTarget() {
@@ -393,41 +548,36 @@ this.lose_bg = helper
     this.scene.events.on("shutdown", () => this.scene.scene.stop("UI"))
   }
   isNewLevelNeededScoreReached() {
-    
     return (
-     window.progress.levels_scores[this.scene.level] === -1 &&
+      window.progress.levels_scores[this.scene.level] === -1 &&
       this.score >= this.scene.score_to_next_level
     )
   }
-isMysteryLevel(){
-  return this.scene.scene.key.split("_")[0].slice(-1) === "-"
-}
-
-getDefaultStats(){
-  return {
-    deaths:0,
-    hits:0,
-    perfects:0,
-    achievements:0
+  isMysteryLevel() {
+    return this.scene.scene.key.split("_")[0].slice(-1) === "-"
   }
-}
+
+  getDefaultStats() {
+    return {
+      deaths: 0,
+      hits: 0,
+      perfects: 0,
+      achievements: 0,
+    }
+  }
   gameOver() {
-   if(!this.game_started) return;
+    if (!this.game_started) return
 
- 
-
-    if(window.admob){
+    if (window.admob) {
       admob.banner.show()
 
-      window.ADS_COUNT ++;
-      if(window.ADS_COUNT >= ADS_COUNT_SHOW ){
+      window.ADS_COUNT++
+      if (window.ADS_COUNT >= ADS_COUNT_SHOW) {
         window.ADS_COUNT = 0
         admob.interstitial.show()
         admob.interstitial.prepare()
       }
-
-   
-  }
+    }
 
     this.scene.tweens.add({
       targets: [...this.circles, this.stick],
@@ -443,22 +593,21 @@ getDefaultStats(){
     this.scene.input.removeAllListeners()
     this.game_started = false
 
-   
-
     let is_any_update = false
 
     if (this.isNewLevelNeededScoreReached()) {
-      this.is_new_level_unlocked = true;
+      this.is_new_level_unlocked = true
       is_any_update = true
       this.progress.levels_scores[this.scene.level] = 0
-   
-      POST_LEVEL_SCORE({
 
+      POST_LEVEL_SCORE({
         score: 0,
         nickname: my_nickname,
-        level: Utils.convertLevelNumberToLevelName(levelsConfiguration[this.scene.level]),
-      }).catch(()=>checkConnection(this.scene))
-   
+        level: Utils.convertLevelNumberToLevelName(
+          levelsConfiguration[this.scene.level]
+        ),
+      }).catch(() => checkConnection(this.scene))
+
       lose_scene.showNextLevelButton()
       lose_scene.showSmallRestartButton()
       lose_scene.hideRestartButton()
@@ -471,8 +620,6 @@ getDefaultStats(){
     this.scene.scene.wake("lose")
     lose_scene.unactivateButtons()
     lose_scene.animateShow()
-  
- 
 
     const this_level_score = this.progress.levels_scores[this.scene.level - 1]
     if (this.score > this_level_score || !this_level_score) {
@@ -480,14 +627,13 @@ getDefaultStats(){
       /// -1, array is counted from 0
       this.progress.levels_scores[this.scene.level - 1] = this.score /// -1, array is counted from 0
 
-
       POST_LEVEL_SCORE({
         score: this.score,
         nickname: my_nickname,
-        level: Utils.convertLevelNumberToLevelName(levelsConfiguration[this.scene.level-1]),
-      }).catch(()=>checkConnection(this.scene))
-   
-
+        level: Utils.convertLevelNumberToLevelName(
+          levelsConfiguration[this.scene.level - 1]
+        ),
+      }).catch(() => checkConnection(this.scene))
     }
     lose_scene.updatePoints(
       this.score,
@@ -495,31 +641,29 @@ getDefaultStats(){
       this.progress.levels_scores[this.scene.level - 1]
     )
 
-   
-    
-if(this.score > 0 && !this.isMysteryLevel()){
-   this.progress.money += this.score // earned money
-   SAVE_MONEY({ money: this.progress.money, nickname: my_nickname }).catch(()=>checkConnection(this.scene))
-}
-  
-this.localProgress.stats.deaths ++;
+    if (this.score > 0 && !this.isMysteryLevel()) {
+      this.progress.money += this.score // earned money
+      SAVE_MONEY({ money: this.progress.money, nickname: my_nickname }).catch(
+        () => checkConnection(this.scene)
+      )
+    }
 
-if(!this.scene.not_count_stats){
-  saveProgress(this.localProgress)
-}
+    this.localProgress.stats.deaths++
 
- window.progress = this.progress 
+    if (!this.scene.not_count_stats) {
+      saveProgress(this.localProgress)
+    }
+
+    window.progress = this.progress
 
     is_any_update && this.scene.scene.get("levelSelect").updateVisiblePage()
 
-    this.lose_bg.setVisible(true).setActive(true);
+    this.lose_bg.setVisible(true).setActive(true)
 
     this.scene.tweens.add({
-      targets:this.lose_bg,
+      targets: this.lose_bg,
       duration: 400,
       alpha: 1,
     })
-
-  
   }
 }

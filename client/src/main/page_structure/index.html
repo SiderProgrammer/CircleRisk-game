@@ -13,31 +13,42 @@
 
     <meta name="full-screen" content="yes" />
     <meta name="screen-orientation" content="portrait" />
-<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-       <link rel="stylesheet" type="text/css" href="style.css"/>
-
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script src="https://cdn.socket.io/socket.io-3.0.5.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
 
   <body>
-    
-   <!-- I CAN't STYLE BODY WITH CSS BACKGROUND URL(...) BECAUSE
+    <!-- I CAN't STYLE BODY WITH CSS BACKGROUND URL(...) BECAUSE
   IT ISN'T COPIED WHEN BUILDING TO WWW FOLDER SO I HAVE TO CREATE IMG ELEMENT WHICH SRC PATH IS COPIED-->
-         
-  
-    <div id="first-login">
-      <img id="background" src="../assets/img/account-creator/account-creator-bg.png">
-      <img src="../assets/img/account-creator/profile-guy.png" id="profile-guy">
-      <div id="creating-info-div">
-      <span id="creating-info" ></span>
-    </div>
-    
-    <div id="interactive-div">
-      
 
-      <input id="nickname-input" placeholder="nickname" maxlength="10" autocomplete="off">
-      <img id="accept-nickname" type="image" src="../assets/img/account-creator/ok-button.png">
-    
-  </div>
+    <div id="first-login">
+      <img
+        id="background"
+        src="../assets/img/account-creator/account-creator-bg.png"
+      />
+      <img
+        src="../assets/img/account-creator/profile-guy.png"
+        id="profile-guy"
+      />
+      <div id="creating-info-div">
+        <span id="creating-info"></span>
+      </div>
+
+      <div id="interactive-div">
+        <input
+          id="nickname-input"
+          placeholder="nickname"
+          maxlength="10"
+          autocomplete="off"
+        />
+        <img
+          id="accept-nickname"
+          type="image"
+          src="../assets/img/account-creator/ok-button.png"
+        />
+      </div>
     </div>
   </body>
 </html>
