@@ -1,6 +1,6 @@
 # Circle Risk
 
-Circle Risk android game source code (my best project right now but still bad for me)
+Circle Risk android game source code
 
 Technology stack:
 -phaser 3
