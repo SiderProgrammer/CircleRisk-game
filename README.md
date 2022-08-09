@@ -15,8 +15,6 @@ Database is handled with MongoDB, Mongoose.
 Server is hosted on Heroku
 The game has also AdMob intergration.
 
-I learned a lot from developing this game.
-
 Folders should have a different structure. Some files should have different names.
 There is a lot of spaghetti code.
 I see many other mistakes that could be corrected like : code repetition, bad functions names and so on.
