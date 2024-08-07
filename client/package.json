@@ -41,7 +41,8 @@
     "cordova-plugin-admob-free": "0.27.0",
     "cordova-plugin-fullscreen": "^1.3.0",
     "cordova-promise-polyfill": "0.0.2",
-    "phaser": "^3.24.1"
+    "phaser": "3.24.1",
+    "phaser3spectorjs": "^0.0.8"
   },
   "cordova": {
     "plugins": {
