@@ -9,12 +9,14 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.16.3",
-    "mongoose": "^5.7.11"
+    "mongoose": "^5.7.11",
+    "socket.io": "^4.8.4"
   },
   "scripts": {
     "start": "set NODE_ENV=production&& node src/server.js",
     "prod": "set NODE_ENV=production&& pm2 start src/server.js -i max",
-    "dev": "node src/server.js"
+    "dev": "node src/server.js",
+    "dev:nodb": "node src/server.js --no-db"
   },
   "license": "ISC"
 }

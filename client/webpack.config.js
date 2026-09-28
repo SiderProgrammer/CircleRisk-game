@@ -41,7 +41,11 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        include: path.resolve(__dirname, "src"),
+        include: [
+          path.resolve(__dirname, "src"),
+          // multiplayer rules shared with the server (outside src, still needs transpiling)
+          path.resolve(__dirname, "../server/src/shared"),
+        ],
         exclude: path.resolve(__dirname, "node_modules"),
         use: {
           loader: "babel-loader",
