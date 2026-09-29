@@ -1,15 +1,16 @@
 import Manager from "../../main/level-manager.js"
-import GhostPlayer from "../../main/ghost-player"
 import BasicFunctionsManager from "../basic/functions"
-import rules from "../../../../../../server/src/shared/multiplayer-rules"
-import { getSocket, serverNow } from "../../../shortcuts/multiplayer-socket"
+import GhostPlayer from "../../multiplayer/ghost-player"
+import LocalPlayer from "../../../multiplayer/local-player"
+import { getSession } from "../../../multiplayer/session"
+import { serverNow } from "../../../multiplayer/connection"
 
-// if the server never confirms a death or the end of the match
+// after a predicted death the server confirms it within DEATH_GRACE + latency;
+// no answer means the connection is gone
 const SERVER_VERDICT_TIMEOUT = 3000
 
-// The server is authoritative: it judges every tap and decides deaths.
-// This scene predicts the outcome with the same shared rules so taps feel
-// instant, and adopts the server's state whenever it arrives.
+// Basic level against a ghost opponent. The server is authoritative: LocalPlayer
+// predicts each tap so it feels instant, this scene renders and wires events.
 export default class Multiplayer_Basic extends Phaser.Scene {
   constructor() {
     super("Multiplayer_Basic")
@@ -17,7 +18,8 @@ export default class Multiplayer_Basic extends Phaser.Scene {
 
   init(match) {
     this.match = match
-    this.opponent = match.opponent
+    this.session = getSession()
+    this.opponent = match.opponent || {}
     this.level = match.level
     this.score_to_next_level = match.info.score_to_next_level
     this.not_count_stats = true
@@ -25,29 +27,19 @@ export default class Multiplayer_Basic extends Phaser.Scene {
     this.countdown_done = false
     this.countdown_value = null
 
-    this.is_dead = false
-    this.frozen_at = null // time the local circle stopped while waiting for the server
-    this.tap_seq = 0
-    this.corrections = 0 // predictions the server disagreed with, useful for debugging
-
-    this.layout = rules.targetLayout(match.config)
-    this.state = rules.initialState(match.config, match.seed, match.startAt)
-
-    this.socket = getSocket()
+    this.player = new LocalPlayer(match)
 
     this.manager = new Manager(this, match.config)
     this.manager.init()
     this.manager.multiplayer = this
 
     this.basicFunctionsManager = new BasicFunctionsManager(this)
-    this.ghost = new GhostPlayer(this.manager, this.opponent, this.layout, this.state)
-
-    this.bindSocketEvents()
+    this.ghost = new GhostPlayer(this.manager, this.opponent, this.player.layout, this.player.state)
   }
 
   create() {
     this.manager.create()
-    this.manager.next_target = this.state.next
+    this.manager.next_target = this.player.state.next
 
     this.manager.createGUI()
     this.basicFunctionsManager.createFlyingCubes()
@@ -60,34 +52,31 @@ export default class Multiplayer_Basic extends Phaser.Scene {
     this.ghost.create()
     this.manager.createStick()
     this.manager.createCircles()
-    this.manager.applyMultiplayerState(this.state)
+    this.manager.applyMultiplayerState(this.player.state)
     this.manager.bindInputEvents()
     this.ghost.show()
 
     this.countdown_text = this.add
-      .text(this.game.GW / 2, this.game.GH * 0.2, "", {
-        font: `140px ${main_font}`,
-      })
+      .text(this.game.GW / 2, this.game.GH * 0.2, "", { font: `140px ${main_font}` })
       .setOrigin(0.5)
       .setDepth(1)
 
     this.manager.GUI_helper.sceneIntro(this)
+    this.bindSessionEvents()
+    this.events.once("shutdown", () => clearTimeout(this.verdict_timeout))
   }
 
-  bindSocketEvents() {
+  bindSessionEvents() {
     const handlers = {
       "player:state": (message) => this.onPlayerState(message),
       "player:died": (message) => this.onPlayerDied(message),
       "match:end": (result) => this.onMatchEnd(result),
-      disconnect: () =>
-        this.onMatchEnd({ winner: null, reason: "connection lost" }),
     }
-
-    for (const event in handlers) this.socket.on(event, handlers[event])
-
-    this.events.once("shutdown", () => {
-      for (const event in handlers) this.socket.off(event, handlers[event])
-      clearTimeout(this.verdict_timeout)
+    // events that arrived while this scene was starting
+    this.session.replayMatchEvents(handlers)
+    this.session.bind(this, {
+      ...handlers,
+      disconnect: () => this.onMatchEnd({ reason: "connection lost" }),
     })
   }
 
@@ -99,12 +88,7 @@ export default class Multiplayer_Basic extends Phaser.Scene {
       this.countdown_done = true
       this.manager.game_started = true
       this.countdown_text.setText("GO!")
-      this.tweens.add({
-        targets: this.countdown_text,
-        alpha: 0,
-        scale: 1.5,
-        duration: 500,
-      })
+      this.tweens.add({ targets: this.countdown_text, alpha: 0, scale: 1.5, duration: 500 })
       return
     }
 
@@ -118,98 +102,76 @@ export default class Multiplayer_Basic extends Phaser.Scene {
 
   // called by Manager.changeBall
   onTap() {
-    if (this.frozen_at !== null || this.is_finished) return
-
+    if (this.is_finished) return
     const t = serverNow()
-    this.socket.emit("tap", { seq: ++this.tap_seq, t })
+    const prediction = this.player.tap(t)
+    if (!prediction) return
+    this.session.tap(prediction.seq, t)
 
-    const result = rules.evaluateTap(
-      this.state,
-      t,
-      this.layout,
-      this.match.config,
-      this.match.seed
-    )
-    if (!result.hit) return this.freeze(result.death_at)
-
-    this.manager.showMultiplayerHit(result.perfect)
-    this.state = result.state
-    this.manager.applyMultiplayerState(this.state)
+    if (!prediction.hit) return this.onFrozen()
+    this.manager.showMultiplayerHit(prediction.perfect)
+    this.manager.applyMultiplayerState(this.player.state)
   }
 
-  // the local prediction says we're dead, stop and let the server confirm
-  freeze(time) {
-    this.frozen_at = time
-    this.manager.rotation_angle = rules.angleAt(this.state, time)
-    this.manager.updateCircleStickAngle()
-
+  // predicted dead: stop the circle and wait for the server's verdict
+  onFrozen() {
+    this.drawLocalCircle()
     clearTimeout(this.verdict_timeout)
     this.verdict_timeout = setTimeout(
-      () => this.onMatchEnd({ winner: null, reason: "connection lost" }),
+      () => this.onMatchEnd({ reason: "connection lost" }),
       SERVER_VERDICT_TIMEOUT
     )
   }
 
-  onPlayerState({ id, hit, perfect, state }) {
-    if (id !== this.socket.id) {
-      this.ghost.setState(state)
-      this.manager.UI.updateOpponentScoreText &&
-        this.manager.UI.updateOpponentScoreText(state.score)
+  drawLocalCircle() {
+    this.manager.rotation_angle = this.player.angleAt(serverNow())
+    this.manager.updateCircleStickAngle()
+  }
+
+  onPlayerState(message) {
+    if (message.id !== this.session.id) {
+      this.ghost.setState(message.state)
+      this.manager.UI.updateOpponentScoreText(message.state.score)
       return
     }
 
-    // a miss is followed by player:died, older confirmations are superseded by our own predictions
-    if (!hit || this.is_dead || state.hits < this.state.hits) return
-
-    const predicted = this.state
-    const differs =
-      state.hits !== predicted.hits ||
-      state.score !== predicted.score ||
-      Math.abs(state.t0 - predicted.t0) > 0.5
-
-    if (!differs) return
-
-    this.corrections++
-    if (state.hits > predicted.hits) this.manager.showMultiplayerHit(perfect)
-    this.state = state
-    // the server accepted a tap we predicted as a miss
-    if (this.frozen_at !== null) {
-      this.frozen_at = null
-      clearTimeout(this.verdict_timeout)
-    }
-    this.manager.applyMultiplayerState(state)
+    const change = this.player.reconcile(message, serverNow())
+    if (!change) return
+    if (change.gained_hit) this.manager.showMultiplayerHit(change.perfect)
+    if (change.unfrozen) clearTimeout(this.verdict_timeout)
+    this.manager.applyMultiplayerState(this.player.state)
+    if (change.frozen) this.onFrozen()
+    else this.drawLocalCircle()
   }
 
   onPlayerDied({ id, t }) {
-    if (id !== this.socket.id) return this.ghost.die(t)
-    if (this.is_dead) return
+    if (id !== this.session.id) return this.ghost.die(t)
+    if (this.player.is_dead) return
 
-    this.is_dead = true
-    if (this.frozen_at === null) this.freeze(t)
+    this.player.died(t)
+    this.drawLocalCircle()
     this.manager.stopMultiplayerGame(true)
   }
 
-  onMatchEnd({ winner, draw, scores = {}, reason }) {
+  onMatchEnd({ winner = null, draw = false, scores = {}, reason }) {
     if (this.is_finished) return
     this.is_finished = true
     clearTimeout(this.verdict_timeout)
 
-    const has_won = winner === this.socket.id
-    if (!has_won && !this.is_dead && this.manager.game_started)
-      this.manager.stopMultiplayerGame(true) // e.g. connection lost
-    else this.manager.stopMultiplayerGame(false)
+    const has_won = winner === this.session.id
+    // lost without the server confirming our death, e.g. connection lost
+    const lost_unconfirmed = !has_won && !draw && !this.player.is_dead && this.manager.game_started
+    this.manager.stopMultiplayerGame(lost_unconfirmed)
     this.countdown_text.setAlpha(0)
 
-    const opponent_id = this.opponent && this.opponent.id
+    const scoreOf = (id, fallback) => (scores[id] !== undefined ? scores[id] : fallback)
     this.scene.launch("multiplayerResult", {
       level_scene: this,
       has_won,
       draw,
       reason,
-      my_score:
-        scores[this.socket.id] !== undefined ? scores[this.socket.id] : this.state.score,
-      opponent_score:
-        scores[opponent_id] !== undefined ? scores[opponent_id] : this.ghost.state.score,
+      my_score: scoreOf(this.session.id, this.player.state.score),
+      opponent_score: scoreOf(this.opponent.id, this.ghost.score),
       opponent: this.opponent,
     })
     this.scene.bringToTop("multiplayerResult")
@@ -218,14 +180,9 @@ export default class Multiplayer_Basic extends Phaser.Scene {
   update() {
     this.updateCountdown()
 
-    if (this.manager.game_started && this.frozen_at === null) {
-      const now = serverNow()
-      const death_at = rules.deathTime(this.state, this.layout)
-      if (now >= death_at) this.freeze(death_at)
-      else {
-        this.manager.rotation_angle = rules.angleAt(this.state, now)
-        this.manager.updateCircleStickAngle()
-      }
+    if (this.manager.game_started) {
+      if (this.player.update(serverNow())) this.onFrozen()
+      else this.drawLocalCircle()
     }
 
     if (!this.is_finished) this.ghost.render()

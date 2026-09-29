@@ -39,9 +39,10 @@ class MemoryDatabaseManager {
   }
 
   saveNewSkin(req, res) {
-    const { nickname, skin } = req.body
+    const { nickname, skin = [] } = req.body
     const account = accounts.get(nickname)
-    if (account) account.skins[skin[0]].push(skin[1])
+    const owned = account && account.skins[skin[0]]
+    if (owned) owned.push(skin[1])
     res.sendStatus(200)
   }
 

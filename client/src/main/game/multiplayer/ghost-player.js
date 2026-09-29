@@ -1,41 +1,8 @@
-import rules from "../../../../../server/src/shared/multiplayer-rules"
-import { serverNow } from "../../shortcuts/multiplayer-socket"
+import rules from "../../multiplayer/rules"
+import { serverNow } from "../../multiplayer/connection"
+import getGreyFrame from "./grey-frame"
 
 const GHOST_ALPHA = 0.45
-
-// canvas renderer can't tint, so build a greyscale copy of an atlas frame once
-function getGreyFrame(scene, atlas, frame_name) {
-  const key = `grey:${atlas}:${frame_name}`
-  if (scene.textures.exists(key)) return key
-
-  const frame = scene.textures.getFrame(atlas, frame_name)
-  const { cutX, cutY, cutWidth, cutHeight } = frame
-  const texture = scene.textures.createCanvas(key, cutWidth, cutHeight)
-  const context = texture.getContext()
-  context.drawImage(
-    frame.source.image,
-    cutX,
-    cutY,
-    cutWidth,
-    cutHeight,
-    0,
-    0,
-    cutWidth,
-    cutHeight
-  )
-
-  const image_data = context.getImageData(0, 0, cutWidth, cutHeight)
-  const pixels = image_data.data
-  for (let i = 0; i < pixels.length; i += 4) {
-    const grey =
-      0.3 * pixels[i] + 0.59 * pixels[i + 1] + 0.11 * pixels[i + 2]
-    pixels[i] = pixels[i + 1] = pixels[i + 2] = grey
-  }
-  context.putImageData(image_data, 0, 0)
-  texture.refresh()
-
-  return key
-}
 
 function pickSkinFrame(scene, atlas, prefix, skin, fallback_skin) {
   const texture = scene.textures.get(atlas)
@@ -43,50 +10,47 @@ function pickSkinFrame(scene, atlas, prefix, skin, fallback_skin) {
   return prefix + fallback_skin
 }
 
-// Draws the opponent from the server's authoritative state. Between taps the
-// rotation is a function of time, so it is rendered where it is right now;
-// the only visible latency is a short overshoot until the opponent's tap arrives.
+// Draws the opponent, greyed out, from the server's authoritative state.
+// Between taps the rotation is a function of time, so it is rendered where it is
+// right now; the only visible latency is a short overshoot until a tap arrives.
 export default class GhostPlayer {
   constructor(manager, opponent, layout, initial_state) {
     this.manager = manager
     this.scene = manager.scene
-    this.opponent = opponent
+    this.opponent = opponent || {}
     this.layout = layout
     this.state = initial_state
     this.frozen_at = null
     this.shown_next_target = null
   }
 
+  get score() {
+    return this.state.score
+  }
+
   // must be called after targets exist but before the local stick/circles,
   // so the ghost is drawn above targets and below the local player
   create() {
     const my_skins = this.manager.progress.current_skins
-    const opponent_skins = (this.opponent && this.opponent.skins) || {}
-
-    const circle_key = getGreyFrame(
+    const skins = this.opponent.skins || {}
+    const circle = getGreyFrame(
       this.scene,
       "circles",
-      pickSkinFrame(this.scene, "circles", "circle_", opponent_skins.circles, my_skins.circles)
+      pickSkinFrame(this.scene, "circles", "circle_", skins.circles, my_skins.circles)
     )
-    const stick_key = getGreyFrame(
+    const stick = getGreyFrame(
       this.scene,
       "sticks",
-      pickSkinFrame(this.scene, "sticks", "stick_", opponent_skins.sticks, my_skins.sticks)
+      pickSkinFrame(this.scene, "sticks", "stick_", skins.sticks, my_skins.sticks)
     )
 
-    this.next_target_ring = this.scene.add.graphics().setDepth(0.1).setAlpha(0)
-    this.stick = this.scene.add
-      .image(0, 0, stick_key)
-      .setOrigin(0, 0.5)
-      .setDepth(0.1)
-      .setAlpha(0)
-    this.pivot = this.scene.add.image(0, 0, circle_key).setDepth(0.1).setAlpha(0)
-    this.moving = this.scene.add.image(0, 0, circle_key).setDepth(0.1).setAlpha(0)
-
-    this.name_text = this.scene.add
-      .text(0, 0, (this.opponent && this.opponent.nickname) || "", {
-        font: `28px ${main_font}`,
-      })
+    const add = this.scene.add
+    this.next_target_ring = add.graphics().setDepth(0.1).setAlpha(0)
+    this.stick = add.image(0, 0, stick).setOrigin(0, 0.5).setDepth(0.1).setAlpha(0)
+    this.pivot = add.image(0, 0, circle).setDepth(0.1).setAlpha(0)
+    this.moving = add.image(0, 0, circle).setDepth(0.1).setAlpha(0)
+    this.name_text = add
+      .text(0, 0, this.opponent.nickname || "", { font: `28px ${main_font}` })
       .setOrigin(0.5, 1)
       .setDepth(0.1)
       .setAlpha(0)

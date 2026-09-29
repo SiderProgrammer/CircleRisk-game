@@ -465,9 +465,11 @@ getDefaultStats(){
     this.scene.input.removeAllListeners()
     this.game_started = false
 
-    if (!has_lost) return
-    this.localProgress.stats.deaths++
+    // hits and perfects were counted during the match
+    if (has_lost) this.localProgress.stats.deaths++
     saveProgress(this.localProgress)
+
+    if (!has_lost) return
     this.playSound("die")
     this.scene.tweens.add({
       targets: [...this.circles, this.stick],

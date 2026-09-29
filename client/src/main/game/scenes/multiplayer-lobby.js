@@ -4,20 +4,30 @@ import {
   createTextButton,
   createFetchingAnimation,
 } from "../GUI-helper"
-import { getSocket, getMyProfile } from "../../shortcuts/multiplayer-socket"
+import CodeInput from "../multiplayer/code-input"
+import { getSession } from "../../multiplayer/session"
 
 const DIFFICULTIES = ["easy", "medium", "hard"]
 const DIFFICULTY_COLORS = { easy: 0x27ae60, medium: 0xe67e22, hard: 0xc0392b }
+const GREY = 0x7f8c8d
 
+const STATUS_TEXTS = {
+  searching: "Searching for an opponent...",
+  room: "Share this code with a friend",
+  join: "",
+}
+
+// Find a random opponent, or create / join a room with a 4-letter code.
 export default class MultiplayerLobby extends Phaser.Scene {
   constructor() {
     super("multiplayerLobby")
   }
 
   init() {
-    this.socket = getSocket()
+    this.session = getSession()
     this.difficulty_index = 0
     this.states = {}
+    this.state = null
     this.spinner = null
     this.code_input = null
   }
@@ -27,10 +37,7 @@ export default class MultiplayerLobby extends Phaser.Scene {
     this.center_y = GH / 2
 
     createBackground(this, "menu-bg")
-    this.add
-      .text(GW / 2, 170, "1 VS 1", { font: `120px ${main_font}` })
-      .setOrigin(0.5)
-
+    this.add.text(GW / 2, 170, "1 VS 1", { font: `120px ${main_font}` }).setOrigin(0.5)
     this.status_text = this.add
       .text(GW / 2, 300, "", {
         font: `40px ${main_font}`,
@@ -38,16 +45,22 @@ export default class MultiplayerLobby extends Phaser.Scene {
         wordWrap: { width: GW * 0.85 },
       })
       .setOrigin(0.5)
-
-    createButton(this, 20, 20, "back-button", () => this.backToMenu(), "button")
-      .setOrigin(0)
+    createButton(this, 20, 20, "back-button", () => this.backToMenu(), "button").setOrigin(0)
 
     this.createMainState()
     this.createSearchingState()
     this.createRoomState()
     this.createJoinState()
 
-    this.bindSocketEvents()
+    this.session.bind(this, {
+      "match:start": (match) => this.startMatch(match),
+      connect: () => this.state === "main" && this.status_text.setText(""),
+      connect_error: () =>
+        this.state === "main" && this.status_text.setText("Can't reach the server..."),
+      disconnect: () => this.setState("main"),
+    })
+    // game objects are destroyed with the scene, the DOM input isn't
+    this.events.once("shutdown", () => this.code_input && this.code_input.destroy())
     this.setState("main")
 
     this.cameras.main.setAlpha(0)
@@ -58,11 +71,17 @@ export default class MultiplayerLobby extends Phaser.Scene {
     const { GW } = this.game
     const y = this.center_y
 
-    const difficulty_button = createTextButton(this, GW / 2, y + 330, "", () => {
-      this.difficulty_index = (this.difficulty_index + 1) % DIFFICULTIES.length
-      updateDifficulty()
-    }, { width: 420, height: 90, font_size: 38 })
-
+    const difficulty_button = createTextButton(
+      this,
+      GW / 2,
+      y + 330,
+      "",
+      () => {
+        this.difficulty_index = (this.difficulty_index + 1) % DIFFICULTIES.length
+        updateDifficulty()
+      },
+      { width: 420, height: 90, font_size: 38 }
+    )
     const updateDifficulty = () => {
       const difficulty = DIFFICULTIES[this.difficulty_index]
       difficulty_button.text.setText(`ROOM LEVEL: ${difficulty.toUpperCase()}`)
@@ -83,13 +102,14 @@ export default class MultiplayerLobby extends Phaser.Scene {
     ]
   }
 
+  createCancelButton() {
+    return createTextButton(this, this.game.GW / 2, this.center_y + 250, "CANCEL", () => this.cancel(), {
+      color: GREY,
+    })
+  }
+
   createSearchingState() {
-    this.states.searching = [
-      createTextButton(this, this.game.GW / 2, this.center_y + 250, "CANCEL", () => {
-        this.socket.emit("queue:leave")
-        this.setState("main")
-      }, { color: 0x7f8c8d }),
-    ]
+    this.states.searching = [this.createCancelButton()]
   }
 
   createRoomState() {
@@ -99,14 +119,9 @@ export default class MultiplayerLobby extends Phaser.Scene {
       .setOrigin(0.5)
 
     this.states.room = [
-      this.add
-        .text(GW / 2, this.center_y - 200, "ROOM CODE", { font: `50px ${main_font}` })
-        .setOrigin(0.5),
+      this.add.text(GW / 2, this.center_y - 200, "ROOM CODE", { font: `50px ${main_font}` }).setOrigin(0.5),
       this.room_code_text,
-      createTextButton(this, GW / 2, this.center_y + 250, "CANCEL", () => {
-        this.socket.emit("room:leave")
-        this.setState("main")
-      }, { color: 0x7f8c8d }),
+      this.createCancelButton(),
     ]
   }
 
@@ -119,9 +134,7 @@ export default class MultiplayerLobby extends Phaser.Scene {
       createTextButton(this, GW / 2, this.center_y + 100, "JOIN", () => this.joinRoom(), {
         color: 0x27ae60,
       }),
-      createTextButton(this, GW / 2, this.center_y + 250, "CANCEL", () => this.setState("main"), {
-        color: 0x7f8c8d,
-      }),
+      this.createCancelButton(),
     ]
   }
 
@@ -133,104 +146,46 @@ export default class MultiplayerLobby extends Phaser.Scene {
         if (element.input) element.input.enabled = state === name
       })
 
-    if (this.spinner) {
-      this.spinner.stop()
-      this.spinner = null
-    }
-    if (name === "searching" || name === "room")
-      this.spinner = createFetchingAnimation(this, this.game.GW / 2, this.center_y + 110)
+    if (this.spinner) this.spinner.stop()
+    this.spinner =
+      name === "searching" || name === "room"
+        ? createFetchingAnimation(this, this.game.GW / 2, this.center_y + 110)
+        : null
 
-    name === "join" ? this.showCodeInput() : this.removeCodeInput()
+    if (this.code_input) this.code_input.destroy()
+    this.code_input =
+      name === "join" ? new CodeInput(this, this.game.GW / 2, this.center_y - 60, () => this.joinRoom()) : null
 
-    const messages = {
-      main: this.socket.connected ? "" : "Connecting to server...",
-      searching: "Searching for an opponent...",
-      room: "Share this code with a friend",
-      join: "",
-    }
-    this.status_text.setText(messages[name])
-  }
-
-  // Phaser has no text input, so float a DOM input above the canvas
-  showCodeInput() {
-    if (this.code_input) return
-    const rect = this.game.canvas.getBoundingClientRect()
-    const scale = rect.width / this.game.GW
-    const width = 360 * scale
-    const height = 120 * scale
-
-    const input = document.createElement("input")
-    input.maxLength = 4
-    input.autocomplete = "off"
-    input.placeholder = "ABCD"
-    Object.assign(input.style, {
-      position: "absolute",
-      left: `${rect.left + window.scrollX + (this.game.GW / 2) * scale - width / 2}px`,
-      top: `${rect.top + window.scrollY + (this.center_y - 60) * scale - height / 2}px`,
-      width: `${width}px`,
-      height: `${height}px`,
-      fontSize: `${80 * scale}px`,
-      fontFamily: main_font,
-      textAlign: "center",
-      textTransform: "uppercase",
-      letterSpacing: `${10 * scale}px`,
-      border: "none",
-      borderRadius: `${20 * scale}px`,
-      outline: "none",
-      zIndex: 10,
-    })
-    input.addEventListener("keydown", (event) => event.key === "Enter" && this.joinRoom())
-    document.body.appendChild(input)
-    input.focus()
-    this.code_input = input
-  }
-
-  removeCodeInput() {
-    if (!this.code_input) return
-    this.code_input.remove()
-    this.code_input = null
+    this.status_text.setText(
+      name === "main" ? (this.session.connected ? "" : "Connecting to server...") : STATUS_TEXTS[name]
+    )
   }
 
   findMatch() {
-    this.socket.emit("queue:join", getMyProfile())
+    this.session.findMatch()
     this.setState("searching")
   }
 
   createRoom() {
     this.room_code_text.setText("")
     this.setState("room")
-    this.socket.emit(
-      "room:create",
-      { profile: getMyProfile(), difficulty: DIFFICULTIES[this.difficulty_index] },
-      ({ code }) => this.room_code_text.setText(code)
+    this.session.createRoom(DIFFICULTIES[this.difficulty_index], (code) =>
+      this.room_code_text.setText(code)
     )
   }
 
   joinRoom() {
-    if (!this.code_input) return
-    const code = this.code_input.value.trim().toUpperCase()
+    const code = this.code_input && this.code_input.value
+    if (!code) return
     if (code.length !== 4) return this.status_text.setText("Code has 4 letters")
 
     this.status_text.setText("Joining...")
-    this.socket.emit("room:join", { profile: getMyProfile(), code }, ({ error }) => {
-      if (error && this.state === "join") this.status_text.setText(error)
-    })
+    this.session.joinRoom(code, (error) => this.state === "join" && this.status_text.setText(error))
   }
 
-  bindSocketEvents() {
-    const handlers = {
-      "match:start": (match) => this.startMatch(match),
-      connect: () => this.state === "main" && this.status_text.setText(""),
-      connect_error: () =>
-        this.state === "main" && this.status_text.setText("Can't reach the server..."),
-      disconnect: () => this.state !== "main" && this.setState("main"),
-    }
-    for (const event in handlers) this.socket.on(event, handlers[event])
-
-    this.events.once("shutdown", () => {
-      for (const event in handlers) this.socket.off(event, handlers[event])
-      this.removeCodeInput()
-    })
+  cancel() {
+    this.session.leave()
+    this.setState("main")
   }
 
   startMatch(match) {
@@ -241,7 +196,7 @@ export default class MultiplayerLobby extends Phaser.Scene {
   }
 
   backToMenu() {
-    this.socket.emit("room:leave")
+    this.session.leave()
     this.scene.stop()
     this.scene.get("menu").animateShowMenu()
   }

@@ -16,7 +16,11 @@
     "start": "set NODE_ENV=production&& node src/server.js",
     "prod": "set NODE_ENV=production&& pm2 start src/server.js -i max",
     "dev": "node src/server.js",
-    "dev:nodb": "node src/server.js --no-db"
+    "dev:nodb": "node src/server.js --no-db",
+    "test": "node --test"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "socket.io-client": "^4.8.4"
+  }
 }

@@ -1,3 +1,4 @@
+// Socket connection and clock synchronisation with the multiplayer server.
 // UMD build: the package's ESM entry uses syntax webpack 4 can't parse
 import io from "socket.io-client/dist/socket.io.js"
 import { SERVER_URL } from "../../config"
@@ -7,42 +8,46 @@ import { SERVER_URL } from "../../config"
 const { origin, pathname } = new URL(SERVER_URL)
 const SOCKET_PATH = `${pathname.replace(/\/$/, "")}/socket.io`
 
+const CLOCK_SAMPLES = 8 // recent measurements kept
+const CLOCK_SYNC_INTERVAL = 10000
+
 let socket = null
 let clock_offset = 0 // serverTime - clientTime
-let best_rtt = Infinity
+let clock_samples = []
 
 function measureClock() {
   const sent = Date.now()
   socket.emit("time:ping", sent, ({ serverTime }) => {
     const now = Date.now()
     const rtt = now - sent
-    // keep the sample with the lowest round trip, it is the most precise one
-    if (rtt <= best_rtt) {
-      best_rtt = rtt
-      clock_offset = serverTime + rtt / 2 - now
-    }
+    clock_samples = [...clock_samples, { rtt, offset: serverTime + rtt / 2 - now }].slice(
+      -CLOCK_SAMPLES
+    )
+    // the recent sample with the lowest round trip is the most precise one;
+    // using only recent ones lets the offset follow device clock adjustments
+    const best = clock_samples.reduce((a, b) => (b.rtt < a.rtt ? b : a))
+    clock_offset = best.offset
   })
 }
 
 export function getSocket() {
   if (socket) return socket
 
-  socket = io(origin, {
-    path: SOCKET_PATH,
-    transports: ["websocket", "polling"],
-  })
+  socket = io(origin, { path: SOCKET_PATH, transports: ["websocket", "polling"] })
 
   // the server measures our round trip to size its lag compensation window
   socket.on("rtt:ping", (ack) => typeof ack === "function" && ack())
 
   socket.on("connect", () => {
-    best_rtt = Infinity
+    clock_samples = []
     for (let i = 0; i < 5; i++) setTimeout(measureClock, i * 200)
   })
-  // re-sync from time to time, network conditions change
-  setInterval(() => socket.connected && measureClock(), 10000)
+  setInterval(() => socket.connected && measureClock(), CLOCK_SYNC_INTERVAL)
+
   // close cleanly so the opponent is told right away instead of after the heartbeat timeout
   window.addEventListener("pagehide", () => socket.disconnect())
+  // a manual disconnect disables auto reconnection, restore it when the page comes back
+  window.addEventListener("pageshow", ({ persisted }) => persisted && socket.connect())
 
   return socket
 }
