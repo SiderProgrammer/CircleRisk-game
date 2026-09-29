@@ -1,0 +1,18 @@
+# Render Blueprint: multiplayer test server (free tier, no database).
+# Render -> New -> Blueprint -> pick this repository.
+services:
+  - type: web
+    name: circlerisk-server
+    runtime: node
+    plan: free # sleeps after ~15 min idle, the first request then takes 30-60 s
+    region: frankfurt
+    rootDir: server
+    buildCommand: npm ci --omit=dev
+    # exactly one process: rooms and matches live in memory, and without MongoDB
+    # accounts are in memory too (wiped on every restart / sleep)
+    startCommand: node src/server.js --no-db
+    healthCheckPath: /isServerAlive
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
