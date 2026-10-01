@@ -7,7 +7,8 @@
   "scripts": {
     "test": "webpack --mode=development",
     "build": "webpack --mode=production",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "deploy:web": "npm run build && npx firebase-tools deploy --only hosting"
   },
   "author": "sid",
   "license": "ISC",
