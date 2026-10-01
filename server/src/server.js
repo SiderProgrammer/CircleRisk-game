@@ -31,7 +31,8 @@ server.use(bodyParser.urlencoded({ extended: false }))
 const databaseManager = new DatabaseManager()
 
 server.get("/getGameVersion", (req, res) => res.json(GAME_VERSION))
-server.get("/isServerAlive", (req, res) => res.sendStatus(200))
+
+server.get(["/", "/isServerAlive"], (req, res) => res.sendStatus(200))
 
 server.get("/getConfigurations", (req, res) =>
   res.send({ skins_setup: customizeSkinsSetup, levels_config: levelsConfig })
