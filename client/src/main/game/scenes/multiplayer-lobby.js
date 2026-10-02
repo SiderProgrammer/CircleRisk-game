@@ -5,19 +5,21 @@ import {
   createFetchingAnimation,
 } from "../GUI-helper"
 import CodeInput from "../multiplayer/code-input"
+import RoomConfigurator from "../multiplayer/room-configurator"
 import { getSession } from "../../multiplayer/session"
+import roomSettings from "../../multiplayer/room-settings"
 
-const DIFFICULTIES = ["easy", "medium", "hard"]
-const DIFFICULTY_COLORS = { easy: 0x27ae60, medium: 0xe67e22, hard: 0xc0392b }
 const GREY = 0x7f8c8d
+const GREEN = 0x27ae60
 
 const STATUS_TEXTS = {
   searching: "Searching for an opponent...",
   room: "Share this code with a friend",
   join: "",
+  setup: "",
 }
 
-// Find a random opponent, or create / join a room with a 4-letter code.
+// Find a random opponent, or set up / join a room with a 4-letter code.
 export default class MultiplayerLobby extends Phaser.Scene {
   constructor() {
     super("multiplayerLobby")
@@ -25,7 +27,6 @@ export default class MultiplayerLobby extends Phaser.Scene {
 
   init() {
     this.session = getSession()
-    this.difficulty_index = 0
     this.states = {}
     this.state = null
     this.spinner = null
@@ -37,7 +38,7 @@ export default class MultiplayerLobby extends Phaser.Scene {
     this.center_y = GH / 2
 
     createBackground(this, "menu-bg")
-    this.add.text(GW / 2, 170, "1 VS 1", { font: `120px ${main_font}` }).setOrigin(0.5)
+    this.title = this.add.text(GW / 2, 170, "1 VS 1", { font: `120px ${main_font}` }).setOrigin(0.5)
     this.status_text = this.add
       .text(GW / 2, 300, "", {
         font: `40px ${main_font}`,
@@ -45,9 +46,10 @@ export default class MultiplayerLobby extends Phaser.Scene {
         wordWrap: { width: GW * 0.85 },
       })
       .setOrigin(0.5)
-    createButton(this, 20, 20, "back-button", () => this.backToMenu(), "button").setOrigin(0)
+    createButton(this, 20, 20, "back-button", () => this.back(), "button").setOrigin(0)
 
     this.createMainState()
+    this.createSetupState()
     this.createSearchingState()
     this.createRoomState()
     this.createJoinState()
@@ -57,7 +59,7 @@ export default class MultiplayerLobby extends Phaser.Scene {
       connect: () => this.state === "main" && this.status_text.setText(""),
       connect_error: () =>
         this.state === "main" && this.status_text.setText("Can't reach the server..."),
-      disconnect: () => this.setState("main"),
+      disconnect: () => this.state !== "setup" && this.setState("main"),
     })
     // game objects are destroyed with the scene, the DOM input isn't
     this.events.once("shutdown", () => this.code_input && this.code_input.destroy())
@@ -71,24 +73,6 @@ export default class MultiplayerLobby extends Phaser.Scene {
     const { GW } = this.game
     const y = this.center_y
 
-    const difficulty_button = createTextButton(
-      this,
-      GW / 2,
-      y + 330,
-      "",
-      () => {
-        this.difficulty_index = (this.difficulty_index + 1) % DIFFICULTIES.length
-        updateDifficulty()
-      },
-      { width: 420, height: 90, font_size: 38 }
-    )
-    const updateDifficulty = () => {
-      const difficulty = DIFFICULTIES[this.difficulty_index]
-      difficulty_button.text.setText(`ROOM LEVEL: ${difficulty.toUpperCase()}`)
-      difficulty_button.setColor(DIFFICULTY_COLORS[difficulty])
-    }
-    updateDifficulty()
-
     this.states.main = [
       createTextButton(this, GW / 2, y - 180, "FIND MATCH", () => this.findMatch(), {
         color: 0xf39c12,
@@ -96,9 +80,23 @@ export default class MultiplayerLobby extends Phaser.Scene {
         height: 130,
         font_size: 60,
       }),
-      createTextButton(this, GW / 2, y, "CREATE ROOM", () => this.createRoom()),
+      createTextButton(this, GW / 2, y, "CREATE ROOM", () => this.setState("setup")),
       createTextButton(this, GW / 2, y + 150, "JOIN ROOM", () => this.setState("join")),
-      difficulty_button,
+    ]
+  }
+
+  // the room configurator takes the whole screen below the back button
+  createSetupState() {
+    const { GW, GH } = this.game
+    this.configurator = new RoomConfigurator(this, 135, GH - 175)
+    this.states.setup = [
+      ...this.configurator.elements,
+      createTextButton(this, GW / 2, GH - 95, "CREATE ROOM", () => this.createRoom(), {
+        color: GREEN,
+        width: 520,
+        height: 120,
+        font_size: 56,
+      }),
     ]
   }
 
@@ -117,10 +115,18 @@ export default class MultiplayerLobby extends Phaser.Scene {
     this.room_code_text = this.add
       .text(GW / 2, this.center_y - 60, "", { font: `160px ${main_font}` })
       .setOrigin(0.5)
+    this.room_settings_text = this.add
+      .text(GW / 2, this.center_y + 370, "", {
+        font: `30px ${main_font}`,
+        align: "center",
+        wordWrap: { width: GW * 0.85 },
+      })
+      .setOrigin(0.5)
 
     this.states.room = [
       this.add.text(GW / 2, this.center_y - 200, "ROOM CODE", { font: `50px ${main_font}` }).setOrigin(0.5),
       this.room_code_text,
+      this.room_settings_text,
       this.createCancelButton(),
     ]
   }
@@ -132,7 +138,7 @@ export default class MultiplayerLobby extends Phaser.Scene {
         .text(GW / 2, this.center_y - 200, "ENTER ROOM CODE", { font: `50px ${main_font}` })
         .setOrigin(0.5),
       createTextButton(this, GW / 2, this.center_y + 100, "JOIN", () => this.joinRoom(), {
-        color: 0x27ae60,
+        color: GREEN,
       }),
       this.createCancelButton(),
     ]
@@ -145,6 +151,9 @@ export default class MultiplayerLobby extends Phaser.Scene {
         element.setVisible(state === name)
         if (element.input) element.input.enabled = state === name
       })
+
+    // the setup screen needs the room the title takes
+    this.title.setVisible(name !== "setup")
 
     if (this.spinner) this.spinner.stop()
     this.spinner =
@@ -167,11 +176,11 @@ export default class MultiplayerLobby extends Phaser.Scene {
   }
 
   createRoom() {
+    const settings = this.configurator.getSettings()
     this.room_code_text.setText("")
+    this.room_settings_text.setText(roomSettings.describeSettings(settings))
     this.setState("room")
-    this.session.createRoom(DIFFICULTIES[this.difficulty_index], (code) =>
-      this.room_code_text.setText(code)
-    )
+    this.session.createRoom(settings, (code) => this.room_code_text.setText(code))
   }
 
   joinRoom() {
@@ -195,7 +204,9 @@ export default class MultiplayerLobby extends Phaser.Scene {
     this.scene.stop()
   }
 
-  backToMenu() {
+  // the arrow goes one screen back: from a sub-screen to the lobby, from the lobby to the menu
+  back() {
+    if (this.state !== "main") return this.cancel()
     this.session.leave()
     this.scene.stop()
     this.scene.get("menu").animateShowMenu()

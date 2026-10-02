@@ -1,19 +1,15 @@
 "use strict"
 // Rooms (joined by a 4-letter code or created by the random queue) and matchmaking.
-const levelsConfig = require("../settings/levels/levels-config")
 const Match = require("./match")
-const { DIFFICULTIES } = require("./validation")
+const { CLASSIC_PRESETS } = require("../shared/room-settings")
 
 const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ" // no I / O to avoid confusion
 
 const rooms = new Map() // code -> room
 const queue = [] // sockets waiting for a random opponent
 
-function getBasicLevel(difficulty) {
-  const index = levelsConfig.findIndex(
-    ({ info }) => info.name === "basic" && info.difficulty === difficulty
-  )
-  return { level: index + 1, difficulty, ...levelsConfig[index] }
+function randomClassicSettings() {
+  return CLASSIC_PRESETS[Math.floor(Math.random() * CLASSIC_PRESETS.length)].settings
 }
 
 function generateCode() {
@@ -26,9 +22,9 @@ function generateCode() {
   return code
 }
 
-// difficulty null: random for every match (queue rooms)
-function createRoom(difficulty) {
-  const room = { code: generateCode(), difficulty, sockets: [], match: null, rematch: new Set() }
+// settings null: a random classic preset for every match (queue rooms)
+function createRoom(settings) {
+  const room = { code: generateCode(), settings, sockets: [], match: null, rematch: new Set() }
   rooms.set(room.code, room)
   return room
 }
@@ -38,10 +34,8 @@ function getRoom(socket) {
 }
 
 function startMatch(room) {
-  const difficulty =
-    room.difficulty || DIFFICULTIES[Math.floor(Math.random() * DIFFICULTIES.length)]
   room.rematch.clear()
-  room.match = new Match(room.sockets.slice(), getBasicLevel(difficulty))
+  room.match = new Match(room.sockets.slice(), room.settings || randomClassicSettings())
   room.match.start()
 }
 
@@ -83,10 +77,11 @@ function findMatch(socket, profile) {
   addToRoom(socket, room)
 }
 
-function openRoom(socket, profile, difficulty) {
+// settings: already sanitized room settings (shared/room-settings.js)
+function openRoom(socket, profile, settings) {
   leave(socket)
   socket.data.profile = profile
-  const room = createRoom(difficulty)
+  const room = createRoom(settings)
   addToRoom(socket, room)
   return room.code
 }

@@ -4,6 +4,7 @@ import GhostPlayer from "../../multiplayer/ghost-player"
 import LocalPlayer from "../../../multiplayer/local-player"
 import { getSession } from "../../../multiplayer/session"
 import { serverNow } from "../../../multiplayer/connection"
+import roomSettings from "../../../multiplayer/room-settings"
 
 // after a predicted death the server confirms it within DEATH_GRACE + latency;
 // no answer means the connection is gone
@@ -20,8 +21,8 @@ export default class Multiplayer_Basic extends Phaser.Scene {
     this.match = match
     this.session = getSession()
     this.opponent = match.opponent || {}
-    this.level = match.level
-    this.score_to_next_level = match.info.score_to_next_level
+    this.level = 0 // not a campaign level
+    this.score_to_next_level = 0
     this.not_count_stats = true
     this.is_finished = false
     this.countdown_done = false
@@ -34,7 +35,13 @@ export default class Multiplayer_Basic extends Phaser.Scene {
     this.manager.multiplayer = this
 
     this.basicFunctionsManager = new BasicFunctionsManager(this)
-    this.ghost = new GhostPlayer(this.manager, this.opponent, this.player.layout, this.player.state)
+    this.ghost = new GhostPlayer(
+      this.manager,
+      this.opponent,
+      this.player.layout,
+      match.config,
+      this.player.state
+    )
   }
 
   create() {
@@ -45,6 +52,8 @@ export default class Multiplayer_Basic extends Phaser.Scene {
     this.basicFunctionsManager.createFlyingCubes()
     this.manager.createFirstTarget()
     this.manager.createTargets()
+    // target size setting: the hit window and the sprite scale together
+    this.manager.target_array.forEach((target) => target.setScale(this.match.config.target_scale || 1))
     this.manager.setNewTarget()
 
     this.manager.centerTargets()
@@ -60,6 +69,20 @@ export default class Multiplayer_Basic extends Phaser.Scene {
       .text(this.game.GW / 2, this.game.GH * 0.2, "", { font: `140px ${main_font}` })
       .setOrigin(0.5)
       .setDepth(1)
+    // what the room creator configured, the joining player sees it here first
+    this.settings_text = this.add
+      .text(this.game.GW / 2, this.game.GH * 0.2 + 110, roomSettings.describeSettings(this.match.settings), {
+        font: `30px ${main_font}`,
+        align: "center",
+        wordWrap: { width: this.game.GW * 0.9 },
+      })
+      .setOrigin(0.5)
+      .setDepth(1)
+    this.goal_text = this.add
+      .text(this.game.GW / 2, this.game.GH * 0.2, "GOAL!", { font: `120px ${main_font}`, color: "#f1c40f" })
+      .setOrigin(0.5)
+      .setDepth(1)
+      .setVisible(false)
 
     this.manager.GUI_helper.sceneIntro(this)
     this.bindSessionEvents()
@@ -70,6 +93,7 @@ export default class Multiplayer_Basic extends Phaser.Scene {
     const handlers = {
       "player:state": (message) => this.onPlayerState(message),
       "player:died": (message) => this.onPlayerDied(message),
+      "player:finished": (message) => message.id !== this.session.id && this.ghost.finish(),
       "match:end": (result) => this.onMatchEnd(result),
     }
     // events that arrived while this scene was starting
@@ -89,6 +113,7 @@ export default class Multiplayer_Basic extends Phaser.Scene {
       this.manager.game_started = true
       this.countdown_text.setText("GO!")
       this.tweens.add({ targets: this.countdown_text, alpha: 0, scale: 1.5, duration: 500 })
+      this.tweens.add({ targets: this.settings_text, alpha: 0, duration: 500 })
       return
     }
 
@@ -111,6 +136,8 @@ export default class Multiplayer_Basic extends Phaser.Scene {
     if (!prediction.hit) return this.onFrozen()
     this.manager.showMultiplayerHit(prediction.perfect)
     this.manager.applyMultiplayerState(this.player.state)
+    // reached the goal: stop and wait for the server to decide who got there first
+    if (this.player.is_finished) this.onFrozen()
   }
 
   // predicted dead: stop the circle and wait for the server's verdict
@@ -140,7 +167,7 @@ export default class Multiplayer_Basic extends Phaser.Scene {
     if (change.gained_hit) this.manager.showMultiplayerHit(change.perfect)
     if (change.unfrozen) clearTimeout(this.verdict_timeout)
     this.manager.applyMultiplayerState(this.player.state)
-    if (change.frozen) this.onFrozen()
+    if (change.frozen || (change.gained_hit && this.player.is_finished)) this.onFrozen()
     else this.drawLocalCircle()
   }
 
@@ -162,7 +189,7 @@ export default class Multiplayer_Basic extends Phaser.Scene {
     // lost without the server confirming our death, e.g. connection lost
     const lost_unconfirmed = !has_won && !draw && !this.player.is_dead && this.manager.game_started
     this.manager.stopMultiplayerGame(lost_unconfirmed)
-    this.countdown_text.setAlpha(0)
+    ;[this.countdown_text, this.settings_text, this.goal_text].forEach((text) => text.setAlpha(0))
 
     const scoreOf = (id, fallback) => (scores[id] !== undefined ? scores[id] : fallback)
     this.scene.launch("multiplayerResult", {
@@ -173,6 +200,7 @@ export default class Multiplayer_Basic extends Phaser.Scene {
       my_score: scoreOf(this.session.id, this.player.state.score),
       opponent_score: scoreOf(this.opponent.id, this.ghost.score),
       opponent: this.opponent,
+      win_score: this.match.config.win_score,
     })
     this.scene.bringToTop("multiplayerResult")
   }
@@ -185,6 +213,10 @@ export default class Multiplayer_Basic extends Phaser.Scene {
       else this.drawLocalCircle()
     }
 
-    if (!this.is_finished) this.ghost.render()
+    if (!this.is_finished) {
+      this.ghost.render()
+      // a server correction can still take the goal away, so it's derived every frame
+      this.goal_text.setVisible(this.player.is_finished)
+    }
   }
 }

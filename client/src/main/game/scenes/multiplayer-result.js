@@ -10,7 +10,10 @@ const TITLES = {
   lost: { text: "YOU LOSE", color: "#e74c3c" },
 }
 
-// why the match ended, when it wasn't simply a death
+// the match was played to the end, so a rematch makes sense
+const isNormalEnd = (reason) => reason === "died" || reason === "finished"
+
+// why the match ended, when it wasn't played to the end
 const REASON_TEXTS = {
   disconnect: "Opponent disconnected",
   left: "Opponent left",
@@ -47,7 +50,7 @@ export default class MultiplayerResult extends Phaser.Scene {
 
     const elements = [
       text(GW / 2, GH * 0.22, title.text, 120, title.color),
-      text(GW / 2, GH * 0.22 + 100, (reason !== "died" && REASON_TEXTS[reason]) || "", 40),
+      text(GW / 2, GH * 0.22 + 100, this.getSubtitle(), 40),
       text(GW / 2 - 160, GH * 0.42, "YOU", 50),
       text(GW / 2 - 160, GH * 0.42 + 90, my_score, 110),
       text(GW / 2 + 160, GH * 0.42, opponent.nickname || "OPPONENT", 50, "#bbbbbb"),
@@ -62,7 +65,7 @@ export default class MultiplayerResult extends Phaser.Scene {
     this.tweens.add({ targets: elements, alpha: 1, duration: 400, delay: 200 })
 
     // the opponent may have acted before this scene existed
-    if (reason !== "died" || this.session.opponent_left) this.onOpponentGone("Opponent left")
+    if (!isNormalEnd(reason) || this.session.opponent_left) this.onOpponentGone("Opponent left")
     else if (this.session.opponent_wants_rematch) this.onOpponentRematch()
 
     this.session.bind(this, {
@@ -76,13 +79,20 @@ export default class MultiplayerResult extends Phaser.Scene {
     })
   }
 
+  getSubtitle() {
+    const { has_won, draw, reason, opponent = {}, win_score } = this.result
+    if (reason !== "finished") return (!isNormalEnd(reason) && REASON_TEXTS[reason]) || ""
+    if (draw) return `Both reached ${win_score} at once!`
+    return has_won ? `Reached ${win_score} first!` : `${opponent.nickname || "Opponent"} reached ${win_score} first`
+  }
+
   onOpponentRematch() {
     if (!this.rematch_requested) this.info_text.setText("Opponent wants a rematch!")
   }
 
   // no one to play again with (other end reasons are already shown under the title)
   onOpponentGone(message) {
-    if (this.result.reason === "died") this.info_text.setText(message)
+    if (isNormalEnd(this.result.reason)) this.info_text.setText(message)
     this.rematch_button.setColor(DISABLED).disableInteractive()
   }
 

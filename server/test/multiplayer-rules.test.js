@@ -12,7 +12,7 @@ const angularSpeed = (state) => (state.speed * 60) / 1000
 
 // moment the circle is exactly on the next target
 function perfectTime(state) {
-  const reach = (2 * Math.asin(rules.HIT_RADIUS / (2 * state.d)) * 180) / Math.PI
+  const reach = (2 * Math.asin(state.r / (2 * state.d)) * 180) / Math.PI
   return rules.deathTime(state, layout) - reach / angularSpeed(state)
 }
 
@@ -95,4 +95,64 @@ test("the new pivot is where the circle was tapped", () => {
   assert.ok(Math.hypot(next.pivot.x - tapped.x, next.pivot.y - tapped.y) < 1e-9)
   assert.strictEqual(next.current, state.next)
   assert.strictEqual(next.t0, t)
+})
+
+const { PRESETS, DEFAULTS, settingsToConfig } = require("../src/shared/room-settings")
+
+// plays `hits` perfect taps with any config and returns the visited states
+function playPerfect(config, seed, hits) {
+  const preset_layout = rules.targetLayout(config)
+  let state = rules.initialState(config, seed, 1000)
+  const states = [state]
+  for (let i = 0; i < hits; i++) {
+    const reach = (2 * Math.asin(state.r / (2 * state.d)) * 180) / Math.PI
+    const on_target = rules.deathTime(state, preset_layout) - reach / ((state.speed * 60) / 1000)
+    const circle = rules.circlePosition(state, rules.angleAt(state, on_target))
+    const target = preset_layout[state.next]
+    assert.ok(Math.hypot(circle.x - target.x, circle.y - target.y) < 1e-6, "circle reaches the target")
+
+    const result = rules.evaluateTap(state, on_target, preset_layout, config, seed)
+    assert.ok(result.hit && result.perfect)
+    state = result.state
+    states.push(state)
+  }
+  return states
+}
+
+test("every preset is playable: perfect taps always hit, in both directions", () => {
+  PRESETS.forEach(({ name, settings }) => {
+    const config = settingsToConfig(settings)
+    const states = playPerfect(config, `seed-${name}`, 40)
+    states.slice(1).forEach((state, i) => {
+      const previous = states[i]
+      const jump = (state.next - state.current + config.targets_amount) % config.targets_amount
+      assert.ok(jump >= 1 && jump <= config.max_jump, `${name}: jump ${jump}`)
+      if (config.max_speed) assert.ok(state.speed <= Math.max(config.max_speed, config.rotation_speed) + 1e-9)
+      assert.strictEqual(state.r, config.hit_radius)
+      if (config.direction === "zigzag") assert.strictEqual(state.dir, -previous.dir)
+    })
+  })
+})
+
+test("spin directions: counter-clockwise, and chaos mixes both", () => {
+  const ccw = playPerfect(settingsToConfig({ ...DEFAULTS, direction: "ccw" }), "s", 10)
+  assert.ok(ccw.every(({ dir }) => dir === -1))
+
+  const chaos = playPerfect(settingsToConfig({ ...DEFAULTS, direction: "chaos" }), "s", 40)
+  const dirs = new Set(chaos.map(({ dir }) => dir))
+  assert.deepStrictEqual([...dirs].sort(), [-1, 1])
+})
+
+test("max speed caps the acceleration", () => {
+  const config = settingsToConfig({ ...DEFAULTS, acceleration: 0.15, max_speed: 2 })
+  const states = playPerfect(config, "s", 20)
+  assert.strictEqual(states[states.length - 1].speed, 2)
+})
+
+test("a goal score finishes the player", () => {
+  const config = settingsToConfig({ ...DEFAULTS, win_score: 10 })
+  const states = playPerfect(config, "s", 5) // 5 perfects = 10 points
+  assert.ok(!rules.isFinished(states[4], config))
+  assert.ok(rules.isFinished(states[5], config))
+  assert.ok(!rules.isFinished(states[5], settingsToConfig(DEFAULTS)))
 })

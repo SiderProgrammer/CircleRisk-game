@@ -17,7 +17,8 @@
     "prod": "set NODE_ENV=production&& pm2 start src/server.js -i max",
     "dev": "node --disable-warning=DEP0170 src/server.js",
     "dev:nodb": "node src/server.js --no-db",
-    "test": "node --test"
+    "test": "node --test",
+    "seed:fake": "node --disable-warning=DEP0170 scripts/seed-fake-players.js"
   },
   "license": "ISC",
   "devDependencies": {

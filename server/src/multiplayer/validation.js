@@ -1,8 +1,6 @@
 "use strict"
 // Client payloads are untrusted: anything can arrive, including null or wrong types.
 
-const DIFFICULTIES = ["easy", "medium", "hard"]
-
 const asObject = (value) => (value && typeof value === "object" ? value : {})
 
 const asAck = (value) => (typeof value === "function" ? value : () => {})
@@ -30,16 +28,12 @@ function sanitizeTap(value) {
   }
 }
 
-const sanitizeDifficulty = (value) => (DIFFICULTIES.includes(value) ? value : "easy")
-
 const sanitizeRoomCode = (value) => String(value || "").trim().toUpperCase().slice(0, 4)
 
 module.exports = {
-  DIFFICULTIES,
   asObject,
   asAck,
   sanitizeProfile,
   sanitizeTap,
-  sanitizeDifficulty,
   sanitizeRoomCode,
 }

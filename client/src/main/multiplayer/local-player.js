@@ -22,6 +22,11 @@ export default class LocalPlayer {
     return this.frozen_at !== null
   }
 
+  // reached the room's "first to N" goal: the circle stops, the server decides the winner
+  get is_finished() {
+    return rules.isFinished(this.state, this.config)
+  }
+
   angleAt(t) {
     return rules.angleAt(this.state, this.is_frozen ? this.frozen_at : t)
   }
@@ -45,6 +50,7 @@ export default class LocalPlayer {
       return { seq, hit: false }
     }
     this.state = result.state
+    if (this.is_finished) this.frozen_at = t
     return { seq, hit: true, perfect: result.perfect }
   }
 
@@ -58,11 +64,11 @@ export default class LocalPlayer {
       // (if the server judged it differently, its verdict on the later tap will say so)
       if (state.hits < this.state.hits || sameState(state, this.state)) return null
       const gained_hit = state.hits > this.state.hits // a tap we predicted as a miss
-      const unfrozen = this.is_frozen
+      const was_frozen = this.is_frozen
       this.state = state
-      this.frozen_at = null
+      this.frozen_at = this.is_finished ? state.t0 : null
       this.corrections++
-      return { gained_hit, perfect, unfrozen, frozen: false }
+      return { gained_hit, perfect, unfrozen: was_frozen && !this.is_frozen, frozen: false }
     }
 
     // a miss: the server kept its state, undo any hit we predicted for this tap;

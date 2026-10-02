@@ -1,22 +1,30 @@
 "use strict"
 // One authoritative 1v1 match. Clients only send taps; the shared rules decide
 // hits, score, next targets and deaths. No tick loop is needed: between taps
-// the game is a function of time, so each player only has one death timer.
+// the game is a function of time, so each player only has one timer.
+//
+// A match ends with the earliest decisive event: a death (that player loses) or,
+// with a "first to N" goal, reaching N points (that player wins).
 const rules = require("../shared/multiplayer-rules")
+const { settingsToConfig } = require("../shared/room-settings")
 const { MAX_REWIND, getRewind } = require("./latency")
 
 const COUNTDOWN_MS = 3000
-// deaths are final only after the longest possible rewind has passed, so a late
-// (but legitimately earlier) tap or death of the opponent is still taken into account
-const DEATH_GRACE = MAX_REWIND
-const DRAW_WINDOW = 1 // ms, deaths closer than this are simultaneous
+// events are final only after the longest possible rewind has passed, so a late
+// (but legitimately earlier) tap of the opponent is still taken into account
+const EVENT_GRACE = MAX_REWIND
+const DRAW_WINDOW = 1 // ms, events closer than this are simultaneous
+// the client's estimate of server time can be a little ahead; a claim slightly in
+// the future is no advantage (the circle's path is deterministic), clamping it would
+// only cause needless prediction corrections
+const CLOCK_TOLERANCE = 20 // ms
 
 class Match {
-  // level: { level, difficulty, info, config } from levels-config
-  constructor(sockets, level) {
+  // settings: sanitized room settings (shared/room-settings.js)
+  constructor(sockets, settings) {
     this.sockets = sockets
-    this.level = level
-    this.config = level.config
+    this.settings = settings
+    this.config = settingsToConfig(settings)
     this.seed = Math.floor(Math.random() * 2 ** 31).toString(36)
     this.start_at = Date.now() + COUNTDOWN_MS
     this.layout = rules.targetLayout(this.config)
@@ -27,22 +35,19 @@ class Match {
       this.players.set(socket.id, {
         socket,
         state: rules.initialState(this.config, this.seed, this.start_at),
-        alive: true,
         death_at: null,
+        finished_at: null,
         timer: null,
       })
     )
   }
 
   start() {
-    const { level, difficulty, info, config } = this.level
     this.players.forEach((player) => {
       const opponent = this.opponentOf(player.socket)
       player.socket.emit("match:start", {
-        level,
-        difficulty,
-        info,
-        config,
+        settings: this.settings,
+        config: this.config,
         seed: this.seed,
         startAt: this.start_at,
         opponent: opponent && { id: opponent.id, ...opponent.data.profile },
@@ -59,9 +64,13 @@ class Match {
     this.sockets.forEach((socket) => socket.emit(event, data))
   }
 
+  isPlaying(player) {
+    return player.death_at === null && player.finished_at === null
+  }
+
   handleTap(socket, { seq, t }) {
     const player = this.players.get(socket.id)
-    if (this.ended || !player || !player.alive) return
+    if (this.ended || !player || !this.isPlaying(player)) return
 
     const received = Date.now()
     if (received < this.start_at) return
@@ -69,7 +78,7 @@ class Match {
     // trust the claimed tap time only within the lag compensation window
     const claimed = t === null ? received : t
     const tap_time = Math.max(
-      Math.min(received, Math.max(received - getRewind(socket), claimed)),
+      Math.min(received + CLOCK_TOLERANCE, Math.max(received - getRewind(socket), claimed)),
       this.start_at,
       player.state.t0
     )
@@ -89,7 +98,9 @@ class Match {
       perfect: result.perfect,
       state: player.state,
     })
-    this.scheduleDeathCheck(player)
+
+    if (rules.isFinished(player.state, this.config)) this.markFinished(player, tap_time)
+    else this.scheduleDeathCheck(player)
   }
 
   // leaving or disconnecting during a match loses it
@@ -105,24 +116,30 @@ class Match {
   scheduleDeathCheck(player) {
     clearTimeout(player.timer)
     const death_at = rules.deathTime(player.state, this.layout)
-    const resolve_at = death_at + DEATH_GRACE
+    const resolve_at = death_at + EVENT_GRACE
     player.timer = setTimeout(() => {
       this.markDead(player, death_at)
       this.resolve(resolve_at)
     }, Math.max(0, resolve_at - Date.now()))
   }
 
-  markDead(player, death_at) {
-    if (!player.alive) return
-    player.alive = false
-    player.death_at = death_at
+  scheduleResolve(player, event_at) {
     clearTimeout(player.timer)
-
-    this.emit("player:died", { id: player.socket.id, t: death_at, score: player.state.score })
-
-    // decide once nothing that happened before this death can arrive anymore
-    const resolve_at = death_at + DEATH_GRACE
+    const resolve_at = event_at + EVENT_GRACE
     player.timer = setTimeout(() => this.resolve(resolve_at), Math.max(0, resolve_at - Date.now()))
+  }
+
+  markDead(player, death_at) {
+    if (!this.isPlaying(player)) return
+    player.death_at = death_at
+    this.emit("player:died", { id: player.socket.id, t: death_at, score: player.state.score })
+    this.scheduleResolve(player, death_at)
+  }
+
+  markFinished(player, finished_at) {
+    player.finished_at = finished_at
+    this.emit("player:finished", { id: player.socket.id, t: finished_at, score: player.state.score })
+    this.scheduleResolve(player, finished_at)
   }
 
   // scheduled_at: timers may fire a fraction of a ms before Date.now() reaches their target
@@ -132,21 +149,32 @@ class Match {
 
     // timers can fire slightly out of order, settle every death that is already certain
     this.players.forEach((player) => {
-      if (!player.alive) return
+      if (!this.isPlaying(player)) return
       const death_at = rules.deathTime(player.state, this.layout)
-      if (death_at + DEATH_GRACE <= now) this.markDead(player, death_at)
+      if (death_at + EVENT_GRACE <= now) this.markDead(player, death_at)
     })
 
-    const dead = [...this.players.values()].filter(({ alive }) => !alive)
-    if (!dead.length) return
+    const events = [...this.players.values()]
+      .filter((player) => !this.isPlaying(player))
+      .map((player) => ({
+        player,
+        time: player.finished_at !== null ? player.finished_at : player.death_at,
+        won: player.finished_at !== null,
+      }))
+    if (!events.length) return
 
-    const first_death = Math.min(...dead.map(({ death_at }) => death_at))
-    const losers = dead.filter(({ death_at }) => death_at - first_death < DRAW_WINDOW)
-    if (losers.length > 1) return this.end({ draw: true, reason: "died" })
+    const first = Math.min(...events.map(({ time }) => time))
+    const decisive = events.filter(({ time }) => time - first < DRAW_WINDOW)
+    if (decisive.length > 1) return this.end({ draw: true, reason: decisive[0].won ? "finished" : "died" })
 
-    const loser = losers[0].socket
-    const winner = this.opponentOf(loser)
-    this.end({ winner: winner ? winner.id : null, loser: loser.id, reason: "died" })
+    const { player, won } = decisive[0]
+    const other = this.opponentOf(player.socket)
+    const other_id = other ? other.id : null
+    this.end(
+      won
+        ? { winner: player.socket.id, loser: other_id, reason: "finished" }
+        : { winner: other_id, loser: player.socket.id, reason: "died" }
+    )
   }
 
   end({ winner = null, loser = null, draw = false, reason }) {

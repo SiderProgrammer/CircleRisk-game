@@ -50,9 +50,9 @@ const request = (socket, event, payload) =>
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-async function startRoomMatch(difficulty = "easy") {
+async function startRoomMatch(settings = {}) {
   const [a, b] = await Promise.all([connect(), connect()])
-  const { code } = await request(a, "room:create", { profile: { nickname: "A" }, difficulty })
+  const { code } = await request(a, "room:create", { profile: { nickname: "A" }, settings })
   const starts = [once(a, "match:start"), once(b, "match:start")]
   await request(b, "room:join", { profile: { nickname: "B" }, code })
   const [match_a, match_b] = await Promise.all(starts)
@@ -76,7 +76,7 @@ function bot(socket, match, { hits = Infinity, send_late_by = 0 } = {}) {
 
   const plan = () => {
     if (seq >= hits) return
-    const reach = (2 * Math.asin(rules.HIT_RADIUS / (2 * state.d)) * 180) / Math.PI
+    const reach = (2 * Math.asin(state.r / (2 * state.d)) * 180) / Math.PI
     const on_target = rules.deathTime(state, layout) - reach / ((state.speed * 60) / 1000)
     timer = setTimeout(
       () => socket.emit("tap", { seq: ++seq, t: on_target }),
@@ -114,7 +114,7 @@ test("malformed payloads never crash the server", async () => {
   await sleep(100)
 
   const other = await connect()
-  const reply = await request(other, "room:create", { difficulty: "hard" })
+  const reply = await request(other, "room:create", { settings: { targets: 99, direction: {} } })
   assert.match(reply.code, /^[A-Z]{4}$/)
   socket.emit("room:leave")
   other.emit("room:leave")
@@ -126,7 +126,7 @@ test("rooms: not found, own room, full, case insensitive", async () => {
     error: "Room not found",
   })
 
-  const { code } = await request(a, "room:create", { difficulty: "medium" })
+  const { code } = await request(a, "room:create", { settings: { start_speed: 1.4, acceleration: 0.06 } })
   assert.deepStrictEqual(await request(a, "room:join", { code }), {
     error: "That's your own room",
   })
@@ -134,8 +134,9 @@ test("rooms: not found, own room, full, case insensitive", async () => {
   const start = once(a, "match:start")
   assert.deepStrictEqual(await request(b, "room:join", { code: code.toLowerCase() }), { code })
   const match = await start
-  assert.strictEqual(match.difficulty, "medium")
-  assert.strictEqual(match.info.name, "basic")
+  assert.strictEqual(match.config.rotation_speed, 1.4)
+  assert.strictEqual(match.config.acceleration, 0.06)
+  assert.strictEqual(match.settings.targets, 8)
 
   assert.deepStrictEqual(await request(c, "room:join", { code }), { error: "Room is full" })
   ;[a, b, c].forEach((socket) => socket.emit("room:leave"))
@@ -246,4 +247,35 @@ test("leaving after a match tells the opponent, a new player can take the seat",
   await start
   b.emit("room:leave")
   c.emit("room:leave")
+})
+
+test("first to N points: reaching the goal first wins", async () => {
+  const { a, b, match } = await startRoomMatch({ win_score: 10 })
+  assert.strictEqual(match.config.win_score, 10)
+  const bot_a = bot(a, match) // perfect: 10 points after 5 taps
+  const bot_b = bot(b, match, { hits: 4 }) // 8 points, then dies after A's 5th tap
+  const finished = once(b, "player:finished", ({ id }) => id === a.id)
+  const end = await once(b, "match:end")
+  assert.strictEqual((await finished).score, 10)
+  assert.strictEqual(end.winner, a.id)
+  assert.strictEqual(end.reason, "finished")
+  // the finisher can't keep scoring
+  assert.strictEqual(end.scores[a.id], 10)
+  bot_a.stop()
+  bot_b.stop()
+  a.emit("room:leave")
+  b.emit("room:leave")
+})
+
+test("first to N points: reaching it at the same moment is a draw", async () => {
+  const { a, b, match } = await startRoomMatch({ win_score: 10, start_speed: 1.6 })
+  const bot_a = bot(a, match)
+  const bot_b = bot(b, match)
+  const end = await once(a, "match:end")
+  assert.strictEqual(end.draw, true)
+  assert.strictEqual(end.reason, "finished")
+  bot_a.stop()
+  bot_b.stop()
+  a.emit("room:leave")
+  b.emit("room:leave")
 })

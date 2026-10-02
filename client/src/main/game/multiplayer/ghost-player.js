@@ -14,11 +14,12 @@ function pickSkinFrame(scene, atlas, prefix, skin, fallback_skin) {
 // Between taps the rotation is a function of time, so it is rendered where it is
 // right now; the only visible latency is a short overshoot until a tap arrives.
 export default class GhostPlayer {
-  constructor(manager, opponent, layout, initial_state) {
+  constructor(manager, opponent, layout, config, initial_state) {
     this.manager = manager
     this.scene = manager.scene
     this.opponent = opponent || {}
     this.layout = layout
+    this.config = config
     this.state = initial_state
     this.frozen_at = null
     this.shown_next_target = null
@@ -73,8 +74,11 @@ export default class GhostPlayer {
 
   render() {
     const now = this.frozen_at !== null ? this.frozen_at : serverNow()
-    // without a tap the opponent can't get past its death point
-    const time = Math.min(now, rules.deathTime(this.state, this.layout))
+    // without a tap the opponent can't get past its death point,
+    // and stops spinning once it reached the room's goal
+    const time = rules.isFinished(this.state, this.config)
+      ? this.state.t0
+      : Math.min(now, rules.deathTime(this.state, this.layout))
     this.draw(this.state, rules.angleAt(this.state, time))
   }
 
@@ -111,6 +115,11 @@ export default class GhostPlayer {
 
     this.next_target_ring.lineStyle(6, 0xbbbbbb, 1)
     this.next_target_ring.strokeCircle(target.x, target.y, target.displayWidth / 2 + 10)
+  }
+
+  // reached the goal: stays where it is, the ring is no longer relevant
+  finish() {
+    this.next_target_ring.setAlpha(0)
   }
 
   die(death_at) {

@@ -4,7 +4,7 @@
 // for replay and remembers room events a scene may have missed.
 import { getSocket, getMyProfile } from "./connection"
 
-const MATCH_EVENTS = ["player:state", "player:died", "match:end"]
+const MATCH_EVENTS = ["player:state", "player:died", "player:finished", "match:end"]
 const CONNECTION_EVENTS = ["connect", "connect_error"]
 
 class MultiplayerSession {
@@ -85,9 +85,10 @@ class MultiplayerSession {
     this.socket.emit("queue:join", getMyProfile())
   }
 
-  createRoom(difficulty, onCreated) {
+  // settings: room settings (multiplayer/room-settings.js), validated again by the server
+  createRoom(settings, onCreated) {
     this.in_room = true
-    this.socket.emit("room:create", { profile: getMyProfile(), difficulty }, ({ code }) =>
+    this.socket.emit("room:create", { profile: getMyProfile(), settings }, ({ code }) =>
       onCreated(code)
     )
   }

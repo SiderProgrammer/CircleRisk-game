@@ -89,6 +89,12 @@ needed_score.y -=10;
         color: "#bbbbbb",
       })
       .setOrigin(1, 0)
+
+    const { win_score } = this.managerContext.multiplayer.match.config
+    if (win_score)
+      this.add
+        .text(this.managerContext.GW / 2, 40, `FIRST TO ${win_score}`, { font: `34px ${main_font}` })
+        .setOrigin(0.5, 0)
   }
   updateOpponentScoreText(score) {
     this.opponent_score_text && this.opponent_score_text.setText(score)

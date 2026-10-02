@@ -3,12 +3,12 @@
 const { Server } = require("socket.io")
 const lobby = require("./lobby")
 const { monitorLatency } = require("./latency")
+const { sanitizeSettings } = require("../shared/room-settings")
 const {
   asObject,
   asAck,
   sanitizeProfile,
   sanitizeTap,
-  sanitizeDifficulty,
   sanitizeRoomCode,
 } = require("./validation")
 
@@ -44,8 +44,8 @@ module.exports = function attachMultiplayer(httpServer) {
     on("queue:leave", () => lobby.leaveQueue(socket))
 
     on("room:create", (payload, ack) => {
-      const { profile, difficulty } = asObject(payload)
-      const code = lobby.openRoom(socket, sanitizeProfile(profile), sanitizeDifficulty(difficulty))
+      const { profile, settings } = asObject(payload)
+      const code = lobby.openRoom(socket, sanitizeProfile(profile), sanitizeSettings(settings))
       asAck(ack)({ code })
     })
 
