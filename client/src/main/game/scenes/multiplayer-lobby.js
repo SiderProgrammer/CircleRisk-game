@@ -74,7 +74,7 @@ export default class MultiplayerLobby extends Phaser.Scene {
     const y = this.center_y
 
     this.states.main = [
-      createTextButton(this, GW / 2, y - 180, "FIND MATCH", () => this.findMatch(), {
+      createTextButton(this, GW / 2, y - 180, "QUICK MATCH", () => this.findMatch(), {
         color: 0xf39c12,
         width: 520,
         height: 130,

@@ -6,8 +6,21 @@ body {
   margin: 0px;
   padding: 0px;
   text-size-adjust: none;
+  -webkit-text-size-adjust: none;
   height: 100%;
+  overflow: hidden;
+  /* keeps the canvas' centering margin inside body instead of making the page taller */
+  display: flow-root;
+  /* letterbox color around the canvas when the screen ratio isn't a phone's */
+  background: #000000;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
   /* background: URL("../assets/img/account-creator/account-creator-bg.png"); */
+}
+
+canvas {
+  /* inline canvas leaves a gap under it which causes scrollbars */
+  display: block;
 }
 
 * {
@@ -26,9 +39,11 @@ body {
 #background {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   position: absolute;
   z-index: -1;
   left: 0;
+  top: 0;
 }
 #interactive-div {
   display: flex;
@@ -41,15 +56,18 @@ body {
   display: none;
   height: 100%;
   width: 100%;
+  touch-action: manipulation;
 }
 
+/* account creator sizes follow the smaller screen side, so it looks the same on phones and monitors */
 #nickname-input {
-  width: 250px;
-  height: 55px;
+  width: clamp(220px, 60vmin, 420px);
+  height: clamp(48px, 9vmin, 80px);
   text-align: center;
   border: 0;
   /* font-family: LuckiestGuy; */
-  font-size: 25px;
+  /* 16px+ stops iOS from zooming in on focus */
+  font-size: clamp(20px, 4.5vmin, 36px);
   border-radius: 40px;
 }
 
@@ -57,37 +75,30 @@ body {
   height: 45%;
   display: flex;
   justify-content: center;
+  padding: 0 16px;
 }
 
 #creating-info {
-  font-size: 25px;
+  font-size: clamp(18px, 4vmin, 32px);
   align-self: flex-end;
   padding-bottom: 20px;
   color: white;
 }
 
 #accept-nickname {
-  margin-top: 70px;
-  width: 60px;
+  margin-top: clamp(40px, 8vh, 90px);
+  width: clamp(56px, 11vmin, 100px);
   outline: none;
+  cursor: pointer;
 }
 #accpet-nickname:focus {
   outline: 0;
 }
 #profile-guy {
-  width: 100px;
+  width: clamp(90px, 18vmin, 180px);
   align-self: center;
   position: absolute;
   left: 50%;
   transform: translate(-50%, -50%);
   top: 20%;
-}
-@media only screen and (pointer: none) and (pointer: coarse) {
-  #first-login {
-    transform: scale(2);
-  }
-
-  body {
-    background: URL("assets/img/account-creator/account-creator-bg.png");
-  }
 }

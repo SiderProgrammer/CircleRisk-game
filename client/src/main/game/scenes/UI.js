@@ -8,6 +8,14 @@ export default class UI extends Phaser.Scene {
     this.managerContext = context
   }
   create() {
+    // the scene instance outlives its game objects, and the next level's manager reads
+    // these before a relaunched UI scene has run create
+    this.events.once("shutdown", () => {
+      this.score_text = null
+      this.opponent_score_text = null
+      this.pause_button = null
+    })
+
     if (this.managerContext.multiplayer) return this.createMultiplayerUI()
 
     const needed_score = this.add
