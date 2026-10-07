@@ -23,3 +23,5 @@ src/config.js
 # Package managers
 package-lock.json
 yarn.lock
+# Firebase Hosting
+.firebase

@@ -105,6 +105,8 @@ let is_button_clicked = false;
   if(is_button_clicked) return
 
   is_button_clicked = true;
+  // close the keyboard now, so it's gone (and the screen full size again) by the time the game starts
+  nickname_input.blur()
 
     if(to_reset){
       div_to_move.style.height = centered_height

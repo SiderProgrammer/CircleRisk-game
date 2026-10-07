@@ -13,6 +13,9 @@ import UI from "../../scenes/UI"
 import UpdateGame from "../../scenes/update-game"
 import Rate from "../../scenes/rate"
 import Profile from "../../scenes/profile"
+import MultiplayerLobby from "../../scenes/multiplayer-lobby"
+import MultiplayerResult from "../../scenes/multiplayer-result"
+import Multiplayer_Basic from "../../levels/multiplayer/multiplayer-basic"
 
 export default [
   Preloader,
@@ -29,5 +32,8 @@ export default [
   UI,
   UpdateGame,
   Rate,
-  Profile
+  Profile,
+  MultiplayerLobby,
+  MultiplayerResult,
+  Multiplayer_Basic,
 ]

@@ -72,3 +72,46 @@ export const createFetchingAnimation = function (scene, x, y) {
     },
   }
 }
+
+export const createTextButton = function (
+  scene,
+  x,
+  y,
+  label,
+  func,
+  { width = 460, height = 110, color = 0x2e86de, font_size = 50 } = {}
+) {
+  const background = scene.add.graphics()
+  const text = scene.add
+    .text(0, 0, label, { font: `${font_size}px ${main_font}` })
+    .setOrigin(0.5)
+
+  const button = scene.add.container(x, y, [background, text])
+  button.text = text
+  button.drawBackground = (fill) => {
+    background.clear()
+    background.fillStyle(0x000000, 0.35)
+    background.fillRoundedRect(-width / 2, -height / 2 + 8, width, height, 30)
+    background.fillStyle(fill, 1)
+    background.fillRoundedRect(-width / 2, -height / 2, width, height, 30)
+  }
+  button.drawBackground(color)
+  button.setColor = (new_color) => {
+    color = new_color
+    button.drawBackground(color)
+    return button
+  }
+
+  button
+    .setSize(width, height)
+    .setInteractive()
+    .on("pointerdown", () => button.setScale(0.95))
+    .on("pointerout", () => button.setScale(1))
+    .on("pointerup", () => {
+      button.setScale(1)
+      scene.game.audio.sounds.button && scene.game.audio.sounds.button.play()
+      func()
+    })
+
+  return button
+}

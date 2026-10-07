@@ -1,0 +1,22 @@
+# Render Blueprint: game + multiplayer server (free tier, MongoDB via DB_URL).
+# Render -> New -> Blueprint -> pick this repository. Render asks for DB_URL on
+# creation; it's stored in Render only, never in the repo.
+services:
+  - type: web
+    name: circlerisk-server
+    runtime: node
+    plan: free # sleeps after ~15 min idle, the first request then takes 30-60 s
+    region: frankfurt
+    rootDir: server
+    buildCommand: npm ci --omit=dev
+    # exactly one process: multiplayer rooms and matches live in memory
+    # (append --no-db to run without MongoDB, accounts are then wiped on every restart)
+    # DEP0170 (old mongodb driver URL parsing) would print DB_URL, password included, to the logs
+    startCommand: node --disable-warning=DEP0170 src/server.js
+    healthCheckPath: /isServerAlive
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DB_URL # mongodb+srv://... connection string, entered in the Render dashboard
+        sync: false

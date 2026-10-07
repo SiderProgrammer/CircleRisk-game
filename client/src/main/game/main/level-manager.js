@@ -138,6 +138,8 @@ this.lose_bg = helper
     playAudio(this.scene, sound)
   }
   changeBall() {
+    if (this.multiplayer) return this.multiplayer.onTap()
+
     this.levelFunctionsCaller.tryChangeRotationSpeed()
 
     this.rotation_speed += this.config.acceleration
@@ -293,6 +295,7 @@ this.lose_bg = helper
       if (Phaser.Geom.Rectangle.Contains(this.UI.getPauseButtonBounds(), x, y))
         return
       if (!this.game_started) {
+        if (this.multiplayer) return // multiplayer starts on the shared countdown, not on tap
         if (this.finger) this.finger.destroy()
         this.game_started = true
 
@@ -393,7 +396,8 @@ this.lose_bg = helper
     this.scene.events.on("shutdown", () => this.scene.scene.stop("UI"))
   }
   isNewLevelNeededScoreReached() {
-    
+    if (this.multiplayer) return false // multiplayer doesn't unlock levels
+
     return (
      window.progress.levels_scores[this.scene.level] === -1 &&
       this.score >= this.scene.score_to_next_level
@@ -411,10 +415,74 @@ getDefaultStats(){
     achievements:0
   }
 }
+  // multiplayer: the server decides hits and deaths, the scene predicts them with
+  // the shared rules and this only mirrors a rules state onto the sprites
+  applyMultiplayerState(state) {
+    // every hit swaps which circle is the pivot
+    if ((state.hits - (this.multiplayer_hits || 0)) % 2 !== 0)
+      this.current_circle = 1 - this.current_circle
+    this.multiplayer_hits = state.hits
+
+    const origin = this.target_array[0]
+    this.circles[1 - this.current_circle].setPosition(
+      origin.x + state.pivot.x,
+      origin.y + state.pivot.y
+    )
+
+    this.current_target = state.current
+    if (state.next !== this.next_target) {
+      this.target_array[this.next_target].setFrame(this.target_texture)
+      this.next_target = state.next
+      this.setNewTarget()
+    }
+
+    this.rotation_speed = state.speed
+    this.rotation_angle = state.a0
+    this.score = state.score
+    if (this.UI.score_text) this.UI.updateScoreText()
+
+    this.helper.extendStick()
+    this.updateCircleStickAngle()
+  }
+
+  showMultiplayerHit(perfect) {
+    this.localProgress.stats.hits++
+    if (perfect) {
+      this.perfect++
+      this.perfect_combo++
+      this.localProgress.stats.perfects++
+      this.perfectManager.showPerfectText()
+      this.perfectManager.showPerfectEffect()
+      this.perfectManager.handlePerfectCombo(this.perfect_combo)
+    } else {
+      this.perfect_combo = 0
+    }
+    this.playSound("tap")
+  }
+
+  // stops the local game without touching scores, money or ads
+  stopMultiplayerGame(has_lost) {
+    this.scene.input.removeAllListeners()
+    this.game_started = false
+
+    // hits and perfects were counted during the match
+    if (has_lost) this.localProgress.stats.deaths++
+    saveProgress(this.localProgress)
+
+    if (!has_lost) return
+    this.playSound("die")
+    this.scene.tweens.add({
+      targets: [...this.circles, this.stick],
+      duration: 400,
+      alpha: 0.1,
+    })
+  }
+
   gameOver() {
    if(!this.game_started) return;
 
- 
+    if (this.multiplayer) return // deaths are decided by the server
+
 
     if(window.admob){
       admob.banner.show()

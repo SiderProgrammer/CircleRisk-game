@@ -6,7 +6,11 @@ const { Accounts, Levels } = require("./settings/db-models")
 
 const defaultAccountConfig = require("./settings/account-default-db")
 
-const DATABASE_URL = require("./settings/db-config") // process.env.DB_URL //  `mongodb+srv://${srvConfig.USERNAME}:${srvConfig.PASSWORD}@${srvConfig.HOST}/${srvConfig.DB}?retryWrites=true&w=majority`
+function getDatabaseUrl() {
+  if (process.env.DB_URL) return process.env.DB_URL
+}
+
+const DATABASE_URL = getDatabaseUrl()
 
 class DatabaseManager {
   constructor() {}

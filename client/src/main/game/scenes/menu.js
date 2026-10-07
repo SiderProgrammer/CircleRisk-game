@@ -67,6 +67,7 @@ export default class menu extends Phaser.Scene {
 
     this.createInstagram()
     this.createPlayButton()
+    this.createMultiplayerButton()
     this.createCustomizeButton()
     this.createMuteButton()
     this.createMusicButton()
@@ -117,6 +118,7 @@ setAnimatedObjectUnactive(){
     this.customize_button,
     this.gear_button,
           this.play_button,
+          this.multiplayer_button,
           this.middle_button,
           this.logo,
   ]
@@ -129,6 +131,7 @@ setAnimatedObjectsActive(){
     this.customize_button,
     this.gear_button,
           this.play_button,
+          this.multiplayer_button,
           this.middle_button,
           this.logo,
   ]
@@ -175,6 +178,7 @@ setBubblesWhiteMode(){
       eval(`this.${[element]}.y = ${this.hidden_positions_y[element]}`)
     }
     this.play_button.y = this.hidden_positions_y.play_button
+    this.multiplayer_button.y = this.hidden_positions_y.multiplayer_button
     this.logo.y = this.hidden_positions_y.logo
 
     this.resetButtonsPositionsToHidden()
@@ -700,6 +704,28 @@ if(config.side === "left"){
     this.hidden_positions_y.play_button = this.play_button.y
   }
 
+  createMultiplayerButton() {
+    this.multiplayer_button = helper.createTextButton(
+      this,
+      this.game.GW / 2,
+      this.game.GH,
+      "1 VS 1",
+      async () => {
+        if (!this.can_play) return
+        this.can_play = false
+
+        await this.animateHideMenu()
+
+        this.scene.launch("multiplayerLobby")
+        this.scene.bringToTop("multiplayerLobby")
+      },
+      { color: 0xf39c12, width: 340, height: 100, font_size: 56 }
+    )
+
+    this.multiplayer_button.y += this.multiplayer_button.height
+    this.hidden_positions_y.multiplayer_button = this.multiplayer_button.y
+  }
+
   showInstagram() {
     this.instagram_button.setAlpha(0)
     this.tweens.add({
@@ -719,6 +745,13 @@ if(config.side === "left"){
   }
 
   showPlayButton(ease) {
+    this.tweens.add({
+      targets: this.multiplayer_button,
+      y: this.game.GH / 2 + 310,
+      duration: 400,
+      ease,
+    })
+
     return new Promise((resolve) => {
       this.tweens.add({
         targets: this.play_button,
@@ -783,6 +816,7 @@ if(config.side === "left"){
           this.sound_button,
           this.gear_button,
           this.play_button,
+          this.multiplayer_button,
           this.middle_button,
           this.achievements_button,
           this.profile_button,

@@ -1,0 +1,32 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "server",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "server", "run", "dev:nodb"],
+      "port": 3001
+    },
+    {
+      "name": "client",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "client", "start"],
+      "port": 8080
+    },
+    {
+      "name": "server-alt-port",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "server", "run", "dev:nodb"],
+      "env": { "PORT": "3091" },
+      "port": 3091,
+      "autoPort": false
+    },
+    {
+      "name": "client-alt-port",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "client", "start", "--", "--port", "8091"],
+      "port": 8091,
+      "autoPort": false
+    }
+  ]
+}

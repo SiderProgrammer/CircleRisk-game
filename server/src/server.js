@@ -5,13 +5,18 @@
 require("dotenv").config()
 const compression = require("compression")
 const express = require("express")
+const http = require("http")
 const cors = require("cors")
 const bodyParser = require("body-parser")
 
 const customizeSkinsSetup = require("./settings/customize-skins-setup")
 const levelsConfig = require("./settings/levels/levels-config")
 
-const DatabaseManager = require("./database-manager")
+// `--no-db` keeps everything in memory, for local development without MongoDB
+const DatabaseManager = process.argv.includes("--no-db")
+  ? require("./memory-database-manager")
+  : require("./database-manager")
+const attachMultiplayer = require("./multiplayer")
 
 const port = process.env.PORT || 3001
 const host = "0.0.0.0"
@@ -26,7 +31,8 @@ server.use(bodyParser.urlencoded({ extended: false }))
 const databaseManager = new DatabaseManager()
 
 server.get("/getGameVersion", (req, res) => res.json(GAME_VERSION))
-server.get("/isServerAlive", (req, res) => res.sendStatus(200))
+
+server.get(["/", "/isServerAlive"], (req, res) => res.sendStatus(200))
 
 server.get("/getConfigurations", (req, res) =>
   res.send({ skins_setup: customizeSkinsSetup, levels_config: levelsConfig })
@@ -50,4 +56,7 @@ server.post("/getRankFromScore", databaseManager.getRankFromScore)
 
 server.post("/postLevelScore", databaseManager.postLevelScore)
 
-server.listen(port, host, () => databaseManager.connectDatabase())
+const httpServer = http.createServer(server)
+attachMultiplayer(httpServer)
+
+httpServer.listen(port, host, () => databaseManager.connectDatabase())
