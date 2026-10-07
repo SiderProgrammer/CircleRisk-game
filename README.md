@@ -1,22 +1,23 @@
 # Circle Risk
 
+https://circle-risk.web.app/
+
+https://m.apkpure.com/pl/circle-risk-challenge-your-reflex/com.pip.circlerisk
+
 Circle Risk is a one-tap reflex game for Android and the web. Two circles are joined by a stick: one is the pivot and the other spins around it. Tap when the spinning circle is over the next target to make it the new pivot. If you miss, you lose.
 
 The project has two versions:
 
-|            | **v1: the original game**                                                    | **v2: multiplayer**                                                    |
-| ---------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Written by | me (graphics by my brother)                                                  | AI ([Claude Code](https://claude.com/claude-code)), built on top of v1 |
-| Modes      | single player: levels, skins, leaderboard                                    | everything from v1 plus real-time **1 vs 1**                           |
-| Backend    | Express + MongoDB, hosted on Heroku                                          | the same server plus Socket.IO, hosted on Render                       |
-| Code       | [`d9274c2`](https://github.com/SiderProgrammer/CircleRisk-game/tree/d9274c2) | this branch                                                            |
+|            | **v1: the original game**                                                    | **v2: multiplayer**                              |
+| ---------- | ---------------------------------------------------------------------------- | ------------------------------------------------ |
+| Written by | me (assets by my brother)                                                    | AI, built on top of v1                           |
+| Modes      | single player: levels, skins, leaderboard                                    | everything from v1 plus real-time **1 vs 1**     |
+| Backend    | Express + MongoDB, hosted on Heroku                                          | the same server plus Socket.IO, hosted on Render |
+| Code       | [`d9274c2`](https://github.com/SiderProgrammer/CircleRisk-game/tree/d9274c2) | this branch                                      |
 
 ---
 
 ## v1: the original game (no multiplayer)
-
-The game I wrote and released on Google Play:
-https://m.apkpure.com/pl/circle-risk-challenge-your-reflex/com.pip.circlerisk
 
 - Campaign levels in easy, medium and hard groups, plus mystery levels
 - Unlockable skins for targets, circles and backgrounds
@@ -37,7 +38,7 @@ A note on v1's code quality: the folders should be structured differently and so
 
 ## v2: multiplayer (written by AI)
 
-v2 adds real-time 1 vs 1 matches to the original game. All of the multiplayer code, client and server, was written by AI ([Claude Code](https://claude.com/claude-code)). v1's single-player game is still there unchanged.
+v2 adds real-time 1 vs 1 matches to the original game. All of the multiplayer code, client and server, was written by AI. v1's single-player game is still there unchanged.
 
 **Features**
 
